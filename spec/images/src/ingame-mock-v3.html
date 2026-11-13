@@ -1,0 +1,182 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Letter Tetris Mock v3</title>
+<style>html,body{margin:0;padding:0;background:#000}svg{display:block}</style></head>
+<body>
+<svg id="s" width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next, Helvetica Neue, Helvetica, Arial, sans-serif">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0b0a2a"/><stop offset="0.38" stop-color="#2a1656"/><stop offset="0.62" stop-color="#7a2d6e"/>
+    <stop offset="0.80" stop-color="#e0735a"/><stop offset="0.92" stop-color="#ffb46a"/><stop offset="1" stop-color="#ffd59a"/>
+  </linearGradient>
+  <radialGradient id="moonGlow" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#fff6e0" stop-opacity="0.9"/><stop offset="0.25" stop-color="#ffe2b0" stop-opacity="0.35"/><stop offset="1" stop-color="#ffb070" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mt1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a2a64"/><stop offset="1" stop-color="#2a1440"/></linearGradient>
+  <linearGradient id="mt2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c1642"/><stop offset="1" stop-color="#140a24"/></linearGradient>
+  <linearGradient id="mt3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#150b25"/><stop offset="1" stop-color="#07040f"/></linearGradient>
+
+  <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#3b3170"/><stop offset="0.5" stop-color="#211a48"/><stop offset="1" stop-color="#120d2c"/>
+  </linearGradient>
+  <linearGradient id="frameSheen" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/><stop offset="0.15" stop-color="#ffffff" stop-opacity="0"/>
+    <stop offset="0.85" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.10"/>
+  </linearGradient>
+  <linearGradient id="well" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0d0a24" stop-opacity="0.55"/><stop offset="1" stop-color="#06041a" stop-opacity="0.85"/>
+  </linearGradient>
+  <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#cfe6ff" stop-opacity="0.55"/><stop offset="1" stop-color="#9fd0ff" stop-opacity="0.95"/>
+  </linearGradient>
+
+  <linearGradient id="tile" x1="0.2" y1="0" x2="0.8" y2="1">
+    <stop offset="0" stop-color="#fff4dc"/><stop offset="0.45" stop-color="#f6d49a"/><stop offset="1" stop-color="#c98a4a"/>
+  </linearGradient>
+  <linearGradient id="tileSel" x1="0.2" y1="0" x2="0.8" y2="1">
+    <stop offset="0" stop-color="#e8fdff"/><stop offset="0.5" stop-color="#7fe6ff"/><stop offset="1" stop-color="#2a8fd6"/>
+  </linearGradient>
+  <linearGradient id="tileBack" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f4e9ff"/><stop offset="0.35" stop-color="#b79cf0"/><stop offset="0.7" stop-color="#6b4fc4"/><stop offset="1" stop-color="#3a2a86"/>
+  </linearGradient>
+
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="softBig" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter>
+  <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="tileShadow" x="-40%" y="-40%" width="180%" height="190%"><feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#000" flood-opacity="0.55"/></filter>
+  <filter id="inset" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter>
+</defs>
+
+<rect width="390" height="844" fill="url(#sky)"/>
+<g id="stars"></g>
+<circle cx="318" cy="60" r="130" fill="url(#moonGlow)"/>
+<circle cx="318" cy="60" r="24" fill="#fffaf0"/>
+<circle cx="318" cy="60" r="24" fill="#fff3d6" filter="url(#soft)" opacity="0.9"/>
+<path d="M0 600 L40 560 L80 585 L130 520 L175 570 L220 530 L270 575 L320 510 L360 555 L390 535 L390 844 L0 844 Z" fill="url(#mt1)" opacity="0.9"/>
+<path d="M0 660 L50 610 L95 640 L150 590 L205 650 L250 610 L300 655 L350 600 L390 630 L390 844 L0 844 Z" fill="url(#mt2)"/>
+<path d="M0 730 L60 690 L120 720 L190 680 L250 725 L310 690 L390 720 L390 844 L0 844 Z" fill="url(#mt3)"/>
+
+<rect x="40" y="130" width="310" height="600" rx="26" fill="#000" opacity="0.6" filter="url(#softBig)"/>
+<g id="field"></g>
+<g id="board"></g>
+<g id="wordbubble"></g>
+
+<g>
+  <rect x="24" y="732" width="342" height="76" rx="20" fill="#0c0820" opacity="0.55"/>
+  <rect x="24" y="732" width="342" height="76" rx="20" fill="none" stroke="#cfe6ff" stroke-opacity="0.25"/>
+  <text x="50" y="760" font-size="12" letter-spacing="2" fill="#cfd8ff" opacity="0.7">PUNKTE</text>
+  <text x="50" y="790" font-size="26" font-weight="600" fill="#ffffff">1 240</text>
+  <text x="192" y="760" font-size="12" letter-spacing="2" fill="#cfd8ff" opacity="0.7">REKORD</text>
+  <text x="192" y="790" font-size="26" font-weight="600" fill="#ffd59a">3 880</text>
+  <circle cx="326" cy="770" r="18" fill="none" stroke="#ffffff" stroke-opacity="0.6" stroke-width="1.5"/>
+  <rect x="319" y="762" width="4" height="16" rx="1.5" fill="#fff" opacity="0.85"/>
+  <rect x="329" y="762" width="4" height="16" rx="1.5" fill="#fff" opacity="0.85"/>
+</g>
+</svg>
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+const R=rng(11);
+const stars=document.getElementById("stars");
+for(let i=0;i<90;i++){const y=R()*420;el("circle",{cx:R()*390,cy:y,r:(R()*1.1+0.3).toFixed(2),fill:"#fff",opacity:(0.25+R()*0.7*(1-y/460)).toFixed(2)},stars);}
+
+const W={E:17,N:10,I:8,S:7,R:7,A:6.5,T:6,D:5,H:4.8,U:4.2,L:3.4,C:3,G:3,M:2.5,O:2.5,B:1.9,W:1.9,F:1.7,K:1.2,Z:1.1,P:0.8,V:0.7,J:0.3};
+const total=Object.values(W).reduce((a,b)=>a+b,0);
+function letter(){let x=R()*total;for(const k in W){x-=W[k];if(x<=0)return k;}return "E";}
+
+const r=36,h=Math.sqrt(3)*r,COLS=5,ROWS=8;
+const left=195-(1.5*r*(COLS-1))/2,B=702;
+const cx=c=>left+c*1.5*r;
+const cy=(c,row)=>(c%2?B-h/2:B-h)-row*h;
+function hexPts(x,y,rr){let s="";for(let i=0;i<6;i++){const a=Math.PI/3*i;s+=(x+rr*Math.cos(a)).toFixed(2)+","+(y+rr*Math.sin(a)).toFixed(2)+" ";}return s;}
+
+/* inner contour = union of all grid hexes */
+const P=[];
+for(let c=0;c<COLS;c++){const y=cy(c,ROWS-1);P.push([cx(c)-r/2,y-h/2],[cx(c)+r/2,y-h/2]);}
+const L=COLS-1;
+for(let row=ROWS-1;row>=0;row--){P.push([cx(L)+r,cy(L,row)],[cx(L)+r/2,cy(L,row)+h/2]);}
+P.push([cx(L)-r/2,cy(L,0)+h/2]);
+for(let c=L-1;c>=0;c--){const y=cy(c,0);P.push([cx(c)+r/2,y+h/2],[cx(c)-r/2,y+h/2]);}
+for(let row=0;row<ROWS;row++){P.push([cx(0)-r,cy(0,row)]);if(row<ROWS-1)P.push([cx(0)-r/2,cy(0,row)-h/2]);}
+const inner="M"+P.map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" L")+" Z";
+const minX=cx(0)-r-12,maxX=cx(L)+r+12,minY=cy(0,ROWS-1)-h/2-14,maxY=B+12;
+function rr(x,y,w,hh,q){return `M${x+q} ${y} H${x+w-q} Q${x+w} ${y} ${x+w} ${y+q} V${y+hh-q} Q${x+w} ${y+hh} ${x+w-q} ${y+hh} H${x+q} Q${x} ${y+hh} ${x} ${y+hh-q} V${y+q} Q${x} ${y} ${x+q} ${y} Z`;}
+const outer=rr(minX,minY,maxX-minX,maxY-minY,18);
+
+const field=document.getElementById("field");
+el("path",{d:inner,fill:"url(#well)"},field);
+el("path",{d:outer+" "+inner,"fill-rule":"evenodd",fill:"url(#frame)"},field);
+el("path",{d:outer+" "+inner,"fill-rule":"evenodd",fill:"url(#frameSheen)"},field);
+el("path",{d:outer,fill:"none",stroke:"#cfe6ff","stroke-opacity":0.35,"stroke-width":1.2},field);
+el("path",{d:inner,fill:"none",stroke:"#9fd0ff","stroke-width":5,opacity:0.35,filter:"url(#soft)"},field);
+el("path",{d:inner,fill:"none",stroke:"url(#rim)","stroke-width":1.4,"stroke-linejoin":"round"},field);
+el("ellipse",{cx:195,cy:B,rx:150,ry:12,fill:"#ffcf8a",opacity:0.14,filter:"url(#soft)"},field);
+
+/* fill state */
+const heights=[4,5,4,5,3];
+const holes=[[1,0],[2,1],[3,1]];
+const isHole=(c,row)=>holes.some(h2=>h2[0]===c&&h2[1]===row);
+const cells=[];
+for(let c=0;c<COLS;c++)for(let row=0;row<heights[c];row++)if(!isHole(c,row))cells.push({c,row,L:letter(),sel:false});
+
+/* empty slot etching */
+for(let c=0;c<COLS;c++)for(let row=0;row<ROWS;row++){
+  if(cells.some(k=>k.c===c&&k.row===row))continue;
+  el("polygon",{points:hexPts(cx(c),cy(c,row),r*0.86),fill:"none",stroke:"#9fb8ff","stroke-opacity":0.08,"stroke-width":1},field);
+}
+holes.forEach(([c,row])=>{el("polygon",{points:hexPts(cx(c),cy(c,row),r*0.9),fill:"#000",opacity:0.35,filter:"url(#inset)"},field);el("polygon",{points:hexPts(cx(c),cy(c,row),r*0.86),fill:"none",stroke:"#9fd0ff","stroke-opacity":0.35},field);});
+
+function neighbors(k){return cells.filter(o=>o!==k&&Math.hypot(cx(o.c)-cx(k.c),cy(o.c,o.row)-cy(k.c,k.row))<h*1.05);}
+const word="STERN";let path=null;
+for(let t=0;t<800&&!path;t++){const s=cells[Math.floor(R()*cells.length)];if(s.row>3)continue;const p=[s];
+  while(p.length<word.length){const o=neighbors(p[p.length-1]).filter(x=>!p.includes(x));if(!o.length)break;p.push(o[Math.floor(R()*o.length)]);}
+  if(p.length===word.length)path=p;}
+path.forEach((k,i)=>{k.L=word[i];k.sel=i<4;});
+
+const board=document.getElementById("board");
+function drawTile(x,y,Lt,kind,parent){
+  const g=el("g",{},parent);
+  if(kind==="sel")el("polygon",{points:hexPts(x,y,r*1.05),fill:"#6fe3ff",opacity:0.7,filter:"url(#soft)"},g);
+  el("polygon",{points:hexPts(x,y,r*0.9),fill:kind==="sel"?"url(#tileSel)":"url(#tile)",filter:"url(#tileShadow)"},g);
+  el("polygon",{points:hexPts(x,y,r*0.9),fill:"none",stroke:"#fff","stroke-opacity":kind==="sel"?0.85:0.55,"stroke-width":1},g);
+  el("path",{d:`M${x-r*0.72} ${y-r*0.33} L${x-r*0.41} ${y-r*0.73} L${x+r*0.41} ${y-r*0.73}`,fill:"none",stroke:"#fff","stroke-opacity":0.7,"stroke-width":2.4,"stroke-linecap":"round"},g);
+  el("text",{x,y:y+13,"text-anchor":"middle","font-size":36,"font-weight":"700",fill:kind==="sel"?"#06304d":"#4a2a10"},g).textContent=Lt;
+}
+cells.forEach(k=>drawTile(cx(k.c),cy(k.c,k.row),k.L,k.sel?"sel":"norm",board));
+
+/* spawning tiles: backside, mirrored letter */
+function drawBack(x,y,Lt,sx,op,parent){
+  const g=el("g",{transform:`translate(${x} ${y}) scale(${sx} 1)`,opacity:op},parent);
+  el("polygon",{points:hexPts(0,0,r*1.15),fill:"#c9b2ff",opacity:0.8,filter:"url(#glow)"},g);
+  el("polygon",{points:hexPts(0,0,r*0.9),fill:"url(#tileBack)",filter:"url(#tileShadow)"},g);
+  el("polygon",{points:hexPts(0,0,r*0.62),fill:"none",stroke:"#fff","stroke-opacity":0.35,"stroke-width":0.8},g);
+  el("polygon",{points:hexPts(0,0,r*0.9),fill:"none",stroke:"#fff","stroke-opacity":0.9,"stroke-width":1.1},g);
+  el("text",{x:0,y:13,"text-anchor":"middle","font-size":36,"font-weight":"700",fill:"#ffffff",opacity:0.75,transform:"scale(-1 1)"},g).textContent=Lt;
+  el("path",{d:`M${-r*0.55} ${-r*0.78} L${r*0.1} ${r*0.78}`,stroke:"#fff","stroke-opacity":0.55,"stroke-width":3,"stroke-linecap":"round",filter:"url(#glow)"},g);
+}
+drawBack(cx(1),cy(1,0),"R",0.7,1,board);
+drawBack(cx(2),cy(2,1),"K",1,0.6,board);
+[[cx(1)-40,cy(1,0)-30],[cx(1)+38,cy(1,0)+20],[cx(1)+8,cy(1,0)-48]].forEach(([x,y],i)=>{
+  const s=el("g",{transform:`translate(${x} ${y})`,opacity:0.9},board);
+  el("path",{d:`M0 -${5+i} L1.2 -1.2 L${5+i} 0 L1.2 1.2 L0 ${5+i} L-1.2 1.2 L-${5+i} 0 L-1.2 -1.2 Z`,fill:"#fff",filter:"url(#glow)"},s);
+});
+
+/* swipe */
+const pts=path.slice(0,4).map(k=>[cx(k.c),cy(k.c,k.row)]);
+const n5=[cx(path[4].c),cy(path[4].c,path[4].row)];
+const finger=[pts[3][0]+(n5[0]-pts[3][0])*0.55,pts[3][1]+(n5[1]-pts[3][1])*0.55];
+const d="M"+pts.map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" L")+" L"+finger[0].toFixed(1)+" "+finger[1].toFixed(1);
+el("path",{d,fill:"none",stroke:"#7fe9ff","stroke-width":16,"stroke-linecap":"round","stroke-linejoin":"round",opacity:0.55,filter:"url(#glow)"},board);
+el("path",{d,fill:"none",stroke:"#eaffff","stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round",opacity:0.95},board);
+path.slice(0,4).forEach(k=>{el("text",{x:cx(k.c),y:cy(k.c,k.row)+13,"text-anchor":"middle","font-size":36,"font-weight":"700",fill:"#06304d"},board).textContent=k.L;});
+el("circle",{cx:finger[0],cy:finger[1],r:28,fill:"#fff",opacity:0.18},board);
+el("circle",{cx:finger[0],cy:finger[1],r:11,fill:"#eaffff",opacity:0.9,filter:"url(#glow)"},board);
+
+const wb=document.getElementById("wordbubble");
+el("rect",{x:135,y:52,width:120,height:38,rx:19,fill:"#0c0820",opacity:0.55},wb);
+el("rect",{x:135,y:52,width:120,height:38,rx:19,fill:"none",stroke:"#7fe9ff","stroke-opacity":0.8},wb);
+el("text",{x:195,y:78,"text-anchor":"middle","font-size":20,"font-weight":"700","letter-spacing":4,fill:"#eaffff",filter:"url(#glow)"},wb).textContent="STER";
+</script>
+</body></html>

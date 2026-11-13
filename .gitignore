@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Godot (zusätzlich zu letter-tetris/.gitignore)
+.godot/
+*.tmp
+
+# Export-Ergebnisse und Signierschlüssel
+*.apk
+*.aab
+*.keystore
+*.jks
+export_credentials.cfg
