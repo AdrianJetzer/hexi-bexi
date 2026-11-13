@@ -6,6 +6,9 @@ extends RefCounted
 
 var min_length: int
 var max_length: int
+## Nur Wörter genau dieser Längen zählen (leer = alle zwischen min_length und max_length).
+## So richtet sich die Wort-Hilfe auf die gesuchten Längen des Auftrags aus.
+var only_lengths: PackedInt32Array = PackedInt32Array()
 
 var _dict: WordDictionary
 var _prefix_cache: Dictionary = {}
@@ -104,7 +107,7 @@ func _search(grid: HexGrid, path: Array, used: Dictionary, word: String, through
 	if not _has_prefix(word):
 		return
 	var includes := through == NONE or used.has(through)
-	if includes and word.length() >= min_length and _dict.contains(word):
+	if includes and word.length() >= min_length and _length_wanted(word.length()) and _dict.contains(word):
 		var target: Dictionary = out
 		if wild != NONE and out.has(wild_letter) and out[wild_letter] is Dictionary:
 			target = out[wild_letter]
@@ -131,6 +134,10 @@ func _search(grid: HexGrid, path: Array, used: Dictionary, word: String, through
 			_search(grid, path, used, word + l2, through, wild, wild_letter, out, letters)
 		used.erase(nb)
 		path.pop_back()
+
+
+func _length_wanted(n: int) -> bool:
+	return only_lengths.is_empty() or only_lengths.has(n)
 
 
 func _has_prefix(p: String) -> bool:

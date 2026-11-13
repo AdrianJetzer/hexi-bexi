@@ -68,6 +68,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | Langes Wort nebenbei [später] | Bonus |
 | **5 Steine nachfüllen** | **−100**, jeder weitere Kauf im Lauf **+25** (100, 125, 150 …) |
 | **5 Steine tauschen** | **−50** |
+| **Aufräumen: die 5 am wenigsten hilfreichen Steine entfernen** | **−100** |
 | **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
 | **Stein ersetzen** | **−100** |
 
@@ -82,6 +83,8 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 - **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet 100 und wird mit jedem Kauf im selben Lauf um 25 teurer; ein neuer Lauf beginnt wieder bei 100. Ist das Feld voll, ist Nachfüllen gesperrt.
 - **Tauschen:** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Fester Preis 50. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
+  - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
+- **Aufräumen:** Die **5 am wenigsten hilfreichen Steine** verschwinden: zuerst die, durch die **am wenigsten passende Wörter** führen (Längen der freien Zeilen, geläufige Wörter), bei Gleichstand die **seltensten Buchstaben** (Q, X, Y, J …). Es verschwinden bis zu 5 Steine; danach müssen aber immer **so viele Steine liegen bleiben, wie das längste noch gesuchte Wort Buchstaben hat** (z. B. gesucht 6 Buchstaben, 8 Steine im Feld → höchstens 2 verschwinden). Die Plätze bleiben **frei** (Löcher; Nachfüllen füllt sie zuerst). Preis 100. Blinkende Tipp-Steine bleiben liegen. Kann kein Stein entfernt werden, wackelt der Knopf und es kostet nichts.
 - **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein Wort fest, das in eine freie Zeile passt, und lässt seinen ersten Stein **blinken**; jeder weitere Tipp (je 100) lässt den nächsten Stein desselben Worts blinken. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Liegt kein passendes Wort im Feld, kostet der Tipp nichts. Kein Text, nur Blinken.
 - **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
 - **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
@@ -129,3 +132,7 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v2.7:** Nach jedem angenommenen Wort automatisch Wortlänge − 1 neue Steine (nicht bei „ohne Nachziehen“).
 - **v2.8:** Bestimmtes Wort ist jetzt die sichere Karte (Level 4, 6–7, 8–10), riskant ein längeres Wort. Tipp Buchstabe für Buchstabe (je 100), gezeigte Steine blinken weiter. Lösung beim Ende des Laufs, dann „Weiter“ zur Bilanz.
 - **v3:** Neues Auftrags-Konzept: Block-Zeilen über dem Spielfeld (1–3 Zeilen, je 3–8 Blöcke, gemischte Längen), Wörter müssen genau passen, Buchstaben fliegen in die Blöcke, nächster Auftrag kommt automatisch. Belohnung 100 + 10 × Level. Kurve Level 1–10 fest, ab 11 Block-Budget (12, alle 5 Levels +1). Symbole statt Text. Entfallen: Auftragskarten, bestimmtes Wort/Säen, Zuglimit, „ohne Nachziehen“, Mindestlänge-Aufträge, Text-Anzeigen. Lösung beim Aufgeben fliegt in die Zeile.
+- **v3.1:** Neue Hilfe „Aufräumen“: bis zu 5 nutzlose Steine (seltenste zuerst) für 100 entfernen, Löcher bleiben.
+- **v3.2:** Aufräumen entfernt immer die 5 am wenigsten hilfreichen Steine (wenigste passende Wörter, dann seltenste Buchstaben), statt nur völlig nutzlose (die gab es mit dem großen Wörterbuch kaum).
+- **v3.3:** Aufräumen lässt immer mindestens so viele Steine liegen, wie das längste gesuchte Wort lang ist.
+- **v3.4:** Tauschen legt ein passendes geläufiges Wort ins Feld, wenn man feststeckt (Kette vorhandener Steine, höchstens 5 Änderungen).

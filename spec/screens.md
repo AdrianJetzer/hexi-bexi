@@ -38,7 +38,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** **Münzen**, **Level**, **Rekord**.
-- **Hilfe-Knöpfe** mit Preis: **Nachfüllen** (5 Steine, ab 100, steigt), **Tauschen** (5 Steine, 50), **Tipp** (100), **Stein ersetzen** (100). Gesperrt, wenn das Geld nicht reicht; Nachfüllen auch bei vollem Feld.
+- **Hilfe-Knöpfe** mit Preis: **Nachfüllen** (5 Steine, ab 100, steigt), **Tauschen** (5 Steine, 50), **Aufräumen** (die 5 am wenigsten hilfreichen Steine, 100), **Tipp** (100), **Stein ersetzen** (100). Gesperrt, wenn das Geld nicht reicht; Nachfüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
@@ -76,3 +76,4 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v2:** Ruhiger Level-Modus: Bilanz statt Game-Over (Rundenende durch den Spieler), Knopf „Neue Buchstaben“, keine Pause und kein Anhalten im Hintergrund nötig.
 - **v3:** Lauf-Modus: Auftragswahl als Ebene über dem Spiel, Anzeige von Auftrag und Münzen, Hilfe-Knöpfe, „Aufgeben“ statt „Runde beenden“, Bilanz mit Level, ein Rekord (höchstes Level), Schwierigkeitsstufe aus den Einstellungen entfernt.
 - **v4:** Auftragswahl entfällt; Auftrag als Block-Zeilen über dem Spielfeld; kein Text für Auftrag und gewischtes Wort; Bilanz nur nach Aufgeben.
+- **v4.1:** Fünfter Hilfe-Knopf „Aufräumen“.

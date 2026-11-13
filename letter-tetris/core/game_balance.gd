@@ -24,6 +24,9 @@ extends Resource
 ## Hilfe „Tauschen“: so viele zufällige Steine bekommen neue Buchstaben.
 @export var swap_count: int = 5
 @export var swap_price: int = 50
+## Hilfe „Aufräumen“: bis zu so viele nutzlose Steine entfernen, für so viele Münzen.
+@export var clear_count: int = 5
+@export var clear_price: int = 100
 ## Hilfe „Tipp“: Preis je gezeigtem Buchstaben.
 @export var hint_price: int = 100
 ## Hilfe „Stein ersetzen“.
@@ -34,7 +37,7 @@ extends Resource
 ## Welche Stufe gilt, legt das Level über die Auftrags-Kurve fest.
 @export var difficulty_levels: Array[DifficultyLevel] = []
 ## Längste Wortlänge, die die Wort-Hilfe berücksichtigt (wegen Rechenzeit).
-@export var help_max_word_length: int = 6
+@export var help_max_word_length: int = 8
 
 
 ## Stufe 1..n; außerhalb des Bereichs wird begrenzt. null, wenn keine Stufen definiert sind.
