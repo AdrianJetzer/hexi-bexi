@@ -83,9 +83,9 @@ func _back() -> Array:
 			tex.seamless = true
 			tex.noise = noise
 			var metal := StandardMaterial3D.new()
-			metal.albedo_color = Color(0.16, 0.17, 0.21)
-			metal.metallic = 0.95
-			metal.roughness = 0.38
+			metal.albedo_color = Color(0.72, 0.74, 0.8)
+			metal.metallic = 1.0
+			metal.roughness = 0.42
 			metal.roughness_texture = tex
 			metal.uv1_triplanar = true
 			metal.uv1_scale = Vector3(0.6, 0.6, 18.0)
@@ -132,6 +132,17 @@ func _build_environment() -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color(0.03, 0.02, 0.07)
+	# Unsichtbarer „Himmel“ nur für Spiegelungen: ohne ihn spiegelt Metall nur Schwarz.
+	var sky_mat := ProceduralSkyMaterial.new()
+	sky_mat.sky_top_color = Color(0.7, 0.72, 0.85)
+	sky_mat.sky_horizon_color = Color(0.55, 0.4, 0.8)
+	sky_mat.ground_horizon_color = Color(0.3, 0.6, 0.9)
+	sky_mat.ground_bottom_color = Color(0.05, 0.05, 0.15)
+	sky_mat.sun_angle_max = 20.0
+	var sky := Sky.new()
+	sky.sky_material = sky_mat
+	env.sky = sky
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.35, 0.35, 0.6)
 	env.ambient_light_energy = 0.5
