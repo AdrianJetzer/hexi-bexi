@@ -31,7 +31,7 @@ extends Resource
 ## Stufen 1 (leicht) bis 5 (Profi), siehe spec/game-rules.md.
 @export var difficulty_levels: Array[DifficultyLevel] = []
 ## Stufe beim ersten Start (1-basiert).
-@export var default_difficulty: int = 3
+@export var default_difficulty: int = 2
 ## Längste Wortlänge, die die Wort-Hilfe berücksichtigt (wegen Rechenzeit).
 @export var help_max_word_length: int = 6
 

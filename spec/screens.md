@@ -52,7 +52,7 @@ Vier Screens: **Startbildschirm, Spiel, Game-Over, Einstellungen.** Keine Anleit
   - **Menü:** zurück zum Startbildschirm.
 
 ### Einstellungen
-- **Schwierigkeitsstufe** 1–5 (Standard: 3 Mittel), siehe [game-rules.md](game-rules.md). Gilt ab der nächsten Runde.
+- **Schwierigkeitsstufe** 1–5 (Standard: 2 Leicht), siehe [game-rules.md](game-rules.md). Gilt ab der nächsten Runde.
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
 - **Rekord zurücksetzen** (mit Nachfrage; setzt die Rekorde aller Stufen zurück).

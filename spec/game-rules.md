@@ -53,7 +53,7 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 
 ### Schwierigkeitsstufen
 - **5 Stufen**, die **nur die Wort-Hilfe** verändern. Tempo, Startreihen und Punkte sind auf allen Stufen gleich.
-- Der Spieler stellt die Stufe in den **Einstellungen** ein; Standard beim ersten Start: **3 (Mittel)**.
+- Der Spieler stellt die Stufe in den **Einstellungen** ein; Standard beim ersten Start: **2 (Leicht)**.
 - Jede Stufe hat ihren **eigenen Rekord**.
 
   | Stufe | Name | Hilfe | Mindestens möglich im Feld |
