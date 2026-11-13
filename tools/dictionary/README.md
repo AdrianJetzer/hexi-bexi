@@ -31,15 +31,16 @@ tools/dictionary/build.sh
 - Trennmuster: nur Einträge, die in der **reformierten Rechtschreibung** gelten.
 - Wiktionary: Stichwörter deutscher Einträge plus alle einteiligen Beugungsformen.
 - **Eigennamen und Abkürzungen entfallen** (siehe spec/game-rules.md): Ein Wort fliegt raus, wenn Wiktionary es nur als Eigenname (`name`) oder Abkürzung (`abbrev`, inkl. als Abkürzung markierter Formen und der Formen solcher Wörter) kennt. Ausnahmen: Zusammenziehungen wie „zum“, „beim“, „sowas“ (bei Wiktionary auch `abbrev`) und längere kleingeschriebene Kurzformen wie „rausreißen“. Die entfernten Wörter stehen in `out/excluded.txt` und werden auch aus der Trennmuster-Liste gefiltert (`filter_words.py`).
+- **Römische Zahlen entfallen** (z. B. LIII, XII; die Trennmuster-Liste enthält rund 2.400 davon), außer sie sind auch ein normales Wiktionary-Stichwort (z. B. MIX; Liste in `out/excluded-roman-keep.txt`).
 
 ## Stand (13.11.2026)
 
 | Liste | Wörter |
 |---|---|
-| Trennmuster (ohne Namen/Abkürzungen) | 385.609 (vorher 390.374) |
-| Wiktionary (ohne Namen/Abkürzungen) | 652.861 |
+| Trennmuster (ohne Namen/Abkürzungen/römische Zahlen) | 383.232 (vorher 390.374) |
+| Wiktionary (ohne Namen/Abkürzungen/römische Zahlen) | 652.858 |
 | Entfernt (Namen/Abkürzungen) | 42.599 |
-| Kombiniert | 808.125 (vorher 850.724) |
+| Kombiniert | 805.747 (vorher 850.724) |
 
 ## Offen
 

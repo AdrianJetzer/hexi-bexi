@@ -81,6 +81,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Eigennamen** (z. B. BERLIN, ANNA, OLGAS) und **Abkürzungen** (z. B. USA, KFZ) gelten **nicht**.
   - Ausnahme: Ist ein Name **auch ein normales Wort** (z. B. ROSE, WOLF, BACH, ERNST, WINTER), gilt er.
   - Entfernt wird ein Wort, wenn Wiktionary es **nur** als Eigenname oder Abkürzung kennt (samt Formen). Seltene Namen, die Wiktionary nicht kennt, können durchrutschen; dafür später ggf. eine eigene Sperrliste.
+- **Römische Zahlen** (z. B. LIII, XII) gelten nicht, außer sie sind auch ein normales Wort (z. B. MIX).
 - Weiterhin: nur A–Z, Wörter mit Umlauten vorerst nicht (siehe „Sprache“).
 
 ### Wörterbuch (Deutsch)
@@ -133,3 +134,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v6.6:** Eigennamen und Abkürzungen gelten nicht mehr (außer sie sind auch normale Wörter).
 - **v7:** Aufträge als Block-Zeilen (genaue Länge), Ablehnung nur durch Wackeln, Lauf endet nur durch Aufgeben. Entfallen: Zug, Zuglimit, „ohne Nachziehen“, gezieltes Säen.
 - **v7.1:** Wort-Hilfe zählt nur Wörter in den Längen der freien Auftrags-Zeilen (bis 8 Buchstaben).
+- **v7.2:** Römische Zahlen gelten nicht (außer sie sind auch ein normales Wort).

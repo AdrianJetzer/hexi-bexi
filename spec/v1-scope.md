@@ -55,7 +55,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 
 ## Muss vor oder während der Umsetzung geklärt werden
 
-- **Wörterbuch:** Quellen, Aufbereitung und Format erledigt (808.125 Wörter ohne Eigennamen und Abkürzungen, ~10 MB). Offen: evtl. Wortlänge begrenzen; Lizenz-Hinweis in der App.
+- **Wörterbuch:** Quellen, Aufbereitung und Format erledigt (805.747 Wörter ohne Eigennamen, Abkürzungen und römische Zahlen, ~10 MB). Offen: evtl. Wortlänge begrenzen; Lizenz-Hinweis in der App.
 - **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.

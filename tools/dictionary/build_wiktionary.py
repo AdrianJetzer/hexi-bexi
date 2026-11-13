@@ -13,6 +13,10 @@ import re
 import sys
 
 ALLOWED = re.compile(r"^[A-Z]{3,}$")
+# Gültige römische Zahlen (z. B. LIII); gelten nicht als Spielwörter, außer sie sind auch ein
+# normales Stichwort (z. B. MIX).
+ROMAN = re.compile(r"^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")
+
 # Wortarten, die nicht als Spielwörter gelten (Eigennamen, Abkürzungen).
 EXCLUDED_POS = {"name", "abbrev"}
 
@@ -112,12 +116,19 @@ def main(src, dst, excluded_dst=None):
             names |= own
         else:
             words |= own
+    # Römische Zahlen: nur behalten, wenn sie auch ein normales Stichwort sind.
+    roman_keep = {w for w in head_normal if ROMAN.match(w)}
+    for w in [w for w in words if ROMAN.match(w) and w not in roman_keep]:
+        words.discard(w)
     # Nur ausschließen, was nirgends sonst (als normales Wort) vorkommt.
     excluded = names - words
     with open(dst, "w", encoding="utf-8") as out:
         for w in sorted(words):
             out.write(w + "\n")
     if excluded_dst:
+        with open(excluded_dst.replace(".txt", "-roman-keep.txt"), "w", encoding="utf-8") as out:
+            for w in sorted(roman_keep):
+                out.write(w + "\n")
         with open(excluded_dst, "w", encoding="utf-8") as out:
             for w in sorted(excluded):
                 out.write(w + "\n")
