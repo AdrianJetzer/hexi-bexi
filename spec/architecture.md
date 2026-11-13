@@ -29,7 +29,6 @@ core/                  Reine Spiellogik (keine Grafik)
   run_session.gd       NEU: ein Lauf; verbindet alles, sendet Signale (ersetzt game_session.gd)
   game_balance.gd      Spielwerte (Start, Preise der Hilfen, Hilfe-Stufen)
   language_data.gd     Sprache (Alphabet, Gewichte, Wortlisten)
-  (entfällt: scoring.gd, game_session.gd)
 
 data/
   balance.tres         Spielwerte (Start-Hexagons, Startmünzen, Preise, Hilfe-Stufen)
@@ -102,3 +101,4 @@ tests/                 Automatische Tests (GUT) für core/
 - **v1.1:** Wörterbuch-Format „LTW1“ (kompakt, ~10 MB).
 - **v2:** Spielfeld in 3D mit 2D-Oberfläche; Hexagon-Modell im Code, Kristall-Shader, Kamera von oben mit Perspektive.
 - **v3:** Lauf-Modus: neue Bausteine Quest, QuestCurve, QuestGenerator, WordSeeder, RunSession (ersetzt GameSession); Scoring entfällt; Hilfe-Stufen statt wählbarer Schwierigkeit; Rekord = höchstes Level; Signal-Vorschlag.
+- **v3.1:** Alter Level-Modus entfernt (GameSession, Scoring, Punkt-Schwellen, wählbare Schwierigkeit, Rekorde pro Stufe).

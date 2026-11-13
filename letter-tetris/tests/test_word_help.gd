@@ -18,7 +18,6 @@ func _level(strength: float, min_words: int) -> DifficultyLevel:
 
 func test_five_levels_from_spec() -> void:
 	assert_eq(balance.difficulty_levels.size(), 5)
-	assert_eq(balance.default_difficulty, 1)
 	var names := ["Sehr leicht", "Leicht", "Mittel", "Schwer", "Profi"]
 	var mins := [8, 5, 3, 1, 0]
 	for i in 5:
@@ -76,10 +75,14 @@ func test_easy_level_yields_more_words_than_profi() -> void:
 	var totals := {1: 0, 5: 0}
 	for level in totals:
 		for seed_value in range(1, 4):
-			var s := GameSession.new(balance, lang, words, seed_value, common, level)
-			s.start()
-			for i in 5:
-				s.request_more_letters()
-			totals[level] += counter.words_on_board(s.grid).size()
-	gut.p("Wörter im Feld (3 Runden, je 30 Buchstaben): Stufe 1 = %d, Stufe 5 = %d" % [totals[1], totals[5]])
+			var rng := RandomNumberGenerator.new()
+			rng.seed = seed_value
+			var spawner := Spawner.new(LetterPicker.new(lang, rng), rng)
+			spawner.finder = WordFinder.new(common, balance.min_length, balance.help_max_word_length)
+			spawner.difficulty = balance.difficulty(level)
+			var grid := HexGrid.new()
+			for i in 30:
+				spawner.spawn_into(grid)
+			totals[level] += counter.words_on_board(grid).size()
+	gut.p("Wörter im Feld (3 Felder, je 30 Buchstaben): Stufe 1 = %d, Stufe 5 = %d" % [totals[1], totals[5]])
 	assert_gt(totals[1], totals[5])
