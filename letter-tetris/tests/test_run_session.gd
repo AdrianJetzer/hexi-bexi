@@ -109,7 +109,7 @@ func test_word_completes_quest_and_pays() -> void:
 	_use_quest(3, 1, 0, false, 100)
 	var cells := _column(0, "AST")
 	assert_true(run.submit_path(cells))
-	assert_true(run.grid.is_free(cells[0]), "Wort verschwindet")
+	assert_eq(_occupied(), 2, "3 weg, 2 automatisch neu")
 	assert_eq(run.coins, 100)
 	assert_eq(run.level(), 2)
 	assert_null(run.quest)
@@ -453,3 +453,30 @@ func test_swap_needs_coins_and_tiles() -> void:
 	run.grid.clear_all()
 	run.coins = 100
 	assert_false(run.can_swap(), "keine Steine")
+
+
+# --- Automatisch auffüllen ------------------------------------------------------------------
+
+func test_found_word_refills_length_minus_one() -> void:
+	run.start()
+	_use_quest(4, 2)
+	_column(0, "HAUS")
+	_column(2, "OHR", false)
+	assert_true(run.submit_path(_column(0, "HAUS", false)))
+	assert_eq(_occupied(), 3 + 3, "OHR bleibt, 3 neue für HAUS")
+	assert_signal_emit_count(run, "tile_spawned", 20 + 3)
+
+
+func test_no_auto_refill_without_refill_quest() -> void:
+	run.start()
+	_use_quest(3, 2, 0, true)
+	assert_true(run.submit_path(_column(0, "AST")))
+	assert_eq(_occupied(), 0)
+
+
+func test_rejected_word_does_not_refill() -> void:
+	run.start()
+	_use_quest(5)
+	_column(0, "AST")
+	run.submit_path(_column(0, "AST", false))
+	assert_eq(_occupied(), 3)

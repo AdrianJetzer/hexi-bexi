@@ -33,7 +33,7 @@ Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwe
   - Die Kette soll nicht auffallen (z. B. nicht immer gerade, gemischt mit vorhandenen Steinen). Details bei der Umsetzung.
 - **Anzahl:** „Finde 3 Wörter mit 3 Buchstaben“.
 - **Mit Bedingung:**
-  - „… ohne Nachziehen“ (im Level ist „Nachfüllen“ gesperrt)
+  - „… ohne Nachziehen“ (im Level ist „Nachfüllen“ gesperrt, und nach gefundenen Wörtern wird nicht automatisch aufgefüllt)
   - „… in höchstens 5 Zügen“ (Züge aufgebraucht, Auftrag nicht erfüllt → **Lauf endet**)
   - „… mit dem Buchstaben X“
   - „… Wort endet auf -EN“
@@ -74,6 +74,7 @@ Pro Level zwei Auftragskarten: A sicher, B riskant. Zahlen sind Startwerte für 
 - Wort-Hilfe: keine. Alle Werte sind Startwerte für das Feintuning.
 
 ### Zug
+- **Automatisch auffüllen:** Nach jedem angenommenen Wort kommen **Wortlänge − 1** neue Steine ins Feld (Platzwahl wie bisher; 5 Buchstaben → 4 neue). Bei Aufträgen **„ohne Nachziehen“** entfällt das. Das Feld leert sich so langsam; Nachfüllen bleibt wichtig.
 - **Nur passende Wörter werden angenommen** und verschwinden. Ein echtes Wort, das nicht zum Auftrag passt (z. B. zu kurz), wird **abgelehnt** wie ein ungültiges: Die Steine wackeln und bleiben liegen, oben steht der Grund.
 - Ein **Zug** ist **jeder Versuch** ab 3 Buchstaben: angenommene Wörter, nicht passende und auch Unsinn-Wörter. Kürzere Wische (z. B. versehentliches Antippen) und gekaufte Hilfen zählen nicht. Wichtig ist das nur bei Aufträgen mit Zuglimit.
 
@@ -160,3 +161,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v2.4:** Längen-Aufträge zählen Wörter mit mindestens der verlangten Länge.
 - **v2.5:** Nachfüllen kostet 100, +25 je weiterem Kauf im Lauf. Neue Hilfe „5 Steine tauschen“ für 50 (Wort-Hilfe, auch bei vollem Feld und „ohne Nachziehen“).
 - **v2.6:** Nur passende Wörter werden angenommen; nicht passende werden abgelehnt (Steine bleiben). Zug = jeder Versuch ab 3 Buchstaben, auch abgelehnte.
+- **v2.7:** Nach jedem angenommenen Wort automatisch Wortlänge − 1 neue Steine (nicht bei „ohne Nachziehen“).

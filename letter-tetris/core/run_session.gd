@@ -282,6 +282,9 @@ func submit_path(path: Array[Vector2i]) -> bool:
 	words_found += 1
 	quest.register(word)
 	word_accepted.emit(word, path)
+	# Automatisch auffüllen: eine Wortlänge minus eins (nicht bei „ohne Nachziehen“).
+	if not quest.no_refill:
+		_spawn(maxi(word.length() - _balance.auto_refill_less, 0))
 	quest_progress.emit(quest)
 	if quest.is_done():
 		_complete_quest()

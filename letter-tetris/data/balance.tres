@@ -42,6 +42,7 @@ start_coins = 0
 min_length = 3
 refill_count = 5
 refill_price = 100
+auto_refill_less = 1
 refill_price_step = 25
 swap_count = 5
 swap_price = 50
