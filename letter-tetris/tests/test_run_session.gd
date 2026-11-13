@@ -117,15 +117,36 @@ func test_word_completes_quest_and_pays() -> void:
 	assert_signal_emitted(run, "quest_completed")
 
 
-func test_non_matching_word_accepted_but_not_counted() -> void:
+func test_non_matching_word_rejected_tiles_stay() -> void:
 	run.start()
 	_use_quest(5)
 	var cells := _column(0, "AST")
-	assert_true(run.submit_path(cells))
-	assert_signal_emitted_with_parameters(run, "word_accepted", ["AST", cells, false])
-	assert_eq(run.quest.moves, 1)
+	assert_false(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_MATCHING])
+	assert_signal_not_emitted(run, "word_accepted")
+	assert_eq(run.grid.get_letter(cells[0]), "A", "Steine bleiben liegen")
+	assert_eq(run.quest.moves, 1, "Versuch kostet einen Zug")
 	assert_eq(run.quest.found, 0)
 	assert_eq(run.level(), 1)
+
+
+func test_accepted_word_signal() -> void:
+	run.start()
+	_use_quest(3)
+	var cells := _column(0, "AST")
+	assert_true(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_accepted", ["AST", cells])
+
+
+func test_specific_word_rejects_other_words() -> void:
+	run.start()
+	var q := Quest.new()
+	q.kind = Quest.Kind.SPECIFIC_WORD
+	q.word_length = 4
+	run.quest = q.start("MAUS")
+	var cells := _column(0, "HAUS")
+	assert_false(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_MATCHING])
 
 
 func test_field_stays_between_levels() -> void:
@@ -144,6 +165,7 @@ func test_minimum_length_is_3() -> void:
 	var cells := _column(0, "AS")
 	assert_false(run.submit_path(cells))
 	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_TOO_SHORT])
+	assert_eq(run.quest.moves, 0, "kurzer Wisch ist kein Zug")
 
 
 func test_unknown_word_rejected() -> void:
@@ -152,15 +174,16 @@ func test_unknown_word_rejected() -> void:
 	var cells := _column(0, "XYZ")
 	assert_false(run.submit_path(cells))
 	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_A_WORD])
-	assert_eq(run.quest.moves, 0, "ungültig ist kein Zug")
+	assert_eq(run.quest.moves, 1, "auch ein Unsinn-Wort ist ein Zug")
+	assert_eq(run.grid.get_letter(cells[0]), "X", "Steine bleiben liegen")
 
 
 func test_missed_move_limit_ends_run() -> void:
 	run.start()
 	_use_quest(4, 2, 2)
-	run.submit_path(_column(0, "AST"))
+	assert_true(run.submit_path(_column(0, "HAUS")))
 	assert_false(run.is_over)
-	run.submit_path(_column(0, "OHR"))
+	run.submit_path(_column(0, "XYZ"))
 	assert_true(run.is_over)
 	assert_signal_emitted_with_parameters(run, "run_ended", [1, RunSession.REASON_OUT_OF_MOVES])
 

@@ -70,9 +70,9 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Aufeinanderfolgende Buchstaben müssen **Nachbarn** sein (ein Hexagon hat 6 Nachbarn). Buchstaben **überspringen geht nicht**.
 - Jedes Hexagon darf in einem Wort **nur einmal** vorkommen.
 - **Mindestlänge:** immer **3 Buchstaben**.
-- Jedes gültige Wort wird **angenommen** und zählt als **Zug**, auch wenn es nicht zum Auftrag passt. Für den Auftrag zählen nur passende Wörter.
+- Angenommen wird nur ein Wort, das **zum Auftrag passt**. Ein echtes, aber nicht passendes Wort wird **abgelehnt**; die Steine bleiben liegen. Jeder Versuch ab 3 Buchstaben ist ein **Zug** (siehe [run-mode.md](run-mode.md)).
 - Ein gültiges Wort **verschwindet**, also alle seine Hexagons. Zurück bleiben Löcher.
-- Bei einem **ungültigen** Wort passiert **nichts**. Keine Strafe, das Feld bleibt unverändert.
+- Bei einem **ungültigen** oder **nicht passenden** Wort bleibt das Feld unverändert; die Steine wackeln, oben steht der Grund. Bei Aufträgen mit Zuglimit kostet der Versuch einen Zug.
 
 ### Gültige Wörter
 - **Alle Wortformen** gelten, auch gebeugte (z. B. STERNE, RANNTE, GROSSEN).
@@ -125,3 +125,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v6.1:** Raster 5 × 9 (45 Plätze).
 - **v6.2:** Lauf endet auch, wenn ein Zuglimit verfehlt wird.
 - **v6.3:** Preise der Hilfen siehe run-mode.md v2.5.
+- **v6.4:** Nur zum Auftrag passende Wörter werden angenommen; jeder Versuch ab 3 Buchstaben ist ein Zug.

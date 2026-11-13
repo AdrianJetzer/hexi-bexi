@@ -12,9 +12,8 @@ signal tile_spawned(cell: Vector2i, letter: String)
 signal tile_changed(cell: Vector2i, letter: String)
 ## Tipp: der erste Stein eines passenden Worts.
 signal hint_shown(cell: Vector2i)
-## Ein gültiges Wort wurde angenommen; die Hexagons sind entfernt.
-## counted: hat das Wort für den Auftrag gezählt?
-signal word_accepted(word: String, cells: Array[Vector2i], counted: bool)
+## Ein passendes Wort wurde angenommen; die Hexagons sind entfernt.
+signal word_accepted(word: String, cells: Array[Vector2i])
 ## Gewischte Buchstaben ergeben kein gültiges Wort (oder es ist gerade kein Auftrag aktiv).
 signal word_rejected(cells: Array[Vector2i], reason: String)
 ## Zwei Auftragskarten zur Wahl: [sicher, riskant].
@@ -31,6 +30,8 @@ signal run_ended(level: int, reason: String)
 const REASON_TOO_SHORT := "too_short"
 const REASON_INVALID_PATH := "invalid_path"
 const REASON_NOT_A_WORD := "not_a_word"
+## Echtes Wort, passt aber nicht zum Auftrag (z. B. zu kurz).
+const REASON_NOT_MATCHING := "not_matching"
 const REASON_NO_QUEST := "no_quest"
 const REASON_RUN_OVER := "run_over"
 
@@ -268,13 +269,19 @@ func submit_path(path: Array[Vector2i]) -> bool:
 	var reason := _check_path(path)
 	if reason != "":
 		word_rejected.emit(path, reason)
+		# Jeder echte Versuch (ab Mindestlänge) kostet einen Zug, auch ein abgelehnter.
+		if reason == REASON_NOT_A_WORD or reason == REASON_NOT_MATCHING:
+			quest.register_miss()
+			quest_progress.emit(quest)
+			if quest.is_failed():
+				_end(REASON_OUT_OF_MOVES)
 		return false
 	var word := word_for(path)
 	for cell in path:
 		grid.clear(cell)
 	words_found += 1
-	var counted := quest.register(word)
-	word_accepted.emit(word, path, counted)
+	quest.register(word)
+	word_accepted.emit(word, path)
 	quest_progress.emit(quest)
 	if quest.is_done():
 		_complete_quest()
@@ -327,8 +334,11 @@ func _check_path(path: Array[Vector2i]) -> String:
 		return REASON_INVALID_PATH
 	if path.size() < _balance.min_length:
 		return REASON_TOO_SHORT
-	if not _dictionary.contains(word_for(path)):
+	var word := word_for(path)
+	if not _dictionary.contains(word):
 		return REASON_NOT_A_WORD
+	if not quest.matches(word):
+		return REASON_NOT_MATCHING
 	return ""
 
 

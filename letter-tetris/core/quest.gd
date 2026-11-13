@@ -28,7 +28,7 @@ enum Kind {
 var target: String = ""
 ## Gefundene passende Wörter.
 var found: int = 0
-## Gemachte Züge (jedes angenommene Wort).
+## Gemachte Züge (jeder Versuch ab der Mindestlänge, auch abgelehnte Wörter).
 var moves: int = 0
 
 
@@ -51,7 +51,7 @@ func matches(word: String) -> bool:
 	return false
 
 
-## Ein angenommenes Wort melden: zählt als Zug, bei Treffer als Fortschritt.
+## Ein Wort melden: zählt als Zug, bei Treffer als Fortschritt.
 ## Gibt zurück, ob das Wort für den Auftrag gezählt hat.
 ## Nach Erfolg oder Scheitern ändert sich nichts mehr.
 func register(word: String) -> bool:
@@ -62,6 +62,13 @@ func register(word: String) -> bool:
 		found += 1
 		return true
 	return false
+
+
+## Ein Versuch ohne Treffer (abgelehntes Wort): kostet nur einen Zug.
+func register_miss() -> void:
+	if is_done() or is_failed():
+		return
+	moves += 1
 
 
 func is_done() -> bool:

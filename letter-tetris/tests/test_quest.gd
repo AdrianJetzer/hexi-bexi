@@ -107,6 +107,17 @@ func test_nothing_changes_after_end() -> void:
 	assert_eq(q.found, 1)
 
 
+func test_miss_costs_move_only() -> void:
+	var q := _length_quest(4, 1, 2)
+	q.register_miss()
+	assert_eq(q.moves, 1)
+	assert_eq(q.found, 0)
+	q.register_miss()
+	assert_true(q.is_failed())
+	q.register_miss()
+	assert_eq(q.moves, 2, "nach dem Scheitern zählt nichts mehr")
+
+
 # --- Vorlage ------------------------------------------------------------------
 
 func test_start_copies_template() -> void:

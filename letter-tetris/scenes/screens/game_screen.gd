@@ -373,14 +373,23 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 	_flash("Geschafft!  +%d Münzen" % reward, GLOW, 1.0)
 
 
-func _on_word_accepted(word: String, _cells: Array[Vector2i], counted: bool) -> void:
-	if session.quest != null and not counted:
-		_flash("%s – zählt nicht für den Auftrag" % word, TEXT_DIM, 1.2)
+func _on_word_accepted(_word: String, _cells: Array[Vector2i]) -> void:
+	pass
 
 
+## Grund der Ablehnung kurz oben anzeigen (die Steine wackeln dazu).
 func _on_word_rejected(_cells: Array[Vector2i], reason: String) -> void:
-	if reason == RunSession.REASON_TOO_SHORT:
-		_flash("Mindestens %d Buchstaben" % BALANCE.min_length, TEXT_DIM, 1.0)
+	var q := session.quest
+	match reason:
+		RunSession.REASON_TOO_SHORT:
+			_flash("Mindestens %d Buchstaben" % BALANCE.min_length, TEXT_DIM, 1.0)
+		RunSession.REASON_NOT_A_WORD:
+			_flash("Kein Wort", TEXT_DIM, 1.0)
+		RunSession.REASON_NOT_MATCHING:
+			if q != null and q.kind == Quest.Kind.SPECIFIC_WORD:
+				_flash("Gesucht ist %s" % q.target, ACCENT, 1.4)
+			elif q != null:
+				_flash("Mind. %d Buchstaben für den Auftrag" % q.word_length, ACCENT, 1.4)
 
 
 func _on_confirm_give_up() -> void:

@@ -15,7 +15,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); Stärke der Hilfe folgt dem **Level** (5 Hilfe-Stufen, nicht wählbar).
 - **Wörter wischen** über Nachbarn, kein Zurückwischen, Prüfung beim Loslassen.
 - Gültige Wörter **verschwinden**, Löcher bleiben offen.
-- Mindestlänge immer 3; jedes gültige Wort ist ein **Zug**.
+- Mindestlänge 3; angenommen werden nur **zum Auftrag passende** Wörter; jeder Versuch ab 3 Buchstaben ist ein **Zug**.
 - **Ende** nur durch **Aufgeben**, danach **Bilanz** (erreichtes Level, Rekord) und neuer Lauf ab Level 1. **Rekord** = höchstes Level.
 - **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen, Eigennamen und Abkürzungen gelten.
 

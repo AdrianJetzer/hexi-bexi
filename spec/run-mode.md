@@ -74,7 +74,8 @@ Pro Level zwei Auftragskarten: A sicher, B riskant. Zahlen sind Startwerte für 
 - Wort-Hilfe: keine. Alle Werte sind Startwerte für das Feintuning.
 
 ### Zug
-Ein **Zug** ist ein **angenommenes Wort**. Ungültige Versuche und gekaufte Hilfen zählen nicht als Zug. Jedes gültige Wort (mindestens 3 Buchstaben) wird angenommen und verschwindet, auch wenn es nicht zum Auftrag passt; für den Auftrag zählen nur passende Wörter.
+- **Nur passende Wörter werden angenommen** und verschwinden. Ein echtes Wort, das nicht zum Auftrag passt (z. B. zu kurz), wird **abgelehnt** wie ein ungültiges: Die Steine wackeln und bleiben liegen, oben steht der Grund.
+- Ein **Zug** ist **jeder Versuch** ab 3 Buchstaben: angenommene Wörter, nicht passende und auch Unsinn-Wörter. Kürzere Wische (z. B. versehentliches Antippen) und gekaufte Hilfen zählen nicht. Wichtig ist das nur bei Aufträgen mit Zuglimit.
 
 ### Auftrag wählen [v1]
 Vor jedem Level gibt es **2 Auftragskarten** zur Wahl, z. B. „4 Buchstaben, +100“ oder „6 Buchstaben, +250“. Sicher oder riskant?
@@ -139,7 +140,7 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 1. ~~**Spielfeld** zwischen den Levels~~ → bleibt liegen.
 2. ~~**Start**~~ → 0 Münzen, 20 Hexagons.
 3. ~~**Umfang Version 1**~~ → Grundgerüst + Auftrag wählen + Zufall; Bosse, Laden, besondere Steine, Meta, Münzkauf später.
-4. ~~**Was ist ein „Zug“?**~~ → nur angenommene Wörter; ungültige Versuche und Hilfen zählen nicht.
+4. ~~**Was ist ein „Zug“?**~~ → jeder Versuch ab 3 Buchstaben (seit v2.6); Hilfen zählen nicht.
 5. ~~**Punkte**~~ → fallen weg.
 6. ~~**Aufgeben**~~ → Knopf „Aufgeben“ mit Nachfrage beendet den Lauf; kein automatisches Ende.
 7. ~~**„Ohne Nachziehen“**~~ → Knopf „Nachfüllen“ ist im Level gesperrt.
@@ -158,3 +159,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v2.3:** Bestimmtes Wort wird gesät, indem Steine sich zu einer zusammenhängenden Kette verwandeln (garantiert lösbar).
 - **v2.4:** Längen-Aufträge zählen Wörter mit mindestens der verlangten Länge.
 - **v2.5:** Nachfüllen kostet 100, +25 je weiterem Kauf im Lauf. Neue Hilfe „5 Steine tauschen“ für 50 (Wort-Hilfe, auch bei vollem Feld und „ohne Nachziehen“).
+- **v2.6:** Nur passende Wörter werden angenommen; nicht passende werden abgelehnt (Steine bleiben). Zug = jeder Versuch ab 3 Buchstaben, auch abgelehnte.
