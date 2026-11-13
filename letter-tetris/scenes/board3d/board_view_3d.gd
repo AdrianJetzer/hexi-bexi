@@ -1,6 +1,6 @@
 class_name BoardView3D
 extends Node3D
-## 3D-Spielfeld einer GameSession: Rahmen, Hexagons, Licht, Kamera und Wisch-Eingabe.
+## 3D-Spielfeld eines Laufs (RunSession): Rahmen, Hexagons, Licht, Kamera und Wisch-Eingabe.
 ## Geometrie wie BoardLayout, in der Ebene X/Z (Bildschirm-unten = +Z), Hexagon-Mitten bei y = 0.
 
 ## Die gerade gewischten Buchstaben (leer, wenn nicht gewischt wird).
@@ -20,7 +20,7 @@ const CAMERA_FOV := 32.0
 ## Treffer-Toleranz beim Wischen (Anteil des Innenradius).
 const HIT_TOLERANCE := 0.8
 
-var session: GameSession
+var session: RunSession
 var layout: BoardLayout
 var camera: Camera3D
 
@@ -70,15 +70,17 @@ func _ready() -> void:
 
 
 ## Neue Runde anbinden. Baut Raster, Rahmen und Hexagons passend zum aktuellen Feld auf.
-func setup(p_session: GameSession) -> void:
+func setup(p_session: RunSession) -> void:
 	if session != null:
 		session.tile_spawned.disconnect(_on_tile_spawned)
 		session.word_accepted.disconnect(_on_word_accepted)
 		session.word_rejected.disconnect(_on_word_rejected)
+		session.tile_changed.disconnect(_on_tile_changed)
 	session = p_session
 	session.tile_spawned.connect(_on_tile_spawned)
 	session.word_accepted.connect(_on_word_accepted)
 	session.word_rejected.connect(_on_word_rejected)
+	session.tile_changed.connect(_on_tile_changed)
 
 	var g := session.grid
 	var probe := BoardLayout.new(g.cols, g.rows, HEX_RADIUS)
@@ -230,17 +232,26 @@ func _make_tile(cell: Vector2i, letter: String) -> HexTile3D:
 # --- Signale der Spiellogik ------------------------------------------------------
 
 func _on_tile_spawned(cell: Vector2i, letter: String) -> void:
-	# Mehrere Hexagons im selben Moment (Start, Level-Up, Knopf) erscheinen nacheinander.
+	# Mehrere Hexagons im selben Moment (Start, Nachfüllen, Säen) erscheinen nacheinander.
+	_make_tile(cell, letter).appear(_next_burst_delay())
+
+
+## Ein Stein bekommt einen neuen Buchstaben (Ersetzen, Säen): er dreht sich einmal um.
+func _on_tile_changed(cell: Vector2i, letter: String) -> void:
+	_make_tile(cell, letter).turn(_next_burst_delay())
+
+
+func _next_burst_delay() -> float:
 	var frame := Engine.get_process_frames()
 	if frame == _burst_frame:
 		_burst_index += 1
 	else:
 		_burst_frame = frame
 		_burst_index = 0
-	_make_tile(cell, letter).appear(_burst_index * BURST_DELAY)
+	return _burst_index * BURST_DELAY
 
 
-func _on_word_accepted(_word: String, cells: Array[Vector2i], _points: int) -> void:
+func _on_word_accepted(_word: String, cells: Array[Vector2i], _counted: bool) -> void:
 	for i in cells.size():
 		var cell := cells[i]
 		if _tiles.has(cell):
@@ -258,7 +269,8 @@ func _on_word_rejected(cells: Array[Vector2i], _reason: String) -> void:
 # --- Wischen --------------------------------------------------------------------
 
 func _unhandled_input(event: InputEvent) -> void:
-	if session == null or layout == null or session.is_over:
+	# Gewischt wird nur, solange ein Auftrag läuft (nicht während der Auftragswahl).
+	if session == null or layout == null or session.is_over or session.quest == null:
 		return
 	if event is InputEventScreenTouch:
 		if event.pressed and _touch_index == -1:

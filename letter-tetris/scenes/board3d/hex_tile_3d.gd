@@ -108,6 +108,15 @@ func appear(delay: float = 0.0) -> void:
 	t.tween_property(self, "flip", 1.0, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
+## Umdrehen an Ort und Stelle (neuer Buchstabe): Rückseite oben, dann Drehung auf die Vorderseite.
+func turn(delay: float = 0.0) -> void:
+	set_flip(0.0)
+	var t := create_tween()
+	if delay > 0.0:
+		t.tween_interval(delay)
+	t.tween_property(self, "flip", 1.0, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
 ## Verschwinden (gefundenes Wort): aufleuchten, kurz anheben, schrumpfen, dann entfernen.
 ## (Platzhalter für das Zerspringen in Splitter.)
 func vanish(delay: float = 0.0) -> void:
