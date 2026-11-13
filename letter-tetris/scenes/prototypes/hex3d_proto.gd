@@ -14,7 +14,7 @@ extends Node3D
 ## Drehung des „gerade erscheinenden“ Hexagons (0 = Rückseite, 1 = Vorderseite).
 @export var flip_demo: float = 0.35
 ## Material-Variante: 0 = Eis-Kristall, 1 = Amethyst, 2 = Rauchglas mit Energiekern
-@export var material_variant: int = 0
+@export var material_variant: int = 2
 
 const LETTERS := ["S", "T", "E", "R", "N", "A", "H", "U", "K", "R", "E", "L"]
 const CRYSTAL_SHADER := preload("res://shaders/crystal.gdshader")
