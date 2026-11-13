@@ -24,7 +24,7 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 
 - **Sprachen:** Wörterbuch, Alphabet und Buchstabenverteilung austauschbar, nichts fest im Spielcode (siehe [game-rules.md](game-rules.md)).
 - **Themes:** Grafiken, Farben, Hintergrund, Effekte, Sounds und Musik austauschbar (siehe [look-and-sound.md](look-and-sound.md)).
-- **Spielwerte** (Takt, Steigerung, Startreihen, Punkte usw.) als Einstellungen, nicht fest im Code.
+- **Spielwerte** (Start-Hexagons, Münzen, Preise, Auftrags-Kurve usw.) als Daten, nicht fest im Code.
 - **Rekord:** lokal; so bauen, dass später Online-Ranglisten (Google Play Games, Game Center) möglich sind (siehe [screens.md](screens.md)).
 - **Käufe:** so bauen, dass später z. B. Theme-Käufe möglich wären.
 

@@ -1,14 +1,14 @@
 # Architektur
 
-Status: **Entwurf v2**. Grundaufbau abgestimmt; Details werden bei der Umsetzung verfeinert.
+Status: **Entwurf v3**. Angepasst an den Lauf-Modus ([run-mode.md](run-mode.md)); Details werden bei der Umsetzung verfeinert.
 
 Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.md](tech.md), Umfang siehe [v1-scope.md](v1-scope.md).
 
 ## Grundprinzipien
 
-1. **Spiellogik getrennt von der Darstellung.** Alle Regeln (Raster, Platzwahl, Buchstabenwahl, Wortprüfung, Punkte, Spielende) laufen als reiner GDScript-Code **ohne Grafik** in `core/`. Die Darstellung hört nur zu und zeigt an. So ist die Logik automatisch testbar, und Themes ändern nie die Regeln.
+1. **Spiellogik getrennt von der Darstellung.** Alle Regeln (Raster, Platzwahl, Buchstabenwahl, Wortprüfung, Aufträge, Münzen, Hilfen, Ende des Laufs) laufen als reiner GDScript-Code **ohne Grafik** in `core/`. Die Darstellung hört nur zu und zeigt an. So ist die Logik automatisch testbar, und Themes ändern nie die Regeln.
 2. **Daten statt fester Code.** Sprache, Theme und Spielwerte sind Godot-Ressourcen (`.tres`) in eigenen Ordnern unter `data/`. Neue Sprache oder neues Theme = neuer Ordner, keine Code-Änderung.
-3. **Kommunikation über Signale.** Die Logik meldet Ereignisse (z. B. „Hexagon erschienen“, „Wort gefunden“, „ungültiges Wort“, „Spiel vorbei“). Die Darstellung reagiert mit Effekten und Sound.
+3. **Kommunikation über Signale.** Die Logik meldet Ereignisse (z. B. „Hexagon erschienen“, „Wort gefunden“, „Auftrag erfüllt“, „Lauf vorbei“). Die Darstellung reagiert mit Effekten und Sound.
 4. **Dienste mit Platzhaltern.** Rangliste und Käufe gibt es in Version 1 nur als leere Platzhalter-Dienste. Später werden sie ersetzt, ohne das Spiel umzubauen.
 
 ## Ordnerstruktur (`letter-tetris/`)
@@ -17,20 +17,29 @@ Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.m
 core/                  Reine Spiellogik (keine Grafik)
   hex_grid.gd          Raster 5×9, Koordinaten, Nachbarn, freie Plätze, Löcher
   board_layout.gd      Geometrie des Rasters (Mittelpunkte, Treffer-Test, Zickzack-Umriss)
-  spawner.gd           Takt, Tempo-Stufe, Platzwahl
-  letter_picker.gd     Buchstabenwahl (Häufigkeit + Vokal-Ausgleich)
-  word_dictionary.gd   Wortprüfung
-  scoring.gd           Punkte = 5·n·(n−1)
-  game_session.gd      Eine Runde: verbindet alles, sendet Signale
+  spawner.gd           Platzwahl, neue Hexagons setzen
+  letter_picker.gd     Buchstabenwahl (Häufigkeit, Vokal-Ausgleich, Wort-Hilfe)
+  word_dictionary.gd   Wortprüfung (Format LTW1)
+  word_finder.gd       Wörter im Feld finden (Wort-Hilfe, Tipp)
+  difficulty_level.gd  Eine Hilfe-Stufe (Stärke der Wort-Hilfe)
+  quest.gd             NEU: ein Auftrag (Art, Bedingungen, Belohnung, Fortschritt, passt das Wort?)
+  quest_curve.gd       NEU: Ressource für die Auftrags-Kurve (Level 1–10, Regeln ab 11)
+  quest_generator.gd   NEU: zieht pro Level 2 Auftragskarten aus der Kurve
+  word_seeder.gd       NEU: legt ein Zielwort als zusammenhängende Kette ins Feld
+  run_session.gd       NEU: ein Lauf; verbindet alles, sendet Signale (ersetzt game_session.gd)
+  game_balance.gd      Spielwerte (Start, Preise der Hilfen, Hilfe-Stufen)
+  language_data.gd     Sprache (Alphabet, Gewichte, Wortlisten)
+  (entfällt: scoring.gd, game_session.gd)
 
 data/
-  balance.tres         Spielwerte (Takt, Steigerung, Startreihen …)
-  languages/de/        Alphabet, Gewichte, Vokale, Wortliste
+  balance.tres         Spielwerte (Start-Hexagons, Startmünzen, Preise, Hilfe-Stufen)
+  quest_curve.tres     Auftrags-Kurve (Karten pro Level, Belohnungen, Hilfe-Stufe je Level)
+  languages/de/        Alphabet, Gewichte, Vokale, Wortlisten (words.bin, common.bin)
   themes/cosmic/       Texturen, Farben, Shader-Parameter, Sounds, Musik
 
 scenes/
   main.tscn            Wurzel: wechselt zwischen den Screens
-  screens/             start, game, game_over, settings
+  screens/             start, game (mit Auftragswahl als Ebene), summary, settings
   board3d/             3D-Spielfeld: board_view_3d (Feld, Kamera, Wisch-Eingabe),
                        hex_tile_3d (ein Hexagon), hex_mesh (Modell im Code erzeugt),
                        cosmic_materials (Materialien des Themes Kosmisch)
@@ -41,7 +50,7 @@ shaders/               Kristall, 3D-Drehung, Nebel, Leuchtkante
 
 autoload/              Immer verfügbare Dienste
   settings.gd          Ton/Musik an/aus (lokal gespeichert)
-  save_data.gd         Rekord (lokal)
+  save_data.gd         Rekord = höchstes Level (lokal)
   audio.gd             Sound und Musik aus dem aktiven Theme
   theme_manager.gd     Aktives Theme (Version 1: cosmic)
   language_manager.gd  Aktive Sprache (Version 1: de)
@@ -65,6 +74,17 @@ tests/                 Automatische Tests (GUT) für core/
   - **Beim Export beachten:** `*.bin` ist keine Godot-Ressource und muss im Export-Filter ausdrücklich eingeschlossen werden (z. B. `data/languages/*/words.bin`).
 - **App im Hintergrund:** Godot meldet das Pausieren der App; dann stoppt die Runde automatisch.
 
+## Lauf-Modus in der Logik
+
+- **`RunSession`** hält den Zustand eines Laufs: Feld, Level, Münzen, Züge im Auftrag, aktueller Auftrag, Auftragskarten zur Wahl.
+- **Ablauf:** `start()` → Karten anbieten → `choose_quest(index)` → Wörter (`submit_path`) → Auftrag erfüllt → Münzen, Level +1, neue Karten … bis `give_up()` oder Zuglimit verfehlt.
+- **Hilfen** als Methoden mit Preisprüfung: `refill()`, `hint()` (liefert den ersten Stein eines passenden Worts), `replace(cell)`. Sie liefern zurück, ob es geklappt hat; gesperrte Hilfen (zu wenig Münzen, Feld voll, „ohne Nachziehen“) sind über `can_refill()` usw. abfragbar, damit die Oberfläche Knöpfe sperren kann.
+- **Signale (Vorschlag):** `tile_spawned`, `tile_changed` (Verwandeln/Ersetzen), `word_accepted`, `word_rejected`, `quest_offered(cards)`, `quest_started(quest)`, `quest_progress(quest)`, `quest_completed(quest, reward)`, `coins_changed`, `level_changed`, `hint_shown(cell)`, `run_ended(level, reason)`.
+- **Auftrag** (`Quest`): reine Daten + Prüfung. `matches(word)` sagt, ob ein Wort zählt; `register(word)` zählt Fortschritt und Züge; `is_done()`, `is_failed()` (Zuglimit verfehlt).
+- **Tipp:** `WordFinder` sucht im Feld ein Wort, das zum Auftrag passt (bei „bestimmtes Wort“ dessen Kette); der erste Stein wird gemeldet.
+- **Säen:** `WordSeeder` sucht im Feld eine Kette passender Länge (benachbarte Plätze, bevorzugt vorhandene Steine, freie Plätze nur ohne Schweben) und setzt dort die Buchstaben. Die Darstellung zeigt das als Umdrehen der Steine.
+- **Zufall** über einen Seed pro Lauf, damit Tests und Fehlersuche wiederholbar sind.
+
 ## Tests
 
 - Die Spiellogik in `core/` wird mit **GUT** (Godot Unit Test, Community-Plugin) automatisch getestet.
@@ -73,7 +93,7 @@ tests/                 Automatische Tests (GUT) für core/
 ## Offene Punkte
 
 - Begrenzung der Wortlänge (z. B. max. 15 Buchstaben) – noch nicht entschieden; derzeit ungekürzt.
-- Genaue Signal-Namen und Schnittstellen zwischen `core/` und `scenes/`.
+- Signal-Namen des Lauf-Modus sind ein Vorschlag; endgültig bei der Umsetzung.
 - Glow und Licht auf echtem Android-Gerät prüfen.
 
 ## Verlauf
@@ -81,3 +101,4 @@ tests/                 Automatische Tests (GUT) für core/
 - **v1:** Grundprinzipien, Ordnerstruktur, Lösungsansätze, Tests mit GUT.
 - **v1.1:** Wörterbuch-Format „LTW1“ (kompakt, ~10 MB).
 - **v2:** Spielfeld in 3D mit 2D-Oberfläche; Hexagon-Modell im Code, Kristall-Shader, Kamera von oben mit Perspektive.
+- **v3:** Lauf-Modus: neue Bausteine Quest, QuestCurve, QuestGenerator, WordSeeder, RunSession (ersetzt GameSession); Scoring entfällt; Hilfe-Stufen statt wählbarer Schwierigkeit; Rekord = höchstes Level; Signal-Vorschlag.
