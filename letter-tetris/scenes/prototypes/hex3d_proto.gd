@@ -17,7 +17,7 @@ extends Node3D
 @export var material_variant: int = 2
 ## Rückseite: 0 = milchig weiß, 1 = mattes Rauchglas, 2 = gefrostetes Rauchglas mit schwachem Kern,
 ## 3 = dunkles Metall mit Leuchtring und gravierter Buchstabe
-@export var back_variant: int = 3
+@export var back_variant: int = 2
 
 const LETTERS := ["S", "T", "E", "R", "N", "A", "H", "U", "K", "R", "E", "L"]
 const CRYSTAL_SHADER := preload("res://shaders/crystal.gdshader")
