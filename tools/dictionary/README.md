@@ -19,6 +19,7 @@ tools/dictionary/build.sh
 - Schreibt die Textliste nach `tools/dictionary/out/de-words.txt`.
 - Packt sie ins Spielformat **LTW1** und legt sie nach `letter-tetris/data/languages/de/words.bin` (ca. 10 MB).
 - Wortlänge begrenzen (optional): `MAX_LEN=15 tools/dictionary/build.sh`.
+- Legt außerdem die **geläufigen Wörter** für die Wort-Hilfe nach `letter-tetris/data/languages/de/common.bin` (vorerst die Trennmuster-Liste, ca. 390.000 Wörter).
 - `src/` und `out/` gehören **nicht** in die Versionsverwaltung.
 - Benötigt: `git`, `curl`, `python3` (keine Zusatzpakete).
 

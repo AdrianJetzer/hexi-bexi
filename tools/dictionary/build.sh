@@ -37,3 +37,6 @@ if [ -n "${MAX_LEN:-}" ]; then
 else
   python3 -I "$HERE/pack_words.py" "$OUT/de-words.txt" "$DEST"
 fi
+
+# 5) Geläufige Wörter für die Wort-Hilfe (vorerst: Trennmuster-Liste)
+python3 -I "$HERE/pack_words.py" "$OUT/trennmuster.txt" "$HERE/../../letter-tetris/data/languages/de/common.bin"

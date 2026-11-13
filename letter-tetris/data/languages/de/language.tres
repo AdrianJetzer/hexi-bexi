@@ -13,3 +13,4 @@ min_vowel_ratio = 0.3
 max_vowel_ratio = 0.55
 balance_min_letters = 4
 words_path = "res://data/languages/de/words.bin"
+common_words_path = "res://data/languages/de/common.bin"
