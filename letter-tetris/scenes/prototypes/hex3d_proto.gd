@@ -15,6 +15,8 @@ extends Node3D
 @export var flip_demo: float = 0.35
 ## Material-Variante: 0 = Eis-Kristall, 1 = Amethyst, 2 = Rauchglas mit Energiekern
 @export var material_variant: int = 2
+## Rückseite: 0 = milchig weiß, 1 = mattes Rauchglas, 2 = gefrostetes Rauchglas mit schwachem Kern
+@export var back_variant: int = 2
 
 const LETTERS := ["S", "T", "E", "R", "N", "A", "H", "U", "K", "R", "E", "L"]
 const CRYSTAL_SHADER := preload("res://shaders/crystal.gdshader")
@@ -67,13 +69,43 @@ func _crystal(v: Dictionary, selected: bool) -> ShaderMaterial:
 	return m
 
 
-func _milky() -> StandardMaterial3D:
-	var milky := StandardMaterial3D.new()
-	milky.albedo_color = Color(0.9, 0.9, 0.95)
-	milky.roughness = 0.75
-	milky.rim_enabled = true
-	milky.rim = 0.25
-	return milky
+## Rückseite: [Material, Buchstabenfarbe] je nach back_variant.
+func _back() -> Array:
+	match back_variant:
+		1:
+			# Mattes Rauchglas
+			var m := StandardMaterial3D.new()
+			m.albedo_color = Color(0.10, 0.12, 0.18)
+			m.roughness = 0.55
+			m.metallic = 0.1
+			m.rim_enabled = true
+			m.rim = 0.5
+			m.rim_tint = 0.8
+			return [m, Color(0.35, 0.75, 0.85, 0.55)]
+		2:
+			# Rauchglas, gefrostet, mit schwachem Kern
+			var s := ShaderMaterial.new()
+			s.shader = CRYSTAL_SHADER
+			s.set_shader_parameter("base_color", Color(0.12, 0.14, 0.22))
+			s.set_shader_parameter("tint_color", Color(0.25, 0.3, 0.4))
+			s.set_shader_parameter("rim_color", Color(0.4, 0.8, 0.9))
+			s.set_shader_parameter("core_color", Color(0.1, 0.6, 0.8))
+			s.set_shader_parameter("opacity", 0.92)
+			s.set_shader_parameter("rim_strength", 0.35)
+			s.set_shader_parameter("core_strength", 0.35)
+			s.set_shader_parameter("core_size", 0.7)
+			s.set_shader_parameter("iridescence", 0.0)
+			s.set_shader_parameter("roughness_value", 0.5)
+			s.set_shader_parameter("hex_radius", hex_radius)
+			return [s, Color(0.5, 0.9, 1.0, 0.6)]
+		_:
+			# Milchig weiß (bisher)
+			var w := StandardMaterial3D.new()
+			w.albedo_color = Color(0.9, 0.9, 0.95)
+			w.roughness = 0.75
+			w.rim_enabled = true
+			w.rim = 0.25
+			return [w, Color(0.45, 0.5, 0.7, 0.55)]
 
 
 func _build_environment() -> void:
@@ -142,7 +174,7 @@ func _build_tiles() -> void:
 	var v: Dictionary = VARIANTS[clampi(material_variant, 0, VARIANTS.size() - 1)]
 	var crystal := _crystal(v, false)
 	var selected := _crystal(v, true)
-	var milky := _milky()
+	var back := _back()
 	var mesh := HexMesh.build(hex_radius * (1.0 - gap), thickness, corner, bevel)
 	var h := sqrt(3.0) * hex_radius
 	var idx := 0
@@ -153,7 +185,7 @@ func _build_tiles() -> void:
 			var tile := HexTile3D.new()
 			add_child(tile)
 			tile.setup(LETTERS[idx % LETTERS.size()], mesh, hex_radius * (1.0 - gap), thickness,
-				crystal, milky, v["letter"], v["letter_depth"])
+				crystal, back[0], v["letter"], v["letter_depth"], back[1])
 			var x := (c - (cols - 1) / 2.0) * 1.5 * hex_radius
 			var z := -((r - (rows - 1) / 2.0) * h + (0.0 if c % 2 == 1 else h / 2.0)) + h * 0.25
 			tile.position = Vector3(x, 0, z)
