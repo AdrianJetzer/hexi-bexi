@@ -41,8 +41,8 @@ var _burst_frame: int = -1
 var _burst_index: int = 0
 ## Antipp-Modus statt Wischen (z. B. „Stein ersetzen“).
 var tap_mode: bool = false
-## Stein, der gerade als Tipp pulsiert.
-var _hint_cell: Vector2i = Vector2i(-1, -1)
+## Steine, die gerade als Tipp oder Lösung pulsieren.
+var _hint_cells: Array[Vector2i] = []
 
 ## Verzögerung zwischen Hexagons, die gleichzeitig erscheinen (Sekunden).
 const BURST_DELAY := 0.09
@@ -88,7 +88,7 @@ func setup(p_session: RunSession) -> void:
 	session.word_rejected.connect(_on_word_rejected)
 	session.tile_changed.connect(_on_tile_changed)
 	tap_mode = false
-	_hint_cell = Vector2i(-1, -1)
+	_hint_cells.clear()
 
 	var g := session.grid
 	var probe := BoardLayout.new(g.cols, g.rows, HEX_RADIUS)
@@ -225,8 +225,7 @@ func _csg_polygon(points: PackedVector2Array, height: float, mat: Material) -> C
 
 
 func _make_tile(cell: Vector2i, letter: String) -> HexTile3D:
-	if cell == _hint_cell:
-		_hint_cell = Vector2i(-1, -1)
+	_hint_cells.erase(cell)
 	if _tiles.has(cell):
 		_tiles[cell].queue_free()
 	var tile := HexTile3D.new()
@@ -251,18 +250,20 @@ func _on_tile_changed(cell: Vector2i, letter: String) -> void:
 	_make_tile(cell, letter).turn(_next_burst_delay())
 
 
-## Tipp: diesen Stein pulsieren lassen, bis wieder gewischt wird.
-func show_hint(cell: Vector2i) -> void:
+## Tipp oder Lösung: diese Steine pulsieren lassen (leer = keiner).
+func show_hint(cells: Array[Vector2i]) -> void:
 	clear_hint()
-	if _tiles.has(cell):
-		_hint_cell = cell
-		_tiles[cell].start_pulse()
+	for cell in cells:
+		if _tiles.has(cell):
+			_hint_cells.append(cell)
+			_tiles[cell].start_pulse()
 
 
 func clear_hint() -> void:
-	if _tiles.has(_hint_cell):
-		_tiles[_hint_cell].stop_pulse()
-	_hint_cell = Vector2i(-1, -1)
+	for cell in _hint_cells:
+		if _tiles.has(cell):
+			_tiles[cell].stop_pulse()
+	_hint_cells.clear()
 
 
 func _next_burst_delay() -> float:
@@ -307,7 +308,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventScreenTouch:
 		if event.pressed and _touch_index == -1:
-			clear_hint()
 			_touch_index = event.index
 			_path.clear()
 			_try_add(event.position)

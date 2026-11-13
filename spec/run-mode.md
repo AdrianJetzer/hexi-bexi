@@ -29,7 +29,7 @@ Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwe
 - **Länge:** „Finde ein Wort mit 3 Buchstaben“, später „… mit 5 Buchstaben“. Gemeint ist **mindestens** diese Länge; längere Wörter zählen auch (Anzeige z. B. „mind. 5 Buchstaben“). Beim bestimmten Wort zählt nur genau das Zielwort.
 - **Bestimmtes Wort:** „Finde HIMMEL“. Das Zielwort kommt aus der Liste geläufiger Wörter.
   - **Säen durch Verwandeln:** Beim Start des Auftrags legt das Spiel das Wort als **zusammenhängende Kette** ins Feld. Die betroffenen Steine **drehen sich um** und zeigen dabei ihre neuen Buchstaben. Reichen die Steine nicht, werden freie Plätze mitbenutzt; dort erscheinen neue Steine (Füllen von unten nach oben bleibt gültig).
-  - Das Wort ist damit **garantiert lösbar**, auch bei vollem Feld. Man muss es nur finden.
+  - Das Wort ist damit **garantiert lösbar**, auch bei vollem Feld. Man muss es nur finden. Deshalb ist es eine **sichere** Karte.
   - Die Kette soll nicht auffallen (z. B. nicht immer gerade, gemischt mit vorhandenen Steinen). Details bei der Umsetzung.
 - **Anzahl:** „Finde 3 Wörter mit 3 Buchstaben“.
 - **Mit Bedingung:**
@@ -55,10 +55,10 @@ Pro Level zwei Auftragskarten: A sicher, B riskant. Zahlen sind Startwerte für 
 | 1 | Wort mit 3 Buchstaben, +100 | Wort mit 4, +150 | sehr stark |
 | 2 | Wort mit 4, +100 | Wort mit 5, +200 | sehr stark |
 | 3 | 2 Wörter mit 4, +100 | Wort mit 5, +200 | stark |
-| 4 | Wort mit 5, +100 | bestimmtes Wort mit 4 (z. B. HAUS), +200 | stark |
+| 4 | bestimmtes Wort mit 4 (z. B. HAUS), +100 | Wort mit 5, +200 | stark |
 | 5 | Wort mit 5 ohne Nachfüllen, +150 | Wort mit 6, +250 | mittel |
-| 6–7 | 3 Wörter mit 4 in höchstens 4 Zügen, +150 | bestimmtes Wort mit 5, +250 | mittel |
-| 8–10 | Wort mit 6, +150 | bestimmtes Wort mit 6 (z. B. HIMMEL), +300 | schwach |
+| 6–7 | bestimmtes Wort mit 5, +150 | 3 Wörter mit 4 in höchstens 4 Zügen, +250 | mittel |
+| 8–10 | bestimmtes Wort mit 6 (z. B. HIMMEL), +150 | Wort mit 6, +300 | schwach |
 | ab 11 | nach Regeln erzeugt, immer etwas schwerer | | ohne Hilfe |
 
 - Sichere Karten reichen für 2–3 Nachfüllungen; riskante bringen etwa das Doppelte als Polster.
@@ -96,7 +96,7 @@ Alle **5 Levels** ein schwerer Auftrag mit großer Belohnung, z. B. „Finde HIM
 | Langes Wort nebenbei, ab 6 Buchstaben [später] | +5 |
 | **5 Steine nachfüllen** | **−100**, jeder weitere Kauf im Lauf **+25** (100, 125, 150 …) |
 | **5 Steine tauschen** | **−50** |
-| **Tipp: Anfangsbuchstabe zeigen** | **−100** |
+| **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
 | **Stein ersetzen** | **−100** |
 
 - Münzen sind die **Währung** des Laufs. **Punkte entfallen**; es gibt nur noch Münzen und Level.
@@ -106,7 +106,8 @@ Alle **5 Levels** ein schwerer Auftrag mit großer Belohnung, z. B. „Finde HIM
 
 - **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet 100 und wird mit jedem Kauf im selben Lauf um 25 teurer; ein neuer Lauf beginnt wieder bei 100. Ist das Feld voll, ist Nachfüllen gesperrt; dann bleiben Tauschen, Stein ersetzen, Tipp oder Aufgeben.
 - **Tauschen:** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Fester Preis 50. Das Feld wird nicht voller; deshalb auch bei vollem Feld und bei „ohne Nachziehen“ erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
-- **Tipp, Anfangsbuchstabe:** Der erste Stein eines passenden Wortes leuchtet auf. Das gilt bei gesuchten Wörtern („HIMMEL“) und bei allgemeinen Aufträgen („Wort mit 5 Buchstaben“), denn die Wortsuche kennt die möglichen Wörter im Feld.
+- **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein passendes Wort fest und lässt seinen ersten Stein blinken; jeder weitere Tipp (je 100) zeigt den nächsten Buchstaben desselben Worts. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Gilt für bestimmte Wörter und allgemeine Aufträge (die Wortsuche kennt die möglichen Wörter im Feld). Liegt kein passendes Wort im Feld, kostet der Tipp nichts.
+- **Lösung am Ende:** Endet der Lauf (Aufgeben oder Zuglimit verfehlt), blinken alle Steine eines passenden Worts und oben steht „Lösung: WORT“ (oder „Keine Lösung im Feld“). Mit **„Weiter“** geht es zur Bilanz.
 - **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**, also möglichst passend zu Wörtern im Feld. Kein Wunschbuchstabe.
 
 ## Laden und Vorteile [später]
@@ -162,3 +163,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v2.5:** Nachfüllen kostet 100, +25 je weiterem Kauf im Lauf. Neue Hilfe „5 Steine tauschen“ für 50 (Wort-Hilfe, auch bei vollem Feld und „ohne Nachziehen“).
 - **v2.6:** Nur passende Wörter werden angenommen; nicht passende werden abgelehnt (Steine bleiben). Zug = jeder Versuch ab 3 Buchstaben, auch abgelehnte.
 - **v2.7:** Nach jedem angenommenen Wort automatisch Wortlänge − 1 neue Steine (nicht bei „ohne Nachziehen“).
+- **v2.8:** Bestimmtes Wort ist jetzt die sichere Karte (Level 4, 6–7, 8–10), riskant ein längeres Wort. Tipp Buchstabe für Buchstabe (je 100), gezeigte Steine blinken weiter. Lösung beim Ende des Laufs, dann „Weiter“ zur Bilanz.

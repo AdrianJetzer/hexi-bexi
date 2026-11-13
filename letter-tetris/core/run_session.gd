@@ -10,8 +10,9 @@ extends RefCounted
 signal tile_spawned(cell: Vector2i, letter: String)
 ## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Ersetzen, Säen).
 signal tile_changed(cell: Vector2i, letter: String)
-## Tipp: der erste Stein eines passenden Worts.
-signal hint_shown(cell: Vector2i)
+## Tipp: die bisher gezeigten Steine eines passenden Worts, in Wortreihenfolge
+## (leer = kein Tipp mehr, z. B. weil sich ein Stein des Worts geändert hat).
+signal hint_changed(cells: Array[Vector2i])
 ## Ein passendes Wort wurde angenommen; die Hexagons sind entfernt.
 signal word_accepted(word: String, cells: Array[Vector2i])
 ## Gewischte Buchstaben ergeben kein gültiges Wort (oder es ist gerade kein Auftrag aktiv).
@@ -57,6 +58,10 @@ var _picker: LetterPicker
 ## Sucht Wörter für den Tipp: zuerst geläufige, dann alle.
 var _hint_finders: Array[WordFinder] = []
 var _hint_rng: RandomNumberGenerator
+## Laufender Tipp: Weg und Wort, davon _hint_count Buchstaben gezeigt.
+var _hint_cells: Array[Vector2i] = []
+var _hint_word: String = ""
+var _hint_count: int = 0
 var _seeder: WordSeeder
 ## Woraus Zielwörter gezogen werden (geläufige Wörter, sonst alle).
 var _target_words: WordDictionary
@@ -109,6 +114,7 @@ func start() -> void:
 	quest = null
 	_level = 1
 	_refills = 0
+	_reset_hint()
 	_apply_help()
 	_spawn(_balance.run_start_tiles)
 	coins_changed.emit(coins)
@@ -128,6 +134,7 @@ func choose_quest(index: int) -> bool:
 			# Kein Zielwort möglich (sehr selten): stattdessen ein Wort dieser Länge suchen.
 			chosen = chosen.duplicate() as Quest
 			chosen.kind = Quest.Kind.LENGTH
+	_reset_hint()
 	quest = chosen.start(target)
 	offer.clear()
 	quest_started.emit(quest)
@@ -190,26 +197,51 @@ func swap() -> Array[Vector2i]:
 	for cell in cells:
 		tile_changed.emit(cell, _new_letter(cell))
 	_pay(_balance.swap_price)
+	_check_hint()
 	return cells
 
 
-## Tipp möglich? (Auftrag aktiv, Münzen reichen)
+## Tipp möglich? (Auftrag aktiv, Münzen reichen, noch nicht alle Buchstaben gezeigt)
 func can_hint() -> bool:
-	return not is_over and quest != null and coins >= _balance.hint_price
+	if is_over or quest == null or coins < _balance.hint_price:
+		return false
+	return not (_hint_valid() and _hint_count >= _hint_cells.size())
 
 
-## Hilfe „Tipp“: zeigt den ersten Stein eines Worts, das zum Auftrag passt.
-## Gibt den Platz zurück, oder NO_CELL, wenn kein passendes Wort im Feld liegt
-## (dann kostet es nichts).
+## Hilfe „Tipp“: zeigt den nächsten Buchstaben eines Worts, das zum Auftrag passt
+## (beim ersten Tipp den ersten). Alle gezeigten bleiben sichtbar (hint_changed).
+## Gibt den neu gezeigten Platz zurück, oder NO_CELL, wenn kein passendes Wort im Feld
+## liegt (dann kostet es nichts).
 func hint() -> Vector2i:
 	if not can_hint():
 		return NO_CELL
-	var path := _hint_path()
-	if path.is_empty():
-		return NO_CELL
+	_check_hint()
+	if _hint_cells.is_empty():
+		var path := _find_matching_path()
+		if path.is_empty():
+			return NO_CELL
+		_hint_cells = path
+		_hint_word = word_for(path)
+		_hint_count = 0
+	_hint_count += 1
 	_pay(_balance.hint_price)
-	hint_shown.emit(path[0])
-	return path[0]
+	hint_changed.emit(hinted_cells())
+	return _hint_cells[_hint_count - 1]
+
+
+## Bisher gezeigte Tipp-Steine (in Wortreihenfolge).
+func hinted_cells() -> Array[Vector2i]:
+	return _hint_cells.slice(0, _hint_count)
+
+
+## Lösung für den laufenden Auftrag (z. B. beim Aufgeben): Weg eines passenden Worts,
+## bevorzugt das Tipp-Wort. Leer, wenn es keine gibt.
+func solution() -> Array[Vector2i]:
+	if _hint_valid():
+		return _hint_cells.duplicate()
+	if quest == null:
+		return []
+	return _find_matching_path()
 
 
 ## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)
@@ -227,6 +259,7 @@ func replace(cell: Vector2i) -> String:
 	var letter := _new_letter(cell)
 	_pay(_balance.replace_price)
 	tile_changed.emit(cell, letter)
+	_check_hint()
 	return letter
 
 
@@ -285,6 +318,7 @@ func submit_path(path: Array[Vector2i]) -> bool:
 	# Automatisch auffüllen: eine Wortlänge minus eins (nicht bei „ohne Nachziehen“).
 	if not quest.no_refill:
 		_spawn(maxi(word.length() - _balance.auto_refill_less, 0))
+	_check_hint()
 	quest_progress.emit(quest)
 	if quest.is_done():
 		_complete_quest()
@@ -294,6 +328,31 @@ func submit_path(path: Array[Vector2i]) -> bool:
 
 
 # --- intern --------------------------------------------------------------------------
+
+## Liegt das Tipp-Wort noch unverändert im Feld?
+func _hint_valid() -> bool:
+	if _hint_cells.is_empty():
+		return false
+	for cell in _hint_cells:
+		if grid.is_free(cell):
+			return false
+	return word_for(_hint_cells) == _hint_word
+
+
+## Tipp verwerfen, wenn sich ein Stein des Tipp-Worts geändert hat.
+func _check_hint() -> void:
+	if not _hint_cells.is_empty() and not _hint_valid():
+		_reset_hint()
+
+
+func _reset_hint() -> void:
+	var had := _hint_count > 0
+	_hint_cells = []
+	_hint_word = ""
+	_hint_count = 0
+	if had:
+		hint_changed.emit(hinted_cells())
+
 
 ## Zielwort wählen und als Kette ins Feld legen. Gibt das Wort zurück ("" = nicht möglich).
 func _seed_target(length: int) -> String:
@@ -314,7 +373,7 @@ func _seed_target(length: int) -> String:
 
 
 ## Weg eines Worts, das zum Auftrag passt (zufällig unter den gefundenen), oder leer.
-func _hint_path() -> Array[Vector2i]:
+func _find_matching_path() -> Array[Vector2i]:
 	var q := quest
 	var p_min := q.word_length
 	var p_max := maxi(q.word_length, _balance.help_max_word_length)

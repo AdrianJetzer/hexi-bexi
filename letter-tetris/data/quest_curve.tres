@@ -61,13 +61,13 @@ help_level = 2
 
 [sub_resource type="Resource" id="safe_4"]
 script = ExtResource("2")
-word_length = 5
+kind = 1
+word_length = 4
 reward = 100
 
 [sub_resource type="Resource" id="risky_4"]
 script = ExtResource("2")
-kind = 1
-word_length = 4
+word_length = 5
 reward = 200
 
 [sub_resource type="Resource" id="step_4"]
@@ -99,15 +99,15 @@ help_level = 3
 
 [sub_resource type="Resource" id="safe_6_7"]
 script = ExtResource("2")
-word_length = 4
-count = 3
-max_moves = 4
+kind = 1
+word_length = 5
 reward = 150
 
 [sub_resource type="Resource" id="risky_6_7"]
 script = ExtResource("2")
-kind = 1
-word_length = 5
+word_length = 4
+count = 3
+max_moves = 4
 reward = 250
 
 [sub_resource type="Resource" id="step_6_7"]
@@ -120,12 +120,12 @@ help_level = 3
 
 [sub_resource type="Resource" id="safe_8_10"]
 script = ExtResource("2")
+kind = 1
 word_length = 6
 reward = 150
 
 [sub_resource type="Resource" id="risky_8_10"]
 script = ExtResource("2")
-kind = 1
 word_length = 6
 reward = 300
 

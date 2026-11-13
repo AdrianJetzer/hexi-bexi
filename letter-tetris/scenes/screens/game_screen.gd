@@ -40,6 +40,8 @@ var _cards_title: Label
 var _card_buttons: Array[Button] = []
 var _summary: ColorRect
 var _summary_label: Label
+## Nach dem Ende: Lösung ansehen, dann „Weiter“ zur Bilanz.
+var _continue_button: Button
 var _flash_tween: Tween
 var _cards_tween: Tween
 
@@ -71,7 +73,11 @@ func new_run(seed_value: int = -1) -> void:
 	session.tile_spawned.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
+	session.hint_changed.connect(func(cells: Array[Vector2i]) -> void: _board.show_hint(cells))
 	_summary.visible = false
+	_continue_button.visible = false
+	for b in [_refill_button, _swap_button, _hint_button, _replace_button]:
+		b.visible = true
 	_confirm.visible = false
 	_cards.visible = false
 	_word_label.text = ""
@@ -146,6 +152,12 @@ func _build_ui() -> void:
 	var no := _button("Nein", 56, row)
 	no.custom_minimum_size = Vector2(260, 130)
 	no.pressed.connect(func() -> void: _confirm.visible = false)
+
+	_continue_button = _button("Weiter", 56)
+	_continue_button.visible = false
+	_continue_button.pressed.connect(func() -> void:
+		_continue_button.visible = false
+		_summary.visible = true)
 
 	# Bilanz
 	var s := _overlay("")
@@ -227,6 +239,8 @@ func _relayout() -> void:
 	_coins_label.size = Vector2(inner * 0.45, 60)
 	var gap := 16.0
 	var bw := (inner - 3.0 * gap) / 4.0
+	_continue_button.position = Vector2(side + inner * 0.25, info_top + 185)
+	_continue_button.size = Vector2(inner * 0.5, 120)
 	var buttons: Array[Button] = [_refill_button, _swap_button, _hint_button, _replace_button]
 	for i in buttons.size():
 		buttons[i].position = Vector2(side + i * (bw + gap), info_top + 195)
@@ -321,7 +335,6 @@ func _set_replace_mode(on: bool) -> void:
 	_board.tap_mode = on
 	_replace_button.set_pressed_no_signal(on)
 	if on:
-		_board.clear_hint()
 		_set_word_text("Welchen Stein ersetzen?", ACCENT)
 	elif not (_flash_tween and _flash_tween.is_running()):
 		_word_label.text = ""
@@ -338,8 +351,8 @@ func _on_hint_pressed() -> void:
 	if cell == RunSession.NO_CELL:
 		_flash("Kein passendes Wort im Feld – nachfüllen oder tauschen", TEXT_DIM, 2.0)
 	else:
-		_board.show_hint(cell)
-		_flash("Ein passendes Wort beginnt hier", GLOW, 1.4)
+		var n := session.hinted_cells().size()
+		_flash("Tipp: %d. Buchstabe blinkt" % n, GLOW, 1.4)
 
 
 func _on_quest_offered(cards: Array[Quest]) -> void:
@@ -403,5 +416,18 @@ func _on_run_ended(level: int, reason: String) -> void:
 	var why := "Züge aufgebraucht" if reason == RunSession.REASON_OUT_OF_MOVES else "Lauf beendet"
 	_summary_label.text = "%s\n\nLevel %d erreicht\n\nRekord: Level %d%s" % [
 		why, level, SaveData.best_level(), "\nNeuer Rekord!" if new_record else ""]
-	_summary.visible = true
 	_update_labels()
+	if session.quest == null:
+		# Ende während der Auftragswahl: keine Lösung zu zeigen.
+		_summary.visible = true
+		return
+	# Erst die Lösung zeigen, dann mit „Weiter“ zur Bilanz.
+	var solution := session.solution()
+	if solution.is_empty():
+		_set_word_text("Keine Lösung im Feld", TEXT_DIM)
+	else:
+		_board.show_hint(solution)
+		_set_word_text("Lösung: %s" % session.word_for(solution), ACCENT)
+	for b in [_refill_button, _swap_button, _hint_button, _replace_button]:
+		b.visible = false
+	_continue_button.visible = true

@@ -30,10 +30,19 @@ func test_level_1_cards_from_spec() -> void:
 	assert_eq(cards[1].reward, 150)
 
 
-func test_level_4_risky_is_specific_word() -> void:
+func test_specific_word_is_safe_card() -> void:
+	var expected := {4: [4, 100], 6: [5, 150], 7: [5, 150], 8: [6, 150], 10: [6, 150]}
+	for level in expected:
+		var cards := _gen().offer(level)
+		assert_eq(cards[0].kind, Quest.Kind.SPECIFIC_WORD, "Level %d sicher" % level)
+		assert_eq(cards[0].word_length, expected[level][0])
+		assert_eq(cards[0].reward, expected[level][1])
+		assert_eq(cards[1].kind, Quest.Kind.LENGTH, "Level %d riskant" % level)
+
+
+func test_level_4_risky_is_longer_word() -> void:
 	var risky := _gen().offer(4)[1]
-	assert_eq(risky.kind, Quest.Kind.SPECIFIC_WORD)
-	assert_eq(risky.word_length, 4)
+	assert_eq(risky.word_length, 5)
 	assert_eq(risky.reward, 200)
 
 
@@ -43,12 +52,13 @@ func test_level_5_safe_without_refill() -> void:
 	assert_eq(safe.word_length, 5)
 
 
-func test_levels_6_and_7_share_move_limited_card() -> void:
+func test_levels_6_and_7_risky_move_limited_card() -> void:
 	for level in [6, 7]:
-		var safe := _gen().offer(level)[0]
-		assert_eq(safe.word_length, 4)
-		assert_eq(safe.count, 3)
-		assert_eq(safe.max_moves, 4)
+		var risky := _gen().offer(level)[1]
+		assert_eq(risky.word_length, 4)
+		assert_eq(risky.count, 3)
+		assert_eq(risky.max_moves, 4)
+		assert_eq(risky.reward, 250)
 
 
 func test_help_level_follows_curve() -> void:
@@ -80,9 +90,9 @@ func test_mixed_cards_come_from_levels_6_to_10() -> void:
 		# Eine Verschärfung: Länge +1 gegenüber der Vorlage.
 		safe_lengths[cards[0].word_length] = true
 		assert_true(cards[0].reward >= 200, "Belohnung +50")
-	# Vorlagen aus Level 6–7 (Länge 4) und 8–10 (Länge 6), jeweils +1.
+	# Sichere Vorlagen aus Level 6–7 (Länge 5) und 8–10 (Länge 6), jeweils +1.
 	assert_eq(safe_lengths.keys().size(), 2)
-	assert_true(safe_lengths.has(5))
+	assert_true(safe_lengths.has(6))
 	assert_true(safe_lengths.has(7))
 
 

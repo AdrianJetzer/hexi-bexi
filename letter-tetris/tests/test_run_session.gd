@@ -300,7 +300,7 @@ func test_hint_shows_first_cell_of_matching_word() -> void:
 	var cell := run.hint()
 	assert_eq(cell, cells[0], "nur HAUS hat 4 Buchstaben")
 	assert_eq(run.coins, 50)
-	assert_signal_emitted_with_parameters(run, "hint_shown", [cells[0]])
+	assert_signal_emitted_with_parameters(run, "hint_changed", [[cells[0]]])
 
 
 func test_hint_without_matching_word_is_free() -> void:
@@ -310,7 +310,7 @@ func test_hint_without_matching_word_is_free() -> void:
 	run.coins = 100
 	assert_eq(run.hint(), RunSession.NO_CELL)
 	assert_eq(run.coins, 100)
-	assert_signal_not_emitted(run, "hint_shown")
+	assert_signal_not_emitted(run, "hint_changed")
 
 
 func test_hint_for_specific_word() -> void:
@@ -480,3 +480,83 @@ func test_rejected_word_does_not_refill() -> void:
 	_column(0, "AST")
 	run.submit_path(_column(0, "AST", false))
 	assert_eq(_occupied(), 3)
+
+
+# --- Tipp Buchstabe für Buchstabe, Lösung ---------------------------------------------------
+
+func _maus_quest() -> Array[Vector2i]:
+	var q := Quest.new()
+	q.kind = Quest.Kind.SPECIFIC_WORD
+	q.word_length = 4
+	run.quest = q.start("MAUS")
+	return _column(2, "MAUS")
+
+
+func test_hints_reveal_letters_one_by_one() -> void:
+	run.start()
+	var maus := _maus_quest()
+	run.coins = 1000
+	for i in 4:
+		assert_true(run.can_hint())
+		assert_eq(run.hint(), maus[i])
+		assert_eq(run.hinted_cells(), maus.slice(0, i + 1))
+	assert_eq(run.coins, 600, "je Buchstabe 100")
+	assert_false(run.can_hint(), "alle Buchstaben gezeigt")
+	assert_eq(run.hint(), RunSession.NO_CELL)
+	assert_eq(run.coins, 600)
+
+
+func test_hint_stays_after_rejected_word() -> void:
+	run.start()
+	var maus := _maus_quest()
+	_column(0, "AST", false)
+	run.coins = 200
+	run.hint()
+	run.submit_path(_column(0, "AST", false))
+	assert_eq(run.hinted_cells(), [maus[0]], "blinkt weiter")
+
+
+func test_hint_resets_when_word_changes() -> void:
+	run.start()
+	var maus := _maus_quest()
+	run.coins = 1000
+	run.hint()
+	run.hint()
+	run.replace(maus[1])
+	assert_eq(run.hinted_cells().size(), 0, "Tipp verfällt")
+	assert_signal_emitted_with_parameters(run, "hint_changed", [[]])
+
+
+func test_new_quest_resets_hint() -> void:
+	run.start()
+	_use_quest(3)
+	_column(0, "AST")
+	run.coins = 100
+	run.hint()
+	run.offer = [Quest.new()]
+	run.quest = null
+	run.choose_quest(0)
+	assert_eq(run.hinted_cells().size(), 0)
+
+
+func test_solution_prefers_hint_word() -> void:
+	run.start()
+	var maus := _maus_quest()
+	run.coins = 100
+	run.hint()
+	assert_eq(run.solution(), maus)
+
+
+func test_solution_without_hint_and_without_match() -> void:
+	run.start()
+	var maus := _maus_quest()
+	assert_eq(run.solution(), maus)
+	run.grid.clear_all()
+	assert_eq(run.solution().size(), 0)
+
+
+func test_solution_available_after_give_up() -> void:
+	run.start()
+	var maus := _maus_quest()
+	run.give_up()
+	assert_eq(run.solution(), maus)
