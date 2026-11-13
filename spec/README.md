@@ -9,8 +9,8 @@ Grundidee: Buchstaben in Hexagons erscheinen im Spielfeld und füllen es von unt
 | Dokument | Thema | Status |
 |---|---|---|
 | [v1-scope.md](v1-scope.md) | **Umfang Version 1:** was drin ist, was nicht, was noch zu klären ist | v1, abgestimmt |
-| [game-rules.md](game-rules.md) | Spielregeln: Buchstaben erscheinen mit 3D-Drehung, Wörter wischen, Füllen von unten, Spielende | Entwurf v2 |
-| [screens.md](screens.md) | Screens und Ablauf: Start, Spiel, Game-Over, Einstellungen | Entwurf v1 |
+| [game-rules.md](game-rules.md) | Spielregeln: ruhiger Level-Modus, Wörter wischen, Wort-Hilfe, Schwierigkeitsstufen, Rundenende | Entwurf v5 |
+| [screens.md](screens.md) | Screens und Ablauf: Start, Spiel, Bilanz, Einstellungen | Entwurf v2 |
 | [look-and-sound.md](look-and-sound.md) | Optik und Ton: Theme-System, Theme „Kosmisch“ (Version 1), 3D-Hexagons aus Rauchglas, Effekte | Entwurf v2 |
 | [architecture.md](architecture.md) | Architektur: Trennung Logik/Darstellung, 3D-Spielfeld mit 2D-Oberfläche, Ordnerstruktur, Tests mit GUT | Entwurf v2 |
 | [tech.md](tech.md) | Technik und Rahmen: Engine, Geräte, Austauschbarkeit, offline, Release, Git | Entwurf v1 |

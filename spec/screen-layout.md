@@ -41,8 +41,9 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - **Punkte** der Runde
   - **Rekord**
   - **Letztes Wort** mit seinen Punkten (z. B. „STERN +100“)
-  - **Tempo-Stufe** (steigt mit dem Takt, siehe [game-rules.md](game-rules.md))
-- **Menü-Knopf:** klein und dezent, zum Abbrechen der Runde (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
+  - **Level** und **Fortschritt** bis zum nächsten Level (z. B. „Level 2 · noch 80 Punkte“)
+  - **Knopf „Neue Buchstaben“** (−20 Punkte)
+- **Menü-Knopf:** klein und dezent, zum Beenden der Runde (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
 
@@ -63,3 +64,4 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v2:** Spielfeld ringsum geschlossen, Innenkante folgt dem Hexagon-Raster (Variante A). Raster 10 × 20 ersetzt durch Hexagon-Raster, Größe offen. Mock-Screenshot v2 ergänzt.
 - **v3:** Rastergröße festgelegt: **6 × 9** (Mock v5), nach Vergleich von 11 × 17, 7 × 11 und 5 × 8.
 - **v3.1:** Inhalt des Infobereichs festgelegt (Punkte, Rekord, letztes Wort, Tempo-Stufe). Menü-Knopf statt Pause-Knopf.
+- **v3.2:** Infobereich: Level mit Fortschritt statt Tempo-Stufe, Knopf „Neue Buchstaben“.

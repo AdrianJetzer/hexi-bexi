@@ -8,26 +8,26 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 
 ### Spiel ([game-rules.md](game-rules.md))
 - Hexagon-Raster **6 × 9**, Hexagons unten flach.
-- Start mit **2 gefüllten Reihen**.
-- Neue Hexagons **erscheinen** im **festen Takt** (3 s, alle 30 s 10 % schneller, min. 0,8 s) mit Fade-in und **3D-Drehung**.
+- Start mit **15 Hexagons**, ruhiger **Level-Modus ohne Zeitdruck** (endlos).
+- **Level-Up** bei wachsenden Punktschwellen (100, 250, 475 …) bringt **10 neue Hexagons** (mit **3D-Drehung**); Mindestlänge steigt (3/4/5); Knopf **„Neue Buchstaben“** (3 für 20 Punkte).
 - Platzwahl: zuerst tiefste Löcher, sonst tiefste freie Plätze, bei Gleichstand zufällig.
 - Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); **5 Schwierigkeitsstufen** (nur Hilfe), Rekord pro Stufe.
-- **Wörter wischen** über Nachbarn, Mindestlänge 3, kein Zurückwischen, Prüfung beim Loslassen.
+- **Wörter wischen** über Nachbarn, kein Zurückwischen, Prüfung beim Loslassen.
 - Gültige Wörter **verschwinden**, Löcher bleiben offen.
 - **Punkte** = 5 · n · (n − 1).
-- **Spielende**, wenn kein Platz mehr frei ist.
+- **Rundenende** durch den Spieler, danach **Bilanz** (Punkte, Level, Rekord).
 - **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen, Eigennamen und Abkürzungen gelten.
 
 ### Screens ([screens.md](screens.md), [screen-layout.md](screen-layout.md))
 - **Startbildschirm** (Titel/Logo, Spielen, Rekord, Einstellungen).
-- **Spiel** mit Infobereich (Punkte, Rekord, letztes Wort, Tempo-Stufe) und Menü-Knopf („Runde beenden?“).
-- **Game-Over** (Punkte, Rekord, neuer Rekord; Nochmal, Menü).
+- **Spiel** mit Infobereich (Punkte, Rekord, letztes Wort, Level mit Fortschritt, Knopf „Neue Buchstaben“) und Menü-Knopf („Runde beenden?“).
+- **Bilanz** (Punkte, erreichtes Level, Rekord, neuer Rekord; Nochmal, Menü).
 - **Einstellungen** (Soundeffekte, Musik, Rekord zurücksetzen).
 - Spiel hält an, wenn die App in den Hintergrund geht.
 
 ### Optik und Ton ([look-and-sound.md](look-and-sound.md))
 - **Ein Theme: Kosmisch / Sci-Fi** (Kristall-Hexagons, Metallrahmen mit Leuchtkante, animierter Nebel).
-- Effekte: Erscheinen + Drehung, Energie-Strahl beim Wischen, Kristalle zerspringen, Wackeln bei ungültigem Wort, Licht erlischt bei Game-Over.
+- Effekte: Erscheinen + Drehung, Energie-Strahl beim Wischen, Kristalle zerspringen, Wackeln bei ungültigem Wort, Licht erlischt beim Rundenende.
 - **Soundeffekte und Musik.**
 
 ### Technik ([tech.md](tech.md))
@@ -49,7 +49,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Pause-Funktion**.
 - **Wörter gezielt säen** (Ausbaustufe der Wort-Hilfe).
 - **Vibration**.
-- **Statistik und Wortliste** auf dem Game-Over-Screen.
+- **Statistik und Wortliste** auf dem Bilanz-Screen.
 - **Öffentliche Veröffentlichung** im Play Store.
 
 ## Muss vor oder während der Umsetzung geklärt werden
@@ -58,11 +58,11 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.
-- Feintuning von Tempo und Vokal-Ausgleich durch Testspiele.
+- Feintuning von Level-Schwellen, Nachschub, Knopf-Kosten und Vokal-Ausgleich durch Testspiele.
 
 ## Fertig, wenn
 
-- Eine Runde lässt sich vom Startbildschirm bis zum Game-Over spielen, alle Regeln oben funktionieren.
+- Eine Runde lässt sich vom Startbildschirm bis zur Bilanz spielen, alle Regeln oben funktionieren.
 - Alle vier Screens und ihre Übergänge funktionieren.
 - Theme Kosmisch mit allen genannten Effekten, Sound und Musik ist eingebaut.
 - Läuft auf einem Android-10-Mittelklasse-Handy flüssig mit 60 fps.

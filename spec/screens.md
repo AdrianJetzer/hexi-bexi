@@ -1,6 +1,6 @@
 # Screens und Ablauf
 
-Status: **Entwurf v1**. Screens und Ablauf für Version 1 abgestimmt; Optik offen.
+Status: **Entwurf v2**. Screens und Ablauf für Version 1 abgestimmt; Optik offen.
 
 ## Übersicht
 
@@ -12,22 +12,21 @@ Status: **Entwurf v1**. Screens und Ablauf für Version 1 abgestimmt; Optik offe
                     ▼         ▼                     │
              ┌──────────┐  ┌───────────────┐        │
              │  Spiel   │  │ Einstellungen │──zurück┘
-             └──┬────┬──┘  └───────────────┘
-   Menü-Knopf   │    │ kein Platz mehr frei
-  „Runde        │    ▼
-   beenden?“ Ja │  ┌─────────────┐
-                │  │  Game-Over  │── Menü ──▶ Startbildschirm
-                │  └──────┬──────┘
-                │         │ Nochmal
-                │         ▼
-                │      neue Runde (Spiel)
-                ▼
-         Startbildschirm
+             └────┬─────┘  └───────────────┘
+   Menü-Knopf     │
+  „Runde beenden?“│ Ja
+                  ▼
+           ┌─────────────┐
+           │   Bilanz    │── Menü ──▶ Startbildschirm
+           └──────┬──────┘
+                  │ Nochmal
+                  ▼
+           neue Runde (Spiel)
 ```
 
 ## Screens in Version 1
 
-Vier Screens: **Startbildschirm, Spiel, Game-Over, Einstellungen.** Keine Anleitung / kein Tutorial in Version 1.
+Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung / kein Tutorial in Version 1.
 
 ### Startbildschirm
 - **Titel/Logo**, schön inszeniert.
@@ -37,16 +36,15 @@ Vier Screens: **Startbildschirm, Spiel, Game-Over, Einstellungen.** Keine Anleit
 
 ### Spiel
 - Aufbau siehe [screen-layout.md](screen-layout.md), Regeln siehe [game-rules.md](game-rules.md).
-- **Keine Pause-Funktion.**
-- **Kleiner Menü-Knopf** zum Abbrechen der Runde:
+- **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
+- **Knopf „Neue Buchstaben“** (3 Hexagons für 20 Punkte, siehe [game-rules.md](game-rules.md)).
+- **Kleiner Menü-Knopf** zum Beenden der Runde:
   - Tippen öffnet die Nachfrage **„Runde beenden?“** mit Ja / Nein.
-  - Solange die Nachfrage offen ist, **hält das Spiel an** und das **Feld ist verdeckt** (kein Schummeln).
-  - **Ja:** Runde endet, zurück zum Startbildschirm. **Nein:** Runde läuft weiter.
-- **App geht in den Hintergrund** (Anruf, App-Wechsel): Das Spiel **hält an** und läuft beim Zurückkehren weiter.
+  - **Ja:** Runde endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
 
-### Game-Over
-- Erscheint, wenn **kein Platz mehr frei** ist.
-- Zeigt **Punkte der Runde** und **Rekord**, mit Hinweis bei **neuem Rekord**.
+### Bilanz (ersetzt „Game-Over“)
+- Erscheint, wenn der Spieler die Runde **beendet** (das Spiel ist endlos, man kann nicht verlieren).
+- Zeigt **Punkte der Runde**, **erreichtes Level** und **Rekord**, mit Hinweis bei **neuem Rekord**.
 - Knöpfe:
   - **Nochmal:** startet sofort eine neue Runde.
   - **Menü:** zurück zum Startbildschirm.
@@ -60,7 +58,8 @@ Vier Screens: **Startbildschirm, Spiel, Game-Over, Einstellungen.** Keine Anleit
 
 ## Rekord
 
-- **Eigener Rekord pro Schwierigkeitsstufe.** Startbildschirm, Infobereich und Game-Over zeigen den Rekord der eingestellten Stufe.
+- **Eigener Rekord pro Schwierigkeitsstufe.** Startbildschirm, Infobereich und Bilanz zeigen den Rekord der eingestellten Stufe.
+- Der Rekord zählt beim **Beenden** der Runde.
 - Wird **lokal auf dem Gerät** gespeichert.
 - Architektur so anlegen, dass **später Online-Ranglisten** möglich sind (Google Play Games, Game Center).
 
@@ -74,3 +73,4 @@ Vier Screens: **Startbildschirm, Spiel, Game-Over, Einstellungen.** Keine Anleit
 
 - **v1:** Screens für Version 1, Ablauf, Menü-Knopf statt Pause, Verhalten im Hintergrund, Game-Over mit Nochmal und Menü, Einstellungen, Rekord lokal.
 - **v1.1:** Schwierigkeitsstufe in den Einstellungen, Rekord pro Stufe.
+- **v2:** Ruhiger Level-Modus: Bilanz statt Game-Over (Rundenende durch den Spieler), Knopf „Neue Buchstaben“, keine Pause und kein Anhalten im Hintergrund nötig.

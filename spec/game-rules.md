@@ -1,10 +1,10 @@
 # Spielregeln
 
-Status: **Entwurf v4**. Kernspiel für Version 1 abgestimmt; ausgefeilte Füll-Logik, Wörterbuch-Quelle und Effekte folgen später.
+Status: **Entwurf v5**. Ruhiger Level-Modus ohne Zeitdruck abgestimmt; Effekte und Feintuning folgen.
 
 ## Grundidee
 
-Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von unten nach oben. Der Spieler findet Wörter in den Buchstaben und räumt das Feld damit frei. Es ist ein Wettlauf: Wörter finden, bevor kein Platz mehr frei ist.
+Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hexagons. Der Spieler findet Wörter, sammelt Punkte und steigt damit Level auf. Bei jedem Level-Up kommt eine Ladung neuer Hexagons dazu, und die Wörter müssen länger werden. Das Spiel ist **endlos**; der Spieler beendet die Runde selbst.
 
 ## Festgelegt
 
@@ -15,7 +15,8 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 - Das Spielfeld ist **geschlossen**; seine Innenkante folgt dem Raster im Zickzack (siehe [screen-layout.md](screen-layout.md)).
 
 ### Spielstart
-- Eine Runde beginnt mit **2 gefüllten Reihen** (12 Hexagons).
+- Eine Runde beginnt mit **15 Hexagons**, verteilt nach der Platzwahl (zuerst die tiefsten Plätze).
+- Start in **Level 1** mit **0 Punkten**.
 
 ### Neue Buchstaben erscheinen
 - Buchstaben **fallen nicht**. Ein neues Hexagon **erscheint direkt an einem freien Platz**.
@@ -34,14 +35,15 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
   2. Sonst auf einen der **tiefsten freien Plätze**, auf dem es nicht schwebt.
   3. Bei mehreren gleich tiefen Plätzen wird **zufällig** gewählt.
 
-### Tempo
-- Neue Hexagons erscheinen in einem **festen Takt**.
-- Nach einem gefundenen Wort wird **nicht** zusätzlich nachgefüllt; Löcher füllt nur der Takt.
-- **Startwerte für Version 1** (alle als Einstellungen, nicht fest im Code, später tunebar):
-  - Start: **alle 3 Sekunden** ein Hexagon.
-  - **Alle 30 Sekunden** wird der Takt **10 % kürzer**.
-  - Kürzester Takt: **0,8 Sekunden**.
-- **Tempo-Stufe** (Anzeige im Infobereich): beginnt bei **1** und steigt bei jeder Verkürzung des Takts um 1.
+### Level und Nachschub (kein Takt)
+- Es gibt **keinen Takt**: Neue Hexagons kommen **nicht nach Zeit**.
+- **Level-Up:** Erreicht die Punktzahl die nächste Schwelle, steigt das Level um 1 und es kommen **auf einen Schlag 10 neue Hexagons** dazu (nacheinander mit Drehung).
+- **Schwellen** wachsen um 50 % je Level: Level 2 ab **100** Punkten, Level 3 ab **250**, Level 4 ab **475**, Level 5 ab **812** … (Schritt k = 100 · 1,5^(k−1), aufsummiert, abgerundet).
+- Das **Level sinkt nie**. Für das nächste Level zählt die aktuelle Punktzahl.
+- **Mindestlänge steigt mit dem Level:** Level 1–2: **3** Buchstaben, Level 3–4: **4**, ab Level 5: **5**.
+- **Knopf „Neue Buchstaben“** (gegen Feststecken): bringt sofort **3 neue Hexagons** und kostet **20 Punkte**. Er ist immer nutzbar; die Punkte fallen nicht unter 0.
+- **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, tut der Knopf nichts (kostet auch nichts).
+- Alle Zahlen sind Spielwerte (tunebar), nicht fest im Code.
 
 ### Buchstabenwahl
 - Grundlage: Zufall, **gewichtet nach Buchstabenhäufigkeit** der Sprache (viel E, N, I, S, R; selten Q, X, Y).
@@ -52,7 +54,7 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 - Wie stark geholfen wird, bestimmt die **Schwierigkeitsstufe**.
 
 ### Schwierigkeitsstufen
-- **5 Stufen**, die **nur die Wort-Hilfe** verändern. Tempo, Startreihen und Punkte sind auf allen Stufen gleich.
+- **5 Stufen**, die **nur die Wort-Hilfe** verändern. Start, Level, Mindestlänge und Punkte sind auf allen Stufen gleich.
 - Der Spieler stellt die Stufe in den **Einstellungen** ein; Standard beim ersten Start: **1 (Sehr leicht)**.
 - Jede Stufe hat ihren **eigenen Rekord**.
 
@@ -72,7 +74,7 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 - Ob das Wort gültig ist, zeigt sich **erst beim Loslassen**, nicht schon während des Wischens.
 - Aufeinanderfolgende Buchstaben müssen **Nachbarn** sein (ein Hexagon hat 6 Nachbarn). Buchstaben **überspringen geht nicht**.
 - Jedes Hexagon darf in einem Wort **nur einmal** vorkommen.
-- **Mindestlänge: 3 Buchstaben.**
+- **Mindestlänge:** je nach Level 3, 4 oder 5 Buchstaben (siehe „Level und Nachschub“).
 - Ein gültiges Wort **verschwindet**, also alle seine Hexagons. Zurück bleiben Löcher.
 - Bei einem **ungültigen** Wort passiert **nichts**. Keine Strafe, das Feld bleibt unverändert.
 
@@ -99,8 +101,10 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
   |---|---|---|---|---|---|---|
   | Punkte | 30 | 60 | 100 | 150 | 210 | 280 |
 
-### Spielende
-- Das Spiel ist verloren, wenn **kein Platz mehr frei** ist.
+### Rundenende
+- Das Spiel ist **endlos**; man kann nicht verlieren.
+- Der Spieler **beendet die Runde selbst** (Menü-Knopf → „Runde beenden?“). Danach zeigt ein **Bilanz-Screen** Punkte, erreichtes Level und Rekord (siehe [screens.md](screens.md)).
+- **Rekord** = höchste Punktzahl einer Runde, **pro Schwierigkeitsstufe**.
 
 ### Sprache
 - **Zuerst Deutsch.**
@@ -112,7 +116,7 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 - **Wörter gezielt säen:** ein Ziel-Wort wählen und seine Buchstaben über die nächsten neuen Hexagons verteilen (Ausbaustufe nach der Vorausschau).
 - **Bessere Liste geläufiger Wörter** (z. B. Häufigkeitsliste mit passender Lizenz).
 - **Feintuning der Stufen** anhand von Testspielen.
-- **Feintuning Tempo:** Werte anhand von Testspielen anpassen.
+- **Feintuning Level:** Schwellen, Nachschub, Mindestlänge und Knopf-Kosten anhand von Testspielen anpassen.
 - **Wörterbuch:** Abdeckung und Größe der aufbereiteten Liste prüfen (Quellen siehe oben).
 - **Effekte und Feedback:** Einblenden, 3D-Drehung, Sound, Wischen, gültige und ungültige Wörter.
 
@@ -125,3 +129,4 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 - **v3:** Kernspiel für Version 1: Start mit 2 Reihen, Platzwahl, Takt (3 s, −10 % alle 30 s, min. 0,8 s), Buchstabenwahl mit Vokal-Ausgleich, Wischen ohne Zurück und ohne Live-Prüfung, gültige Wörter (alle Formen, Eigennamen, Abkürzungen), Punkte 5 · n · (n − 1).
 - **v3.1:** Wörterbuch-Quellen: Trennmuster-Wortliste (MIT) + Wiktionary (CC BY-SA), Aufbereitung und Lizenzpflichten.
 - **v4:** Wort-Hilfe per Vorausschau, „mindestens X Wörter“, 5 Schwierigkeitsstufen (nur Hilfe), Rekord pro Stufe, geläufige Wörter = Trennmuster-Liste.
+- **v5:** Ruhiger Level-Modus: kein Takt; Start mit 15 Hexagons; Level-Up bei wachsenden Punktschwellen bringt 10 Hexagons; Mindestlänge 3/4/5 je Level; Knopf „Neue Buchstaben“ (3 für 20 Punkte); endlos, Rundenende mit Bilanz. Entfällt: Takt, Tempo-Stufe, Verlieren bei vollem Feld.

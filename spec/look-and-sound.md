@@ -49,7 +49,8 @@ Grundanforderung (siehe `../CLAUDE.md`): Das Spiel MUSS gut aussehen und **premi
 | Wischen | **Leuchtender Energie-Strahl** verbindet die gewählten Kristalle; diese leuchten von innen heller |
 | Wort gefunden | **Kristalle zerspringen** in leuchtende Splitter, die verglimmen |
 | Ungültiges Wort | **Kurzes Wackeln** der gewählten Hexagons, rötliches Aufleuchten, dezenter Ton |
-| Game-Over | **Licht erlischt:** Hexagons gehen nacheinander aus, die Leuchtkante des Rahmens erlischt; danach Game-Over-Screen |
+| Level-Up | Ladung neuer Hexagons erscheint **nacheinander** mit Drehung (kleine Verzögerung je Hexagon) |
+| Rundenende | **Licht erlischt:** Hexagons gehen nacheinander aus, die Leuchtkante des Rahmens erlischt; danach Bilanz-Screen |
 
 ## Später festlegen
 
