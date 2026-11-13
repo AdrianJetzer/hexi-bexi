@@ -5,6 +5,8 @@ extends Node3D
 
 ## Die gerade gewischten Buchstaben (leer, wenn nicht gewischt wird).
 signal path_changed(word: String)
+## Antipp-Modus: ein Stein wurde angetippt (z. B. für „Stein ersetzen“).
+signal cell_tapped(cell: Vector2i)
 
 ## Außenradius eines Hexagon-Platzes in Welt-Einheiten.
 const HEX_RADIUS := 1.0
@@ -37,6 +39,10 @@ var _beam_mat: StandardMaterial3D
 var _static: Node3D
 var _burst_frame: int = -1
 var _burst_index: int = 0
+## Antipp-Modus statt Wischen (z. B. „Stein ersetzen“).
+var tap_mode: bool = false
+## Stein, der gerade als Tipp pulsiert.
+var _hint_cell: Vector2i = Vector2i(-1, -1)
 
 ## Verzögerung zwischen Hexagons, die gleichzeitig erscheinen (Sekunden).
 const BURST_DELAY := 0.09
@@ -81,6 +87,8 @@ func setup(p_session: RunSession) -> void:
 	session.word_accepted.connect(_on_word_accepted)
 	session.word_rejected.connect(_on_word_rejected)
 	session.tile_changed.connect(_on_tile_changed)
+	tap_mode = false
+	_hint_cell = Vector2i(-1, -1)
 
 	var g := session.grid
 	var probe := BoardLayout.new(g.cols, g.rows, HEX_RADIUS)
@@ -217,6 +225,8 @@ func _csg_polygon(points: PackedVector2Array, height: float, mat: Material) -> C
 
 
 func _make_tile(cell: Vector2i, letter: String) -> HexTile3D:
+	if cell == _hint_cell:
+		_hint_cell = Vector2i(-1, -1)
 	if _tiles.has(cell):
 		_tiles[cell].queue_free()
 	var tile := HexTile3D.new()
@@ -239,6 +249,20 @@ func _on_tile_spawned(cell: Vector2i, letter: String) -> void:
 ## Ein Stein bekommt einen neuen Buchstaben (Ersetzen, Säen): er dreht sich einmal um.
 func _on_tile_changed(cell: Vector2i, letter: String) -> void:
 	_make_tile(cell, letter).turn(_next_burst_delay())
+
+
+## Tipp: diesen Stein pulsieren lassen, bis wieder gewischt wird.
+func show_hint(cell: Vector2i) -> void:
+	clear_hint()
+	if _tiles.has(cell):
+		_hint_cell = cell
+		_tiles[cell].start_pulse()
+
+
+func clear_hint() -> void:
+	if _tiles.has(_hint_cell):
+		_tiles[_hint_cell].stop_pulse()
+	_hint_cell = Vector2i(-1, -1)
 
 
 func _next_burst_delay() -> float:
@@ -272,8 +296,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Gewischt wird nur, solange ein Auftrag läuft (nicht während der Auftragswahl).
 	if session == null or layout == null or session.is_over or session.quest == null:
 		return
+	if tap_mode:
+		if event is InputEventScreenTouch and event.pressed:
+			var p := screen_to_board(event.position)
+			if is_finite(p.x):
+				var cell := layout.cell_at(Vector2(p.x, p.z), HIT_TOLERANCE)
+				if cell.x >= 0 and session.grid.is_occupied(cell):
+					cell_tapped.emit(cell)
+			get_viewport().set_input_as_handled()
+		return
 	if event is InputEventScreenTouch:
 		if event.pressed and _touch_index == -1:
+			clear_hint()
 			_touch_index = event.index
 			_path.clear()
 			_try_add(event.position)

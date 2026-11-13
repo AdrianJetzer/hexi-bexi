@@ -18,6 +18,7 @@ var _back_nodes: Array[Node3D] = []
 var _flip: float = 1.0
 var _base_position: Vector3 = Vector3.ZERO
 var _shake_tween: Tween
+var _pulse_tween: Tween
 
 ## 0 = Rückseite oben, 1 = Vorderseite oben (für Animationen).
 var flip: float:
@@ -128,6 +129,23 @@ func vanish(delay: float = 0.0) -> void:
 	t.tween_property(self, "scale", Vector3.ONE * 1.15, 0.12)
 	t.chain().tween_property(self, "scale", Vector3.ONE * 0.01, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	t.chain().tween_callback(queue_free)
+
+
+## Pulsieren (Tipp): wechselt zwischen normal und ausgewählt, bis stop_pulse().
+func start_pulse() -> void:
+	stop_pulse()
+	_pulse_tween = create_tween().set_loops()
+	_pulse_tween.tween_callback(set_selected.bind(true))
+	_pulse_tween.tween_interval(0.35)
+	_pulse_tween.tween_callback(set_selected.bind(false))
+	_pulse_tween.tween_interval(0.35)
+
+
+func stop_pulse() -> void:
+	if _pulse_tween:
+		_pulse_tween.kill()
+		_pulse_tween = null
+		set_selected(false)
 
 
 ## Wackeln (ungültiges Wort).

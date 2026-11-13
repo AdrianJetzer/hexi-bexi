@@ -1,7 +1,7 @@
 extends Control
 ## Spiel-Screen im Lauf-Modus (siehe spec/run-mode.md, spec/screens.md):
 ## 3D-Spielfeld mit 2D-Oberfläche (Wort oben, Auftrag, Level, Münzen, Nachfüllen,
-## Aufgeben), Auftragswahl als Ebene über dem Spiel, Bilanz am Ende.
+## Hilfen Nachfüllen, Tauschen, Tipp, Ersetzen, Aufgeben), Auftragswahl als Ebene über dem Spiel, Bilanz am Ende.
 
 const BALANCE: GameBalance = preload("res://data/balance.tres")
 const CURVE: QuestCurve = preload("res://data/quest_curve.tres")
@@ -15,7 +15,7 @@ const GLOW := Color(0.55, 0.95, 1.0)
 ## Anteile der Bildschirmhöhe/-breite für die Bereiche.
 const SIDE_MARGIN := 0.06
 const TOP_AREA := 0.11
-const BOTTOM_AREA := 0.19
+const BOTTOM_AREA := 0.2
 ## Pause, bevor nach einem erfüllten Auftrag die neuen Karten erscheinen (Sekunden).
 const CARDS_DELAY := 1.3
 
@@ -30,6 +30,9 @@ var _progress_label: Label
 var _level_label: Label
 var _coins_label: Label
 var _refill_button: Button
+var _swap_button: Button
+var _hint_button: Button
+var _replace_button: Button
 var _give_up_button: Button
 var _confirm: ColorRect
 var _cards: ColorRect
@@ -66,6 +69,7 @@ func new_run(seed_value: int = -1) -> void:
 	session.word_accepted.connect(_on_word_accepted)
 	session.word_rejected.connect(_on_word_rejected)
 	session.tile_spawned.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
+	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
 	_summary.visible = false
 	_confirm.visible = false
@@ -82,6 +86,7 @@ func _build_ui() -> void:
 	_board = BoardView3D.new()
 	add_child(_board)
 	_board.path_changed.connect(_on_path_changed)
+	_board.cell_tapped.connect(_on_cell_tapped)
 
 	_word_label = _label(64, TEXT)
 	_word_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -96,8 +101,19 @@ func _build_ui() -> void:
 	_coins_label = _label(44, ACCENT)
 	_coins_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
-	_refill_button = _button("", 38)
-	_refill_button.pressed.connect(func() -> void: session.refill())
+	_refill_button = _button("", 30)
+	_refill_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		session.refill())
+	_swap_button = _button("", 30)
+	_swap_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		session.swap())
+	_hint_button = _button("", 30)
+	_hint_button.pressed.connect(_on_hint_pressed)
+	_replace_button = _button("", 30)
+	_replace_button.toggle_mode = true
+	_replace_button.toggled.connect(_set_replace_mode)
 
 	_give_up_button = _button("Aufgeben", 34)
 	_give_up_button.flat = true
@@ -209,8 +225,12 @@ func _relayout() -> void:
 	_level_label.size = Vector2(inner * 0.55, 60)
 	_coins_label.position = Vector2(side + inner * 0.55, info_top + 125)
 	_coins_label.size = Vector2(inner * 0.45, 60)
-	_refill_button.position = Vector2(side + inner * 0.2, info_top + 200)
-	_refill_button.size = Vector2(inner * 0.6, 95)
+	var gap := 16.0
+	var bw := (inner - 3.0 * gap) / 4.0
+	var buttons: Array[Button] = [_refill_button, _swap_button, _hint_button, _replace_button]
+	for i in buttons.size():
+		buttons[i].position = Vector2(side + i * (bw + gap), info_top + 195)
+		buttons[i].size = Vector2(bw, 110)
 	_update_labels()
 
 
@@ -226,8 +246,16 @@ func _update_labels() -> void:
 		_progress_label.text = ""
 	_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
 	_coins_label.text = "Münzen %d" % session.coins
-	_refill_button.text = "+%d Steine  −%d" % [BALANCE.refill_count, session.refill_price()]
+	_refill_button.text = "+%d Steine\n−%d" % [BALANCE.refill_count, session.refill_price()]
 	_refill_button.disabled = not session.can_refill()
+	_swap_button.text = "Tauschen\n−%d" % BALANCE.swap_price
+	_swap_button.disabled = not session.can_swap()
+	_hint_button.text = "Tipp\n−%d" % BALANCE.hint_price
+	_hint_button.disabled = not session.can_hint()
+	_replace_button.text = "Ersetzen\n−%d" % BALANCE.replace_price
+	_replace_button.disabled = not session.can_replace() and not _replace_button.button_pressed
+	if session.is_over or session.quest == null:
+		_set_replace_mode(false)
 
 
 ## Auftrag als Text. started: Zielwort ist bekannt (laufender Auftrag).
@@ -284,6 +312,34 @@ func _on_path_changed(word: String) -> void:
 		_set_word_text(word, TEXT)
 	elif not (_flash_tween and _flash_tween.is_running()):
 		_word_label.text = ""
+
+
+## Antipp-Modus für „Stein ersetzen“ an/aus.
+func _set_replace_mode(on: bool) -> void:
+	if _board.tap_mode == on and _replace_button.button_pressed == on:
+		return
+	_board.tap_mode = on
+	_replace_button.set_pressed_no_signal(on)
+	if on:
+		_board.clear_hint()
+		_set_word_text("Welchen Stein ersetzen?", ACCENT)
+	elif not (_flash_tween and _flash_tween.is_running()):
+		_word_label.text = ""
+
+
+func _on_cell_tapped(cell: Vector2i) -> void:
+	_set_replace_mode(false)
+	session.replace(cell)
+
+
+func _on_hint_pressed() -> void:
+	_set_replace_mode(false)
+	var cell := session.hint()
+	if cell == RunSession.NO_CELL:
+		_flash("Kein passendes Wort im Feld – nachfüllen oder tauschen", TEXT_DIM, 2.0)
+	else:
+		_board.show_hint(cell)
+		_flash("Ein passendes Wort beginnt hier", GLOW, 1.4)
 
 
 func _on_quest_offered(cards: Array[Quest]) -> void:
