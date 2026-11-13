@@ -1,6 +1,6 @@
 # Screens und Ablauf
 
-Status: **Entwurf v3**. Angepasst an den Lauf-Modus ([run-mode.md](run-mode.md)); Optik offen.
+Status: **Entwurf v4**. Angepasst an Lauf-Modus v3 mit Block-Zeilen ([run-mode.md](run-mode.md)); Optik offen.
 
 ## Übersicht
 
@@ -25,7 +25,7 @@ Status: **Entwurf v3**. Angepasst an den Lauf-Modus ([run-mode.md](run-mode.md))
 
 ## Screens in Version 1
 
-Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu die **Auftragswahl** als Ebene über dem Spiel. Keine Anleitung / kein Tutorial in Version 1.
+Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung / kein Tutorial in Version 1.
 
 ### Startbildschirm
 - **Titel/Logo**, schön inszeniert.
@@ -36,19 +36,15 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu die **Auft
 ### Spiel
 - Aufbau siehe [screen-layout.md](screen-layout.md), Regeln siehe [game-rules.md](game-rules.md).
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
-- **Anzeige:** aktueller **Auftrag** mit Fortschritt (z. B. „2 von 3 Wörtern“), **Münzen**, **Level**, **Rekord**.
-- **Hilfe-Knöpfe** mit Preis: **Nachfüllen** (5 Steine, ab 100, steigt), **Tauschen** (5 Steine, 50), **Tipp** (100), **Stein ersetzen** (100). Gesperrt, wenn das Geld nicht reicht; Nachfüllen auch bei vollem Feld oder Auftrag „ohne Nachziehen“.
+- **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
+- **Anzeige:** **Münzen**, **Level**, **Rekord**.
+- **Hilfe-Knöpfe** mit Preis: **Nachfüllen** (5 Steine, ab 100, steigt), **Tauschen** (5 Steine, 50), **Tipp** (100), **Stein ersetzen** (100). Gesperrt, wenn das Geld nicht reicht; Nachfüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
 
-### Auftragswahl
-- Erscheint **vor jedem Level** als Ebene über dem Spielfeld.
-- Zeigt **2 Auftragskarten** mit Belohnung (sicher und riskant); Tippen wählt.
-- Nach einem erfüllten Auftrag: kurze Erfolgsmeldung mit Münzen, dann die nächste Auftragswahl.
-
 ### Bilanz (ersetzt „Game-Over“)
-- Erscheint, wenn der Spieler **aufgibt** oder ein **Zuglimit verfehlt** (dann mit Hinweis „Züge aufgebraucht“). Vorher zeigt das Spielfeld die **Lösung** (blinkende Steine, „Lösung: WORT“); der Knopf **„Weiter“** öffnet die Bilanz.
+- Erscheint, wenn der Spieler **aufgibt**. Vorher zeigt das Spiel die **Lösung** (Steine blinken, Buchstaben fliegen in die Zeile); der Knopf **„Weiter“** öffnet die Bilanz.
 - Zeigt **erreichtes Level** und **Rekord**, mit Hinweis bei **neuem Rekord**.
 - Knöpfe:
   - **Nochmal:** startet sofort einen neuen Lauf ab Level 1.
@@ -79,3 +75,4 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu die **Auft
 - **v1.1:** Schwierigkeitsstufe in den Einstellungen, Rekord pro Stufe.
 - **v2:** Ruhiger Level-Modus: Bilanz statt Game-Over (Rundenende durch den Spieler), Knopf „Neue Buchstaben“, keine Pause und kein Anhalten im Hintergrund nötig.
 - **v3:** Lauf-Modus: Auftragswahl als Ebene über dem Spiel, Anzeige von Auftrag und Münzen, Hilfe-Knöpfe, „Aufgeben“ statt „Runde beenden“, Bilanz mit Level, ein Rekord (höchstes Level), Schwierigkeitsstufe aus den Einstellungen entfernt.
+- **v4:** Auftragswahl entfällt; Auftrag als Block-Zeilen über dem Spielfeld; kein Text für Auftrag und gewischtes Wort; Bilanz nur nach Aufgeben.

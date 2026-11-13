@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v5**, Rastergröße 5 × 9 abgestimmt; Anordnung der Lauf-Anzeigen, Optik und Details offen.
+Status: **Entwurf v6**, Rastergröße 5 × 9 und Auftrags-Zeilen oben abgestimmt; Optik und Details offen.
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -38,12 +38,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
   - **Größe: 5 Spalten × 9 Reihen = 45 Plätze** (siehe [Screenshot](images/ingame-shot-5x9-v1.png)).
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
-- **Inhalt rund ums Spielfeld** (Lauf-Modus, siehe [screens.md](screens.md)); **Anordnung noch offen**:
-  - **Auftrag** mit Fortschritt (z. B. „Wort mit 5 Buchstaben“, „2 von 3“)
-  - **Münzen**
-  - **Level** und **Rekord**
-  - **Hilfe-Knöpfe** mit Preis: Nachfüllen (ab 100), Tauschen (50), Tipp (100), Stein ersetzen (100)
-  - oben weiterhin das gerade gewischte **Wort**
+- **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
+- **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis: Nachfüllen (ab 100), Tauschen (50), Tipp (100), Stein ersetzen (100).
 - **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
@@ -68,3 +64,4 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v3.2:** Infobereich: Level mit Fortschritt statt Tempo-Stufe, Knopf „Neue Buchstaben“.
 - **v4:** Lauf-Modus: Infobereich zeigt Auftrag, Münzen, Level, Rekord und Hilfe-Knöpfe statt Punkte und „Neue Buchstaben“; „Aufgeben“ statt Menü-Knopf. Anordnung offen.
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
+- **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.

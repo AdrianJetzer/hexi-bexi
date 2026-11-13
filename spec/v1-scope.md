@@ -1,6 +1,6 @@
 # Umfang Version 1
 
-Status: **v2, Entwurf**. Zusammenfassung aus den übrigen Spezifikations-Dokumenten; Details stehen dort.
+Status: **v3, Entwurf**. Zusammenfassung aus den übrigen Spezifikations-Dokumenten; Details stehen dort.
 
 Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für **Android-Handys**, als **interner Test** im Play Store.
 
@@ -8,21 +8,20 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 
 ### Spiel ([game-rules.md](game-rules.md))
 - Hexagon-Raster **5 × 9**, Hexagons unten flach.
-- **Lauf-Modus (Roguelike)** ohne Zeitdruck ([run-mode.md](run-mode.md)): Start mit **20 Hexagons** und **0 Münzen**; jedes Level ist ein **Auftrag**, gewählt aus **2 Auftragskarten** (sicher/riskant), zufällig passend zum Level; Feld bleibt zwischen den Levels liegen.
-- Nach jedem gefundenen Wort automatisch **Wortlänge − 1** neue Steine (nicht bei „ohne Nachziehen“).
-- **Münzen** für erfüllte Aufträge; Hilfen: **5 Steine nachfüllen** (100, +25 je Kauf), **5 Steine tauschen** (50), **Tipp** (100 je Buchstabe, gezeigte blinken weiter); **Lösung** beim Ende des Laufs, **Stein ersetzen** (100). Neue Hexagons erscheinen mit **3D-Drehung**.
-- Aufträge „Finde ein bestimmtes Wort“ brauchen **gezieltes Säen** der Buchstaben.
+- **Lauf-Modus (Roguelike)** ohne Zeitdruck ([run-mode.md](run-mode.md)): Start mit **20 Hexagons** und **0 Münzen**; jedes Level ist ein **Auftrag** aus **Block-Zeilen** über dem Spielfeld (1–3 Zeilen, je 3–8 Blöcke), der nächste kommt automatisch; Kurve für Level 1–10, danach Block-Budget; Feld bleibt zwischen den Levels liegen.
+- Nach jedem gefundenen Wort automatisch **Wortlänge − 1** neue Steine; die Buchstaben des Worts **fliegen in die Blöcke**.
+- **Münzen** für gelöste Aufträge (100 + 10 × Level); Hilfen: **5 Steine nachfüllen** (100, +25 je Kauf), **5 Steine tauschen** (50), **Tipp** (100 je Buchstabe, gezeigte blinken weiter); **Lösung** beim Ende des Laufs, **Stein ersetzen** (100). Neue Hexagons erscheinen mit **3D-Drehung**.
 - Platzwahl: zuerst tiefste Löcher, sonst tiefste freie Plätze, bei Gleichstand zufällig.
 - Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); Stärke der Hilfe folgt dem **Level** (5 Hilfe-Stufen, nicht wählbar).
 - **Wörter wischen** über Nachbarn, kein Zurückwischen, Prüfung beim Loslassen.
 - Gültige Wörter **verschwinden**, Löcher bleiben offen.
-- Mindestlänge 3; angenommen werden nur **zum Auftrag passende** Wörter; jeder Versuch ab 3 Buchstaben ist ein **Zug**.
+- Angenommen werden nur Wörter, die **genau** in eine freie Zeile passen; andere wackeln. **Symbole statt Text.**
 - **Ende** nur durch **Aufgeben**, danach **Bilanz** (erreichtes Level, Rekord) und neuer Lauf ab Level 1. **Rekord** = höchstes Level.
 - **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen gelten; Eigennamen und Abkürzungen nicht (außer sie sind auch normale Wörter).
 
 ### Screens ([screens.md](screens.md), [screen-layout.md](screen-layout.md))
 - **Startbildschirm** (Titel/Logo, Spielen, Rekord, Einstellungen).
-- **Spiel** mit Auftragsanzeige, Münzen, Level, Rekord, Hilfe-Knöpfen und Knopf „Aufgeben“; **Auftragswahl** vor jedem Level.
+- **Spiel** mit Auftrags-Zeilen, Münzen, Level, Rekord, Hilfe-Knöpfen und Knopf „Aufgeben“.
 - **Bilanz** (erreichtes Level, Rekord, neuer Rekord; Nochmal, Menü).
 - **Einstellungen** (Soundeffekte, Musik, Rekord zurücksetzen).
 - Spiel hält an, wenn die App in den Hintergrund geht.
@@ -65,7 +64,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 ## Fertig, wenn
 
 - Ein Lauf lässt sich vom Startbildschirm über mehrere Aufträge bis zur Bilanz spielen, alle Regeln oben funktionieren.
-- Alle Screens (inkl. Auftragswahl) und ihre Übergänge funktionieren.
+- Alle Screens und ihre Übergänge funktionieren.
 - Theme Kosmisch mit allen genannten Effekten, Sound und Musik ist eingebaut.
 - Läuft auf einem Android-10-Mittelklasse-Handy flüssig mit 60 fps.
 - Steht als interner Test im Play Store.
@@ -74,3 +73,4 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 
 - **v1:** Umfang aus den Blöcken 1–4 zusammengestellt, inklusive „Fertig, wenn“. Abgestimmt.
 - **v2:** Lauf-Modus statt ruhigem Level-Modus: Aufträge mit Auftragswahl, Münzen und Hilfen, Aufgeben, Rekord = höchstes Level; gezieltes Säen jetzt drin; Lauf-Erweiterungen auf später.
+- **v3:** Aufträge als Block-Zeilen ohne Wahl und ohne Text; Säen, Zuglimit und Auftragswahl entfallen.

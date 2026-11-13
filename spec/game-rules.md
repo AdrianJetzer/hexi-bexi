@@ -1,10 +1,10 @@
 # Spielregeln
 
-Status: **Entwurf v6**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v7**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
-Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchstaben in Hexagons. Jedes Level ist ein **Auftrag** („Finde ein Wort mit 5 Buchstaben“). Erfüllte Aufträge bringen **Münzen**, mit denen man Hilfen kauft (Steine nachfüllen, Steine tauschen, Tipp, Stein ersetzen). Wer nicht weiterkommt, gibt auf, und der nächste **Lauf** beginnt wieder bei Level 1. Alles zum Lauf steht in [run-mode.md](run-mode.md); hier stehen die Regeln des Grundspiels.
+Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchstaben in Hexagons. Jedes Level ist ein **Auftrag**: Zeilen leerer Blöcke über dem Spielfeld zeigen, welche Wortlängen gesucht sind. Gelöste Aufträge bringen **Münzen**, mit denen man Hilfen kauft (Steine nachfüllen, Steine tauschen, Tipp, Stein ersetzen). Wer nicht weiterkommt, gibt auf, und der nächste **Lauf** beginnt wieder bei Level 1. Alles zum Lauf steht in [run-mode.md](run-mode.md); hier stehen die Regeln des Grundspiels.
 
 ## Festgelegt
 
@@ -38,7 +38,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ### Nachschub (kein Takt)
 - Es gibt **keinen Takt**: Neue Hexagons kommen **nicht nach Zeit**.
-- Nach jedem gefundenen Wort kommen automatisch **Wortlänge − 1** neue Hexagons (nicht bei Aufträgen „ohne Nachziehen“, siehe [run-mode.md](run-mode.md)).
+- Nach jedem gefundenen Wort kommen automatisch **Wortlänge − 1** neue Hexagons (siehe [run-mode.md](run-mode.md)).
 - Weitere neue Hexagons gibt es über die **Hilfen** des Lauf-Modus: **5 Steine nachfüllen** (ab 100 Münzen, mit jedem Kauf teurer); **Steine tauschen** und **Stein ersetzen** ändern nur Buchstaben (siehe [run-mode.md](run-mode.md)).
 - **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, ist Nachfüllen gesperrt.
 - Alle Zahlen sind Spielwerte (tunebar), nicht fest im Code.
@@ -71,9 +71,9 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Aufeinanderfolgende Buchstaben müssen **Nachbarn** sein (ein Hexagon hat 6 Nachbarn). Buchstaben **überspringen geht nicht**.
 - Jedes Hexagon darf in einem Wort **nur einmal** vorkommen.
 - **Mindestlänge:** immer **3 Buchstaben**.
-- Angenommen wird nur ein Wort, das **zum Auftrag passt**. Ein echtes, aber nicht passendes Wort wird **abgelehnt**; die Steine bleiben liegen. Jeder Versuch ab 3 Buchstaben ist ein **Zug** (siehe [run-mode.md](run-mode.md)).
+- Angenommen wird nur ein Wort, das **genau so lang** ist wie eine noch freie Block-Zeile des Auftrags. Ein echtes, aber nicht passendes Wort wird **abgelehnt**; die Steine bleiben liegen (siehe [run-mode.md](run-mode.md)).
 - Ein gültiges Wort **verschwindet**, also alle seine Hexagons. Zurück bleiben Löcher.
-- Bei einem **ungültigen** oder **nicht passenden** Wort bleibt das Feld unverändert; die Steine wackeln, oben steht der Grund. Bei Aufträgen mit Zuglimit kostet der Versuch einen Zug.
+- Bei einem **ungültigen** oder **nicht passenden** Wort bleibt das Feld unverändert; die Steine **wackeln**. Kein Text.
 
 ### Gültige Wörter
 - **Alle Wortformen** gelten, auch gebeugte (z. B. STERNE, RANNTE, GROSSEN).
@@ -97,7 +97,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Entfallen.** An ihre Stelle treten Münzen und Level (siehe [run-mode.md](run-mode.md)).
 
 ### Ende eines Laufs
-- Der Lauf endet, wenn der Spieler **aufgibt** (Knopf „Aufgeben“ mit Nachfrage) oder bei einem Auftrag mit **Zuglimit** die Züge aufgebraucht sind, ohne dass er erfüllt ist.
+- Der Lauf endet, wenn der Spieler **aufgibt** (Knopf „Aufgeben“ mit Nachfrage).
 - Danach zeigt ein **Bilanz-Screen** das erreichte Level und den Rekord (siehe [screens.md](screens.md)).
 - **Rekord** = höchstes erreichtes Level (ein Rekord, keine Stufen).
 
@@ -108,7 +108,6 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ## Später festlegen
 
-- **Wörter gezielt säen** (Version 1, für Aufträge „Finde ein bestimmtes Wort“): Steine verwandeln sich bei Auftragsstart zu einer zusammenhängenden Kette mit dem Zielwort (siehe [run-mode.md](run-mode.md)). Wie die Kette unauffällig gewählt wird, legen wir bei der Umsetzung fest.
 - **Bessere Liste geläufiger Wörter** (z. B. Häufigkeitsliste mit passender Lizenz).
 - **Feintuning** von Hilfe-Stufen, Auftrags-Kurve und Münz-Preisen anhand von Testspielen.
 - **Wörterbuch:** Abdeckung und Größe der aufbereiteten Liste prüfen (Quellen siehe oben).
@@ -131,3 +130,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v6.4:** Nur zum Auftrag passende Wörter werden angenommen; jeder Versuch ab 3 Buchstaben ist ein Zug.
 - **v6.5:** Automatisches Auffüllen nach gefundenen Wörtern (Wortlänge − 1).
 - **v6.6:** Eigennamen und Abkürzungen gelten nicht mehr (außer sie sind auch normale Wörter).
+- **v7:** Aufträge als Block-Zeilen (genaue Länge), Ablehnung nur durch Wackeln, Lauf endet nur durch Aufgeben. Entfallen: Zug, Zuglimit, „ohne Nachziehen“, gezieltes Säen.
