@@ -15,8 +15,9 @@ extends Node3D
 @export var flip_demo: float = 0.35
 ## Material-Variante: 0 = Eis-Kristall, 1 = Amethyst, 2 = Rauchglas mit Energiekern
 @export var material_variant: int = 2
-## Rückseite: 0 = milchig weiß, 1 = mattes Rauchglas, 2 = gefrostetes Rauchglas mit schwachem Kern
-@export var back_variant: int = 2
+## Rückseite: 0 = milchig weiß, 1 = mattes Rauchglas, 2 = gefrostetes Rauchglas mit schwachem Kern,
+## 3 = dunkles Metall mit Leuchtring und gravierter Buchstabe
+@export var back_variant: int = 3
 
 const LETTERS := ["S", "T", "E", "R", "N", "A", "H", "U", "K", "R", "E", "L"]
 const CRYSTAL_SHADER := preload("res://shaders/crystal.gdshader")
@@ -72,6 +73,25 @@ func _crystal(v: Dictionary, selected: bool) -> ShaderMaterial:
 ## Rückseite: [Material, Buchstabenfarbe] je nach back_variant.
 func _back() -> Array:
 	match back_variant:
+		3:
+			# Dunkles, gebürstetes Metall
+			var noise := FastNoiseLite.new()
+			noise.frequency = 0.02
+			var tex := NoiseTexture2D.new()
+			tex.width = 256
+			tex.height = 256
+			tex.seamless = true
+			tex.noise = noise
+			var metal := StandardMaterial3D.new()
+			metal.albedo_color = Color(0.16, 0.17, 0.21)
+			metal.metallic = 0.95
+			metal.roughness = 0.38
+			metal.roughness_texture = tex
+			metal.uv1_triplanar = true
+			metal.uv1_scale = Vector3(0.6, 0.6, 18.0)
+			metal.rim_enabled = true
+			metal.rim = 0.3
+			return [metal, Color(0.03, 0.035, 0.05, 0.95), Color(0.55, 0.62, 0.72, 0.45)]
 		1:
 			# Mattes Rauchglas
 			var m := StandardMaterial3D.new()
@@ -185,7 +205,10 @@ func _build_tiles() -> void:
 			var tile := HexTile3D.new()
 			add_child(tile)
 			tile.setup(LETTERS[idx % LETTERS.size()], mesh, hex_radius * (1.0 - gap), thickness,
-				crystal, back[0], v["letter"], v["letter_depth"], back[1])
+				crystal, back[0], v["letter"], v["letter_depth"], back[1],
+				back[2] if back.size() > 2 else Color(0, 0, 0, 0))
+			if back_variant == 3:
+				tile.add_back_decoration(_back_ring())
 			var x := (c - (cols - 1) / 2.0) * 1.5 * hex_radius
 			var z := -((r - (rows - 1) / 2.0) * h + (0.0 if c % 2 == 1 else h / 2.0)) + h * 0.25
 			tile.position = Vector3(x, 0, z)
@@ -198,6 +221,21 @@ func _build_tiles() -> void:
 			elif c == 3 and r == 0:
 				tile.set_flip(0.0)
 			idx += 1
+
+
+## Dünner, leuchtender Sechseck-Ring knapp unter der Rückseite (nach der Drehung oben).
+func _back_ring() -> MeshInstance3D:
+	var r := hex_radius * (1.0 - gap) - bevel
+	var ring := MeshInstance3D.new()
+	ring.mesh = HexMesh.ring(r * 0.86, r * 0.86 - 0.035)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(0.35, 1.3, 1.5)
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	ring.material_override = m
+	ring.position = Vector3(0, -thickness * 0.5 - 0.003, 0)
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return ring
 
 
 func _build_camera() -> void:

@@ -53,6 +53,23 @@ static func build(radius: float = 1.0, thickness: float = 0.35, corner: float = 
 	return sorted
 
 
+## Flacher Sechseck-Ring (unten flach) in der XZ-Ebene, z. B. als Leuchtlinie.
+static func ring(outer: float, inner: float) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_normal(Vector3.UP)
+	for i in 6:
+		var a0 := PI / 3.0 * i
+		var a1 := PI / 3.0 * (i + 1)
+		var o0 := Vector3(cos(a0), 0, sin(a0)) * outer
+		var o1 := Vector3(cos(a1), 0, sin(a1)) * outer
+		var i0 := Vector3(cos(a0), 0, sin(a0)) * inner
+		var i1 := Vector3(cos(a1), 0, sin(a1)) * inner
+		for v in [o0, i0, o1, o1, i0, i1]:
+			st.add_vertex(v)
+	return st.commit()
+
+
 static func _add_surface(mesh: ArrayMesh, centers: PackedVector2Array, outs: PackedVector2Array,
 		rings: Array, from_ring: int, to_ring: int, corner: float, half: float, cap: int) -> void:
 	var st := SurfaceTool.new()

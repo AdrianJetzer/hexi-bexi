@@ -12,6 +12,7 @@ var _front_label: Label3D
 var _back_label: Label3D
 var _front_mat: Material
 var _back_mat: Material
+var _back_nodes: Array[Node3D] = []
 
 
 ## letter_color: Farbe des Buchstabens (Werte > 1 leuchten stärker durch Glow).
@@ -19,7 +20,8 @@ var _back_mat: Material
 func setup(p_letter: String, p_mesh: ArrayMesh, p_radius: float, p_thickness: float,
 		front_mat: Material, back_mat: Material,
 		letter_color: Color = Color(1.0, 0.96, 0.88), letter_depth: float = 0.0,
-		back_letter_color: Color = Color(0.45, 0.5, 0.7, 0.55)) -> void:
+		back_letter_color: Color = Color(0.45, 0.5, 0.7, 0.55),
+		back_letter_outline: Color = Color(0, 0, 0, 0)) -> void:
 	letter = p_letter
 	radius = p_radius
 	thickness = p_thickness
@@ -41,7 +43,20 @@ func setup(p_letter: String, p_mesh: ArrayMesh, p_radius: float, p_thickness: fl
 	# Nach der Drehung soll der Buchstabe nur seitenverkehrt erscheinen, nicht auf dem Kopf.
 	_back_label.double_sided = true
 	_back_label.scale = Vector3(1, -1, 1)
+	if back_letter_outline.a > 0.0:
+		# Heller Rand um einen dunklen Buchstaben wirkt wie eine Gravur.
+		_back_label.outline_size = 10
+		_back_label.outline_modulate = back_letter_outline
+	_back_nodes.append(_back_label)
 	set_flip(1.0)
+
+
+## Zusätzliche Verzierung der Rückseite (z. B. Leuchtring). Wird mit der Rückseite
+## ein- und ausgeblendet. Position im Koordinatensystem des Hexagons.
+func add_back_decoration(node: Node3D) -> void:
+	add_child(node)
+	_back_nodes.append(node)
+	set_flip(1.0 - rotation.z / PI)
 
 
 ## Material der Vorderseite tauschen (z. B. für die Auswahl).
@@ -58,7 +73,8 @@ func set_flip(f: float) -> void:
 	var back_up := f < 0.5
 	_mesh.set_surface_override_material(HexMesh.SURFACE_FRONT, _front_mat)
 	_mesh.set_surface_override_material(HexMesh.SURFACE_BACK, _back_mat if back_up else _front_mat)
-	_back_label.visible = back_up
+	for n in _back_nodes:
+		n.visible = back_up
 	_front_label.visible = not back_up or f > 0.25
 
 
