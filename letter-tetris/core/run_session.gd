@@ -4,10 +4,14 @@ extends RefCounted
 ##
 ## Ablauf: start() → quest_offered → choose_quest(i) → Wörter mit submit_path(cells) →
 ## Auftrag erfüllt: Münzen, Level +1, neue Karten … bis give_up() oder Zuglimit verfehlt.
-## Hilfen: refill() (weitere folgen: Tipp, Stein ersetzen).
+## Hilfen: refill(), hint(), replace(cell).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
+## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Ersetzen, später Säen).
+signal tile_changed(cell: Vector2i, letter: String)
+## Tipp: der erste Stein eines passenden Worts.
+signal hint_shown(cell: Vector2i)
 ## Ein gültiges Wort wurde angenommen; die Hexagons sind entfernt.
 ## counted: hat das Wort für den Auftrag gezählt?
 signal word_accepted(word: String, cells: Array[Vector2i], counted: bool)
@@ -30,6 +34,8 @@ const REASON_NOT_A_WORD := "not_a_word"
 const REASON_NO_QUEST := "no_quest"
 const REASON_RUN_OVER := "run_over"
 
+const NO_CELL := Vector2i(-1, -1)
+
 const REASON_GAVE_UP := "gave_up"
 const REASON_OUT_OF_MOVES := "out_of_moves"
 
@@ -47,6 +53,9 @@ var _dictionary: WordDictionary
 var _generator: QuestGenerator
 var _curve: QuestCurve
 var _picker: LetterPicker
+## Sucht Wörter für den Tipp: zuerst geläufige, dann alle.
+var _hint_finders: Array[WordFinder] = []
+var _hint_rng: RandomNumberGenerator
 var _spawner: Spawner
 var _level: int = 1
 
@@ -72,6 +81,10 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 	_picker = LetterPicker.new(lang, rng_letters)
 	_spawner = Spawner.new(_picker, rng_cells)
 	_generator = QuestGenerator.new(curve, rng_quests)
+	_hint_rng = rng_cells
+	if common_words != null:
+		_hint_finders.append(WordFinder.new(common_words))
+	_hint_finders.append(WordFinder.new(dictionary))
 	if common_words != null:
 		_spawner.finder = WordFinder.new(common_words, balance.min_length, balance.help_max_word_length)
 	grid = HexGrid.new(balance.grid_cols, balance.grid_rows)
@@ -130,6 +143,54 @@ func refill() -> int:
 	return placed
 
 
+## Tipp möglich? (Auftrag aktiv, Münzen reichen)
+func can_hint() -> bool:
+	return not is_over and quest != null and coins >= _balance.hint_price
+
+
+## Hilfe „Tipp“: zeigt den ersten Stein eines Worts, das zum Auftrag passt.
+## Gibt den Platz zurück, oder NO_CELL, wenn kein passendes Wort im Feld liegt
+## (dann kostet es nichts).
+func hint() -> Vector2i:
+	if not can_hint():
+		return NO_CELL
+	var path := _hint_path()
+	if path.is_empty():
+		return NO_CELL
+	_pay(_balance.hint_price)
+	hint_shown.emit(path[0])
+	return path[0]
+
+
+## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)
+func can_replace(cell: Vector2i = NO_CELL) -> bool:
+	if is_over or coins < _balance.replace_price:
+		return false
+	return cell == NO_CELL or grid.is_occupied(cell)
+
+
+## Hilfe „Stein ersetzen“: der Stein bekommt einen neuen Buchstaben (gewählt von der
+## Wort-Hilfe, immer ein anderer als vorher). Gibt den neuen Buchstaben zurück ("" = nicht möglich).
+func replace(cell: Vector2i) -> String:
+	if not can_replace(cell):
+		return ""
+	var old := grid.get_letter(cell)
+	grid.clear(cell)
+	var letter := old
+	# Die Wort-Hilfe kann wieder den alten Buchstaben wählen; dann neu ziehen, zuletzt ohne Hilfe.
+	for i in 20:
+		if i < 10:
+			letter = _picker.pick_for_cell(grid, cell, _spawner.finder, _spawner.difficulty)
+		else:
+			letter = _picker.pick(PackedStringArray())
+		if letter != old:
+			break
+	grid.set_letter(cell, letter)
+	_pay(_balance.replace_price)
+	tile_changed.emit(cell, letter)
+	return letter
+
+
 # --- Wischen ------------------------------------------------------------------------
 
 ## Darf dieser Platz an den bisherigen Weg angehängt werden?
@@ -168,6 +229,21 @@ func submit_path(path: Array[Vector2i]) -> bool:
 
 
 # --- intern --------------------------------------------------------------------------
+
+## Weg eines Worts, das zum Auftrag passt (zufällig unter den gefundenen), oder leer.
+func _hint_path() -> Array[Vector2i]:
+	var q := quest
+	var p_min := q.word_length
+	var p_max := maxi(q.word_length, _balance.help_max_word_length)
+	for finder in _hint_finders:
+		var found := finder.find_paths(grid, p_min, p_max, func(w: String) -> bool: return q.matches(w))
+		if not found.is_empty():
+			var pick: Dictionary = found[_hint_rng.randi_range(0, found.size() - 1)]
+			var path: Array[Vector2i] = []
+			path.assign(pick["path"])
+			return path
+	return []
+
 
 func _check_path(path: Array[Vector2i]) -> String:
 	if is_over:

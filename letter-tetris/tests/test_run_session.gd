@@ -233,3 +233,99 @@ func test_refill_partial_when_little_space() -> void:
 	run.grid.clear(Vector2i(1, 8))
 	assert_eq(run.refill(), 2)
 	assert_eq(run.coins, 0)
+
+
+# --- Tipp ------------------------------------------------------------------------------
+
+func test_hint_needs_coins_and_quest() -> void:
+	run.start()
+	run.coins = 500
+	assert_false(run.can_hint(), "noch kein Auftrag")
+	_use_quest(3)
+	run.coins = 99
+	assert_false(run.can_hint())
+	assert_eq(run.hint(), RunSession.NO_CELL)
+
+
+func test_hint_shows_first_cell_of_matching_word() -> void:
+	run.start()
+	_use_quest(4)
+	var cells := _column(0, "HAUS")
+	_column(2, "AST", false)
+	run.coins = 150
+	var cell := run.hint()
+	assert_eq(cell, cells[0], "nur HAUS hat 4 Buchstaben")
+	assert_eq(run.coins, 50)
+	assert_signal_emitted_with_parameters(run, "hint_shown", [cells[0]])
+
+
+func test_hint_without_matching_word_is_free() -> void:
+	run.start()
+	_use_quest(5)
+	_column(0, "AST")
+	run.coins = 100
+	assert_eq(run.hint(), RunSession.NO_CELL)
+	assert_eq(run.coins, 100)
+	assert_signal_not_emitted(run, "hint_shown")
+
+
+func test_hint_for_specific_word() -> void:
+	run.start()
+	var q := Quest.new()
+	q.kind = Quest.Kind.SPECIFIC_WORD
+	q.word_length = 4
+	run.quest = q.start("MAUS")
+	_column(0, "HAUS")
+	var maus := _column(2, "MAUS", false)
+	run.coins = 100
+	assert_eq(run.hint(), maus[0])
+
+
+# --- Stein ersetzen -----------------------------------------------------------------
+
+func test_replace_gives_new_letter_for_100() -> void:
+	run.start()
+	_use_quest(3)
+	var cells := _column(0, "AST")
+	run.coins = 150
+	var letter := run.replace(cells[1])
+	assert_ne(letter, "")
+	assert_ne(letter, "S", "immer ein anderer Buchstabe")
+	assert_eq(run.grid.get_letter(cells[1]), letter)
+	assert_eq(run.coins, 50)
+	assert_signal_emitted_with_parameters(run, "tile_changed", [cells[1], letter])
+
+
+func test_replace_always_changes_letter() -> void:
+	run.start()
+	_use_quest(3)
+	var cells := _column(0, "EEE")
+	for i in 30:
+		run.coins = 100
+		var before := run.grid.get_letter(cells[0])
+		var after := run.replace(cells[0])
+		assert_ne(after, before)
+
+
+func test_replace_needs_coins_and_tile() -> void:
+	run.start()
+	_use_quest(3)
+	_column(0, "AST")
+	run.coins = 99
+	assert_false(run.can_replace())
+	assert_eq(run.replace(Vector2i(0, 0)), "")
+	run.coins = 500
+	assert_false(run.can_replace(Vector2i(3, 5)), "leerer Platz")
+	assert_eq(run.replace(Vector2i(3, 5)), "")
+	assert_eq(run.coins, 500)
+
+
+func test_replace_works_on_full_board() -> void:
+	run.start()
+	_use_quest(3)
+	for cell in run.grid.all_cells():
+		run.grid.set_letter(cell, "E")
+	run.coins = 100
+	assert_false(run.can_refill())
+	assert_true(run.can_replace(Vector2i(2, 4)))
+	assert_ne(run.replace(Vector2i(2, 4)), "")
