@@ -91,7 +91,24 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ## Laden und Vorteile [später]
 
-Zwischen den Levels ein **Laden**: dauerhafte Vorteile für den laufenden Lauf, bezahlt mit Münzen. Beispiele:
+### Hilfen freischalten und verbessern
+- Jede Hilfe gibt es in einer **einfachen** und einer **starken (+)** Stufe. Ideen:
+
+  | Hilfe | einfach | stark (+) |
+  |---|---|---|
+  | Tauschen | 5 zufällige Steine neu | legt ein passendes Wort, wenn man feststeckt |
+  | Aufräumen | 5 zufällige Steine weg | die 5 am wenigsten hilfreichen weg |
+  | Tipp | erster Buchstabe | Buchstabe für Buchstabe |
+  | Ersetzen | zufälliger neuer Buchstabe | Wunschbuchstabe |
+  | Nachfüllen | 5 Steine | 5 Steine mit stärkerer Wort-Hilfe |
+
+- **Freigeschaltet wird im Lauf** (Roguelike): Jeder Lauf beginnt mit wenigen, einfachen Hilfen; mit Münzen schaltet man weitere Hilfen und die starken Stufen frei. Beim nächsten Lauf beginnt man wieder von vorn.
+- Damit die Knopfleiste nicht überläuft (mehr als 5–6 Knöpfe passen schlecht), evtl. **Slots**: eine begrenzte Zahl Hilfe-Plätze, weitere Plätze freikaufbar.
+- **[offen]** Wo man kauft: direkt am Hilfe-Knopf (z. B. „+“-Symbol, jederzeit, ohne Unterbrechung), in einem Laden zwischen den Levels, oder in einem Laden auf Wunsch. Wichtig: den Spielfluss nicht stören (deshalb sind die Auftragskarten entfallen).
+- **[offen]** Mit welchen Hilfen ein Lauf beginnt, Preise der Freischaltungen.
+
+### Weitere Vorteile
+Dauerhafte Vorteile für den laufenden Lauf, bezahlt mit Münzen. Beispiele:
 - **Vokal-Magnet:** mehr Vokale
 - **+20 % Münzen**
 - **Erster Tipp gratis** (pro Level)
@@ -136,3 +153,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.2:** Aufräumen entfernt immer die 5 am wenigsten hilfreichen Steine (wenigste passende Wörter, dann seltenste Buchstaben), statt nur völlig nutzlose (die gab es mit dem großen Wörterbuch kaum).
 - **v3.3:** Aufräumen lässt immer mindestens so viele Steine liegen, wie das längste gesuchte Wort lang ist.
 - **v3.4:** Tauschen legt ein passendes geläufiges Wort ins Feld, wenn man feststeckt (Kette vorhandener Steine, höchstens 5 Änderungen).
+- **v3.5:** Idee festgehalten: Hilfen in einfacher und starker Stufe, im Lauf freischalten (Roguelike), evtl. Slots; Kauf-Ort offen.
