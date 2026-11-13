@@ -6,7 +6,22 @@ extends Resource
 @export var grid_cols: int = 5
 @export var grid_rows: int = 9
 
-@export_group("Runde")
+@export_group("Lauf")
+## Hexagons zu Beginn eines Laufs.
+@export var run_start_tiles: int = 20
+## Münzen zu Beginn eines Laufs.
+@export var start_coins: int = 0
+## Mindestlänge eines Worts (immer, unabhängig vom Level).
+@export var min_length: int = 3
+## Hilfe „Nachfüllen“: so viele Hexagons für so viele Münzen.
+@export var refill_count: int = 5
+@export var refill_price: int = 50
+## Hilfe „Tipp: Anfangsbuchstabe“.
+@export var hint_price: int = 100
+## Hilfe „Stein ersetzen“.
+@export var replace_price: int = 100
+
+@export_group("Runde (alter Level-Modus)")
 ## Anzahl Hexagons zu Beginn einer Runde.
 @export var start_tiles: int = 15
 

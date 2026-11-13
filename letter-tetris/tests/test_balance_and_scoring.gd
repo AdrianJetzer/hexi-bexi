@@ -33,6 +33,17 @@ func test_balance_file_loads_with_spec_values() -> void:
 	assert_eq(b.points_factor, 5)
 
 
+func test_balance_run_values_from_spec() -> void:
+	var b := load("res://data/balance.tres") as GameBalance
+	assert_eq(b.run_start_tiles, 20)
+	assert_eq(b.start_coins, 0)
+	assert_eq(b.min_length, 3)
+	assert_eq(b.refill_count, 5)
+	assert_eq(b.refill_price, 50)
+	assert_eq(b.hint_price, 100)
+	assert_eq(b.replace_price, 100)
+
+
 func test_thresholds_grow_by_half() -> void:
 	var b := load("res://data/balance.tres") as GameBalance
 	assert_eq(b.threshold(1), 0)
