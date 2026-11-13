@@ -215,17 +215,39 @@ func can_clear() -> bool:
 	return not is_over and quest != null and coins >= _balance.clear_price
 
 
-## Steine, sortiert vom am wenigsten hilfreichen zum hilfreichsten: zuerst nach der Zahl
-## passender Wörter (Längen der freien Zeilen, geläufige Wörter), die durch den Stein führen,
-## bei Gleichstand die seltensten Buchstaben zuerst. Blinkende Tipp-Steine sind ausgenommen.
-func clear_candidates() -> Array[Vector2i]:
+## Das Wort, das Aufräumen stehen lässt: der Weg eines geläufigen Worts, das in eine freie
+## Zeile passt (bevorzugt das blinkende Tipp-Wort). Leer, wenn es keines gibt.
+func protected_word() -> Array[Vector2i]:
+	if _hint_valid():
+		return _hint_cells.duplicate()
+	var none: Array[Vector2i] = []
+	if quest == null:
+		return none
+	var lengths := quest.free_lengths()
+	if lengths.is_empty():
+		return none
+	var q := quest
+	var found := (_hint_finders[0] as WordFinder).find_paths(grid, lengths[0], lengths[lengths.size() - 1],
+			func(w: String) -> bool: return q.matches(w))
+	if found.is_empty():
+		return none
+	var path: Array[Vector2i] = []
+	path.assign(found[_hint_rng.randi_range(0, found.size() - 1)]["path"])
+	return path
+
+
+## Steine, die Aufräumen entfernen darf, vom am wenigsten hilfreichen zum hilfreichsten:
+## zuerst nach der Zahl passender Wörter (Längen der freien Zeilen, geläufige Wörter), die durch
+## den Stein führen, bei Gleichstand die seltensten Buchstaben zuerst. Die Steine von `keep`
+## (geschütztes Wort) und blinkende Tipp-Steine sind ausgenommen.
+func clear_candidates(keep: Array[Vector2i] = []) -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if quest == null:
 		return cells
 	var hinted := hinted_cells()
 	var uses := {}
 	for cell in grid.all_cells():
-		if grid.is_occupied(cell) and not hinted.has(cell):
+		if grid.is_occupied(cell) and not hinted.has(cell) and not keep.has(cell):
 			cells.append(cell)
 			uses[cell] = 0
 	var lengths := quest.free_lengths()
@@ -245,28 +267,19 @@ func clear_candidates() -> Array[Vector2i]:
 	return cells
 
 
-## Wie viele Steine Aufräumen gerade entfernen darf: höchstens clear_count, und es bleiben
-## immer so viele Steine liegen, wie das längste noch gesuchte Wort Buchstaben hat.
-func clear_amount() -> int:
-	if quest == null:
-		return 0
-	var lengths := quest.free_lengths()
-	var keep := lengths[lengths.size() - 1] if not lengths.is_empty() else 0
-	var tiles := grid.size() - grid.free_count()
-	return clampi(tiles - keep, 0, _balance.clear_count)
-
-
-## Hilfe „Aufräumen“: die am wenigsten hilfreichen Steine entfernen (siehe clear_amount()).
-## Gibt die entfernten Plätze zurück (leer = nichts zu entfernen, kostet nichts).
+## Hilfe „Aufräumen“: bis zu clear_count der am wenigsten hilfreichen Steine entfernen, aber nur
+## so, dass danach noch ein passendes geläufiges Wort im Feld liegt (dessen Steine bleiben).
+## Liegt kein solches Wort im Feld, wird nichts entfernt (kostet nichts).
+## Gibt die entfernten Plätze zurück.
 func clear_useless() -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if not can_clear():
 		return cells
-	var amount := clear_amount()
-	if amount <= 0:
+	var keep := protected_word()
+	if keep.is_empty():
 		return cells
-	cells = clear_candidates()
-	cells.resize(mini(cells.size(), amount))
+	cells = clear_candidates(keep)
+	cells.resize(mini(cells.size(), _balance.clear_count))
 	if cells.is_empty():
 		return cells
 	for cell in cells:

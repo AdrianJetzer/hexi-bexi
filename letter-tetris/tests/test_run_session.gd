@@ -542,6 +542,39 @@ func test_clear_removes_least_helpful_first() -> void:
 	assert_signal_emitted_with_parameters(run, "tiles_removed", [removed])
 
 
+func test_clear_keeps_a_fitting_word() -> void:
+	run.start()
+	_use_rows([5])
+	var stern := _column(0, "STERN")
+	_column(2, "QX", false)
+	run.coins = 100
+	var removed := run.clear_useless()
+	assert_eq(removed.size(), 2, "nur QX, STERN bleibt")
+	for cell in stern:
+		assert_true(run.grid.is_occupied(cell))
+	assert_false(run.is_stuck(), "danach lässt sich noch STERN schreiben")
+
+
+func test_clear_does_nothing_when_no_word_fits() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "ATMHA")
+	_column(2, "EEEEE", false)
+	run.coins = 100
+	assert_eq(run.clear_useless().size(), 0)
+	assert_eq(run.coins, 100, "kostet nichts")
+	assert_signal_not_emitted(run, "tiles_removed")
+
+
+func test_clear_with_only_the_word_left_does_nothing() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "STERN")
+	run.coins = 100
+	assert_eq(run.clear_useless().size(), 0)
+	assert_eq(run.coins, 100)
+
+
 func test_clear_always_removes_five_if_possible() -> void:
 	run.start()
 	_use_rows([3])
@@ -549,68 +582,29 @@ func test_clear_always_removes_five_if_possible() -> void:
 	_column(2, "OHR", false)
 	_column(4, "TEE", false)
 	run.coins = 100
-	var removed := run.clear_useless()
-	assert_eq(removed.size(), 5, "auch wenn alle Steine in Wörtern stecken")
+	assert_eq(run.clear_useless().size(), 5, "auch wenn alle Steine in Wörtern stecken")
 	assert_eq(run.coins, 0)
 
 
-func test_clear_keeps_enough_tiles_for_longest_word() -> void:
-	run.start()
-	_use_rows([6])
-	_column(0, "STERNE")
-	_column(2, "QX", false)
-	run.coins = 100
-	assert_eq(run.clear_amount(), 2, "8 Steine, 6 müssen bleiben")
-	var removed := run.clear_useless()
-	assert_eq(removed.size(), 2)
-	assert_eq(run.grid.size() - run.grid.free_count(), 6)
-	assert_eq(run.coins, 0, "kostet trotzdem 100")
-
-
-func test_clear_uses_longest_free_row() -> void:
-	run.start()
-	_use_rows([3, 5])
-	_column(0, "STERNE")
-	_column(2, "QX", false)
-	assert_eq(run.clear_amount(), 3, "8 Steine, 5 müssen bleiben")
-	run.quest.fill(1, "STERN")
-	assert_eq(run.clear_amount(), 5, "nur noch die 3er-Zeile frei")
-
-
-func test_clear_blocked_when_too_few_tiles_is_free() -> void:
-	run.start()
-	_use_rows([5])
-	_column(0, "STERN")
-	run.coins = 100
-	assert_eq(run.clear_amount(), 0)
-	assert_eq(run.clear_useless().size(), 0)
-	assert_eq(run.coins, 100)
-	assert_signal_not_emitted(run, "tiles_removed")
-
-
-func test_clear_on_empty_board_is_free() -> void:
-	run.start()
-	_use_rows([4])
-	run.grid.clear_all()
-	run.coins = 100
-	assert_eq(run.clear_useless().size(), 0)
-	assert_eq(run.coins, 100)
-	assert_signal_not_emitted(run, "tiles_removed")
-
-
-func test_clear_keeps_hint_tiles() -> void:
+func test_clear_keeps_hint_word() -> void:
 	run.start()
 	_use_rows([4])
 	var maus := _column(2, "MAUS")
+	_column(0, "HAUS", false)
 	run.coins = 300
 	run.hint()
-	assert_false(run.clear_candidates().has(maus[0]))
+	var hinted := run.hinted_cells()[0]
+	var word := maus if hinted == maus[0] else _column(0, "HAUS", false)
+	run.clear_useless()
+	for cell in word:
+		assert_true(run.grid.is_occupied(cell), "Tipp-Wort bleibt")
 
 
 func test_clear_needs_coins() -> void:
 	run.start()
 	_use_rows([4])
-	_column(3, "QXYEE")
+	_column(0, "HAUS")
+	_column(3, "QXY", false)
 	run.coins = 99
 	assert_false(run.can_clear())
 	assert_eq(run.clear_useless().size(), 0)
@@ -627,9 +621,9 @@ func test_clear_with_real_dictionary_is_fast_enough() -> void:
 	q.rows = PackedInt32Array([3, 5, 8])
 	r.quest = q.start()
 	var t0 := Time.get_ticks_msec()
-	var ranked := r.clear_candidates()
+	var ranked := r.clear_candidates(r.protected_word())
 	var ms := Time.get_ticks_msec() - t0
-	gut.p("Aufräumen bei %d Steinen: %d ms" % [ranked.size(), ms])
+	gut.p("Aufräumen bei %d Kandidaten: %d ms" % [ranked.size(), ms])
 	assert_lt(ms, 2000)
 
 
