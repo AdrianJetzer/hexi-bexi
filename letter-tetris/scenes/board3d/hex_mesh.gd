@@ -96,7 +96,9 @@ static func _vertex(centers: PackedVector2Array, outs: PackedVector2Array, ring:
 	return [pos, normal]
 
 
+## Godot zeigt Dreiecke im Uhrzeigersinn als Vorderseite; die Punkte werden
+## deshalb in umgekehrter Reihenfolge übergeben.
 static func _tri(st: SurfaceTool, a: Array, b: Array, c: Array) -> void:
-	for v in [a, b, c]:
+	for v in [a, c, b]:
 		st.set_normal(v[1])
 		st.add_vertex(v[0])
