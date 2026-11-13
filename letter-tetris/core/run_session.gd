@@ -8,7 +8,7 @@ extends RefCounted
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
-## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Ersetzen, später Säen).
+## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Ersetzen, Säen).
 signal tile_changed(cell: Vector2i, letter: String)
 ## Tipp: der erste Stein eines passenden Worts.
 signal hint_shown(cell: Vector2i)
@@ -56,6 +56,9 @@ var _picker: LetterPicker
 ## Sucht Wörter für den Tipp: zuerst geläufige, dann alle.
 var _hint_finders: Array[WordFinder] = []
 var _hint_rng: RandomNumberGenerator
+var _seeder: WordSeeder
+## Woraus Zielwörter gezogen werden (geläufige Wörter, sonst alle).
+var _target_words: WordDictionary
 var _spawner: Spawner
 var _level: int = 1
 
@@ -82,6 +85,8 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 	_spawner = Spawner.new(_picker, rng_cells)
 	_generator = QuestGenerator.new(curve, rng_quests)
 	_hint_rng = rng_cells
+	_seeder = WordSeeder.new(rng_quests)
+	_target_words = common_words if common_words != null else dictionary
 	if common_words != null:
 		_hint_finders.append(WordFinder.new(common_words))
 	_hint_finders.append(WordFinder.new(dictionary))
@@ -111,7 +116,15 @@ func start() -> void:
 func choose_quest(index: int) -> bool:
 	if is_over or quest != null or index < 0 or index >= offer.size():
 		return false
-	quest = offer[index].start()
+	var chosen := offer[index]
+	var target := ""
+	if chosen.kind == Quest.Kind.SPECIFIC_WORD:
+		target = _seed_target(chosen.word_length)
+		if target == "":
+			# Kein Zielwort möglich (sehr selten): stattdessen ein Wort dieser Länge suchen.
+			chosen = chosen.duplicate() as Quest
+			chosen.kind = Quest.Kind.LENGTH
+	quest = chosen.start(target)
 	offer.clear()
 	quest_started.emit(quest)
 	return true
@@ -229,6 +242,24 @@ func submit_path(path: Array[Vector2i]) -> bool:
 
 
 # --- intern --------------------------------------------------------------------------
+
+## Zielwort wählen und als Kette ins Feld legen. Gibt das Wort zurück ("" = nicht möglich).
+func _seed_target(length: int) -> String:
+	for attempt in 5:
+		var word := _seeder.pick_target(_target_words, _dictionary, length)
+		if word == "":
+			return ""
+		var changes := _seeder.seed(grid, word)
+		if changes.is_empty():
+			continue
+		for ch in changes:
+			if ch["new"]:
+				tile_spawned.emit(ch["cell"], ch["letter"])
+			else:
+				tile_changed.emit(ch["cell"], ch["letter"])
+		return word
+	return ""
+
 
 ## Weg eines Worts, das zum Auftrag passt (zufällig unter den gefundenen), oder leer.
 func _hint_path() -> Array[Vector2i]:

@@ -329,3 +329,34 @@ func test_replace_works_on_full_board() -> void:
 	assert_false(run.can_refill())
 	assert_true(run.can_replace(Vector2i(2, 4)))
 	assert_ne(run.replace(Vector2i(2, 4)), "")
+
+
+# --- Bestimmtes Wort (Säen) -------------------------------------------------------------
+
+func test_specific_word_quest_seeds_target() -> void:
+	run.start()
+	var q := Quest.new()
+	q.kind = Quest.Kind.SPECIFIC_WORD
+	q.word_length = 5
+	run.offer = [q]
+	assert_true(run.choose_quest(0))
+	assert_eq(run.quest.target, "STERN", "einziges Wort mit 5 Buchstaben")
+	var finder := WordFinder.new(dict)
+	var found := finder.find_paths(run.grid, 5, 5, func(w: String) -> bool: return w == "STERN")
+	assert_false(found.is_empty(), "Zielwort liegt wischbar im Feld")
+	var path: Array[Vector2i] = []
+	path.assign(found[0]["path"])
+	assert_true(run.submit_path(path))
+	assert_eq(run.level(), 2, "Auftrag erfüllt")
+
+
+func test_seeding_emits_tile_changes() -> void:
+	run.start()
+	var q := Quest.new()
+	q.kind = Quest.Kind.SPECIFIC_WORD
+	q.word_length = 6
+	run.offer = [q]
+	run.choose_quest(0)
+	assert_eq(run.quest.target, "STERNE")
+	var changed := get_signal_parameters(run, "tile_changed") != null
+	assert_true(changed, "Steine verwandeln sich")

@@ -112,6 +112,21 @@ func has_prefix(prefix: String) -> bool:
 	return false
 
 
+## Anzahl Wörter mit genau dieser Länge.
+func count_of_length(length: int) -> int:
+	if length <= 0 or length >= _counts.size():
+		return 0
+	return _counts[length]
+
+
+## Das index-te Wort (alphabetisch) mit dieser Länge, z. B. für eine Zufallsauswahl.
+func word_at(length: int, index: int) -> String:
+	if index < 0 or index >= count_of_length(length):
+		return ""
+	var start := _offsets[length] + index * length
+	return _data.slice(start, start + length).get_string_from_ascii()
+
+
 ## Längste gespeicherte Wortlänge.
 func max_length() -> int:
 	return _counts.size() - 1
