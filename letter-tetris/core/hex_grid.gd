@@ -104,6 +104,36 @@ func are_neighbors(a: Vector2i, b: Vector2i) -> bool:
 	return is_inside(a) and is_inside(b) and neighbors(a).has(b)
 
 
+var _distances: PackedInt32Array = PackedInt32Array()
+
+
+## Anzahl Schritte über Nachbarn von a nach b (unabhängig davon, ob belegt).
+func distance(a: Vector2i, b: Vector2i) -> int:
+	if _distances.is_empty():
+		_compute_distances()
+	return _distances[_index(a) * size() + _index(b)]
+
+
+func _compute_distances() -> void:
+	var n := size()
+	_distances.resize(n * n)
+	_distances.fill(-1)
+	for start in all_cells():
+		var si := _index(start)
+		var queue: Array[Vector2i] = [start]
+		_distances[si * n + si] = 0
+		var head := 0
+		while head < queue.size():
+			var cur := queue[head]
+			head += 1
+			var d := _distances[si * n + _index(cur)]
+			for nb in neighbors(cur):
+				var k := si * n + _index(nb)
+				if _distances[k] < 0:
+					_distances[k] = d + 1
+					queue.append(nb)
+
+
 # --- Höhe, Löcher, Plätze für neue Hexagons ----------------------------------
 
 ## Vergleichswert für die sichtbare Höhe: kleiner = tiefer.
