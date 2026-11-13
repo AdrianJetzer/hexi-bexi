@@ -35,6 +35,11 @@ var _mat_back: Material
 var _beam: MeshInstance3D
 var _beam_mat: StandardMaterial3D
 var _static: Node3D
+var _burst_frame: int = -1
+var _burst_index: int = 0
+
+## Verzögerung zwischen Hexagons, die gleichzeitig erscheinen (Sekunden).
+const BURST_DELAY := 0.09
 
 
 func _ready() -> void:
@@ -225,7 +230,14 @@ func _make_tile(cell: Vector2i, letter: String) -> HexTile3D:
 # --- Signale der Spiellogik ------------------------------------------------------
 
 func _on_tile_spawned(cell: Vector2i, letter: String) -> void:
-	_make_tile(cell, letter).appear()
+	# Mehrere Hexagons im selben Moment (Start, Level-Up, Knopf) erscheinen nacheinander.
+	var frame := Engine.get_process_frames()
+	if frame == _burst_frame:
+		_burst_index += 1
+	else:
+		_burst_frame = frame
+		_burst_index = 0
+	_make_tile(cell, letter).appear(_burst_index * BURST_DELAY)
 
 
 func _on_word_accepted(_word: String, cells: Array[Vector2i], _points: int) -> void:
@@ -246,7 +258,7 @@ func _on_word_rejected(cells: Array[Vector2i], _reason: String) -> void:
 # --- Wischen --------------------------------------------------------------------
 
 func _unhandled_input(event: InputEvent) -> void:
-	if session == null or layout == null or session.is_over or session.is_paused:
+	if session == null or layout == null or session.is_over:
 		return
 	if event is InputEventScreenTouch:
 		if event.pressed and _touch_index == -1:

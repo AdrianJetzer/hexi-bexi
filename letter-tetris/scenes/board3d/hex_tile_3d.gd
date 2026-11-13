@@ -97,10 +97,12 @@ func place(at: Vector3) -> void:
 
 
 ## Erscheinen: kurz aufploppen mit Rückseite oben, dann echte Drehung auf die Vorderseite.
-func appear() -> void:
+func appear(delay: float = 0.0) -> void:
 	set_flip(0.0)
 	scale = Vector3.ONE * 0.01
 	var t := create_tween()
+	if delay > 0.0:
+		t.tween_interval(delay)
 	t.tween_property(self, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	t.tween_interval(0.35)
 	t.tween_property(self, "flip", 1.0, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
