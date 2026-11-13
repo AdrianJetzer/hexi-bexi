@@ -37,7 +37,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu die **Auft
 - Aufbau siehe [screen-layout.md](screen-layout.md), Regeln siehe [game-rules.md](game-rules.md).
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Anzeige:** aktueller **Auftrag** mit Fortschritt (z. B. „2 von 3 Wörtern“), **Münzen**, **Level**, **Rekord**.
-- **Hilfe-Knöpfe** mit Preis: **Nachfüllen** (5 Steine, 50), **Tipp** (100), **Stein ersetzen** (100). Gesperrt, wenn das Geld nicht reicht; Nachfüllen auch bei vollem Feld oder Auftrag „ohne Nachziehen“.
+- **Hilfe-Knöpfe** mit Preis: **Nachfüllen** (5 Steine, ab 100, steigt), **Tauschen** (5 Steine, 50), **Tipp** (100), **Stein ersetzen** (100). Gesperrt, wenn das Geld nicht reicht; Nachfüllen auch bei vollem Feld oder Auftrag „ohne Nachziehen“.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.

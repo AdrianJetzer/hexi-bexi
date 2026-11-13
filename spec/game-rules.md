@@ -4,7 +4,7 @@ Status: **Entwurf v6**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetz
 
 ## Grundidee
 
-Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchstaben in Hexagons. Jedes Level ist ein **Auftrag** („Finde ein Wort mit 5 Buchstaben“). Erfüllte Aufträge bringen **Münzen**, mit denen man Hilfen kauft (Steine nachfüllen, Tipp, Stein ersetzen). Wer nicht weiterkommt, gibt auf, und der nächste **Lauf** beginnt wieder bei Level 1. Alles zum Lauf steht in [run-mode.md](run-mode.md); hier stehen die Regeln des Grundspiels.
+Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchstaben in Hexagons. Jedes Level ist ein **Auftrag** („Finde ein Wort mit 5 Buchstaben“). Erfüllte Aufträge bringen **Münzen**, mit denen man Hilfen kauft (Steine nachfüllen, Steine tauschen, Tipp, Stein ersetzen). Wer nicht weiterkommt, gibt auf, und der nächste **Lauf** beginnt wieder bei Level 1. Alles zum Lauf steht in [run-mode.md](run-mode.md); hier stehen die Regeln des Grundspiels.
 
 ## Festgelegt
 
@@ -38,7 +38,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ### Nachschub (kein Takt)
 - Es gibt **keinen Takt**: Neue Hexagons kommen **nicht nach Zeit**.
-- Neue Hexagons gibt es nur über die **Hilfen** des Lauf-Modus: **5 Steine nachfüllen** für 50 Münzen, **Stein ersetzen** für 100 Münzen (siehe [run-mode.md](run-mode.md)).
+- Neue Hexagons gibt es nur über die **Hilfen** des Lauf-Modus: **5 Steine nachfüllen** (ab 100 Münzen, mit jedem Kauf teurer); **Steine tauschen** und **Stein ersetzen** ändern nur Buchstaben (siehe [run-mode.md](run-mode.md)).
 - **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, ist Nachfüllen gesperrt.
 - Alle Zahlen sind Spielwerte (tunebar), nicht fest im Code.
 
@@ -124,3 +124,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v6:** Lauf-Modus (siehe [run-mode.md](run-mode.md)): Start mit 20 Hexagons und 0 Münzen; Feld bleibt zwischen Levels; Nachschub nur über gekaufte Hilfen; Mindestlänge immer 3, jedes gültige Wort zählt als Zug; Hilfe-Stufe folgt dem Level; Ende nur durch Aufgeben; Rekord = höchstes Level. Entfällt: Punkte, Punkt-Schwellen, +10 Hexagons pro Level, Knopf „Neue Buchstaben“, wählbare Schwierigkeitsstufen.
 - **v6.1:** Raster 5 × 9 (45 Plätze).
 - **v6.2:** Lauf endet auch, wenn ein Zuglimit verfehlt wird.
+- **v6.3:** Preise der Hilfen siehe run-mode.md v2.5.

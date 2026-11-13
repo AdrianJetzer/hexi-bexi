@@ -194,14 +194,35 @@ func test_refill_needs_coins() -> void:
 	assert_eq(run.refill(), 0)
 
 
-func test_refill_brings_5_tiles_for_50() -> void:
+func test_refill_brings_5_tiles_for_100() -> void:
 	run.start()
 	_use_quest(3)
 	run.coins = 120
 	var before := _occupied()
 	assert_eq(run.refill(), 5)
 	assert_eq(_occupied(), before + 5)
-	assert_eq(run.coins, 70)
+	assert_eq(run.coins, 20)
+
+
+func test_refill_price_rises_per_purchase() -> void:
+	run.start()
+	_use_quest(3)
+	run.coins = 1000
+	assert_eq(run.refill_price(), 100)
+	run.refill()
+	assert_eq(run.refill_price(), 125)
+	run.refill()
+	assert_eq(run.refill_price(), 150)
+	assert_eq(run.coins, 1000 - 100 - 125)
+
+
+func test_refill_price_resets_with_new_run() -> void:
+	run.start()
+	_use_quest(3)
+	run.coins = 1000
+	run.refill()
+	run.start()
+	assert_eq(run.refill_price(), 100)
 
 
 func test_refill_blocked_by_no_refill_quest() -> void:
@@ -226,7 +247,7 @@ func test_refill_blocked_on_full_board() -> void:
 func test_refill_partial_when_little_space() -> void:
 	run.start()
 	_use_quest(3)
-	run.coins = 50
+	run.coins = 100
 	for cell in run.grid.all_cells():
 		run.grid.set_letter(cell, "E")
 	run.grid.clear(Vector2i(0, 8))
@@ -360,3 +381,52 @@ func test_seeding_emits_tile_changes() -> void:
 	assert_eq(run.quest.target, "STERNE")
 	var changed := get_signal_parameters(run, "tile_changed") != null
 	assert_true(changed, "Steine verwandeln sich")
+
+
+# --- Tauschen ----------------------------------------------------------------------------
+
+func test_swap_changes_5_tiles_for_50() -> void:
+	run.start()
+	_use_quest(3)
+	for cell in run.grid.all_cells():
+		run.grid.set_letter(cell, "E")
+	run.coins = 80
+	var cells := run.swap()
+	assert_eq(cells.size(), 5)
+	assert_eq(run.coins, 30)
+	assert_eq(run.grid.free_count(), 0, "Feld bleibt gleich voll")
+	for cell in cells:
+		assert_ne(run.grid.get_letter(cell), "E", "neuer Buchstabe")
+	assert_signal_emit_count(run, "tile_changed", 5)
+
+
+func test_swap_allowed_without_refill_and_on_full_board() -> void:
+	run.start()
+	_use_quest(3, 1, 0, true)
+	for cell in run.grid.all_cells():
+		run.grid.set_letter(cell, "E")
+	run.coins = 50
+	assert_false(run.can_refill())
+	assert_true(run.can_swap())
+
+
+func test_swap_with_few_tiles_swaps_all() -> void:
+	run.start()
+	_use_quest(3)
+	var cells := _column(0, "AST")
+	run.coins = 50
+	var swapped := run.swap()
+	assert_eq(swapped.size(), 3)
+	for cell in cells:
+		assert_true(swapped.has(cell))
+
+
+func test_swap_needs_coins_and_tiles() -> void:
+	run.start()
+	_use_quest(3)
+	run.coins = 49
+	assert_false(run.can_swap())
+	assert_eq(run.swap().size(), 0)
+	run.grid.clear_all()
+	run.coins = 100
+	assert_false(run.can_swap(), "keine Steine")

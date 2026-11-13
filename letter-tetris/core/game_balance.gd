@@ -15,7 +15,12 @@ extends Resource
 @export var min_length: int = 3
 ## Hilfe „Nachfüllen“: so viele Hexagons für so viele Münzen.
 @export var refill_count: int = 5
-@export var refill_price: int = 50
+@export var refill_price: int = 100
+## Jeder weitere Kauf im selben Lauf kostet so viel mehr.
+@export var refill_price_step: int = 25
+## Hilfe „Tauschen“: so viele zufällige Steine bekommen neue Buchstaben.
+@export var swap_count: int = 5
+@export var swap_price: int = 50
 ## Hilfe „Tipp: Anfangsbuchstabe“.
 @export var hint_price: int = 100
 ## Hilfe „Stein ersetzen“.

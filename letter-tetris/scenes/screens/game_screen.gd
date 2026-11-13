@@ -226,7 +226,7 @@ func _update_labels() -> void:
 		_progress_label.text = ""
 	_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
 	_coins_label.text = "Münzen %d" % session.coins
-	_refill_button.text = "+%d Steine  −%d" % [BALANCE.refill_count, BALANCE.refill_price]
+	_refill_button.text = "+%d Steine  −%d" % [BALANCE.refill_count, session.refill_price()]
 	_refill_button.disabled = not session.can_refill()
 
 

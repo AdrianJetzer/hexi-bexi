@@ -9,7 +9,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 ### Spiel ([game-rules.md](game-rules.md))
 - Hexagon-Raster **5 × 9**, Hexagons unten flach.
 - **Lauf-Modus (Roguelike)** ohne Zeitdruck ([run-mode.md](run-mode.md)): Start mit **20 Hexagons** und **0 Münzen**; jedes Level ist ein **Auftrag**, gewählt aus **2 Auftragskarten** (sicher/riskant), zufällig passend zum Level; Feld bleibt zwischen den Levels liegen.
-- **Münzen** für erfüllte Aufträge; Hilfen: **5 Steine nachfüllen** (50), **Tipp Anfangsbuchstabe** (100), **Stein ersetzen** (100). Neue Hexagons erscheinen mit **3D-Drehung**.
+- **Münzen** für erfüllte Aufträge; Hilfen: **5 Steine nachfüllen** (100, +25 je Kauf), **5 Steine tauschen** (50), **Tipp Anfangsbuchstabe** (100), **Stein ersetzen** (100). Neue Hexagons erscheinen mit **3D-Drehung**.
 - Aufträge „Finde ein bestimmtes Wort“ brauchen **gezieltes Säen** der Buchstaben.
 - Platzwahl: zuerst tiefste Löcher, sonst tiefste freie Plätze, bei Gleichstand zufällig.
 - Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); Stärke der Hilfe folgt dem **Level** (5 Hilfe-Stufen, nicht wählbar).

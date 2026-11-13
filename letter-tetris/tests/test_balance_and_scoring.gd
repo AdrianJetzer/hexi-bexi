@@ -39,7 +39,10 @@ func test_balance_run_values_from_spec() -> void:
 	assert_eq(b.start_coins, 0)
 	assert_eq(b.min_length, 3)
 	assert_eq(b.refill_count, 5)
-	assert_eq(b.refill_price, 50)
+	assert_eq(b.refill_price, 100)
+	assert_eq(b.refill_price_step, 25)
+	assert_eq(b.swap_count, 5)
+	assert_eq(b.swap_price, 50)
 	assert_eq(b.hint_price, 100)
 	assert_eq(b.replace_price, 100)
 

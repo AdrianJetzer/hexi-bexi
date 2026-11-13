@@ -4,7 +4,7 @@ extends RefCounted
 ##
 ## Ablauf: start() → quest_offered → choose_quest(i) → Wörter mit submit_path(cells) →
 ## Auftrag erfüllt: Münzen, Level +1, neue Karten … bis give_up() oder Zuglimit verfehlt.
-## Hilfen: refill(), hint(), replace(cell).
+## Hilfen: refill(), swap(), hint(), replace(cell).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -61,6 +61,8 @@ var _seeder: WordSeeder
 var _target_words: WordDictionary
 var _spawner: Spawner
 var _level: int = 1
+## Wie oft in diesem Lauf nachgefüllt wurde (Preis steigt).
+var _refills: int = 0
 
 
 ## seed_value < 0: zufällig; sonst reproduzierbar (für Tests).
@@ -105,6 +107,7 @@ func start() -> void:
 	is_over = false
 	quest = null
 	_level = 1
+	_refills = 0
 	_apply_help()
 	_spawn(_balance.run_start_tiles)
 	coins_changed.emit(coins)
@@ -141,9 +144,14 @@ func level() -> int:
 
 # --- Hilfen ---------------------------------------------------------------------------
 
+## Aktueller Preis fürs Nachfüllen (steigt mit jedem Kauf im Lauf).
+func refill_price() -> int:
+	return _balance.refill_price + _refills * _balance.refill_price_step
+
+
 ## Nachfüllen möglich? (Münzen reichen, Platz frei, Auftrag erlaubt es)
 func can_refill() -> bool:
-	return (not is_over and coins >= _balance.refill_price and grid.free_count() > 0
+	return (not is_over and coins >= refill_price() and grid.free_count() > 0
 			and not (quest != null and quest.no_refill))
 
 
@@ -151,9 +159,37 @@ func can_refill() -> bool:
 func refill() -> int:
 	if not can_refill():
 		return 0
+	var price := refill_price()
 	var placed := _spawn(_balance.refill_count)
-	_pay(_balance.refill_price)
+	_refills += 1
+	_pay(price)
 	return placed
+
+
+## Tauschen möglich? (Münzen reichen, Steine im Feld). Auch bei vollem Feld und „ohne Nachziehen“.
+func can_swap() -> bool:
+	return not is_over and coins >= _balance.swap_price and grid.free_count() < grid.size()
+
+
+## Hilfe „Tauschen“: einige zufällige Steine bekommen neue Buchstaben (Wort-Hilfe).
+## Gibt die getauschten Plätze zurück.
+func swap() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if not can_swap():
+		return cells
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell):
+			cells.append(cell)
+	for i in range(cells.size() - 1, 0, -1):
+		var j := _hint_rng.randi_range(0, i)
+		var t := cells[i]
+		cells[i] = cells[j]
+		cells[j] = t
+	cells.resize(mini(cells.size(), _balance.swap_count))
+	for cell in cells:
+		tile_changed.emit(cell, _new_letter(cell))
+	_pay(_balance.swap_price)
+	return cells
 
 
 ## Tipp möglich? (Auftrag aktiv, Münzen reichen)
@@ -187,6 +223,14 @@ func can_replace(cell: Vector2i = NO_CELL) -> bool:
 func replace(cell: Vector2i) -> String:
 	if not can_replace(cell):
 		return ""
+	var letter := _new_letter(cell)
+	_pay(_balance.replace_price)
+	tile_changed.emit(cell, letter)
+	return letter
+
+
+## Neuer Buchstabe für einen belegten Platz (Wort-Hilfe, immer ein anderer als vorher).
+func _new_letter(cell: Vector2i) -> String:
 	var old := grid.get_letter(cell)
 	grid.clear(cell)
 	var letter := old
@@ -199,8 +243,6 @@ func replace(cell: Vector2i) -> String:
 		if letter != old:
 			break
 	grid.set_letter(cell, letter)
-	_pay(_balance.replace_price)
-	tile_changed.emit(cell, letter)
 	return letter
 
 

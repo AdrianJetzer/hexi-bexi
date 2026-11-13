@@ -42,7 +42,7 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - **Auftrag** mit Fortschritt (z. B. „Wort mit 5 Buchstaben“, „2 von 3“)
   - **Münzen**
   - **Level** und **Rekord**
-  - **Hilfe-Knöpfe** mit Preis: Nachfüllen (50), Tipp (100), Stein ersetzen (100)
+  - **Hilfe-Knöpfe** mit Preis: Nachfüllen (ab 100), Tauschen (50), Tipp (100), Stein ersetzen (100)
   - oben weiterhin das gerade gewischte **Wort**
 - **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 

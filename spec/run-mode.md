@@ -92,7 +92,8 @@ Alle **5 Levels** ein schwerer Auftrag mit großer Belohnung, z. B. „Finde HIM
 | Auftrag erfüllt | **+100** (je nach Auftrag mehr, siehe Auftragskarten) |
 | Bonus: Auftrag mit wenigen Zügen [später] | +50 |
 | Langes Wort nebenbei, ab 6 Buchstaben [später] | +5 |
-| **5 Steine nachfüllen** | **−50** |
+| **5 Steine nachfüllen** | **−100**, jeder weitere Kauf im Lauf **+25** (100, 125, 150 …) |
+| **5 Steine tauschen** | **−50** |
 | **Tipp: Anfangsbuchstabe zeigen** | **−100** |
 | **Stein ersetzen** | **−100** |
 
@@ -101,7 +102,8 @@ Alle **5 Levels** ein schwerer Auftrag mit großer Belohnung, z. B. „Finde HIM
 
 ## Hilfen
 
-- **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Ist das Feld voll, ist Nachfüllen gesperrt; dann bleiben nur Stein ersetzen, Tipp oder Aufgeben.
+- **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet 100 und wird mit jedem Kauf im selben Lauf um 25 teurer; ein neuer Lauf beginnt wieder bei 100. Ist das Feld voll, ist Nachfüllen gesperrt; dann bleiben Tauschen, Stein ersetzen, Tipp oder Aufgeben.
+- **Tauschen:** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Fester Preis 50. Das Feld wird nicht voller; deshalb auch bei vollem Feld und bei „ohne Nachziehen“ erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
 - **Tipp, Anfangsbuchstabe:** Der erste Stein eines passenden Wortes leuchtet auf. Das gilt bei gesuchten Wörtern („HIMMEL“) und bei allgemeinen Aufträgen („Wort mit 5 Buchstaben“), denn die Wortsuche kennt die möglichen Wörter im Feld.
 - **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**, also möglichst passend zu Wörtern im Feld. Kein Wunschbuchstabe.
 
@@ -143,7 +145,7 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 7. ~~**„Ohne Nachziehen“**~~ → Knopf „Nachfüllen“ ist im Level gesperrt.
 8. ~~**Wort-Hilfe und Schwierigkeitsstufen**~~ → Level steuert die Hilfe; die 5 Stufen entfallen.
 9. ~~**Stein ersetzen**~~ → neuer Buchstabe von der Wort-Hilfe, kein Wunschbuchstabe.
-10. ~~**Feld voll**~~ → Nachfüllen gesperrt; Stein ersetzen, Tipp oder Aufgeben.
+10. ~~**Feld voll**~~ → Nachfüllen gesperrt; Tauschen, Stein ersetzen, Tipp oder Aufgeben.
 11. ~~**Schwierigkeitskurve**~~ → Startwerte siehe „Kurve“; ab Level 11 Mischen + steigern.
 12. ~~**Rekord**~~ → nur das höchste Level.
 
@@ -155,3 +157,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v2.2:** Ab Level 11: Aufträge aus Level 6–10 gemischt, alle 5 Levels eine Verschärfung (Länge, Anzahl, Zuglimit reihum), Belohnung +50 je Verschärfung.
 - **v2.3:** Bestimmtes Wort wird gesät, indem Steine sich zu einer zusammenhängenden Kette verwandeln (garantiert lösbar).
 - **v2.4:** Längen-Aufträge zählen Wörter mit mindestens der verlangten Länge.
+- **v2.5:** Nachfüllen kostet 100, +25 je weiterem Kauf im Lauf. Neue Hilfe „5 Steine tauschen“ für 50 (Wort-Hilfe, auch bei vollem Feld und „ohne Nachziehen“).
