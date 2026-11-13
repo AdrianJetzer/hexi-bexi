@@ -1,10 +1,9 @@
 extends Control
-## Spiel-Screen (Platzhalter-Optik): Spielfeld, Wort-Anzeige, Infobereich, Game-Over.
+## Spiel-Screen: 3D-Spielfeld mit 2D-Oberfläche (Wort-Anzeige, Infobereich, Game-Over).
 
 const BALANCE: GameBalance = preload("res://data/balance.tres")
 const LANG: LanguageData = preload("res://data/languages/de/language.tres")
 
-const BG := Color(0.04, 0.03, 0.09)
 const TEXT := Color(0.85, 0.92, 1.0)
 const TEXT_DIM := Color(0.6, 0.66, 0.85)
 const ACCENT := Color(1.0, 0.84, 0.6)
@@ -18,7 +17,7 @@ var session: GameSession
 var record: int = 0
 
 var _dictionary: WordDictionary
-var _board: BoardView
+var _board: BoardView3D
 var _word_label: Label
 var _score_label: Label
 var _record_label: Label
@@ -62,7 +61,7 @@ func new_round(seed_value: int = -1) -> void:
 	session.game_over.connect(_on_game_over)
 	_overlay.visible = false
 	_last_label.text = ""
-	_board.setup(session, _compute_layout())
+	_board.setup(session)
 	session.start()
 	_relayout()
 
@@ -70,13 +69,7 @@ func new_round(seed_value: int = -1) -> void:
 # --- Aufbau ---------------------------------------------------------------------
 
 func _build_ui() -> void:
-	var bg := ColorRect.new()
-	bg.color = BG
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bg)
-
-	_board = BoardView.new()
+	_board = BoardView3D.new()
 	add_child(_board)
 	_board.path_changed.connect(func(w: String) -> void: _word_label.text = w)
 
@@ -125,21 +118,19 @@ func _label(size: int, color: Color) -> Label:
 	return l
 
 
-func _compute_layout() -> BoardLayout:
+## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
+func _board_area() -> Rect2:
 	var s := get_viewport_rect().size
 	var side := s.x * SIDE_MARGIN
 	var top := s.y * TOP_AREA
 	var bottom := s.y * BOTTOM_AREA
-	var area := Rect2(side, top, s.x - 2.0 * side, s.y - top - bottom)
-	# Platz für den Rahmen rund um das Raster lassen
-	var probe := BoardLayout.fit(BALANCE.grid_cols, BALANCE.grid_rows, area)
-	return BoardLayout.fit(BALANCE.grid_cols, BALANCE.grid_rows, area.grow(-probe.radius * 0.4))
+	return Rect2(side, top, s.x - 2.0 * side, s.y - top - bottom)
 
 
 func _relayout() -> void:
 	var s := get_viewport_rect().size
 	if _board.session != null:
-		_board.set_layout(_compute_layout())
+		_board.fit_to_screen(_board_area(), s)
 	var side := s.x * SIDE_MARGIN
 	_word_label.position = Vector2(0, s.y * 0.02)
 	_word_label.size = Vector2(s.x, s.y * TOP_AREA - s.y * 0.02)

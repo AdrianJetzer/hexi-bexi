@@ -12,7 +12,21 @@ var _front_label: Label3D
 var _back_label: Label3D
 var _front_mat: Material
 var _back_mat: Material
+var _normal_mat: Material
+var _selected_mat: Material
 var _back_nodes: Array[Node3D] = []
+var _flip: float = 1.0
+var _base_position: Vector3 = Vector3.ZERO
+var _shake_tween: Tween
+
+## 0 = Rückseite oben, 1 = Vorderseite oben (für Animationen).
+var flip: float:
+	get:
+		return _flip
+	set(value):
+		set_flip(value)
+		# Beim Drehen kurz anheben, damit es nicht durch Nachbarn oder den Boden dreht.
+		position.y = _base_position.y + sin(clampf(value, 0.0, 1.0) * PI) * thickness * 0.9
 
 
 ## letter_color: Farbe des Buchstabens (Werte > 1 leuchten stärker durch Glow).
@@ -56,19 +70,70 @@ func setup(p_letter: String, p_mesh: ArrayMesh, p_radius: float, p_thickness: fl
 func add_back_decoration(node: Node3D) -> void:
 	add_child(node)
 	_back_nodes.append(node)
-	set_flip(1.0 - rotation.z / PI)
+	set_flip(_flip)
 
 
 ## Material der Vorderseite tauschen (z. B. für die Auswahl).
 func set_front_material(mat: Material) -> void:
 	_front_mat = mat
-	set_flip(1.0 - rotation.z / PI)
+	set_flip(_flip)
+
+
+## Materialien für normal/ausgewählt festlegen (für set_selected).
+func set_selection_materials(normal: Material, selected_mat: Material) -> void:
+	_normal_mat = normal
+	_selected_mat = selected_mat
+
+
+func set_selected(on: bool) -> void:
+	if _normal_mat and _selected_mat:
+		set_front_material(_selected_mat if on else _normal_mat)
+
+
+## Ruheposition (Animationen kehren dorthin zurück).
+func place(at: Vector3) -> void:
+	_base_position = at
+	position = at
+
+
+## Erscheinen: kurz aufploppen mit Rückseite oben, dann echte Drehung auf die Vorderseite.
+func appear() -> void:
+	set_flip(0.0)
+	scale = Vector3.ONE * 0.01
+	var t := create_tween()
+	t.tween_property(self, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.tween_interval(0.35)
+	t.tween_property(self, "flip", 1.0, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+## Verschwinden (gefundenes Wort): aufleuchten, kurz anheben, schrumpfen, dann entfernen.
+## (Platzhalter für das Zerspringen in Splitter.)
+func vanish(delay: float = 0.0) -> void:
+	set_selected(true)
+	var t := create_tween()
+	t.tween_interval(delay)
+	t.set_parallel(true)
+	t.tween_property(self, "position:y", _base_position.y + thickness * 1.5, 0.22)
+	t.tween_property(self, "scale", Vector3.ONE * 1.15, 0.12)
+	t.chain().tween_property(self, "scale", Vector3.ONE * 0.01, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	t.chain().tween_callback(queue_free)
+
+
+## Wackeln (ungültiges Wort).
+func shake() -> void:
+	if _shake_tween and _shake_tween.is_running():
+		_shake_tween.kill()
+	var a := radius * 0.1
+	_shake_tween = create_tween()
+	for dx in [a, -a, a * 0.6, -a * 0.6, 0.0]:
+		_shake_tween.tween_property(self, "position:x", _base_position.x + dx, 0.05)
 
 
 ## 0 = Rückseite oben (gerade erschienen), 1 = Vorderseite oben. Drehung um die Z-Achse.
 ## Solange die Rückseite oben ist, ist die untere Hälfte milchig; danach ist das ganze
 ## Prisma Kristall (sonst sähe man die milchige Rückseite durch den Kristall).
 func set_flip(f: float) -> void:
+	_flip = f
 	rotation.z = PI * (1.0 - f)
 	var back_up := f < 0.5
 	_mesh.set_surface_override_material(HexMesh.SURFACE_FRONT, _front_mat)
