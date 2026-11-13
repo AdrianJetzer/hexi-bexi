@@ -1,7 +1,8 @@
 class_name QuestGenerator
 extends RefCounted
-## Bietet pro Level zwei Auftragskarten an (sicher, riskant), siehe spec/run-mode.md.
-## Die Karten sind Vorlagen; der Lauf startet die gewählte mit Quest.start().
+## Erzeugt den Auftrag für ein Level (siehe spec/run-mode.md): aus der festen Kurve,
+## danach durch zufälliges Aufteilen des Block-Budgets auf 1 bis 3 Zeilen.
+## Der Lauf startet den Auftrag mit Quest.start().
 
 var curve: QuestCurve
 var _rng: RandomNumberGenerator
@@ -12,41 +13,34 @@ func _init(p_curve: QuestCurve, rng: RandomNumberGenerator = null) -> void:
 	_rng = rng if rng else RandomNumberGenerator.new()
 
 
-## [sichere Karte, riskante Karte] für ein Level. Leer, wenn die Kurve leer ist.
-func offer(level: int) -> Array[Quest]:
-	var result: Array[Quest] = []
-	var step := curve.step_for(level)
-	if step:
-		result.append(step.safe.duplicate() as Quest)
-		result.append(step.risky.duplicate() as Quest)
-		return result
-	var pool := curve.mix_steps()
-	if pool.is_empty():
-		return result
-	var safe := pool[_rng.randi_range(0, pool.size() - 1)].safe.duplicate() as Quest
-	var risky := pool[_rng.randi_range(0, pool.size() - 1)].risky.duplicate() as Quest
-	var n := curve.tightenings(level)
-	_tighten(safe, n)
-	_tighten(risky, n)
-	result.append(safe)
-	result.append(risky)
-	return result
+func quest_for(level: int) -> Quest:
+	var q := Quest.new()
+	var fixed := curve.rows_for(level)
+	q.rows = fixed.duplicate() if not fixed.is_empty() else split_budget(curve.budget(level))
+	q.reward = curve.reward(level)
+	return q
 
 
-## n Verschärfungen reihum: Länge +1, Anzahl +1, Zuglimit −1.
-## Passt eine Verschärfung nicht zum Auftrag, entfällt sie (die Belohnung steigt trotzdem).
-func _tighten(q: Quest, n: int) -> void:
-	for i in n:
-		match i % 3:
-			0:
-				q.word_length = mini(q.word_length + 1, curve.max_word_length)
-			1:
-				if q.kind == Quest.Kind.LENGTH:
-					q.count += 1
-			2:
-				if q.max_moves > 0:
-					q.max_moves -= 1
-		# Mindestens so viele Züge wie verlangte Wörter.
-		if q.max_moves > 0:
-			q.max_moves = maxi(q.max_moves, q.count)
-		q.reward += curve.tighten_reward
+## Budget zufällig auf Zeilen verteilen: 1 bis rows_max Zeilen, je row_min bis row_max Blöcke.
+func split_budget(total: int) -> PackedInt32Array:
+	var lo := maxi(1, ceili(float(total) / curve.row_max))
+	var hi := mini(curve.rows_max, total / curve.row_min)
+	if hi < lo:
+		# Budget passt nicht in die Grenzen: möglichst nah dran.
+		hi = lo
+	var count := _rng.randi_range(lo, hi)
+	var rows := PackedInt32Array()
+	rows.resize(count)
+	rows.fill(curve.row_min)
+	var rest := total - count * curve.row_min
+	while rest > 0:
+		var open: Array[int] = []
+		for i in count:
+			if rows[i] < curve.row_max:
+				open.append(i)
+		if open.is_empty():
+			break
+		var i: int = open[_rng.randi_range(0, open.size() - 1)]
+		rows[i] += 1
+		rest -= 1
+	return rows

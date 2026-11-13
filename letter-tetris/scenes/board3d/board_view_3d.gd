@@ -276,7 +276,7 @@ func _next_burst_delay() -> float:
 	return _burst_index * BURST_DELAY
 
 
-func _on_word_accepted(_word: String, cells: Array[Vector2i]) -> void:
+func _on_word_accepted(_word: String, cells: Array[Vector2i], _row: int) -> void:
 	for i in cells.size():
 		var cell := cells[i]
 		if _tiles.has(cell):

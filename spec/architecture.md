@@ -1,6 +1,6 @@
 # Architektur
 
-Status: **Entwurf v3**. Angepasst an den Lauf-Modus ([run-mode.md](run-mode.md)); Details werden bei der Umsetzung verfeinert.
+Status: **Entwurf v4**. Angepasst an den Lauf-Modus ([run-mode.md](run-mode.md)); Details werden bei der Umsetzung verfeinert.
 
 Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.md](tech.md), Umfang siehe [v1-scope.md](v1-scope.md).
 
@@ -22,23 +22,22 @@ core/                  Reine Spiellogik (keine Grafik)
   word_dictionary.gd   Wortprüfung (Format LTW1)
   word_finder.gd       Wörter im Feld finden (Wort-Hilfe, Tipp)
   difficulty_level.gd  Eine Hilfe-Stufe (Stärke der Wort-Hilfe)
-  quest.gd             NEU: ein Auftrag (Art, Bedingungen, Belohnung, Fortschritt, passt das Wort?)
-  quest_curve.gd       NEU: Ressource für die Auftrags-Kurve (Level 1–10, Regeln ab 11)
-  quest_generator.gd   NEU: zieht pro Level 2 Auftragskarten aus der Kurve
-  word_seeder.gd       NEU: legt ein Zielwort als zusammenhängende Kette ins Feld
-  run_session.gd       NEU: ein Lauf; verbindet alles, sendet Signale (ersetzt game_session.gd)
+  quest.gd             Ein Auftrag: Block-Zeilen (Längen), gefüllte Wörter, Belohnung
+  quest_curve.gd       Ressource für die Auftrags-Kurve (Zeilen je Level 1–10, Block-Budget ab 11)
+  quest_generator.gd   Erzeugt den Auftrag für ein Level aus der Kurve
+  run_session.gd       Ein Lauf; verbindet alles, sendet Signale
   game_balance.gd      Spielwerte (Start, Preise der Hilfen, Hilfe-Stufen)
   language_data.gd     Sprache (Alphabet, Gewichte, Wortlisten)
 
 data/
   balance.tres         Spielwerte (Start-Hexagons, Startmünzen, Preise, Hilfe-Stufen)
-  quest_curve.tres     Auftrags-Kurve (Karten pro Level, Belohnungen, Hilfe-Stufe je Level)
+  quest_curve.tres     Auftrags-Kurve (Zeilen je Level, Block-Budget, Belohnung, Hilfe-Stufe je Level)
   languages/de/        Alphabet, Gewichte, Vokale, Wortlisten (words.bin, common.bin)
   themes/cosmic/       Texturen, Farben, Shader-Parameter, Sounds, Musik
 
 scenes/
   main.tscn            Wurzel: wechselt zwischen den Screens
-  screens/             start, game (mit Auftragswahl als Ebene), summary, settings
+  screens/             start, game, summary, settings
   board3d/             3D-Spielfeld: board_view_3d (Feld, Kamera, Wisch-Eingabe),
                        hex_tile_3d (ein Hexagon), hex_mesh (Modell im Code erzeugt),
                        cosmic_materials (Materialien des Themes Kosmisch)
@@ -75,13 +74,12 @@ tests/                 Automatische Tests (GUT) für core/
 
 ## Lauf-Modus in der Logik
 
-- **`RunSession`** hält den Zustand eines Laufs: Feld, Level, Münzen, Züge im Auftrag, aktueller Auftrag, Auftragskarten zur Wahl.
-- **Ablauf:** `start()` → Karten anbieten → `choose_quest(index)` → Wörter (`submit_path`) → Auftrag erfüllt → Münzen, Level +1, neue Karten … bis `give_up()` oder Zuglimit verfehlt.
-- **Hilfen** als Methoden mit Preisprüfung: `refill()`, `hint()` (liefert den ersten Stein eines passenden Worts), `replace(cell)`. Sie liefern zurück, ob es geklappt hat; gesperrte Hilfen (zu wenig Münzen, Feld voll, „ohne Nachziehen“) sind über `can_refill()` usw. abfragbar, damit die Oberfläche Knöpfe sperren kann.
-- **Signale (Vorschlag):** `tile_spawned`, `tile_changed` (Verwandeln/Ersetzen), `word_accepted`, `word_rejected`, `quest_offered(cards)`, `quest_started(quest)`, `quest_progress(quest)`, `quest_completed(quest, reward)`, `coins_changed`, `level_changed`, `hint_shown(cell)`, `run_ended(level, reason)`.
-- **Auftrag** (`Quest`): reine Daten + Prüfung. `matches(word)` sagt, ob ein Wort zählt; `register(word)` zählt Fortschritt und Züge; `is_done()`, `is_failed()` (Zuglimit verfehlt).
-- **Tipp:** `WordFinder` sucht im Feld ein Wort, das zum Auftrag passt (bei „bestimmtes Wort“ dessen Kette); der erste Stein wird gemeldet.
-- **Säen:** `WordSeeder` sucht im Feld eine Kette passender Länge (benachbarte Plätze, bevorzugt vorhandene Steine, freie Plätze nur ohne Schweben) und setzt dort die Buchstaben. Die Darstellung zeigt das als Umdrehen der Steine.
+- **`RunSession`** hält den Zustand eines Laufs: Feld, Level, Münzen, aktueller Auftrag, Tipp.
+- **Ablauf:** `start()` → Auftrag für Level 1 → Wörter (`submit_path`) → passendes Wort füllt eine Zeile → alle Zeilen gefüllt: Münzen, Level +1, nächster Auftrag automatisch … bis `give_up()`.
+- **Hilfen** als Methoden mit Preisprüfung: `refill()`, `swap()`, `hint()`, `replace(cell)`; gesperrte Hilfen sind über `can_refill()` usw. abfragbar, damit die Oberfläche Knöpfe sperren kann.
+- **Signale:** `tile_spawned`, `tile_changed` (Tauschen/Ersetzen), `word_accepted(word, cells, row)` (welche Zeile gefüllt wurde, für das Hineinfliegen), `word_rejected`, `quest_started(quest)`, `quest_completed(quest, reward)`, `coins_changed`, `level_changed`, `hint_changed(cells)`, `run_ended(level, reason)`.
+- **Auftrag** (`Quest`): reine Daten + Prüfung. Zeilen als Liste von Längen; `free_row_for(word)` sagt, in welche freie Zeile ein Wort passt (oberste passende, sonst keine); `fill(row, word)`; `is_done()`.
+- **Tipp und Lösung:** `WordFinder` sucht im Feld ein Wort, dessen Länge einer freien Zeile entspricht.
 - **Zufall** über einen Seed pro Lauf, damit Tests und Fehlersuche wiederholbar sind.
 
 ## Tests
@@ -102,3 +100,4 @@ tests/                 Automatische Tests (GUT) für core/
 - **v2:** Spielfeld in 3D mit 2D-Oberfläche; Hexagon-Modell im Code, Kristall-Shader, Kamera von oben mit Perspektive.
 - **v3:** Lauf-Modus: neue Bausteine Quest, QuestCurve, QuestGenerator, WordSeeder, RunSession (ersetzt GameSession); Scoring entfällt; Hilfe-Stufen statt wählbarer Schwierigkeit; Rekord = höchstes Level; Signal-Vorschlag.
 - **v3.1:** Alter Level-Modus entfernt (GameSession, Scoring, Punkt-Schwellen, wählbare Schwierigkeit, Rekorde pro Stufe).
+- **v4:** Lauf-Modus v3: Auftrag als Block-Zeilen, Generator erzeugt einen Auftrag je Level (kein Kartenangebot), WordSeeder entfällt, Signal `word_accepted` mit Zeile.

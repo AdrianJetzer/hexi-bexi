@@ -1,6 +1,6 @@
 # Lauf-Modus (Roguelike)
 
-Status: **Entwurf v2**. Offene Fragen geklärt, Umfang für Version 1 festgelegt.
+Status: **Entwurf v3**. Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
 
 Markierungen: **[v1]** = kommt in Version 1 · **[später]** = gute Idee, nach Version 1 · **[offen]** = noch nicht entschieden.
 
@@ -8,107 +8,83 @@ Abschnitte ohne Markierung gehören zum Grundgerüst und sind **[v1]**.
 
 ## Idee in einem Satz
 
-Ein **Lauf** besteht aus Levels, jedes Level ist ein **Auftrag** („Finde ein Wort mit 5 Buchstaben“). Erfüllte Aufträge bringen **Münzen**, mit denen man sich **Hilfen** kauft. Wer kein Geld mehr hat oder nicht weiterkommt, scheitert, und der nächste Lauf beginnt **wieder bei Level 1**.
+Ein **Lauf** besteht aus Levels. Jedes Level ist ein **Auftrag**: über dem Spielfeld stehen Zeilen **leerer Blöcke**, und der Spieler sucht Wörter, die **genau** in diese Zeilen passen. Gelöste Aufträge bringen **Münzen**, mit denen man sich **Hilfen** kauft. Wer nicht weiterkommt, gibt auf, und der nächste Lauf beginnt **wieder bei Level 1**.
 
-Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwellen, +10 Hexagons). Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe.
+Grundsatz: **Symbole statt Text.** Der Spieler soll nicht lesen müssen, was zu tun ist.
+
+Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rules.md](game-rules.md)).
 
 ## Ablauf eines Laufs
 
-1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **20 Hexagons** (Platzwahl wie bisher). Das erste Level muss ohne Hilfe klappen.
-2. **Level:** Der Spieler bekommt einen Auftrag und versucht ihn mit Wörtern im Feld zu erfüllen.
-3. **Erfüllt:** Münzen gutschreiben, weiter zum nächsten, schwereren Level.
-4. **Gescheitert:** Der Lauf endet, wenn
-   - der Spieler nicht weiterkommt (z. B. kein Geld mehr für Hilfen) und **„Aufgeben“** tippt (mit Nachfrage), oder
-   - bei einem Auftrag mit **Zuglimit** die Züge aufgebraucht sind, ohne dass er erfüllt ist (automatisch).
-5. **Ende:** Bilanz (erreichtes Level, Münzen, gefundene Wörter). Danach neuer Lauf ab Level 1.
-6. **Rekord:** nur das **höchste erreichte Level**.
+1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **20 Hexagons** (Platzwahl wie bisher). Der erste Auftrag erscheint sofort.
+2. **Level:** Über dem Spielfeld stehen die Block-Zeilen des Auftrags. Der Spieler wischt Wörter.
+3. **Gelöst:** Sind alle Zeilen gefüllt, gibt es Münzen, der Auftrag verschwindet und der **nächste erscheint automatisch** (keine Wahl, keine Unterbrechung).
+4. **Ende:** Nur durch **„Aufgeben“** (mit Nachfrage), z. B. wenn man nicht weiterkommt und kein Geld mehr für Hilfen hat. Dann wird die **Lösung** gezeigt, danach die Bilanz (erreichtes Level, Rekord). Neuer Lauf ab Level 1.
+5. **Rekord:** nur das **höchste erreichte Level**.
 
 ## Aufträge
 
-### Arten (Beispiele)
-- **Länge:** „Finde ein Wort mit 3 Buchstaben“, später „… mit 5 Buchstaben“. Gemeint ist **mindestens** diese Länge; längere Wörter zählen auch (Anzeige z. B. „mind. 5 Buchstaben“). Beim bestimmten Wort zählt nur genau das Zielwort.
-- **Bestimmtes Wort:** „Finde HIMMEL“. Das Zielwort kommt aus der Liste geläufiger Wörter.
-  - **Säen durch Verwandeln:** Beim Start des Auftrags legt das Spiel das Wort als **zusammenhängende Kette** ins Feld. Die betroffenen Steine **drehen sich um** und zeigen dabei ihre neuen Buchstaben. Reichen die Steine nicht, werden freie Plätze mitbenutzt; dort erscheinen neue Steine (Füllen von unten nach oben bleibt gültig).
-  - Das Wort ist damit **garantiert lösbar**, auch bei vollem Feld. Man muss es nur finden. Deshalb ist es eine **sichere** Karte.
-  - Die Kette soll nicht auffallen (z. B. nicht immer gerade, gemischt mit vorhandenen Steinen). Details bei der Umsetzung.
-- **Anzahl:** „Finde 3 Wörter mit 3 Buchstaben“.
-- **Mit Bedingung:**
-  - „… ohne Nachziehen“ (im Level ist „Nachfüllen“ gesperrt, und nach gefundenen Wörtern wird nicht automatisch aufgefüllt)
-  - „… in höchstens 5 Zügen“ (Züge aufgebraucht, Auftrag nicht erfüllt → **Lauf endet**)
-  - „… mit dem Buchstaben X“
-  - „… Wort endet auf -EN“
-
-### Schwierigkeit
-Die Levels werden schwerer. Stellschrauben pro Level:
-- Wortlänge (3 → 5 → 6 …)
-- Anzahl der Wörter
-- Bedingungen (ohne Nachziehen, Zuglimit, bestimmte Buchstaben)
-- schwächere Wort-Hilfe (schwierigere Buchstaben): **Das Level steuert die Hilfe**, am Anfang stark, später schwächer. Die 5 wählbaren Schwierigkeitsstufen entfallen; damit gibt es nur einen Rekord.
-- weniger Steine im Feld oder weniger Nachschub
-- Hindernisse [später] (siehe Abschnitt „Besondere Steine“)
+### Block-Zeilen
+- Ein Auftrag besteht aus **1 bis 3 Zeilen** leerer Blöcke. Jede Zeile hat ihre **eigene Länge** (3 bis 8 Blöcke).
+  - ▢▢▢ = ein Wort mit 3 Buchstaben.
+  - ▢▢▢ / ▢▢▢ / ▢▢▢▢ = zwei Wörter mit 3 und ein Wort mit 4 Buchstaben.
+- Ein Wort passt, wenn es **genau so lang** ist wie eine noch **freie** Zeile. Gibt es mehrere freie Zeilen dieser Länge, füllt es die oberste davon.
+- **Passendes Wort:** Die Steine verschwinden aus dem Feld, ihre **Buchstaben fliegen** in die Blöcke der Zeile und bleiben dort sichtbar (z. B. H A U S).
+- **Nicht passendes Wort** (falsche Länge, keine freie Zeile dieser Länge, oder kein Wort): wird **abgelehnt**, die Steine **wackeln** und bleiben liegen. Kein Text.
+- Mindestlänge eines Worts: 3 Buchstaben.
+- Sind **alle Zeilen gefüllt**, ist der Auftrag gelöst: kurze Erfolgsrückmeldung (Münzen), die Zeilen verschwinden, die Zeilen des nächsten Auftrags erscheinen.
 
 ### Kurve (Startwerte)
-Pro Level zwei Auftragskarten: A sicher, B riskant. Zahlen sind Startwerte für das Feintuning.
 
-| Level | Karte A (sicher) | Karte B (riskant) | Wort-Hilfe |
-|---|---|---|---|
-| 1 | Wort mit 3 Buchstaben, +100 | Wort mit 4, +150 | sehr stark |
-| 2 | Wort mit 4, +100 | Wort mit 5, +200 | sehr stark |
-| 3 | 2 Wörter mit 4, +100 | Wort mit 5, +200 | stark |
-| 4 | bestimmtes Wort mit 4 (z. B. HAUS), +100 | Wort mit 5, +200 | stark |
-| 5 | Wort mit 5 ohne Nachfüllen, +150 | Wort mit 6, +250 | mittel |
-| 6–7 | bestimmtes Wort mit 5, +150 | 3 Wörter mit 4 in höchstens 4 Zügen, +250 | mittel |
-| 8–10 | bestimmtes Wort mit 6 (z. B. HIMMEL), +150 | Wort mit 6, +300 | schwach |
-| ab 11 | nach Regeln erzeugt, immer etwas schwerer | | ohne Hilfe |
+| Level | Zeilen | Bild |
+|---|---|---|
+| 1 | 3 | ▢▢▢ |
+| 2 | 4 | ▢▢▢▢ |
+| 3 | 3 + 3 | ▢▢▢ / ▢▢▢ |
+| 4 | 3 + 4 | ▢▢▢ / ▢▢▢▢ |
+| 5 | 5 | ▢▢▢▢▢ |
+| 6 | 4 + 4 | ▢▢▢▢ / ▢▢▢▢ |
+| 7 | 3 + 3 + 4 | ▢▢▢ / ▢▢▢ / ▢▢▢▢ |
+| 8 | 4 + 5 | ▢▢▢▢ / ▢▢▢▢▢ |
+| 9 | 6 | ▢▢▢▢▢▢ |
+| 10 | 3 + 4 + 5 | ▢▢▢ / ▢▢▢▢ / ▢▢▢▢▢ |
 
-- Sichere Karten reichen für 2–3 Nachfüllungen; riskante bringen etwa das Doppelte als Polster.
-- Die Wort-Hilfe nutzt die bisherigen 5 Stufen (sehr stark = „Sehr leicht“ … ohne Hilfe = „Profi“), jetzt automatisch nach Level.
+**Ab Level 11 (Block-Budget):**
+- Ein Auftrag hat ein **Budget** an Blöcken: **12** in Level 11–15, alle 5 Levels **+1** (Level 16–20: 13 …), höchstens 24.
+- Das Spiel verteilt das Budget **zufällig** auf **1 bis 3 Zeilen** mit je **3 bis 8** Blöcken (z. B. 4 + 4 + 4, 6 + 6, 3 + 4 + 5).
+- Die Kurve liegt als Daten vor (tunebar); alle Zahlen sind Startwerte für das Feintuning.
 
-**Ab Level 11 (Mischen + steigern):**
-- Beide Karten werden **zufällig** aus allen Auftragsarten von Level 6–10 gezogen (eine sicher, eine riskant).
-- **Alle 5 Levels** (11, 16, 21 …) wird eine Stellschraube verschärft, reihum:
-  1. Wortlänge **+1** (höchstens 8 Buchstaben),
-  2. Anzahl Wörter **+1**,
-  3. Zuglimit **−1** (mindestens so viele Züge wie Wörter).
-- Die **Belohnung** steigt je Verschärfung um **+50**.
-- Wort-Hilfe: keine. Alle Werte sind Startwerte für das Feintuning.
-
-### Zug
-- **Automatisch auffüllen:** Nach jedem angenommenen Wort kommen **Wortlänge − 1** neue Steine ins Feld (Platzwahl wie bisher; 5 Buchstaben → 4 neue). Bei Aufträgen **„ohne Nachziehen“** entfällt das. Das Feld leert sich so langsam; Nachfüllen bleibt wichtig.
-- **Nur passende Wörter werden angenommen** und verschwinden. Ein echtes Wort, das nicht zum Auftrag passt (z. B. zu kurz), wird **abgelehnt** wie ein ungültiges: Die Steine wackeln und bleiben liegen, oben steht der Grund.
-- Ein **Zug** ist **jeder Versuch** ab 3 Buchstaben: angenommene Wörter, nicht passende und auch Unsinn-Wörter. Kürzere Wische (z. B. versehentliches Antippen) und gekaufte Hilfen zählen nicht. Wichtig ist das nur bei Aufträgen mit Zuglimit.
-
-### Auftrag wählen [v1]
-Vor jedem Level gibt es **2 Auftragskarten** zur Wahl, z. B. „4 Buchstaben, +100“ oder „6 Buchstaben, +250“. Sicher oder riskant?
-
-### Zufall [v1]
-Aufträge werden pro Lauf **zufällig** gezogen, passend zur Schwierigkeit des Levels. Jeder Lauf ist anders.
+### Wort-Hilfe
+- **Das Level steuert die Hilfe**: am Anfang stark, später schwächer (Hilfe-Stufen siehe [game-rules.md](game-rules.md)): Level 1–2 sehr stark, 3–4 stark, 5–7 mittel, 8–10 schwach, ab 11 keine.
 
 ### Bosse [später]
-Alle **5 Levels** ein schwerer Auftrag mit großer Belohnung, z. B. „Finde HIMMEL in 8 Zügen“.
+Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ## Münzen
 
 | Ereignis | Münzen |
 |---|---|
-| Auftrag erfüllt | **+100** (je nach Auftrag mehr, siehe Auftragskarten) |
-| Bonus: Auftrag mit wenigen Zügen [später] | +50 |
-| Langes Wort nebenbei, ab 6 Buchstaben [später] | +5 |
+| Auftrag gelöst | **+100 + 10 × Level** (Level 1: 110, Level 10: 200) |
+| Langes Wort nebenbei [später] | Bonus |
 | **5 Steine nachfüllen** | **−100**, jeder weitere Kauf im Lauf **+25** (100, 125, 150 …) |
 | **5 Steine tauschen** | **−50** |
 | **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
 | **Stein ersetzen** | **−100** |
 
-- Münzen sind die **Währung** des Laufs. **Punkte entfallen**; es gibt nur noch Münzen und Level.
-- Ohne Münzen gibt es keine Hilfen mehr; findet man dann nichts, ist der Lauf vorbei.
+- Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
+
+## Spielfeld
+
+- **Das Feld bleibt zwischen den Levels liegen.** Ein gutes oder schlechtes Feld wirkt nach.
+- **Automatisch auffüllen:** Nach jedem angenommenen Wort kommen **Wortlänge − 1** neue Steine ins Feld (Platzwahl wie bisher; 5 Buchstaben → 4 neue). Das Feld leert sich so langsam; Nachfüllen bleibt wichtig.
 
 ## Hilfen
 
-- **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet 100 und wird mit jedem Kauf im selben Lauf um 25 teurer; ein neuer Lauf beginnt wieder bei 100. Ist das Feld voll, ist Nachfüllen gesperrt; dann bleiben Tauschen, Stein ersetzen, Tipp oder Aufgeben.
-- **Tauschen:** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Fester Preis 50. Das Feld wird nicht voller; deshalb auch bei vollem Feld und bei „ohne Nachziehen“ erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
-- **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein passendes Wort fest und lässt seinen ersten Stein blinken; jeder weitere Tipp (je 100) zeigt den nächsten Buchstaben desselben Worts. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Gilt für bestimmte Wörter und allgemeine Aufträge (die Wortsuche kennt die möglichen Wörter im Feld). Liegt kein passendes Wort im Feld, kostet der Tipp nichts.
-- **Lösung am Ende:** Endet der Lauf (Aufgeben oder Zuglimit verfehlt), blinken alle Steine eines passenden Worts und oben steht „Lösung: WORT“ (oder „Keine Lösung im Feld“). Mit **„Weiter“** geht es zur Bilanz.
-- **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**, also möglichst passend zu Wörtern im Feld. Kein Wunschbuchstabe.
+- **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet 100 und wird mit jedem Kauf im selben Lauf um 25 teurer; ein neuer Lauf beginnt wieder bei 100. Ist das Feld voll, ist Nachfüllen gesperrt.
+- **Tauschen:** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Fester Preis 50. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
+- **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein Wort fest, das in eine freie Zeile passt, und lässt seinen ersten Stein **blinken**; jeder weitere Tipp (je 100) lässt den nächsten Stein desselben Worts blinken. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Liegt kein passendes Wort im Feld, kostet der Tipp nichts. Kein Text, nur Blinken.
+- **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
+- **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
 
 ## Laden und Vorteile [später]
 
@@ -121,13 +97,8 @@ Zwischen den Levels ein **Laden**: dauerhafte Vorteile für den laufenden Lauf, 
 ## Besondere Steine [später]
 
 - **Goldener Stein:** doppelte Belohnung.
-- **Kristallstein:** bringt einen Zug zurück.
-- **Rissiger Stein:** zerfällt nach X Zügen und blockiert dann oder kostet Münzen.
-- **Steinblock:** ganz unten, ohne Buchstabe; bricht, wenn daneben ein Wort gebildet wird. Möglicher Auftrag: „Räume alle Blöcke ab“.
-
-## Spielfeld zwischen den Levels
-
-**Das Feld bleibt liegen.** Übrige Steine gehen ins nächste Level mit. Der Lauf ist ein durchgehendes Spiel; ein gutes oder schlechtes Feld wirkt nach.
+- **Rissiger Stein:** zerfällt nach einigen Wörtern und blockiert dann oder kostet Münzen.
+- **Steinblock:** ganz unten, ohne Buchstabe; bricht, wenn daneben ein Wort gebildet wird.
 
 ## Fortschritt über Läufe (Meta) [später]
 
@@ -137,20 +108,13 @@ Zwischen den Levels ein **Laden**: dauerhafte Vorteile für den laufenden Lauf, 
 
 Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel **ohne Kauf fair** bleiben. Entscheidung gesondert, nicht Teil dieser Spec.
 
-## Offene Fragen
+## Entfallen (seit v3)
 
-1. ~~**Spielfeld** zwischen den Levels~~ → bleibt liegen.
-2. ~~**Start**~~ → 0 Münzen, 20 Hexagons.
-3. ~~**Umfang Version 1**~~ → Grundgerüst + Auftrag wählen + Zufall; Bosse, Laden, besondere Steine, Meta, Münzkauf später.
-4. ~~**Was ist ein „Zug“?**~~ → jeder Versuch ab 3 Buchstaben (seit v2.6); Hilfen zählen nicht.
-5. ~~**Punkte**~~ → fallen weg.
-6. ~~**Aufgeben**~~ → Knopf „Aufgeben“ mit Nachfrage beendet den Lauf; kein automatisches Ende.
-7. ~~**„Ohne Nachziehen“**~~ → Knopf „Nachfüllen“ ist im Level gesperrt.
-8. ~~**Wort-Hilfe und Schwierigkeitsstufen**~~ → Level steuert die Hilfe; die 5 Stufen entfallen.
-9. ~~**Stein ersetzen**~~ → neuer Buchstabe von der Wort-Hilfe, kein Wunschbuchstabe.
-10. ~~**Feld voll**~~ → Nachfüllen gesperrt; Tauschen, Stein ersetzen, Tipp oder Aufgeben.
-11. ~~**Schwierigkeitskurve**~~ → Startwerte siehe „Kurve“; ab Level 11 Mischen + steigern.
-12. ~~**Rekord**~~ → nur das höchste Level.
+- **Auftragskarten** mit Wahl zwischen sicher und riskant: störten den Spielfluss.
+- **„Finde das Wort X“** und das gezielte **Säen**: zu leicht.
+- **Zuglimit** und **„ohne Nachziehen“**: lassen sich nicht ohne Text zeigen. Damit entfällt auch der Begriff „Zug“ und das automatische Ende des Laufs.
+- **„Mindestens N Buchstaben“**: Wörter müssen jetzt genau passen.
+- **Text-Anzeigen** für Auftrag, gewischtes Wort, Ablehnungsgrund und Tipp.
 
 ## Verlauf
 
@@ -164,3 +128,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v2.6:** Nur passende Wörter werden angenommen; nicht passende werden abgelehnt (Steine bleiben). Zug = jeder Versuch ab 3 Buchstaben, auch abgelehnte.
 - **v2.7:** Nach jedem angenommenen Wort automatisch Wortlänge − 1 neue Steine (nicht bei „ohne Nachziehen“).
 - **v2.8:** Bestimmtes Wort ist jetzt die sichere Karte (Level 4, 6–7, 8–10), riskant ein längeres Wort. Tipp Buchstabe für Buchstabe (je 100), gezeigte Steine blinken weiter. Lösung beim Ende des Laufs, dann „Weiter“ zur Bilanz.
+- **v3:** Neues Auftrags-Konzept: Block-Zeilen über dem Spielfeld (1–3 Zeilen, je 3–8 Blöcke, gemischte Längen), Wörter müssen genau passen, Buchstaben fliegen in die Blöcke, nächster Auftrag kommt automatisch. Belohnung 100 + 10 × Level. Kurve Level 1–10 fest, ab 11 Block-Budget (12, alle 5 Levels +1). Symbole statt Text. Entfallen: Auftragskarten, bestimmtes Wort/Säen, Zuglimit, „ohne Nachziehen“, Mindestlänge-Aufträge, Text-Anzeigen. Lösung beim Aufgeben fliegt in die Zeile.

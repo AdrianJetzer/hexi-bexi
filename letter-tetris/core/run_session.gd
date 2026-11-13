@@ -2,36 +2,36 @@ class_name RunSession
 extends RefCounted
 ## Ein Lauf im Lauf-Modus (Roguelike, siehe spec/run-mode.md). Reine Logik, ohne Zeit.
 ##
-## Ablauf: start() → quest_offered → choose_quest(i) → Wörter mit submit_path(cells) →
-## Auftrag erfüllt: Münzen, Level +1, neue Karten … bis give_up() oder Zuglimit verfehlt.
+## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
+## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
+## Auftrag automatisch … bis give_up().
 ## Hilfen: refill(), swap(), hint(), replace(cell).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
-## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Ersetzen, Säen).
+## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Tauschen, Ersetzen).
 signal tile_changed(cell: Vector2i, letter: String)
 ## Tipp: die bisher gezeigten Steine eines passenden Worts, in Wortreihenfolge
 ## (leer = kein Tipp mehr, z. B. weil sich ein Stein des Worts geändert hat).
 signal hint_changed(cells: Array[Vector2i])
 ## Ein passendes Wort wurde angenommen; die Hexagons sind entfernt.
-signal word_accepted(word: String, cells: Array[Vector2i])
+## row: die Block-Zeile des Auftrags, die das Wort gefüllt hat.
+signal word_accepted(word: String, cells: Array[Vector2i], row: int)
 ## Gewischte Buchstaben ergeben kein gültiges Wort (oder es ist gerade kein Auftrag aktiv).
 signal word_rejected(cells: Array[Vector2i], reason: String)
-## Zwei Auftragskarten zur Wahl: [sicher, riskant].
-signal quest_offered(cards: Array[Quest])
 signal quest_started(quest: Quest)
-## Fortschritt oder Züge des Auftrags haben sich geändert.
+## Eine Zeile des Auftrags wurde gefüllt.
 signal quest_progress(quest: Quest)
 signal quest_completed(quest: Quest, reward: int)
 signal coins_changed(coins: int)
 signal level_changed(level: int)
-## Lauf vorbei. reason: REASON_GAVE_UP oder REASON_OUT_OF_MOVES.
+## Lauf vorbei. reason: REASON_GAVE_UP.
 signal run_ended(level: int, reason: String)
 
 const REASON_TOO_SHORT := "too_short"
 const REASON_INVALID_PATH := "invalid_path"
 const REASON_NOT_A_WORD := "not_a_word"
-## Echtes Wort, passt aber nicht zum Auftrag (z. B. zu kurz).
+## Echtes Wort, passt aber in keine freie Zeile (falsche Länge).
 const REASON_NOT_MATCHING := "not_matching"
 const REASON_NO_QUEST := "no_quest"
 const REASON_RUN_OVER := "run_over"
@@ -39,16 +39,13 @@ const REASON_RUN_OVER := "run_over"
 const NO_CELL := Vector2i(-1, -1)
 
 const REASON_GAVE_UP := "gave_up"
-const REASON_OUT_OF_MOVES := "out_of_moves"
 
 var grid: HexGrid
 var coins: int = 0
 var words_found: int = 0
 var is_over: bool = false
-## Aktueller Auftrag; null, solange die Karten zur Wahl stehen.
+## Aktueller Auftrag (kommt automatisch).
 var quest: Quest
-## Angebotene Karten (leer, sobald gewählt).
-var offer: Array[Quest] = []
 
 var _balance: GameBalance
 var _dictionary: WordDictionary
@@ -62,9 +59,6 @@ var _hint_rng: RandomNumberGenerator
 var _hint_cells: Array[Vector2i] = []
 var _hint_word: String = ""
 var _hint_count: int = 0
-var _seeder: WordSeeder
-## Woraus Zielwörter gezogen werden (geläufige Wörter, sonst alle).
-var _target_words: WordDictionary
 var _spawner: Spawner
 var _level: int = 1
 ## Wie oft in diesem Lauf nachgefüllt wurde (Preis steigt).
@@ -93,8 +87,6 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 	_spawner = Spawner.new(_picker, rng_cells)
 	_generator = QuestGenerator.new(curve, rng_quests)
 	_hint_rng = rng_cells
-	_seeder = WordSeeder.new(rng_quests)
-	_target_words = common_words if common_words != null else dictionary
 	if common_words != null:
 		_hint_finders.append(WordFinder.new(common_words))
 	_hint_finders.append(WordFinder.new(dictionary))
@@ -105,7 +97,7 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 
 # --- Ablauf des Laufs ---------------------------------------------------------------
 
-## Neuer Lauf: Level 1, Startmünzen, Start-Hexagons, erste Karten.
+## Neuer Lauf: Level 1, Startmünzen, Start-Hexagons, erster Auftrag.
 func start() -> void:
 	grid.clear_all()
 	coins = _balance.start_coins
@@ -119,26 +111,7 @@ func start() -> void:
 	_spawn(_balance.run_start_tiles)
 	coins_changed.emit(coins)
 	level_changed.emit(_level)
-	_offer_cards()
-
-
-## Eine der angebotenen Karten wählen (0 = sicher, 1 = riskant).
-func choose_quest(index: int) -> bool:
-	if is_over or quest != null or index < 0 or index >= offer.size():
-		return false
-	var chosen := offer[index]
-	var target := ""
-	if chosen.kind == Quest.Kind.SPECIFIC_WORD:
-		target = _seed_target(chosen.word_length)
-		if target == "":
-			# Kein Zielwort möglich (sehr selten): stattdessen ein Wort dieser Länge suchen.
-			chosen = chosen.duplicate() as Quest
-			chosen.kind = Quest.Kind.LENGTH
-	_reset_hint()
-	quest = chosen.start(target)
-	offer.clear()
-	quest_started.emit(quest)
-	return true
+	_start_quest()
 
 
 ## Knopf „Aufgeben“ → „Ja“.
@@ -157,10 +130,9 @@ func refill_price() -> int:
 	return _balance.refill_price + _refills * _balance.refill_price_step
 
 
-## Nachfüllen möglich? (Münzen reichen, Platz frei, Auftrag erlaubt es)
+## Nachfüllen möglich? (Münzen reichen, Platz frei)
 func can_refill() -> bool:
-	return (not is_over and coins >= refill_price() and grid.free_count() > 0
-			and not (quest != null and quest.no_refill))
+	return not is_over and coins >= refill_price() and grid.free_count() > 0
 
 
 ## Hilfe „Nachfüllen“: einige neue Hexagons gegen Münzen. Gibt die Anzahl neuer Hexagons zurück.
@@ -174,7 +146,7 @@ func refill() -> int:
 	return placed
 
 
-## Tauschen möglich? (Münzen reichen, Steine im Feld). Auch bei vollem Feld und „ohne Nachziehen“.
+## Tauschen möglich? (Münzen reichen, Steine im Feld). Auch bei vollem Feld.
 func can_swap() -> bool:
 	return not is_over and coins >= _balance.swap_price and grid.free_count() < grid.size()
 
@@ -208,7 +180,7 @@ func can_hint() -> bool:
 	return not (_hint_valid() and _hint_count >= _hint_cells.size())
 
 
-## Hilfe „Tipp“: zeigt den nächsten Buchstaben eines Worts, das zum Auftrag passt
+## Hilfe „Tipp“: zeigt den nächsten Buchstaben eines Worts, das in eine freie Zeile passt
 ## (beim ersten Tipp den ersten). Alle gezeigten bleiben sichtbar (hint_changed).
 ## Gibt den neu gezeigten Platz zurück, oder NO_CELL, wenn kein passendes Wort im Feld
 ## liegt (dann kostet es nichts).
@@ -234,7 +206,8 @@ func hinted_cells() -> Array[Vector2i]:
 	return _hint_cells.slice(0, _hint_count)
 
 
-## Lösung für den laufenden Auftrag (z. B. beim Aufgeben): Weg eines passenden Worts,
+## Lösung für den laufenden Auftrag (z. B. beim Aufgeben): Weg eines Worts, das in eine
+## freie Zeile passt,
 ## bevorzugt das Tipp-Wort. Leer, wenn es keine gibt.
 func solution() -> Array[Vector2i]:
 	if _hint_valid():
@@ -302,36 +275,28 @@ func submit_path(path: Array[Vector2i]) -> bool:
 	var reason := _check_path(path)
 	if reason != "":
 		word_rejected.emit(path, reason)
-		# Jeder echte Versuch (ab Mindestlänge) kostet einen Zug, auch ein abgelehnter.
-		if reason == REASON_NOT_A_WORD or reason == REASON_NOT_MATCHING:
-			quest.register_miss()
-			quest_progress.emit(quest)
-			if quest.is_failed():
-				_end(REASON_OUT_OF_MOVES)
 		return false
 	var word := word_for(path)
+	var row := quest.free_row_for(word)
 	for cell in path:
 		grid.clear(cell)
 	words_found += 1
-	quest.register(word)
-	word_accepted.emit(word, path)
-	# Automatisch auffüllen: eine Wortlänge minus eins (nicht bei „ohne Nachziehen“).
-	if not quest.no_refill:
-		_spawn(maxi(word.length() - _balance.auto_refill_less, 0))
+	quest.fill(row, word)
+	word_accepted.emit(word, path, row)
+	# Automatisch auffüllen: eine Wortlänge minus eins.
+	_spawn(maxi(word.length() - _balance.auto_refill_less, 0))
 	_check_hint()
 	quest_progress.emit(quest)
 	if quest.is_done():
 		_complete_quest()
-	elif quest.is_failed():
-		_end(REASON_OUT_OF_MOVES)
 	return true
 
 
 # --- intern --------------------------------------------------------------------------
 
-## Liegt das Tipp-Wort noch unverändert im Feld?
+## Liegt das Tipp-Wort noch unverändert im Feld, und passt es noch in eine freie Zeile?
 func _hint_valid() -> bool:
-	if _hint_cells.is_empty():
+	if _hint_cells.is_empty() or quest == null or not quest.matches(_hint_word):
 		return false
 	for cell in _hint_cells:
 		if grid.is_free(cell):
@@ -354,29 +319,14 @@ func _reset_hint() -> void:
 		hint_changed.emit(hinted_cells())
 
 
-## Zielwort wählen und als Kette ins Feld legen. Gibt das Wort zurück ("" = nicht möglich).
-func _seed_target(length: int) -> String:
-	for attempt in 5:
-		var word := _seeder.pick_target(_target_words, _dictionary, length)
-		if word == "":
-			return ""
-		var changes := _seeder.seed(grid, word)
-		if changes.is_empty():
-			continue
-		for ch in changes:
-			if ch["new"]:
-				tile_spawned.emit(ch["cell"], ch["letter"])
-			else:
-				tile_changed.emit(ch["cell"], ch["letter"])
-		return word
-	return ""
-
-
-## Weg eines Worts, das zum Auftrag passt (zufällig unter den gefundenen), oder leer.
+## Weg eines Worts, das in eine freie Zeile passt (zufällig unter den gefundenen), oder leer.
 func _find_matching_path() -> Array[Vector2i]:
 	var q := quest
-	var p_min := q.word_length
-	var p_max := maxi(q.word_length, _balance.help_max_word_length)
+	var lengths := q.free_lengths()
+	if lengths.is_empty():
+		return []
+	var p_min := lengths[0]
+	var p_max := lengths[lengths.size() - 1]
 	for finder in _hint_finders:
 		var found := finder.find_paths(grid, p_min, p_max, func(w: String) -> bool: return q.matches(w))
 		if not found.is_empty():
@@ -413,12 +363,14 @@ func _complete_quest() -> void:
 	_level += 1
 	_apply_help()
 	level_changed.emit(_level)
-	_offer_cards()
+	_start_quest()
 
 
-func _offer_cards() -> void:
-	offer = _generator.offer(_level)
-	quest_offered.emit(offer)
+## Auftrag für das aktuelle Level erzeugen und starten.
+func _start_quest() -> void:
+	_reset_hint()
+	quest = _generator.quest_for(_level).start()
+	quest_started.emit(quest)
 
 
 func _end(reason: String) -> void:

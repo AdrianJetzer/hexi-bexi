@@ -124,3 +124,13 @@ func test_truncated_data_returns_null() -> void:
 	var bytes := FileAccess.get_file_as_bytes(SAMPLE_BIN)
 	assert_null(WordDictionary.from_bytes(bytes.slice(0, bytes.size() - 3)))
 	assert_push_error("beschädigt")
+
+
+func test_dictionary_words_by_length() -> void:
+	var d := WordDictionary.from_words(PackedStringArray(["HAUS", "BAUM", "AST"]))
+	assert_eq(d.count_of_length(4), 2)
+	assert_eq(d.count_of_length(3), 1)
+	assert_eq(d.count_of_length(9), 0)
+	assert_eq(d.word_at(4, 0), "BAUM")
+	assert_eq(d.word_at(4, 1), "HAUS")
+	assert_eq(d.word_at(4, 2), "")

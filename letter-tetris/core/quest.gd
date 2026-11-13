@@ -1,85 +1,78 @@
 class_name Quest
 extends Resource
-## Ein Auftrag im Lauf-Modus (siehe spec/run-mode.md).
+## Ein Auftrag im Lauf-Modus (siehe spec/run-mode.md, „Block-Zeilen“):
+## 1 bis 3 Zeilen leerer Blöcke, jede mit eigener Länge. Ein Wort passt, wenn es genau so
+## lang ist wie eine noch freie Zeile; es füllt dann die oberste passende Zeile.
 ##
-## Als Ressource ist er zugleich Vorlage (in der Auftrags-Kurve) und laufender Auftrag:
-## Für eine Runde wird die Vorlage mit start() kopiert; die Kopie zählt Fortschritt und Züge.
+## Als Ressource ist er zugleich Vorlage und laufender Auftrag: start() liefert eine Kopie
+## mit leeren Zeilen.
 
-enum Kind {
-	## Wörter mit mindestens word_length Buchstaben finden (count Stück).
-	LENGTH,
-	## Ein bestimmtes Wort finden (target, wird beim Säen festgelegt).
-	SPECIFIC_WORD,
-}
-
-@export var kind: Kind = Kind.LENGTH
-## LENGTH: Mindestlänge der Wörter. SPECIFIC_WORD: Länge des Zielworts.
-@export var word_length: int = 3
-## Wie viele passende Wörter gefunden werden müssen.
-@export var count: int = 1
-## Höchstzahl der Züge (0 = kein Limit). Verfehlt → Lauf endet.
-@export var max_moves: int = 0
-## Im Level ist „Nachfüllen“ gesperrt.
-@export var no_refill: bool = false
+## Länge jeder Zeile (Anzahl Blöcke), von oben nach unten.
+@export var rows: PackedInt32Array = PackedInt32Array([3])
 ## Münzen bei Erfolg.
 @export var reward: int = 100
 
-## Zielwort (nur SPECIFIC_WORD), in Großbuchstaben.
-var target: String = ""
-## Gefundene passende Wörter.
-var found: int = 0
-## Gemachte Züge (jeder Versuch ab der Mindestlänge, auch abgelehnte Wörter).
-var moves: int = 0
+## Eingetragene Wörter je Zeile ("" = noch frei).
+var filled: PackedStringArray = PackedStringArray()
 
 
-## Laufende Kopie dieser Vorlage, Fortschritt auf 0.
-func start(p_target: String = "") -> Quest:
+## Laufende Kopie dieser Vorlage, alle Zeilen frei.
+func start() -> Quest:
 	var q := duplicate() as Quest
-	q.target = p_target.to_upper()
-	q.found = 0
-	q.moves = 0
+	q.rows = rows.duplicate()
+	q.filled = PackedStringArray()
+	q.filled.resize(rows.size())
 	return q
 
 
-## Zählt dieses Wort für den Auftrag?
+## Index der obersten freien Zeile mit genau dieser Wortlänge, sonst -1.
+func free_row_for(word: String) -> int:
+	_ensure_filled()
+	for i in rows.size():
+		if filled[i] == "" and rows[i] == word.length():
+			return i
+	return -1
+
+
+## Passt dieses Wort in eine freie Zeile?
 func matches(word: String) -> bool:
-	match kind:
-		Kind.LENGTH:
-			return word.length() >= word_length
-		Kind.SPECIFIC_WORD:
-			return target != "" and word.to_upper() == target
-	return false
+	return free_row_for(word) >= 0
 
 
-## Ein Wort melden: zählt als Zug, bei Treffer als Fortschritt.
-## Gibt zurück, ob das Wort für den Auftrag gezählt hat.
-## Nach Erfolg oder Scheitern ändert sich nichts mehr.
-func register(word: String) -> bool:
-	if is_done() or is_failed():
-		return false
-	moves += 1
-	if matches(word):
-		found += 1
-		return true
-	return false
-
-
-## Ein Versuch ohne Treffer (abgelehntes Wort): kostet nur einen Zug.
-func register_miss() -> void:
-	if is_done() or is_failed():
-		return
-	moves += 1
+## Wort in eine Zeile eintragen.
+func fill(row: int, word: String) -> void:
+	_ensure_filled()
+	if row >= 0 and row < rows.size():
+		filled[row] = word.to_upper()
 
 
 func is_done() -> bool:
-	return found >= count
+	_ensure_filled()
+	for w in filled:
+		if w == "":
+			return false
+	return true
 
 
-## Zuglimit aufgebraucht, ohne dass der Auftrag erfüllt ist.
-func is_failed() -> bool:
-	return max_moves > 0 and moves >= max_moves and not is_done()
+## Längen der noch freien Zeilen (ohne Doppelte, aufsteigend).
+func free_lengths() -> PackedInt32Array:
+	_ensure_filled()
+	var result := PackedInt32Array()
+	for i in rows.size():
+		if filled[i] == "" and not result.has(rows[i]):
+			result.append(rows[i])
+	result.sort()
+	return result
 
 
-## Verbleibende Züge (-1 = kein Limit).
-func moves_left() -> int:
-	return -1 if max_moves <= 0 else maxi(max_moves - moves, 0)
+## Anzahl aller Blöcke.
+func block_count() -> int:
+	var n := 0
+	for r in rows:
+		n += r
+	return n
+
+
+func _ensure_filled() -> void:
+	if filled.size() != rows.size():
+		filled.resize(rows.size())

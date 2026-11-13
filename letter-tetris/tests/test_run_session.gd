@@ -29,18 +29,12 @@ func _column(c: int, letters: String, clear: bool = true) -> Array[Vector2i]:
 	return cells
 
 
-## Eigenen Auftrag als einzige Karte anbieten und wählen.
-func _use_quest(length: int, count: int = 1, max_moves: int = 0, no_refill: bool = false,
-		reward: int = 100) -> Quest:
+## Eigenen Auftrag mit diesen Zeilen setzen.
+func _use_rows(rows: Array, reward: int = 100) -> Quest:
 	var q := Quest.new()
-	q.word_length = length
-	q.count = count
-	q.max_moves = max_moves
-	q.no_refill = no_refill
+	q.rows = PackedInt32Array(rows)
 	q.reward = reward
-	run.quest = null
-	run.offer = [q]
-	run.choose_quest(0)
+	run.quest = q.start()
 	return run.quest
 
 
@@ -55,9 +49,9 @@ func test_start_from_spec() -> void:
 	assert_eq(_occupied(), 20)
 	assert_eq(run.coins, 0)
 	assert_eq(run.level(), 1)
-	assert_null(run.quest, "erst Karte wählen")
-	assert_eq(run.offer.size(), 2)
-	assert_signal_emitted(run, "quest_offered")
+	assert_not_null(run.quest, "Auftrag kommt sofort")
+	assert_eq(run.quest.rows, PackedInt32Array([3]))
+	assert_signal_emitted(run, "quest_started")
 	assert_false(run.is_over)
 
 
@@ -68,90 +62,86 @@ func test_start_tiles_do_not_float() -> void:
 			assert_true(run.grid.is_occupied(Vector2i(cell.x, cell.y - 1)), "schwebt: %s" % cell)
 
 
-func test_same_seed_same_start_and_cards() -> void:
+func test_same_seed_same_start() -> void:
 	var other := RunSession.new(balance, curve, lang, dict, 42)
 	run.start()
 	other.start()
 	for cell in run.grid.all_cells():
 		assert_eq(run.grid.get_letter(cell), other.grid.get_letter(cell))
-	assert_eq(run.offer[0].word_length, other.offer[0].word_length)
-
-
-# --- Karten wählen ---------------------------------------------------------------
-
-func test_choose_starts_quest() -> void:
-	run.start()
-	assert_true(run.choose_quest(1))
-	assert_not_null(run.quest)
-	assert_eq(run.quest.word_length, 4, "Level 1 riskant: 4 Buchstaben")
-	assert_eq(run.offer.size(), 0)
-	assert_signal_emitted(run, "quest_started")
-
-
-func test_choose_invalid_or_twice_fails() -> void:
-	run.start()
-	assert_false(run.choose_quest(5))
-	assert_true(run.choose_quest(0))
-	assert_false(run.choose_quest(0), "schon gewählt")
-
-
-func test_words_rejected_without_quest() -> void:
-	run.start()
-	var cells := _column(0, "AST")
-	assert_false(run.submit_path(cells))
-	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NO_QUEST])
 
 
 # --- Wörter und Aufträge -------------------------------------------------------------
 
-func test_word_completes_quest_and_pays() -> void:
+func test_word_completes_quest_and_next_comes_automatically() -> void:
 	run.start()
-	_use_quest(3, 1, 0, false, 100)
+	_use_rows([3], 100)
 	var cells := _column(0, "AST")
 	assert_true(run.submit_path(cells))
 	assert_eq(_occupied(), 2, "3 weg, 2 automatisch neu")
 	assert_eq(run.coins, 100)
 	assert_eq(run.level(), 2)
-	assert_null(run.quest)
-	assert_eq(run.offer.size(), 2, "neue Karten für Level 2")
+	assert_not_null(run.quest, "nächster Auftrag sofort da")
+	assert_eq(run.quest.rows, PackedInt32Array([4]), "Level 2 laut Kurve")
 	assert_signal_emitted(run, "quest_completed")
+	assert_signal_emit_count(run, "quest_started", 2)
 
 
-func test_non_matching_word_rejected_tiles_stay() -> void:
+func test_reward_from_curve() -> void:
 	run.start()
-	_use_quest(5)
+	_column(0, "AST")
+	run.submit_path(_column(0, "AST", false))
+	assert_eq(run.coins, 110, "Level 1: 100 + 10")
+
+
+func test_word_fills_row_and_reports_it() -> void:
+	run.start()
+	_use_rows([4, 3])
+	var cells := _column(0, "AST")
+	assert_true(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_accepted", ["AST", cells, 1])
+	assert_eq(run.quest.filled[1], "AST")
+	assert_false(run.quest.is_done())
+	assert_eq(run.level(), 1)
+
+
+func test_mixed_rows_need_all_words() -> void:
+	run.start()
+	_use_rows([3, 3, 4])
+	run.submit_path(_column(0, "AST"))
+	run.submit_path(_column(0, "OHR"))
+	assert_eq(run.level(), 1)
+	run.submit_path(_column(0, "HAUS"))
+	assert_eq(run.level(), 2)
+
+
+func test_wrong_length_rejected_tiles_stay() -> void:
+	run.start()
+	_use_rows([4])
 	var cells := _column(0, "AST")
 	assert_false(run.submit_path(cells))
 	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_MATCHING])
 	assert_signal_not_emitted(run, "word_accepted")
 	assert_eq(run.grid.get_letter(cells[0]), "A", "Steine bleiben liegen")
-	assert_eq(run.quest.moves, 1, "Versuch kostet einen Zug")
-	assert_eq(run.quest.found, 0)
-	assert_eq(run.level(), 1)
 
 
-func test_accepted_word_signal() -> void:
+func test_longer_word_does_not_count() -> void:
 	run.start()
-	_use_quest(3)
-	var cells := _column(0, "AST")
-	assert_true(run.submit_path(cells))
-	assert_signal_emitted_with_parameters(run, "word_accepted", ["AST", cells])
+	_use_rows([4])
+	var cells := _column(0, "STERN")
+	assert_false(run.submit_path(cells), "genau 4, nicht mindestens")
 
 
-func test_specific_word_rejects_other_words() -> void:
+func test_full_row_length_rejected() -> void:
 	run.start()
-	var q := Quest.new()
-	q.kind = Quest.Kind.SPECIFIC_WORD
-	q.word_length = 4
-	run.quest = q.start("MAUS")
-	var cells := _column(0, "HAUS")
-	assert_false(run.submit_path(cells))
-	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_MATCHING])
+	_use_rows([3, 4])
+	run.submit_path(_column(0, "AST"))
+	var cells := _column(0, "OHR")
+	assert_false(run.submit_path(cells), "3er-Zeile schon gefüllt")
 
 
 func test_field_stays_between_levels() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	_column(0, "AST")
 	_column(2, "OHR", false)
 	run.submit_path(_column(0, "AST", false))
@@ -161,36 +151,24 @@ func test_field_stays_between_levels() -> void:
 
 func test_minimum_length_is_3() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	var cells := _column(0, "AS")
 	assert_false(run.submit_path(cells))
 	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_TOO_SHORT])
-	assert_eq(run.quest.moves, 0, "kurzer Wisch ist kein Zug")
 
 
 func test_unknown_word_rejected() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	var cells := _column(0, "XYZ")
 	assert_false(run.submit_path(cells))
 	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_A_WORD])
-	assert_eq(run.quest.moves, 1, "auch ein Unsinn-Wort ist ein Zug")
 	assert_eq(run.grid.get_letter(cells[0]), "X", "Steine bleiben liegen")
-
-
-func test_missed_move_limit_ends_run() -> void:
-	run.start()
-	_use_quest(4, 2, 2)
-	assert_true(run.submit_path(_column(0, "HAUS")))
-	assert_false(run.is_over)
-	run.submit_path(_column(0, "XYZ"))
-	assert_true(run.is_over)
-	assert_signal_emitted_with_parameters(run, "run_ended", [1, RunSession.REASON_OUT_OF_MOVES])
 
 
 func test_nothing_accepted_after_end() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	run.give_up()
 	var cells := _column(0, "AST")
 	assert_false(run.submit_path(cells))
@@ -212,14 +190,14 @@ func test_give_up_ends_run_once() -> void:
 
 func test_refill_needs_coins() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	assert_false(run.can_refill(), "Start mit 0 Münzen")
 	assert_eq(run.refill(), 0)
 
 
 func test_refill_brings_5_tiles_for_100() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	run.coins = 120
 	var before := _occupied()
 	assert_eq(run.refill(), 5)
@@ -229,7 +207,7 @@ func test_refill_brings_5_tiles_for_100() -> void:
 
 func test_refill_price_rises_per_purchase() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	run.coins = 1000
 	assert_eq(run.refill_price(), 100)
 	run.refill()
@@ -241,25 +219,16 @@ func test_refill_price_rises_per_purchase() -> void:
 
 func test_refill_price_resets_with_new_run() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	run.coins = 1000
 	run.refill()
 	run.start()
 	assert_eq(run.refill_price(), 100)
 
 
-func test_refill_blocked_by_no_refill_quest() -> void:
-	run.start()
-	_use_quest(3, 1, 0, true)
-	run.coins = 500
-	assert_false(run.can_refill())
-	assert_eq(run.refill(), 0)
-	assert_eq(run.coins, 500)
-
-
 func test_refill_blocked_on_full_board() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	run.coins = 500
 	for cell in run.grid.all_cells():
 		run.grid.set_letter(cell, "E")
@@ -269,7 +238,7 @@ func test_refill_blocked_on_full_board() -> void:
 
 func test_refill_partial_when_little_space() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	run.coins = 100
 	for cell in run.grid.all_cells():
 		run.grid.set_letter(cell, "E")
@@ -283,9 +252,11 @@ func test_refill_partial_when_little_space() -> void:
 
 func test_hint_needs_coins_and_quest() -> void:
 	run.start()
+	run.give_up()
 	run.coins = 500
-	assert_false(run.can_hint(), "noch kein Auftrag")
-	_use_quest(3)
+	assert_false(run.can_hint(), "Lauf vorbei")
+	run.start()
+	_use_rows([3])
 	run.coins = 99
 	assert_false(run.can_hint())
 	assert_eq(run.hint(), RunSession.NO_CELL)
@@ -293,7 +264,7 @@ func test_hint_needs_coins_and_quest() -> void:
 
 func test_hint_shows_first_cell_of_matching_word() -> void:
 	run.start()
-	_use_quest(4)
+	_use_rows([4])
 	var cells := _column(0, "HAUS")
 	_column(2, "AST", false)
 	run.coins = 150
@@ -305,7 +276,7 @@ func test_hint_shows_first_cell_of_matching_word() -> void:
 
 func test_hint_without_matching_word_is_free() -> void:
 	run.start()
-	_use_quest(5)
+	_use_rows([5])
 	_column(0, "AST")
 	run.coins = 100
 	assert_eq(run.hint(), RunSession.NO_CELL)
@@ -313,23 +284,11 @@ func test_hint_without_matching_word_is_free() -> void:
 	assert_signal_not_emitted(run, "hint_changed")
 
 
-func test_hint_for_specific_word() -> void:
-	run.start()
-	var q := Quest.new()
-	q.kind = Quest.Kind.SPECIFIC_WORD
-	q.word_length = 4
-	run.quest = q.start("MAUS")
-	_column(0, "HAUS")
-	var maus := _column(2, "MAUS", false)
-	run.coins = 100
-	assert_eq(run.hint(), maus[0])
-
-
 # --- Stein ersetzen -----------------------------------------------------------------
 
 func test_replace_gives_new_letter_for_100() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	var cells := _column(0, "AST")
 	run.coins = 150
 	var letter := run.replace(cells[1])
@@ -342,7 +301,7 @@ func test_replace_gives_new_letter_for_100() -> void:
 
 func test_replace_always_changes_letter() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	var cells := _column(0, "EEE")
 	for i in 30:
 		run.coins = 100
@@ -353,7 +312,7 @@ func test_replace_always_changes_letter() -> void:
 
 func test_replace_needs_coins_and_tile() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	_column(0, "AST")
 	run.coins = 99
 	assert_false(run.can_replace())
@@ -366,7 +325,7 @@ func test_replace_needs_coins_and_tile() -> void:
 
 func test_replace_works_on_full_board() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	for cell in run.grid.all_cells():
 		run.grid.set_letter(cell, "E")
 	run.coins = 100
@@ -375,42 +334,11 @@ func test_replace_works_on_full_board() -> void:
 	assert_ne(run.replace(Vector2i(2, 4)), "")
 
 
-# --- Bestimmtes Wort (Säen) -------------------------------------------------------------
-
-func test_specific_word_quest_seeds_target() -> void:
-	run.start()
-	var q := Quest.new()
-	q.kind = Quest.Kind.SPECIFIC_WORD
-	q.word_length = 5
-	run.offer = [q]
-	assert_true(run.choose_quest(0))
-	assert_eq(run.quest.target, "STERN", "einziges Wort mit 5 Buchstaben")
-	var finder := WordFinder.new(dict)
-	var found := finder.find_paths(run.grid, 5, 5, func(w: String) -> bool: return w == "STERN")
-	assert_false(found.is_empty(), "Zielwort liegt wischbar im Feld")
-	var path: Array[Vector2i] = []
-	path.assign(found[0]["path"])
-	assert_true(run.submit_path(path))
-	assert_eq(run.level(), 2, "Auftrag erfüllt")
-
-
-func test_seeding_emits_tile_changes() -> void:
-	run.start()
-	var q := Quest.new()
-	q.kind = Quest.Kind.SPECIFIC_WORD
-	q.word_length = 6
-	run.offer = [q]
-	run.choose_quest(0)
-	assert_eq(run.quest.target, "STERNE")
-	var changed := get_signal_parameters(run, "tile_changed") != null
-	assert_true(changed, "Steine verwandeln sich")
-
-
 # --- Tauschen ----------------------------------------------------------------------------
 
 func test_swap_changes_5_tiles_for_50() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	for cell in run.grid.all_cells():
 		run.grid.set_letter(cell, "E")
 	run.coins = 80
@@ -423,9 +351,9 @@ func test_swap_changes_5_tiles_for_50() -> void:
 	assert_signal_emit_count(run, "tile_changed", 5)
 
 
-func test_swap_allowed_without_refill_and_on_full_board() -> void:
+func test_swap_allowed_on_full_board() -> void:
 	run.start()
-	_use_quest(3, 1, 0, true)
+	_use_rows([3])
 	for cell in run.grid.all_cells():
 		run.grid.set_letter(cell, "E")
 	run.coins = 50
@@ -435,7 +363,7 @@ func test_swap_allowed_without_refill_and_on_full_board() -> void:
 
 func test_swap_with_few_tiles_swaps_all() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	var cells := _column(0, "AST")
 	run.coins = 50
 	var swapped := run.swap()
@@ -446,7 +374,7 @@ func test_swap_with_few_tiles_swaps_all() -> void:
 
 func test_swap_needs_coins_and_tiles() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	run.coins = 49
 	assert_false(run.can_swap())
 	assert_eq(run.swap().size(), 0)
@@ -459,7 +387,7 @@ func test_swap_needs_coins_and_tiles() -> void:
 
 func test_found_word_refills_length_minus_one() -> void:
 	run.start()
-	_use_quest(4, 2)
+	_use_rows([4, 4])
 	_column(0, "HAUS")
 	_column(2, "OHR", false)
 	assert_true(run.submit_path(_column(0, "HAUS", false)))
@@ -467,16 +395,9 @@ func test_found_word_refills_length_minus_one() -> void:
 	assert_signal_emit_count(run, "tile_spawned", 20 + 3)
 
 
-func test_no_auto_refill_without_refill_quest() -> void:
-	run.start()
-	_use_quest(3, 2, 0, true)
-	assert_true(run.submit_path(_column(0, "AST")))
-	assert_eq(_occupied(), 0)
-
-
 func test_rejected_word_does_not_refill() -> void:
 	run.start()
-	_use_quest(5)
+	_use_rows([5])
 	_column(0, "AST")
 	run.submit_path(_column(0, "AST", false))
 	assert_eq(_occupied(), 3)
@@ -484,11 +405,9 @@ func test_rejected_word_does_not_refill() -> void:
 
 # --- Tipp Buchstabe für Buchstabe, Lösung ---------------------------------------------------
 
+## Auftrag mit einer 4er-Zeile; im Feld liegt nur MAUS als Wort mit 4 Buchstaben.
 func _maus_quest() -> Array[Vector2i]:
-	var q := Quest.new()
-	q.kind = Quest.Kind.SPECIFIC_WORD
-	q.word_length = 4
-	run.quest = q.start("MAUS")
+	_use_rows([4])
 	return _column(2, "MAUS")
 
 
@@ -529,13 +448,13 @@ func test_hint_resets_when_word_changes() -> void:
 
 func test_new_quest_resets_hint() -> void:
 	run.start()
-	_use_quest(3)
+	_use_rows([3])
 	_column(0, "AST")
 	run.coins = 100
 	run.hint()
-	run.offer = [Quest.new()]
-	run.quest = null
-	run.choose_quest(0)
+	assert_eq(run.hinted_cells().size(), 1)
+	run.submit_path(_column(0, "AST", false))
+	assert_eq(run.level(), 2)
 	assert_eq(run.hinted_cells().size(), 0)
 
 
@@ -560,3 +479,24 @@ func test_solution_available_after_give_up() -> void:
 	var maus := _maus_quest()
 	run.give_up()
 	assert_eq(run.solution(), maus)
+
+
+func test_hint_drops_when_its_row_is_filled() -> void:
+	run.start()
+	_use_rows([4, 3])
+	var maus := _column(2, "MAUS")
+	var haus := _column(0, "HAUS", false)
+	run.coins = 100
+	run.hint()
+	var hinted := run.hinted_cells()[0]
+	# Das andere 4er-Wort füllt die einzige 4er-Zeile: der Tipp passt nicht mehr.
+	run.submit_path(haus if hinted == maus[0] else maus)
+	assert_eq(run.hinted_cells().size(), 0)
+
+
+func test_hint_finds_word_for_any_free_row() -> void:
+	run.start()
+	_use_rows([5, 3])
+	var ast := _column(0, "AST")
+	run.coins = 100
+	assert_eq(run.hint(), ast[0], "AST passt in die 3er-Zeile")
