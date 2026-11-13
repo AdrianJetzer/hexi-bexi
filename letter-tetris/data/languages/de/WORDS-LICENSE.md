@@ -1,4 +1,4 @@
-# Lizenz der deutschen Wortliste (`words.bin`)
+# Lizenz der deutschen Wortlisten (`words.bin`, `common.bin`)
 
 `words.bin` ist aus zwei Quellen erzeugt (siehe `tools/dictionary/`):
 
@@ -18,3 +18,6 @@ und in ein kompaktes Binärformat gepackt.
 
 Die Wortliste `words.bin` steht als abgeleitetes Werk unter **CC BY-SA 3.0**.
 Der Programmcode des Spiels ist davon nicht betroffen.
+
+`common.bin` (geläufige Wörter für die Wort-Hilfe) enthält nur die Trennmuster-Wortliste
+(MIT, Copyright siehe oben), bearbeitet wie oben beschrieben.

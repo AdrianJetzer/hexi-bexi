@@ -29,11 +29,13 @@
 
 ## Stand
 
-- **Godot 4.7** ist auf diesem Mac installiert.
-- Projekt: `letter-tetris/` (Projektname „LetterTetris“), vom Nutzer im Godot-Editor angelegt, noch leer.
-  - Renderer: **Mobile** (passend zu Android first; Desktop-Vorschau = Handy-Darstellung).
-- Spielidee: Arbeitstitel „Letter Tetris“, Details und Anforderungen **noch nicht besprochen**.
-- Der frühere Prototyp `neon-drift/` ist entfernt.
+- **Godot 4.7** ist auf diesem Mac installiert (`~/Downloads/Godot.app`).
+- Projekt: `letter-tetris/` (Projektname „LetterTetris“), Renderer **Mobile**, Hochformat.
+- Spielidee (Arbeitstitel „Letter Tetris“): Wortspiel mit Buchstaben in 3D-Kristall-Hexagons (Raster 5 × 9), **Lauf-Modus (Roguelike)** mit Aufträgen, Münzen und Hilfen. Details in `spec/` (Einstieg: `spec/README.md`, Lauf: `spec/run-mode.md`).
+- Spielbar: Lauf-Modus mit Auftragswahl, Hilfen (Nachfüllen, Tauschen, Tipp, Ersetzen), Lösung am Ende, Bilanz.
+- Noch offen u. a.: Effekte (Zerspringen, Nebel), Optik von Karten/Knöpfen, Start- und Einstellungs-Screen, Sound, Test auf echtem Gerät, Spielname.
+- Tests: GUT, Aufruf `tools/run-tests.sh`. Wörterbuch bauen: `tools/dictionary/build.sh`.
+- Git: Feature-Branches, Commit nach jedem Schritt, **Push nur auf Zuruf**.
 
 ## Sonstiges
 

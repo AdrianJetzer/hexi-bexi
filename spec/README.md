@@ -2,19 +2,20 @@
 
 Arbeitstitel: **Letter Tetris**. Handy-Game für Android first, später iOS. Engine: Godot mit GDScript (siehe `../CLAUDE.md`).
 
-Grundidee: Buchstaben in Hexagons erscheinen im Spielfeld und füllen es von unten nach oben, der Spieler wischt Wörter, die dann verschwinden (Details in `game-rules.md`). Hier sammeln wir abgestimmte Anforderungen, Skizzen und offene Fragen, bevor implementiert wird.
+Grundidee: Buchstaben in Hexagons erscheinen im Spielfeld und füllen es von unten nach oben, der Spieler wischt Wörter, die dann verschwinden (Details in `game-rules.md`). Gespielt wird in **Läufen**: jedes Level ist ein Auftrag, Münzen kaufen Hilfen, wer aufgibt, beginnt neu (`run-mode.md`). Hier sammeln wir abgestimmte Anforderungen, Skizzen und offene Fragen, bevor implementiert wird.
 
 ## Inhalt
 
 | Dokument | Thema | Status |
 |---|---|---|
-| [v1-scope.md](v1-scope.md) | **Umfang Version 1:** was drin ist, was nicht, was noch zu klären ist | v1, abgestimmt |
-| [game-rules.md](game-rules.md) | Spielregeln: Buchstaben erscheinen mit 3D-Drehung, Wörter wischen, Füllen von unten, Spielende | Entwurf v2 |
-| [screens.md](screens.md) | Screens und Ablauf: Start, Spiel, Game-Over, Einstellungen | Entwurf v1 |
-| [look-and-sound.md](look-and-sound.md) | Optik und Ton: Theme-System, Theme „Kosmisch“ (Version 1), Effekte | Entwurf v1 |
-| [architecture.md](architecture.md) | Architektur: Trennung Logik/Darstellung, Ordnerstruktur, Tests mit GUT | Entwurf v1 |
+| [v1-scope.md](v1-scope.md) | **Umfang Version 1:** was drin ist, was nicht, was noch zu klären ist | v2, Entwurf |
+| [run-mode.md](run-mode.md) | **Lauf-Modus (Roguelike):** Aufträge als Levels, Auftragswahl, Münzen, Hilfen, Aufgeben, Kurve | Entwurf v2 |
+| [game-rules.md](game-rules.md) | Spielregeln des Grundspiels: Raster, Nachschub, Wörter wischen, Wort-Hilfe, Hilfe-Stufen, Wörterbuch | Entwurf v6 |
+| [screens.md](screens.md) | Screens und Ablauf: Start, Spiel, Auftragswahl, Bilanz, Einstellungen | Entwurf v3 |
+| [look-and-sound.md](look-and-sound.md) | Optik und Ton: Theme-System, Theme „Kosmisch“ (Version 1), 3D-Hexagons aus Rauchglas, Effekte | Entwurf v2 |
+| [architecture.md](architecture.md) | Architektur: Trennung Logik/Darstellung, 3D-Spielfeld mit 2D-Oberfläche, Lauf-Modus in der Logik, Ordnerstruktur, Tests mit GUT | Entwurf v3 |
 | [tech.md](tech.md) | Technik und Rahmen: Engine, Geräte, Austauschbarkeit, offline, Release, Git | Entwurf v1 |
-| [screen-layout.md](screen-layout.md) | Aufbau des Hauptspiel-Screens (Hochformat, geschlossenes Spielfeld mit Zickzack-Innenkante, Raster 6 × 9) | Entwurf v3 |
+| [screen-layout.md](screen-layout.md) | Aufbau des Hauptspiel-Screens (Hochformat, geschlossenes Spielfeld mit Zickzack-Innenkante, Raster 5 × 9) | Entwurf v5 |
 
 ## Konventionen
 

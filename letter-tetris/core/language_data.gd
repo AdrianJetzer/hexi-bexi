@@ -25,6 +25,8 @@ extends Resource
 @export_group("Wörterbuch")
 ## Pfad zur Wortliste (eine Zeile pro Wort, Großbuchstaben).
 @export_file var words_path: String = ""
+## Geläufige Wörter, auf die die Wort-Hilfe zielt (gleiches Format wie words_path).
+@export_file var common_words_path: String = ""
 
 
 func is_valid() -> bool:

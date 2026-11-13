@@ -3,45 +3,43 @@ extends Resource
 ## Alle einstellbaren Spielwerte (siehe spec/game-rules.md). Keine Werte fest im Code.
 
 @export_group("Raster")
-@export var grid_cols: int = 6
+@export var grid_cols: int = 5
 @export var grid_rows: int = 9
 
-@export_group("Runde")
-## Anzahl Reihen, die zu Beginn gefüllt sind.
-@export var start_rows: int = 2
-## Mindestlänge eines Wortes.
-@export var min_word_length: int = 3
+@export_group("Lauf")
+## Hexagons zu Beginn eines Laufs.
+@export var run_start_tiles: int = 20
+## Münzen zu Beginn eines Laufs.
+@export var start_coins: int = 0
+## Mindestlänge eines Worts (immer, unabhängig vom Level).
+@export var min_length: int = 3
+## Hilfe „Nachfüllen“: so viele Hexagons für so viele Münzen.
+@export var refill_count: int = 5
+@export var refill_price: int = 100
+## Nach einem gefundenen Wort kommen automatisch (Wortlänge − dieser Wert) neue Hexagons
+## (nicht bei Aufträgen „ohne Nachziehen“).
+@export var auto_refill_less: int = 1
+## Jeder weitere Kauf im selben Lauf kostet so viel mehr.
+@export var refill_price_step: int = 25
+## Hilfe „Tauschen“: so viele zufällige Steine bekommen neue Buchstaben.
+@export var swap_count: int = 5
+@export var swap_price: int = 50
+## Hilfe „Tipp“: Preis je gezeigtem Buchstaben.
+@export var hint_price: int = 100
+## Hilfe „Stein ersetzen“.
+@export var replace_price: int = 100
 
-@export_group("Tempo")
-## Sekunden zwischen zwei neuen Hexagons zu Beginn.
-@export var spawn_interval_start: float = 3.0
-## Alle so viele Sekunden wird der Takt kürzer.
-@export var speedup_every: float = 30.0
-## Faktor pro Verkürzung (0.9 = 10 % kürzer).
-@export var speedup_factor: float = 0.9
-## Kürzester Takt in Sekunden.
-@export var spawn_interval_min: float = 0.8
-
-@export_group("Punkte")
-## Punkte = points_factor · n · (n − 1).
-@export var points_factor: int = 5
-
-
-## Takt (Sekunden) für eine Tempo-Stufe (Stufe 1 = Start).
-func interval_for_level(level: int) -> float:
-	var raw := spawn_interval_start * pow(speedup_factor, maxi(level, 1) - 1)
-	return maxf(raw, spawn_interval_min)
-
-
-## Höchste Tempo-Stufe: die erste, bei der der kürzeste Takt erreicht ist.
-func max_level() -> int:
-	var level := 1
-	while interval_for_level(level) > spawn_interval_min and level < 1000:
-		level += 1
-	return level
+@export_group("Hilfe-Stufen (Wort-Hilfe)")
+## Stufen 1 (sehr starke Hilfe) bis 5 (keine), siehe spec/game-rules.md.
+## Welche Stufe gilt, legt das Level über die Auftrags-Kurve fest.
+@export var difficulty_levels: Array[DifficultyLevel] = []
+## Längste Wortlänge, die die Wort-Hilfe berücksichtigt (wegen Rechenzeit).
+@export var help_max_word_length: int = 6
 
 
-## Tempo-Stufe nach so vielen Sekunden Spielzeit.
-func level_at(elapsed: float) -> int:
-	var level := 1 + int(floor(maxf(elapsed, 0.0) / speedup_every))
-	return mini(level, max_level())
+## Stufe 1..n; außerhalb des Bereichs wird begrenzt. null, wenn keine Stufen definiert sind.
+func difficulty(level: int) -> DifficultyLevel:
+	if difficulty_levels.is_empty():
+		return null
+	return difficulty_levels[clampi(level, 1, difficulty_levels.size()) - 1]
+

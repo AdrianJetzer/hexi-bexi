@@ -1,33 +1,35 @@
 # Umfang Version 1
 
-Status: **v1, abgestimmt**. Zusammenfassung aus den übrigen Spezifikations-Dokumenten; Details stehen dort.
+Status: **v2, Entwurf**. Zusammenfassung aus den übrigen Spezifikations-Dokumenten; Details stehen dort.
 
 Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für **Android-Handys**, als **interner Test** im Play Store.
 
 ## Drin
 
 ### Spiel ([game-rules.md](game-rules.md))
-- Hexagon-Raster **6 × 9**, Hexagons unten flach.
-- Start mit **2 gefüllten Reihen**.
-- Neue Hexagons **erscheinen** im **festen Takt** (3 s, alle 30 s 10 % schneller, min. 0,8 s) mit Fade-in und **3D-Drehung**.
+- Hexagon-Raster **5 × 9**, Hexagons unten flach.
+- **Lauf-Modus (Roguelike)** ohne Zeitdruck ([run-mode.md](run-mode.md)): Start mit **20 Hexagons** und **0 Münzen**; jedes Level ist ein **Auftrag**, gewählt aus **2 Auftragskarten** (sicher/riskant), zufällig passend zum Level; Feld bleibt zwischen den Levels liegen.
+- Nach jedem gefundenen Wort automatisch **Wortlänge − 1** neue Steine (nicht bei „ohne Nachziehen“).
+- **Münzen** für erfüllte Aufträge; Hilfen: **5 Steine nachfüllen** (100, +25 je Kauf), **5 Steine tauschen** (50), **Tipp** (100 je Buchstabe, gezeigte blinken weiter); **Lösung** beim Ende des Laufs, **Stein ersetzen** (100). Neue Hexagons erscheinen mit **3D-Drehung**.
+- Aufträge „Finde ein bestimmtes Wort“ brauchen **gezieltes Säen** der Buchstaben.
 - Platzwahl: zuerst tiefste Löcher, sonst tiefste freie Plätze, bei Gleichstand zufällig.
-- Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich**.
-- **Wörter wischen** über Nachbarn, Mindestlänge 3, kein Zurückwischen, Prüfung beim Loslassen.
+- Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); Stärke der Hilfe folgt dem **Level** (5 Hilfe-Stufen, nicht wählbar).
+- **Wörter wischen** über Nachbarn, kein Zurückwischen, Prüfung beim Loslassen.
 - Gültige Wörter **verschwinden**, Löcher bleiben offen.
-- **Punkte** = 5 · n · (n − 1).
-- **Spielende**, wenn kein Platz mehr frei ist.
-- **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen, Eigennamen und Abkürzungen gelten.
+- Mindestlänge 3; angenommen werden nur **zum Auftrag passende** Wörter; jeder Versuch ab 3 Buchstaben ist ein **Zug**.
+- **Ende** nur durch **Aufgeben**, danach **Bilanz** (erreichtes Level, Rekord) und neuer Lauf ab Level 1. **Rekord** = höchstes Level.
+- **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen gelten; Eigennamen und Abkürzungen nicht (außer sie sind auch normale Wörter).
 
 ### Screens ([screens.md](screens.md), [screen-layout.md](screen-layout.md))
 - **Startbildschirm** (Titel/Logo, Spielen, Rekord, Einstellungen).
-- **Spiel** mit Infobereich (Punkte, Rekord, letztes Wort, Tempo-Stufe) und Menü-Knopf („Runde beenden?“).
-- **Game-Over** (Punkte, Rekord, neuer Rekord; Nochmal, Menü).
+- **Spiel** mit Auftragsanzeige, Münzen, Level, Rekord, Hilfe-Knöpfen und Knopf „Aufgeben“; **Auftragswahl** vor jedem Level.
+- **Bilanz** (erreichtes Level, Rekord, neuer Rekord; Nochmal, Menü).
 - **Einstellungen** (Soundeffekte, Musik, Rekord zurücksetzen).
 - Spiel hält an, wenn die App in den Hintergrund geht.
 
 ### Optik und Ton ([look-and-sound.md](look-and-sound.md))
 - **Ein Theme: Kosmisch / Sci-Fi** (Kristall-Hexagons, Metallrahmen mit Leuchtkante, animierter Nebel).
-- Effekte: Erscheinen + Drehung, Energie-Strahl beim Wischen, Kristalle zerspringen, Wackeln bei ungültigem Wort, Licht erlischt bei Game-Over.
+- Effekte: Erscheinen + Drehung, Energie-Strahl beim Wischen, Kristalle zerspringen, Wackeln bei ungültigem Wort, Licht erlischt beim Rundenende.
 - **Soundeffekte und Musik.**
 
 ### Technik ([tech.md](tech.md))
@@ -44,26 +46,26 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Weitere Sprachen** und **Umlaute**.
 - **Weitere Themes** und Theme-Auswahl.
 - **Online-Ranglisten** (Google Play Games, Game Center).
-- **Werbung und Käufe**.
+- **Werbung und Käufe** (auch Münzen kaufen).
+- Lauf-Modus-Erweiterungen: **Bosse**, **Laden und Vorteile**, **besondere Steine**, **Bonus-Münzen**, **Meta-Fortschritt**.
 - **Anleitung / Tutorial**.
 - **Pause-Funktion**.
-- **Ausgefeilte Füll-Logik** (Version 1 nutzt die einfache Regel).
 - **Vibration**.
-- **Statistik und Wortliste** auf dem Game-Over-Screen.
+- **Statistik und Wortliste** auf dem Bilanz-Screen.
 - **Öffentliche Veröffentlichung** im Play Store.
 
 ## Muss vor oder während der Umsetzung geklärt werden
 
-- **Wörterbuch:** Quellen, Aufbereitung und Format erledigt (850.724 Wörter, ~10 MB). Offen: evtl. Wortlänge begrenzen; Lizenz-Hinweis in der App.
+- **Wörterbuch:** Quellen, Aufbereitung und Format erledigt (808.125 Wörter ohne Eigennamen und Abkürzungen, ~10 MB). Offen: evtl. Wortlänge begrenzen; Lizenz-Hinweis in der App.
 - **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.
-- Feintuning von Tempo und Vokal-Ausgleich durch Testspiele.
+- Feintuning von Auftrags-Kurve, Münz-Preisen, Hilfe-Stufen und Vokal-Ausgleich durch Testspiele.
 
 ## Fertig, wenn
 
-- Eine Runde lässt sich vom Startbildschirm bis zum Game-Over spielen, alle Regeln oben funktionieren.
-- Alle vier Screens und ihre Übergänge funktionieren.
+- Ein Lauf lässt sich vom Startbildschirm über mehrere Aufträge bis zur Bilanz spielen, alle Regeln oben funktionieren.
+- Alle Screens (inkl. Auftragswahl) und ihre Übergänge funktionieren.
 - Theme Kosmisch mit allen genannten Effekten, Sound und Musik ist eingebaut.
 - Läuft auf einem Android-10-Mittelklasse-Handy flüssig mit 60 fps.
 - Steht als interner Test im Play Store.
@@ -71,3 +73,4 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 ## Verlauf
 
 - **v1:** Umfang aus den Blöcken 1–4 zusammengestellt, inklusive „Fertig, wenn“. Abgestimmt.
+- **v2:** Lauf-Modus statt ruhigem Level-Modus: Aufträge mit Auftragswahl, Münzen und Hilfen, Aufgeben, Rekord = höchstes Level; gezieltes Säen jetzt drin; Lauf-Erweiterungen auf später.

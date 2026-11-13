@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v3**, Layout und Rastergröße abgestimmt; Optik und Details offen.
+Status: **Entwurf v5**, Rastergröße 5 × 9 abgestimmt; Anordnung der Lauf-Anzeigen, Optik und Details offen.
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -22,7 +22,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 |---|---|---|---|
 | [v2](images/ingame-mock-v2.png) | 11 × 17 | 187 | verworfen: zu viele, zu kleine Hexagons |
 | [v4](images/ingame-mock-v4.png) | 7 × 11 | 77 | verworfen |
-| **[v5](images/ingame-mock-v5.png)** | **6 × 9** | **54** | **gewählt** |
+| [v5](images/ingame-mock-v5.png) | 6 × 9 | 54 | verworfen: asymmetrischer Rahmen |
+| **[Screenshot 5 × 9](images/ingame-shot-5x9-v1.png)** | **5 × 9** | **45** | **gewählt** |
 | [v3](images/ingame-mock-v3.png) | 5 × 8 | 40 | verworfen: zu wenige Buchstaben |
 
 ## Festgelegt
@@ -35,14 +36,15 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - Liegt **über** dem Hintergrund und wirkt schwebend (Tiefe, Schatten, Licht), **nicht flach**.
   - Füllt **nicht** den ganzen Screen: Links, rechts und oben bleibt ein Rand frei, durch den der Hintergrund sichtbar ist.
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
-  - **Größe: 6 Spalten × 9 Reihen = 54 Plätze** (Mock v5).
-  - Durch die gerade Spaltenzahl ist das Feld leicht **asymmetrisch**: Die linke Außenspalte steht ein halbes Feld höher als die rechte.
-- **Infobereich unten:** unterhalb des Spielfelds. Zeigt:
-  - **Punkte** der Runde
-  - **Rekord**
-  - **Letztes Wort** mit seinen Punkten (z. B. „STERN +100“)
-  - **Tempo-Stufe** (steigt mit dem Takt, siehe [game-rules.md](game-rules.md))
-- **Menü-Knopf:** klein und dezent, zum Abbrechen der Runde (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
+  - **Größe: 5 Spalten × 9 Reihen = 45 Plätze** (siehe [Screenshot](images/ingame-shot-5x9-v1.png)).
+  - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
+- **Inhalt rund ums Spielfeld** (Lauf-Modus, siehe [screens.md](screens.md)); **Anordnung noch offen**:
+  - **Auftrag** mit Fortschritt (z. B. „Wort mit 5 Buchstaben“, „2 von 3“)
+  - **Münzen**
+  - **Level** und **Rekord**
+  - **Hilfe-Knöpfe** mit Preis: Nachfüllen (ab 100), Tauschen (50), Tipp (100), Stein ersetzen (100)
+  - oben weiterhin das gerade gewischte **Wort**
+- **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
 
@@ -63,3 +65,6 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v2:** Spielfeld ringsum geschlossen, Innenkante folgt dem Hexagon-Raster (Variante A). Raster 10 × 20 ersetzt durch Hexagon-Raster, Größe offen. Mock-Screenshot v2 ergänzt.
 - **v3:** Rastergröße festgelegt: **6 × 9** (Mock v5), nach Vergleich von 11 × 17, 7 × 11 und 5 × 8.
 - **v3.1:** Inhalt des Infobereichs festgelegt (Punkte, Rekord, letztes Wort, Tempo-Stufe). Menü-Knopf statt Pause-Knopf.
+- **v3.2:** Infobereich: Level mit Fortschritt statt Tempo-Stufe, Knopf „Neue Buchstaben“.
+- **v4:** Lauf-Modus: Infobereich zeigt Auftrag, Münzen, Level, Rekord und Hilfe-Knöpfe statt Punkte und „Neue Buchstaben“; „Aufgeben“ statt Menü-Knopf. Anordnung offen.
+- **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.

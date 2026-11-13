@@ -1,0 +1,147 @@
+[gd_resource type="Resource" script_class="QuestCurve" load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://core/quest_curve.gd" id="1"]
+[ext_resource type="Script" path="res://core/quest.gd" id="2"]
+[ext_resource type="Script" path="res://core/quest_curve_step.gd" id="3"]
+
+[sub_resource type="Resource" id="safe_1"]
+script = ExtResource("2")
+word_length = 3
+reward = 100
+
+[sub_resource type="Resource" id="risky_1"]
+script = ExtResource("2")
+word_length = 4
+reward = 150
+
+[sub_resource type="Resource" id="step_1"]
+script = ExtResource("3")
+first_level = 1
+last_level = 1
+safe = SubResource("safe_1")
+risky = SubResource("risky_1")
+help_level = 1
+
+[sub_resource type="Resource" id="safe_2"]
+script = ExtResource("2")
+word_length = 4
+reward = 100
+
+[sub_resource type="Resource" id="risky_2"]
+script = ExtResource("2")
+word_length = 5
+reward = 200
+
+[sub_resource type="Resource" id="step_2"]
+script = ExtResource("3")
+first_level = 2
+last_level = 2
+safe = SubResource("safe_2")
+risky = SubResource("risky_2")
+help_level = 1
+
+[sub_resource type="Resource" id="safe_3"]
+script = ExtResource("2")
+word_length = 4
+count = 2
+reward = 100
+
+[sub_resource type="Resource" id="risky_3"]
+script = ExtResource("2")
+word_length = 5
+reward = 200
+
+[sub_resource type="Resource" id="step_3"]
+script = ExtResource("3")
+first_level = 3
+last_level = 3
+safe = SubResource("safe_3")
+risky = SubResource("risky_3")
+help_level = 2
+
+[sub_resource type="Resource" id="safe_4"]
+script = ExtResource("2")
+kind = 1
+word_length = 4
+reward = 100
+
+[sub_resource type="Resource" id="risky_4"]
+script = ExtResource("2")
+word_length = 5
+reward = 200
+
+[sub_resource type="Resource" id="step_4"]
+script = ExtResource("3")
+first_level = 4
+last_level = 4
+safe = SubResource("safe_4")
+risky = SubResource("risky_4")
+help_level = 2
+
+[sub_resource type="Resource" id="safe_5"]
+script = ExtResource("2")
+word_length = 5
+no_refill = true
+reward = 150
+
+[sub_resource type="Resource" id="risky_5"]
+script = ExtResource("2")
+word_length = 6
+reward = 250
+
+[sub_resource type="Resource" id="step_5"]
+script = ExtResource("3")
+first_level = 5
+last_level = 5
+safe = SubResource("safe_5")
+risky = SubResource("risky_5")
+help_level = 3
+
+[sub_resource type="Resource" id="safe_6_7"]
+script = ExtResource("2")
+kind = 1
+word_length = 5
+reward = 150
+
+[sub_resource type="Resource" id="risky_6_7"]
+script = ExtResource("2")
+word_length = 4
+count = 3
+max_moves = 4
+reward = 250
+
+[sub_resource type="Resource" id="step_6_7"]
+script = ExtResource("3")
+first_level = 6
+last_level = 7
+safe = SubResource("safe_6_7")
+risky = SubResource("risky_6_7")
+help_level = 3
+
+[sub_resource type="Resource" id="safe_8_10"]
+script = ExtResource("2")
+kind = 1
+word_length = 6
+reward = 150
+
+[sub_resource type="Resource" id="risky_8_10"]
+script = ExtResource("2")
+word_length = 6
+reward = 300
+
+[sub_resource type="Resource" id="step_8_10"]
+script = ExtResource("3")
+first_level = 8
+last_level = 10
+safe = SubResource("safe_8_10")
+risky = SubResource("risky_8_10")
+help_level = 4
+
+[resource]
+script = ExtResource("1")
+steps = Array[ExtResource("3")]([SubResource("step_1"), SubResource("step_2"), SubResource("step_3"), SubResource("step_4"), SubResource("step_5"), SubResource("step_6_7"), SubResource("step_8_10")])
+mix_from_level = 6
+tighten_every = 5
+max_word_length = 8
+tighten_reward = 50
+endless_help_level = 5

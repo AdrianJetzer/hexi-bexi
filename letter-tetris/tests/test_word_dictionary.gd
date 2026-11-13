@@ -66,15 +66,48 @@ func test_python_and_gdscript_pack_identically() -> void:
 	assert_eq(built, FileAccess.get_file_as_bytes(SAMPLE_BIN))
 
 
+func test_has_prefix() -> void:
+	for p in ["S", "ST", "STE", "STER", "STERN", "STERNE", "ber", "U", "HAU"]:
+		assert_true(dict.has_prefix(p), p)
+	for p in ["X", "STERNEN", "SZ", "HAUSE", "BERLINER", "USAA"]:
+		assert_false(dict.has_prefix(p), p)
+
+
+func test_has_prefix_matches_brute_force() -> void:
+	var words := PackedStringArray(["AAL", "AALE", "ABER", "ABT", "BAD", "BADEN", "ZOO", "ZOOS", "ZUG"])
+	var d := WordDictionary.from_words(words)
+	for a in ["A", "B", "Z", "Q"]:
+		for b in ["", "A", "B", "O", "U", "D"]:
+			for c in ["", "L", "E", "O", "T", "G"]:
+				var p: String = a + b + c
+				var expected := false
+				for w in words:
+					if w.begins_with(p):
+						expected = true
+				assert_eq(d.has_prefix(p), expected, p)
+
+
 func test_real_german_dictionary() -> void:
 	var lang := load("res://data/languages/de/language.tres") as LanguageData
 	var d := WordDictionary.from_file(lang.words_path)
 	assert_not_null(d)
 	assert_gt(d.size(), 500000)
-	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "BERLIN", "ANNA", "USA", "KFZ", "HAUS"]:
+	# Normale Wörter, auch Namen, die zugleich normale Wörter sind (ROSE, WOLF), und Zusammenziehungen.
+	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "HAUS", "ROSE",
+			"WOLF", "ERNST", "BEIM", "ZUM"]:
 		assert_true(d.contains(w), w)
-	for w in ["XQZT", "STERNX", "QQQ", "AB"]:
+	# Unsinn und reine Eigennamen/Abkürzungen gelten nicht.
+	for w in ["XQZT", "STERNX", "QQQ", "AB", "BERLIN", "OLGAS", "USA", "KFZ", "LKW"]:
 		assert_false(d.contains(w), w)
+
+
+func test_common_words_without_names() -> void:
+	var lang := load("res://data/languages/de/language.tres") as LanguageData
+	var c := WordDictionary.from_file(lang.common_words_path)
+	assert_gt(c.size(), 300000)
+	for w in ["OLGA", "OLGAS", "BERLIN", "PETER"]:
+		assert_false(c.contains(w), w)
+	assert_true(c.contains("HIMMEL"))
 
 
 func test_missing_file_returns_null() -> void:
