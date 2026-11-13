@@ -82,11 +82,13 @@ func setup(p_session: RunSession) -> void:
 		session.word_accepted.disconnect(_on_word_accepted)
 		session.word_rejected.disconnect(_on_word_rejected)
 		session.tile_changed.disconnect(_on_tile_changed)
+		session.tiles_removed.disconnect(_on_tiles_removed)
 	session = p_session
 	session.tile_spawned.connect(_on_tile_spawned)
 	session.word_accepted.connect(_on_word_accepted)
 	session.word_rejected.connect(_on_word_rejected)
 	session.tile_changed.connect(_on_tile_changed)
+	session.tiles_removed.connect(_on_tiles_removed)
 	tap_mode = false
 	_hint_cells.clear()
 
@@ -283,6 +285,11 @@ func _on_word_accepted(_word: String, cells: Array[Vector2i], _row: int) -> void
 			var tile: HexTile3D = _tiles[cell]
 			_tiles.erase(cell)
 			tile.vanish(i * 0.06)
+
+
+## Aufräumen: diese Steine verschwinden (wie bei einem gefundenen Wort).
+func _on_tiles_removed(cells: Array[Vector2i]) -> void:
+	_on_word_accepted("", cells, -1)
 
 
 func _on_word_rejected(cells: Array[Vector2i], _reason: String) -> void:

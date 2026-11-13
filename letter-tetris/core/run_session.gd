@@ -5,12 +5,14 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), hint(), replace(cell).
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
 ## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Tauschen, Ersetzen).
 signal tile_changed(cell: Vector2i, letter: String)
+## Aufräumen: diese Steine sind entfernt (die Plätze bleiben frei).
+signal tiles_removed(cells: Array[Vector2i])
 ## Tipp: die bisher gezeigten Steine eines passenden Worts, in Wortreihenfolge
 ## (leer = kein Tipp mehr, z. B. weil sich ein Stein des Worts geändert hat).
 signal hint_changed(cells: Array[Vector2i])
@@ -48,6 +50,7 @@ var is_over: bool = false
 var quest: Quest
 
 var _balance: GameBalance
+var _lang: LanguageData
 var _dictionary: WordDictionary
 var _generator: QuestGenerator
 var _curve: QuestCurve
@@ -70,6 +73,7 @@ var _refills: int = 0
 func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictionary: WordDictionary,
 		seed_value: int = -1, common_words: WordDictionary = null) -> void:
 	_balance = balance
+	_lang = lang
 	_curve = curve
 	_dictionary = dictionary
 	var rng_letters := RandomNumberGenerator.new()
@@ -171,6 +175,64 @@ func swap() -> Array[Vector2i]:
 	_pay(_balance.swap_price)
 	_check_hint()
 	return cells
+
+
+## Aufräumen möglich? (Auftrag aktiv, Münzen reichen)
+func can_clear() -> bool:
+	return not is_over and quest != null and coins >= _balance.clear_price
+
+
+## Steine, sortiert vom am wenigsten hilfreichen zum hilfreichsten: zuerst nach der Zahl
+## passender Wörter (Längen der freien Zeilen, geläufige Wörter), die durch den Stein führen,
+## bei Gleichstand die seltensten Buchstaben zuerst. Blinkende Tipp-Steine sind ausgenommen.
+func clear_candidates() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if quest == null:
+		return cells
+	var hinted := hinted_cells()
+	var uses := {}
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell) and not hinted.has(cell):
+			cells.append(cell)
+			uses[cell] = 0
+	var lengths := quest.free_lengths()
+	if not lengths.is_empty():
+		var q := quest
+		var finder: WordFinder = _hint_finders[0]
+		for hit in finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
+				func(w: String) -> bool: return q.matches(w), 1000000):
+			for cell in hit["path"]:
+				if uses.has(cell):
+					uses[cell] += 1
+	var key := {}
+	for cell in cells:
+		# Zufall nur als Gleichstands-Brecher bei gleich seltenen Buchstaben.
+		key[cell] = uses[cell] * 1000.0 + _letter_weight(grid.get_letter(cell)) + _hint_rng.randf() * 0.0001
+	cells.sort_custom(func(x: Vector2i, y: Vector2i) -> bool: return key[x] < key[y])
+	return cells
+
+
+## Hilfe „Aufräumen“: die clear_count am wenigsten hilfreichen Steine entfernen.
+## Gibt die entfernten Plätze zurück (leer = keine Steine, kostet nichts).
+func clear_useless() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if not can_clear():
+		return cells
+	cells = clear_candidates()
+	if cells.is_empty():
+		return cells
+	cells.resize(mini(cells.size(), _balance.clear_count))
+	for cell in cells:
+		grid.clear(cell)
+	_pay(_balance.clear_price)
+	tiles_removed.emit(cells)
+	_check_hint()
+	return cells
+
+
+func _letter_weight(letter: String) -> float:
+	var i := _lang.alphabet.find(letter)
+	return _lang.weights[i] if i >= 0 else 0.0
 
 
 ## Tipp möglich? (Auftrag aktiv, Münzen reichen, noch nicht alle Buchstaben gezeigt)

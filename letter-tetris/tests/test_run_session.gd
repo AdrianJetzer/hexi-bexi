@@ -519,3 +519,90 @@ func test_help_aims_at_free_row_lengths() -> void:
 	r.quest.fill(0, "HAUS")
 	r._aim_help()
 	assert_eq(r._spawner.finder.only_lengths, PackedInt32Array([7]), "nur noch die freie Zeile")
+
+
+# --- Aufräumen -----------------------------------------------------------------------------
+
+func test_clear_removes_least_helpful_first() -> void:
+	run.start()
+	_use_rows([4])
+	var haus := _column(0, "HAUS")
+	_column(2, "QEEE", false)
+	_column(4, "XYEN", false)
+	run.coins = 150
+	var removed := run.clear_useless()
+	assert_eq(removed.size(), 5)
+	assert_eq(run.coins, 50)
+	for cell in removed:
+		assert_true(run.grid.is_free(cell), "Platz bleibt frei")
+	for cell in haus:
+		assert_false(removed.has(cell), "HAUS passt und bleibt")
+	assert_true(removed.has(Vector2i(2, 0)), "Q zuerst")
+	assert_true(removed.has(Vector2i(4, 0)) and removed.has(Vector2i(4, 1)), "X und Y")
+	assert_signal_emitted_with_parameters(run, "tiles_removed", [removed])
+
+
+func test_clear_always_removes_five_if_possible() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "AST")
+	_column(2, "OHR", false)
+	_column(4, "TEE", false)
+	run.coins = 100
+	var removed := run.clear_useless()
+	assert_eq(removed.size(), 5, "auch wenn alle Steine in Wörtern stecken")
+	assert_eq(run.coins, 0)
+
+
+func test_clear_with_few_tiles() -> void:
+	run.start()
+	_use_rows([4])
+	_column(3, "QX")
+	run.coins = 100
+	assert_eq(run.clear_useless().size(), 2)
+	assert_eq(run.coins, 0, "kostet trotzdem 100")
+
+
+func test_clear_on_empty_board_is_free() -> void:
+	run.start()
+	_use_rows([4])
+	run.grid.clear_all()
+	run.coins = 100
+	assert_eq(run.clear_useless().size(), 0)
+	assert_eq(run.coins, 100)
+	assert_signal_not_emitted(run, "tiles_removed")
+
+
+func test_clear_keeps_hint_tiles() -> void:
+	run.start()
+	_use_rows([4])
+	var maus := _column(2, "MAUS")
+	run.coins = 300
+	run.hint()
+	assert_false(run.clear_candidates().has(maus[0]))
+
+
+func test_clear_needs_coins() -> void:
+	run.start()
+	_use_rows([4])
+	_column(3, "QXY")
+	run.coins = 99
+	assert_false(run.can_clear())
+	assert_eq(run.clear_useless().size(), 0)
+
+
+func test_clear_with_real_dictionary_is_fast_enough() -> void:
+	var words := WordDictionary.from_file(lang.words_path)
+	var common := WordDictionary.from_file(lang.common_words_path)
+	var r := RunSession.new(balance, curve, lang, words, 5, common)
+	r.start()
+	for i in 20:
+		r._spawn(1)
+	var q := Quest.new()
+	q.rows = PackedInt32Array([3, 5, 8])
+	r.quest = q.start()
+	var t0 := Time.get_ticks_msec()
+	var ranked := r.clear_candidates()
+	var ms := Time.get_ticks_msec() - t0
+	gut.p("Aufräumen bei %d Steinen: %d ms" % [ranked.size(), ms])
+	assert_lt(ms, 2000)

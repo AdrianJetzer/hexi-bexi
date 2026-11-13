@@ -24,6 +24,9 @@ extends Resource
 ## Hilfe „Tauschen“: so viele zufällige Steine bekommen neue Buchstaben.
 @export var swap_count: int = 5
 @export var swap_price: int = 50
+## Hilfe „Aufräumen“: bis zu so viele nutzlose Steine entfernen, für so viele Münzen.
+@export var clear_count: int = 5
+@export var clear_price: int = 100
 ## Hilfe „Tipp“: Preis je gezeigtem Buchstaben.
 @export var hint_price: int = 100
 ## Hilfe „Stein ersetzen“.

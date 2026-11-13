@@ -36,6 +36,7 @@ var _level_label: Label
 var _coins_label: Label
 var _refill_button: Button
 var _swap_button: Button
+var _clear_button: Button
 var _hint_button: Button
 var _replace_button: Button
 var _give_up_button: Button
@@ -106,17 +107,23 @@ func _build_ui() -> void:
 	_coins_label = _label(44, ACCENT)
 	_coins_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
-	_refill_button = _button("", 30)
+	_refill_button = _button("", 26)
 	_refill_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		session.refill())
-	_swap_button = _button("", 30)
+	_swap_button = _button("", 26)
 	_swap_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		session.swap())
-	_hint_button = _button("", 30)
+	_clear_button = _button("", 26)
+	_clear_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.clear_useless().is_empty():
+			# Keine Steine im Feld: Knopf wackelt (kostet nichts).
+			_shake(_clear_button))
+	_hint_button = _button("", 26)
 	_hint_button.pressed.connect(_on_hint_pressed)
-	_replace_button = _button("", 30)
+	_replace_button = _button("", 26)
 	_replace_button.toggle_mode = true
 	_replace_button.toggled.connect(_set_replace_mode)
 
@@ -201,7 +208,7 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 
 
 func _help_buttons() -> Array[Button]:
-	return [_refill_button, _swap_button, _hint_button, _replace_button]
+	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button]
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
@@ -230,11 +237,11 @@ func _relayout() -> void:
 	_level_label.size = Vector2(inner * 0.55, 60)
 	_coins_label.position = Vector2(side + inner * 0.55, info_top + 5)
 	_coins_label.size = Vector2(inner * 0.45, 60)
-	var gap := 16.0
-	var bw := (inner - 3.0 * gap) / 4.0
+	var gap := 12.0
+	var buttons := _help_buttons()
+	var bw := (inner - (buttons.size() - 1) * gap) / buttons.size()
 	_continue_button.position = Vector2(side + inner * 0.25, info_top + 80)
 	_continue_button.size = Vector2(inner * 0.5, 120)
-	var buttons := _help_buttons()
 	for i in buttons.size():
 		buttons[i].position = Vector2(side + i * (bw + gap), info_top + 85)
 		buttons[i].size = Vector2(bw, 110)
@@ -250,6 +257,8 @@ func _update_labels() -> void:
 	_refill_button.disabled = not session.can_refill()
 	_swap_button.text = "Tauschen\n−%d" % BALANCE.swap_price
 	_swap_button.disabled = not session.can_swap()
+	_clear_button.text = "Aufräumen\n−%d" % BALANCE.clear_price
+	_clear_button.disabled = not session.can_clear()
 	_hint_button.text = "Tipp\n−%d" % BALANCE.hint_price
 	_hint_button.disabled = not session.can_hint()
 	_replace_button.text = "Ersetzen\n−%d" % BALANCE.replace_price
