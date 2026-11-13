@@ -60,7 +60,7 @@ Pro Level zwei Auftragskarten: A sicher, B riskant. Zahlen sind Startwerte für 
 - Die Wort-Hilfe nutzt die bisherigen 5 Stufen (sehr stark = „Sehr leicht“ … ohne Hilfe = „Profi“), jetzt automatisch nach Level.
 
 ### Zug
-Ein **Zug** ist ein **angenommenes Wort**. Ungültige Versuche und gekaufte Hilfen zählen nicht als Zug.
+Ein **Zug** ist ein **angenommenes Wort**. Ungültige Versuche und gekaufte Hilfen zählen nicht als Zug. Jedes gültige Wort (mindestens 3 Buchstaben) wird angenommen und verschwindet, auch wenn es nicht zum Auftrag passt; für den Auftrag zählen nur passende Wörter.
 
 ### Auftrag wählen [v1]
 Vor jedem Level gibt es **2 Auftragskarten** zur Wahl, z. B. „4 Buchstaben, +100“ oder „6 Buchstaben, +250“. Sicher oder riskant?

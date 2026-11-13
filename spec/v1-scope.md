@@ -1,6 +1,6 @@
 # Umfang Version 1
 
-Status: **v1, abgestimmt**. Zusammenfassung aus den übrigen Spezifikations-Dokumenten; Details stehen dort.
+Status: **v2, Entwurf**. Zusammenfassung aus den übrigen Spezifikations-Dokumenten; Details stehen dort.
 
 Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für **Android-Handys**, als **interner Test** im Play Store.
 
@@ -8,20 +8,21 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 
 ### Spiel ([game-rules.md](game-rules.md))
 - Hexagon-Raster **6 × 9**, Hexagons unten flach.
-- Start mit **15 Hexagons**, ruhiger **Level-Modus ohne Zeitdruck** (endlos).
-- **Level-Up** bei wachsenden Punktschwellen (100, 250, 475 …) bringt **10 neue Hexagons** (mit **3D-Drehung**); Mindestlänge steigt (3/4/5); Knopf **„Neue Buchstaben“** (3 für 20 Punkte).
+- **Lauf-Modus (Roguelike)** ohne Zeitdruck ([run-mode.md](run-mode.md)): Start mit **20 Hexagons** und **0 Münzen**; jedes Level ist ein **Auftrag**, gewählt aus **2 Auftragskarten** (sicher/riskant), zufällig passend zum Level; Feld bleibt zwischen den Levels liegen.
+- **Münzen** für erfüllte Aufträge; Hilfen: **5 Steine nachfüllen** (50), **Tipp Anfangsbuchstabe** (100), **Stein ersetzen** (100). Neue Hexagons erscheinen mit **3D-Drehung**.
+- Aufträge „Finde ein bestimmtes Wort“ brauchen **gezieltes Säen** der Buchstaben.
 - Platzwahl: zuerst tiefste Löcher, sonst tiefste freie Plätze, bei Gleichstand zufällig.
-- Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); **5 Schwierigkeitsstufen** (nur Hilfe), Rekord pro Stufe.
+- Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); Stärke der Hilfe folgt dem **Level** (5 Hilfe-Stufen, nicht wählbar).
 - **Wörter wischen** über Nachbarn, kein Zurückwischen, Prüfung beim Loslassen.
 - Gültige Wörter **verschwinden**, Löcher bleiben offen.
-- **Punkte** = 5 · n · (n − 1).
-- **Rundenende** durch den Spieler, danach **Bilanz** (Punkte, Level, Rekord).
+- Mindestlänge immer 3; jedes gültige Wort ist ein **Zug**.
+- **Ende** nur durch **Aufgeben**, danach **Bilanz** (erreichtes Level, Rekord) und neuer Lauf ab Level 1. **Rekord** = höchstes Level.
 - **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen, Eigennamen und Abkürzungen gelten.
 
 ### Screens ([screens.md](screens.md), [screen-layout.md](screen-layout.md))
 - **Startbildschirm** (Titel/Logo, Spielen, Rekord, Einstellungen).
-- **Spiel** mit Infobereich (Punkte, Rekord, letztes Wort, Level mit Fortschritt, Knopf „Neue Buchstaben“) und Menü-Knopf („Runde beenden?“).
-- **Bilanz** (Punkte, erreichtes Level, Rekord, neuer Rekord; Nochmal, Menü).
+- **Spiel** mit Auftragsanzeige, Münzen, Level, Rekord, Hilfe-Knöpfen und Knopf „Aufgeben“; **Auftragswahl** vor jedem Level.
+- **Bilanz** (erreichtes Level, Rekord, neuer Rekord; Nochmal, Menü).
 - **Einstellungen** (Soundeffekte, Musik, Rekord zurücksetzen).
 - Spiel hält an, wenn die App in den Hintergrund geht.
 
@@ -44,10 +45,10 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Weitere Sprachen** und **Umlaute**.
 - **Weitere Themes** und Theme-Auswahl.
 - **Online-Ranglisten** (Google Play Games, Game Center).
-- **Werbung und Käufe**.
+- **Werbung und Käufe** (auch Münzen kaufen).
+- Lauf-Modus-Erweiterungen: **Bosse**, **Laden und Vorteile**, **besondere Steine**, **Bonus-Münzen**, **Meta-Fortschritt**.
 - **Anleitung / Tutorial**.
 - **Pause-Funktion**.
-- **Wörter gezielt säen** (Ausbaustufe der Wort-Hilfe).
 - **Vibration**.
 - **Statistik und Wortliste** auf dem Bilanz-Screen.
 - **Öffentliche Veröffentlichung** im Play Store.
@@ -58,12 +59,14 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.
-- Feintuning von Level-Schwellen, Nachschub, Knopf-Kosten und Vokal-Ausgleich durch Testspiele.
+- Regeln für Aufträge ab Level 11.
+- Wie das gezielte Säen eines bestimmten Worts funktioniert.
+- Feintuning von Auftrags-Kurve, Münz-Preisen, Hilfe-Stufen und Vokal-Ausgleich durch Testspiele.
 
 ## Fertig, wenn
 
-- Eine Runde lässt sich vom Startbildschirm bis zur Bilanz spielen, alle Regeln oben funktionieren.
-- Alle vier Screens und ihre Übergänge funktionieren.
+- Ein Lauf lässt sich vom Startbildschirm über mehrere Aufträge bis zur Bilanz spielen, alle Regeln oben funktionieren.
+- Alle Screens (inkl. Auftragswahl) und ihre Übergänge funktionieren.
 - Theme Kosmisch mit allen genannten Effekten, Sound und Musik ist eingebaut.
 - Läuft auf einem Android-10-Mittelklasse-Handy flüssig mit 60 fps.
 - Steht als interner Test im Play Store.
@@ -71,3 +74,4 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 ## Verlauf
 
 - **v1:** Umfang aus den Blöcken 1–4 zusammengestellt, inklusive „Fertig, wenn“. Abgestimmt.
+- **v2:** Lauf-Modus statt ruhigem Level-Modus: Aufträge mit Auftragswahl, Münzen und Hilfen, Aufgeben, Rekord = höchstes Level; gezieltes Säen jetzt drin; Lauf-Erweiterungen auf später.

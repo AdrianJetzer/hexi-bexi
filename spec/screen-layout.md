@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v3**, Layout und Rastergröße abgestimmt; Optik und Details offen.
+Status: **Entwurf v4**, Rastergröße abgestimmt; Anordnung der Lauf-Anzeigen, Optik und Details offen.
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -37,13 +37,13 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
   - **Größe: 6 Spalten × 9 Reihen = 54 Plätze** (Mock v5).
   - Durch die gerade Spaltenzahl ist das Feld leicht **asymmetrisch**: Die linke Außenspalte steht ein halbes Feld höher als die rechte.
-- **Infobereich unten:** unterhalb des Spielfelds. Zeigt:
-  - **Punkte** der Runde
-  - **Rekord**
-  - **Letztes Wort** mit seinen Punkten (z. B. „STERN +100“)
-  - **Level** und **Fortschritt** bis zum nächsten Level (z. B. „Level 2 · noch 80 Punkte“)
-  - **Knopf „Neue Buchstaben“** (−20 Punkte)
-- **Menü-Knopf:** klein und dezent, zum Beenden der Runde (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
+- **Inhalt rund ums Spielfeld** (Lauf-Modus, siehe [screens.md](screens.md)); **Anordnung noch offen**:
+  - **Auftrag** mit Fortschritt (z. B. „Wort mit 5 Buchstaben“, „2 von 3“)
+  - **Münzen**
+  - **Level** und **Rekord**
+  - **Hilfe-Knöpfe** mit Preis: Nachfüllen (50), Tipp (100), Stein ersetzen (100)
+  - oben weiterhin das gerade gewischte **Wort**
+- **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
 
@@ -65,3 +65,4 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v3:** Rastergröße festgelegt: **6 × 9** (Mock v5), nach Vergleich von 11 × 17, 7 × 11 und 5 × 8.
 - **v3.1:** Inhalt des Infobereichs festgelegt (Punkte, Rekord, letztes Wort, Tempo-Stufe). Menü-Knopf statt Pause-Knopf.
 - **v3.2:** Infobereich: Level mit Fortschritt statt Tempo-Stufe, Knopf „Neue Buchstaben“.
+- **v4:** Lauf-Modus: Infobereich zeigt Auftrag, Münzen, Level, Rekord und Hilfe-Knöpfe statt Punkte und „Neue Buchstaben“; „Aufgeben“ statt Menü-Knopf. Anordnung offen.

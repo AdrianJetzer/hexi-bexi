@@ -1,10 +1,10 @@
 # Spielregeln
 
-Status: **Entwurf v5**. Ruhiger Level-Modus ohne Zeitdruck abgestimmt; Effekte und Feintuning folgen.
+Status: **Entwurf v6**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
-Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hexagons. Der Spieler findet Wörter, sammelt Punkte und steigt damit Level auf. Bei jedem Level-Up kommt eine Ladung neuer Hexagons dazu, und die Wörter müssen länger werden. Das Spiel ist **endlos**; der Spieler beendet die Runde selbst.
+Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchstaben in Hexagons. Jedes Level ist ein **Auftrag** („Finde ein Wort mit 5 Buchstaben“). Erfüllte Aufträge bringen **Münzen**, mit denen man Hilfen kauft (Steine nachfüllen, Tipp, Stein ersetzen). Wer nicht weiterkommt, gibt auf, und der nächste **Lauf** beginnt wieder bei Level 1. Alles zum Lauf steht in [run-mode.md](run-mode.md); hier stehen die Regeln des Grundspiels.
 
 ## Festgelegt
 
@@ -15,8 +15,9 @@ Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hex
 - Das Spielfeld ist **geschlossen**; seine Innenkante folgt dem Raster im Zickzack (siehe [screen-layout.md](screen-layout.md)).
 
 ### Spielstart
-- Eine Runde beginnt mit **15 Hexagons**, verteilt nach der Platzwahl (zuerst die tiefsten Plätze).
-- Start in **Level 1** mit **0 Punkten**.
+- Ein Lauf beginnt mit **20 Hexagons**, verteilt nach der Platzwahl (zuerst die tiefsten Plätze).
+- Start in **Level 1** mit **0 Münzen** (siehe [run-mode.md](run-mode.md)).
+- Das Feld bleibt zwischen den Levels liegen.
 
 ### Neue Buchstaben erscheinen
 - Buchstaben **fallen nicht**. Ein neues Hexagon **erscheint direkt an einem freien Platz**.
@@ -35,14 +36,10 @@ Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hex
   2. Sonst auf einen der **tiefsten freien Plätze**, auf dem es nicht schwebt.
   3. Bei mehreren gleich tiefen Plätzen wird **zufällig** gewählt.
 
-### Level und Nachschub (kein Takt)
+### Nachschub (kein Takt)
 - Es gibt **keinen Takt**: Neue Hexagons kommen **nicht nach Zeit**.
-- **Level-Up:** Erreicht die Punktzahl die nächste Schwelle, steigt das Level um 1 und es kommen **auf einen Schlag 10 neue Hexagons** dazu (nacheinander mit Drehung).
-- **Schwellen** wachsen um 50 % je Level: Level 2 ab **100** Punkten, Level 3 ab **250**, Level 4 ab **475**, Level 5 ab **812** … (Schritt k = 100 · 1,5^(k−1), aufsummiert, abgerundet).
-- Das **Level sinkt nie**. Für das nächste Level zählt die aktuelle Punktzahl.
-- **Mindestlänge steigt mit dem Level:** Level 1–2: **3** Buchstaben, Level 3–4: **4**, ab Level 5: **5**.
-- **Knopf „Neue Buchstaben“** (gegen Feststecken): bringt sofort **3 neue Hexagons** und kostet **20 Punkte**. Er ist immer nutzbar; die Punkte fallen nicht unter 0.
-- **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, tut der Knopf nichts (kostet auch nichts).
+- Neue Hexagons gibt es nur über die **Hilfen** des Lauf-Modus: **5 Steine nachfüllen** für 50 Münzen, **Stein ersetzen** für 100 Münzen (siehe [run-mode.md](run-mode.md)).
+- **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, ist Nachfüllen gesperrt.
 - Alle Zahlen sind Spielwerte (tunebar), nicht fest im Code.
 
 ### Buchstabenwahl
@@ -51,12 +48,10 @@ Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hex
 - **Wort-Hilfe (Vorausschau):** Bevor ein neues Hexagon erscheint, steht sein Platz fest. Das Spiel bewertet für diesen Platz jeden möglichen Buchstaben danach, wie viele **geläufige Wörter** er zusammen mit den Nachbarn möglich macht, und bevorzugt gute Buchstaben – gewichtet, nicht immer (sonst zu vorhersehbar).
 - **Mindestens X Wörter:** Das Spiel zählt, wie viele geläufige Wörter gerade im Feld möglich sind. Sind es weniger als die Stufe verlangt, hilft es stärker nach (wählt den Buchstaben mit den meisten Wörtern).
 - **Geläufige Wörter** für die Hilfe: vorerst die Einträge der Trennmuster-Wortliste. **Gültig** bleiben weiterhin alle Wörter des Wörterbuchs.
-- Wie stark geholfen wird, bestimmt die **Schwierigkeitsstufe**.
+- Wie stark geholfen wird, bestimmt die **Hilfe-Stufe**, und die ergibt sich aus dem **Level** des Laufs.
 
-### Schwierigkeitsstufen
-- **5 Stufen**, die **nur die Wort-Hilfe** verändern. Start, Level, Mindestlänge und Punkte sind auf allen Stufen gleich.
-- Der Spieler stellt die Stufe in den **Einstellungen** ein; Standard beim ersten Start: **1 (Sehr leicht)**.
-- Jede Stufe hat ihren **eigenen Rekord**.
+### Hilfe-Stufen
+- **5 Stufen** für die Wort-Hilfe. Der Spieler wählt sie **nicht** selbst; das **Level** des Laufs legt sie fest (am Anfang stark, später schwächer, siehe Kurve in [run-mode.md](run-mode.md)).
 
   | Stufe | Name | Hilfe | Mindestens möglich im Feld |
   |---|---|---|---|
@@ -74,7 +69,8 @@ Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hex
 - Ob das Wort gültig ist, zeigt sich **erst beim Loslassen**, nicht schon während des Wischens.
 - Aufeinanderfolgende Buchstaben müssen **Nachbarn** sein (ein Hexagon hat 6 Nachbarn). Buchstaben **überspringen geht nicht**.
 - Jedes Hexagon darf in einem Wort **nur einmal** vorkommen.
-- **Mindestlänge:** je nach Level 3, 4 oder 5 Buchstaben (siehe „Level und Nachschub“).
+- **Mindestlänge:** immer **3 Buchstaben**.
+- Jedes gültige Wort wird **angenommen** und zählt als **Zug**, auch wenn es nicht zum Auftrag passt. Für den Auftrag zählen nur passende Wörter.
 - Ein gültiges Wort **verschwindet**, also alle seine Hexagons. Zurück bleiben Löcher.
 - Bei einem **ungültigen** Wort passiert **nichts**. Keine Strafe, das Feld bleibt unverändert.
 
@@ -95,16 +91,12 @@ Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hex
 - Lizenztexte vor der Veröffentlichung selbst prüfen.
 
 ### Punkte
-- Die Wortlänge zählt stark: **Punkte = 5 · n · (n − 1)**, n = Anzahl Buchstaben.
+- **Entfallen.** An ihre Stelle treten Münzen und Level (siehe [run-mode.md](run-mode.md)).
 
-  | Buchstaben | 3 | 4 | 5 | 6 | 7 | 8 |
-  |---|---|---|---|---|---|---|
-  | Punkte | 30 | 60 | 100 | 150 | 210 | 280 |
-
-### Rundenende
-- Das Spiel ist **endlos**; man kann nicht verlieren.
-- Der Spieler **beendet die Runde selbst** (Menü-Knopf → „Runde beenden?“). Danach zeigt ein **Bilanz-Screen** Punkte, erreichtes Level und Rekord (siehe [screens.md](screens.md)).
-- **Rekord** = höchste Punktzahl einer Runde, **pro Schwierigkeitsstufe**.
+### Ende eines Laufs
+- Der Lauf endet nur, wenn der Spieler **aufgibt** (Knopf „Aufgeben“ mit Nachfrage). Kein automatisches Ende.
+- Danach zeigt ein **Bilanz-Screen** das erreichte Level und den Rekord (siehe [screens.md](screens.md)).
+- **Rekord** = höchstes erreichtes Level (ein Rekord, keine Stufen).
 
 ### Sprache
 - **Zuerst Deutsch.**
@@ -113,10 +105,9 @@ Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hex
 
 ## Später festlegen
 
-- **Wörter gezielt säen:** ein Ziel-Wort wählen und seine Buchstaben über die nächsten neuen Hexagons verteilen (Ausbaustufe nach der Vorausschau).
+- **Wörter gezielt säen:** wird für Aufträge „Finde ein bestimmtes Wort“ gebraucht (Version 1): Die Buchstaben des Ziel-Worts müssen ins Feld kommen, verteilt statt nebeneinander. Wie genau, legen wir bei der Umsetzung fest.
 - **Bessere Liste geläufiger Wörter** (z. B. Häufigkeitsliste mit passender Lizenz).
-- **Feintuning der Stufen** anhand von Testspielen.
-- **Feintuning Level:** Schwellen, Nachschub, Mindestlänge und Knopf-Kosten anhand von Testspielen anpassen.
+- **Feintuning** von Hilfe-Stufen, Auftrags-Kurve und Münz-Preisen anhand von Testspielen.
 - **Wörterbuch:** Abdeckung und Größe der aufbereiteten Liste prüfen (Quellen siehe oben).
 - **Effekte und Feedback:** Einblenden, 3D-Drehung, Sound, Wischen, gültige und ungültige Wörter.
 
@@ -130,3 +121,4 @@ Ein **ruhiges Denk-Spiel ohne Zeitdruck**: Im Spielfeld liegen Buchstaben in Hex
 - **v3.1:** Wörterbuch-Quellen: Trennmuster-Wortliste (MIT) + Wiktionary (CC BY-SA), Aufbereitung und Lizenzpflichten.
 - **v4:** Wort-Hilfe per Vorausschau, „mindestens X Wörter“, 5 Schwierigkeitsstufen (nur Hilfe), Rekord pro Stufe, geläufige Wörter = Trennmuster-Liste.
 - **v5:** Ruhiger Level-Modus: kein Takt; Start mit 15 Hexagons; Level-Up bei wachsenden Punktschwellen bringt 10 Hexagons; Mindestlänge 3/4/5 je Level; Knopf „Neue Buchstaben“ (3 für 20 Punkte); endlos, Rundenende mit Bilanz. Entfällt: Takt, Tempo-Stufe, Verlieren bei vollem Feld.
+- **v6:** Lauf-Modus (siehe [run-mode.md](run-mode.md)): Start mit 20 Hexagons und 0 Münzen; Feld bleibt zwischen Levels; Nachschub nur über gekaufte Hilfen; Mindestlänge immer 3, jedes gültige Wort zählt als Zug; Hilfe-Stufe folgt dem Level; Ende nur durch Aufgeben; Rekord = höchstes Level. Entfällt: Punkte, Punkt-Schwellen, +10 Hexagons pro Level, Knopf „Neue Buchstaben“, wählbare Schwierigkeitsstufen.
