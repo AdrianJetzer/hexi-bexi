@@ -18,7 +18,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - Gültige Wörter **verschwinden**, Löcher bleiben offen.
 - Mindestlänge 3; angenommen werden nur **zum Auftrag passende** Wörter; jeder Versuch ab 3 Buchstaben ist ein **Zug**.
 - **Ende** nur durch **Aufgeben**, danach **Bilanz** (erreichtes Level, Rekord) und neuer Lauf ab Level 1. **Rekord** = höchstes Level.
-- **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen, Eigennamen und Abkürzungen gelten.
+- **Deutsch**, nur A–Z, ß als SS, Wörter mit Umlauten vorerst nicht. Alle Wortformen gelten; Eigennamen und Abkürzungen nicht (außer sie sind auch normale Wörter).
 
 ### Screens ([screens.md](screens.md), [screen-layout.md](screen-layout.md))
 - **Startbildschirm** (Titel/Logo, Spielen, Rekord, Einstellungen).
@@ -56,7 +56,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 
 ## Muss vor oder während der Umsetzung geklärt werden
 
-- **Wörterbuch:** Quellen, Aufbereitung und Format erledigt (850.724 Wörter, ~10 MB). Offen: evtl. Wortlänge begrenzen; Lizenz-Hinweis in der App.
+- **Wörterbuch:** Quellen, Aufbereitung und Format erledigt (808.125 Wörter ohne Eigennamen und Abkürzungen, ~10 MB). Offen: evtl. Wortlänge begrenzen; Lizenz-Hinweis in der App.
 - **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.

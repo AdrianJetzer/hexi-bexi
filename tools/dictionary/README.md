@@ -30,14 +30,16 @@ tools/dictionary/build.sh
 - Mindestens 3 Buchstaben.
 - Trennmuster: nur Einträge, die in der **reformierten Rechtschreibung** gelten.
 - Wiktionary: Stichwörter deutscher Einträge plus alle einteiligen Beugungsformen.
+- **Eigennamen und Abkürzungen entfallen** (siehe spec/game-rules.md): Ein Wort fliegt raus, wenn Wiktionary es nur als Eigenname (`name`) oder Abkürzung (`abbrev`, inkl. als Abkürzung markierter Formen und der Formen solcher Wörter) kennt. Ausnahmen: Zusammenziehungen wie „zum“, „beim“, „sowas“ (bei Wiktionary auch `abbrev`) und längere kleingeschriebene Kurzformen wie „rausreißen“. Die entfernten Wörter stehen in `out/excluded.txt` und werden auch aus der Trennmuster-Liste gefiltert (`filter_words.py`).
 
-## Stand (Testlauf 13.11.2026)
+## Stand (13.11.2026)
 
 | Liste | Wörter |
 |---|---|
-| Trennmuster | 390.374 |
-| Wiktionary | 695.460 |
-| Kombiniert | 850.724 (11 MB Text, 2,3 MB gzip) |
+| Trennmuster (ohne Namen/Abkürzungen) | 385.609 (vorher 390.374) |
+| Wiktionary (ohne Namen/Abkürzungen) | 652.861 |
+| Entfernt (Namen/Abkürzungen) | 42.599 |
+| Kombiniert | 808.125 (vorher 850.724) |
 
 ## Offen
 
@@ -48,4 +50,5 @@ tools/dictionary/build.sh
 - `build.sh`: alles in einem Schritt.
 - `build_trennmuster.py`: Trennmuster-Wortliste → Wörter.
 - `build_wiktionary.py`: Wiktionary-Auszug → Wörter.
+- `filter_words.py`: entfernt Wörter einer Liste (z. B. Namen/Abkürzungen) aus einer Wortliste.
 - `pack_words.py`: Textliste → kompaktes Spielformat LTW1 (Formatbeschreibung im Skript).

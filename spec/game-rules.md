@@ -77,13 +77,15 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ### Gültige Wörter
 - **Alle Wortformen** gelten, auch gebeugte (z. B. STERNE, RANNTE, GROSSEN).
-- **Eigennamen** (z. B. BERLIN, ANNA) und **Abkürzungen** (z. B. USA, KFZ) gelten ebenfalls.
+- **Eigennamen** (z. B. BERLIN, ANNA, OLGAS) und **Abkürzungen** (z. B. USA, KFZ) gelten **nicht**.
+  - Ausnahme: Ist ein Name **auch ein normales Wort** (z. B. ROSE, WOLF, BACH, ERNST, WINTER), gilt er.
+  - Entfernt wird ein Wort, wenn Wiktionary es **nur** als Eigenname oder Abkürzung kennt (samt Formen). Seltene Namen, die Wiktionary nicht kennt, können durchrutschen; dafür später ggf. eine eigene Sperrliste.
 - Weiterhin: nur A–Z, Wörter mit Umlauten vorerst nicht (siehe „Sprache“).
 
 ### Wörterbuch (Deutsch)
 - **Quellen:**
   - **Basis:** Trennmuster-Wortliste (DANTE / Werner Lemberg, `repo.or.cz/wortliste.git`), Lizenz **MIT**.
-  - **Ergänzung:** Wiktionary (Auszug über kaikki.org) für Eigennamen, Abkürzungen und fehlende Formen, Lizenz **CC BY-SA 3.0 / GFDL**.
+  - **Ergänzung:** Wiktionary (Auszug über kaikki.org) für fehlende Formen und zum Erkennen von Eigennamen und Abkürzungen, Lizenz **CC BY-SA 3.0 / GFDL**.
 - **Aufbereitung** (einmalig, als eigene Wortliste fürs Spiel):
   - Großbuchstaben A–Z; **ß → SS**; Wörter mit **Umlauten entfallen**; Wörter mit anderen Sonderzeichen (Bindestrich, Apostroph, Ziffern) entfallen.
   - **Mindestens 3 Buchstaben.**
@@ -128,3 +130,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v6.3:** Preise der Hilfen siehe run-mode.md v2.5.
 - **v6.4:** Nur zum Auftrag passende Wörter werden angenommen; jeder Versuch ab 3 Buchstaben ist ein Zug.
 - **v6.5:** Automatisches Auffüllen nach gefundenen Wörtern (Wortlänge − 1).
+- **v6.6:** Eigennamen und Abkürzungen gelten nicht mehr (außer sie sind auch normale Wörter).

@@ -1,7 +1,10 @@
 """Extract German game words from the kaikki.org German Wiktionary dump.
 
-Usage: python3 -I build_wiktionary.py <dewiktionary.jsonl.gz> <out.txt>
+Usage: python3 -I build_wiktionary.py <dewiktionary.jsonl.gz> <out.txt> [<excluded.txt>]
 Takes headwords of German entries (lang_code == "de") plus single-word inflected forms.
+Proper names and abbreviations are left out: a word is excluded if it only occurs in
+entries with pos "name" or "abbrev" (with their forms) and in no other entry.
+The excluded words are written to <excluded.txt> (to filter other word lists).
 """
 import collections
 import gzip
@@ -10,6 +13,8 @@ import re
 import sys
 
 ALLOWED = re.compile(r"^[A-Z]{3,}$")
+# Wortarten, die nicht als Spielwörter gelten (Eigennamen, Abkürzungen).
+EXCLUDED_POS = {"name", "abbrev"}
 
 
 def normalize(word):
@@ -19,8 +24,46 @@ def normalize(word):
     return w if ALLOWED.match(w) else None
 
 
-def main(src, dst):
-    words = set()
+def _is_form_of(e):
+    """Eintrag besteht nur aus Formen eines anderen Worts (z. B. „Kfzs“ → Kfz)."""
+    senses = e.get("senses") or []
+    return bool(senses) and all("form-of" in (s.get("tags") or []) for s in senses)
+
+
+def _bases(e):
+    result = set()
+    for s in e.get("senses") or []:
+        for fo in s.get("form_of") or []:
+            n = normalize(fo.get("word"))
+            if n:
+                result.add(n)
+    return result
+
+
+ABBREV_HINTS = ("abkürzung", "akronym", "kurzwort", "initialwort", "zeichen für", "symbol")
+
+
+def _is_contraction(e):
+    """Wiktionary führt Zusammenziehungen wie „zum“, „beim“, „ins“, „sowas“ als „abbrev“.
+    Die sind normale Wörter: kleingeschrieben und ohne Hinweis auf eine Abkürzung."""
+    if e.get("pos") != "abbrev":
+        return False
+    w = e.get("word") or ""
+    if not w.islower():
+        return False
+    for s in e.get("senses") or []:
+        for g in s.get("glosses") or []:
+            if any(h in g.lower() for h in ABBREV_HINTS):
+                return False
+    return True
+
+
+def main(src, dst, excluded_dst=None):
+    words = set()          # normale Wörter (inkl. Formen)
+    names = set()          # Eigennamen / Abkürzungen (inkl. Formen)
+    head_normal = set()    # Stichwörter mit normaler Wortart
+    head_name = set()      # Stichwörter mit Wortart Name/Abkürzung
+    form_of = []           # (Wörter des Eintrags, Grundwörter) für reine Formen-Einträge
     pos_count = collections.Counter()
     entries = 0
     with gzip.open(src, "rt", encoding="utf-8") as f:
@@ -33,20 +76,54 @@ def main(src, dst):
                 continue
             entries += 1
             pos = e.get("pos", "?")
+            is_name = pos in EXCLUDED_POS and not _is_contraction(e)
+            own = set()
             n = normalize(e.get("word"))
             if n:
-                words.add(n)
+                own.add(n)
                 pos_count[pos] += 1
             for fm in e.get("forms", []) or []:
-                n = normalize(fm.get("form"))
+                fn = normalize(fm.get("form"))
+                if not fn:
+                    continue
+                # Als Form angegebene Abkürzungen (z. B. „Kfz“ bei Kraftfahrzeug) sind keine Spielwörter.
+                # Längere kleingeschriebene Kurzformen wie „rausreißen“ (zu herausreißen) bleiben
+                # Wörter; kurze (z. B. Sprachcodes wie „tmh“) und solche mit Großbuchstaben nicht.
+                form = fm.get("form") or ""
+                is_abbrev = "abbreviation" in (fm.get("tags") or [])
+                if is_abbrev and (form != form.lower() or len(form) < 5 or fm.get("raw_tags")):
+                    names.add(fn)
+                else:
+                    own.add(fn)
+            if is_name:
+                names |= own
                 if n:
-                    words.add(n)
+                    head_name.add(n)
+            elif _is_form_of(e):
+                # Erst am Ende zuordnen: Formen von Namen/Abkürzungen gelten als Namen.
+                form_of.append((own, _bases(e)))
+            else:
+                words |= own
+                if n:
+                    head_normal.add(n)
+    name_only = head_name - head_normal
+    for own, bases in form_of:
+        if bases and bases <= name_only:
+            names |= own
+        else:
+            words |= own
+    # Nur ausschließen, was nirgends sonst (als normales Wort) vorkommt.
+    excluded = names - words
     with open(dst, "w", encoding="utf-8") as out:
         for w in sorted(words):
             out.write(w + "\n")
-    print(f"german_entries={entries} words={len(words)}")
+    if excluded_dst:
+        with open(excluded_dst, "w", encoding="utf-8") as out:
+            for w in sorted(excluded):
+                out.write(w + "\n")
+    print(f"german_entries={entries} words={len(words)} excluded_names_abbrevs={len(excluded)}")
     print("headwords by pos:", ", ".join(f"{k}={v}" for k, v in pos_count.most_common(15)))
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)

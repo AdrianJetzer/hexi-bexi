@@ -92,10 +92,22 @@ func test_real_german_dictionary() -> void:
 	var d := WordDictionary.from_file(lang.words_path)
 	assert_not_null(d)
 	assert_gt(d.size(), 500000)
-	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "BERLIN", "ANNA", "USA", "KFZ", "HAUS"]:
+	# Normale Wörter, auch Namen, die zugleich normale Wörter sind (ROSE, WOLF), und Zusammenziehungen.
+	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "HAUS", "ROSE",
+			"WOLF", "ERNST", "BEIM", "ZUM"]:
 		assert_true(d.contains(w), w)
-	for w in ["XQZT", "STERNX", "QQQ", "AB"]:
+	# Unsinn und reine Eigennamen/Abkürzungen gelten nicht.
+	for w in ["XQZT", "STERNX", "QQQ", "AB", "BERLIN", "OLGAS", "USA", "KFZ", "LKW"]:
 		assert_false(d.contains(w), w)
+
+
+func test_common_words_without_names() -> void:
+	var lang := load("res://data/languages/de/language.tres") as LanguageData
+	var c := WordDictionary.from_file(lang.common_words_path)
+	assert_gt(c.size(), 300000)
+	for w in ["OLGA", "OLGAS", "BERLIN", "PETER"]:
+		assert_false(c.contains(w), w)
+	assert_true(c.contains("HIMMEL"))
 
 
 func test_missing_file_returns_null() -> void:
