@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v3**. Kernspiel für Version 1 abgestimmt; ausgefeilte Füll-Logik, Wörterbuch-Quelle und Effekte folgen später.
+Status: **Entwurf v4**. Kernspiel für Version 1 abgestimmt; ausgefeilte Füll-Logik, Wörterbuch-Quelle und Effekte folgen später.
 
 ## Grundidee
 
@@ -43,9 +43,28 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
   - Kürzester Takt: **0,8 Sekunden**.
 - **Tempo-Stufe** (Anzeige im Infobereich): beginnt bei **1** und steigt bei jeder Verkürzung des Takts um 1.
 
-### Buchstabenwahl (Version 1)
-- Zufall, **gewichtet nach Buchstabenhäufigkeit** der Sprache (viel E, N, I, S, R; selten Q, X, Y).
+### Buchstabenwahl
+- Grundlage: Zufall, **gewichtet nach Buchstabenhäufigkeit** der Sprache (viel E, N, I, S, R; selten Q, X, Y).
 - **Vokal-Ausgleich:** Es wird darauf geachtet, dass nie zu wenige Vokale im Feld liegen. Die genaue Regel ist Teil der Umsetzung und wird getunt.
+- **Wort-Hilfe (Vorausschau):** Bevor ein neues Hexagon erscheint, steht sein Platz fest. Das Spiel bewertet für diesen Platz jeden möglichen Buchstaben danach, wie viele **geläufige Wörter** er zusammen mit den Nachbarn möglich macht, und bevorzugt gute Buchstaben – gewichtet, nicht immer (sonst zu vorhersehbar).
+- **Mindestens X Wörter:** Das Spiel zählt, wie viele geläufige Wörter gerade im Feld möglich sind. Sind es weniger als die Stufe verlangt, hilft es stärker nach (wählt den Buchstaben mit den meisten Wörtern).
+- **Geläufige Wörter** für die Hilfe: vorerst die Einträge der Trennmuster-Wortliste. **Gültig** bleiben weiterhin alle Wörter des Wörterbuchs.
+- Wie stark geholfen wird, bestimmt die **Schwierigkeitsstufe**.
+
+### Schwierigkeitsstufen
+- **5 Stufen**, die **nur die Wort-Hilfe** verändern. Tempo, Startreihen und Punkte sind auf allen Stufen gleich.
+- Der Spieler stellt die Stufe in den **Einstellungen** ein; Standard beim ersten Start: **3 (Mittel)**.
+- Jede Stufe hat ihren **eigenen Rekord**.
+
+  | Stufe | Name | Hilfe | Mindestens möglich im Feld |
+  |---|---|---|---|
+  | 1 | Sehr leicht | stark | 8 Wörter |
+  | 2 | Leicht | stark | 5 Wörter |
+  | 3 | Mittel | mittel | 3 Wörter |
+  | 4 | Schwer | schwach | 1 Wort |
+  | 5 | Profi | keine (Zufall mit Vokal-Ausgleich) | – |
+
+- Alle Zahlen sind Spielwerte (tunebar), nicht fest im Code.
 
 ### Wörter bilden
 - Der Spieler **wischt** mit dem Finger über die Buchstaben, die ein Wort ergeben.
@@ -90,7 +109,9 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 
 ## Später festlegen
 
-- **Ausgefeilte Füll-Logik:** welcher Buchstabe wo erscheint, damit sich gute Wörter bilden lassen. Gilt als **Knacknuss**. Version 1 nutzt die einfache Regel oben.
+- **Wörter gezielt säen:** ein Ziel-Wort wählen und seine Buchstaben über die nächsten neuen Hexagons verteilen (Ausbaustufe nach der Vorausschau).
+- **Bessere Liste geläufiger Wörter** (z. B. Häufigkeitsliste mit passender Lizenz).
+- **Feintuning der Stufen** anhand von Testspielen.
 - **Feintuning Tempo:** Werte anhand von Testspielen anpassen.
 - **Wörterbuch:** Abdeckung und Größe der aufbereiteten Liste prüfen (Quellen siehe oben).
 - **Effekte und Feedback:** Einblenden, 3D-Drehung, Sound, Wischen, gültige und ungültige Wörter.
@@ -103,3 +124,4 @@ Im Spielfeld erscheinen nach und nach Buchstaben in Hexagons und füllen es von 
 - **v2:** Buchstaben fallen nicht mehr, sondern erscheinen mit 3D-Drehung an freien Plätzen (von unten nach oben). Kein Nachrutschen; Löcher werden neu gefüllt. Spielende, wenn kein Platz frei ist. Spielfeld geschlossen mit Zickzack-Innenkante. Entfällt: seitliches Nachrutschen mit Physik.
 - **v3:** Kernspiel für Version 1: Start mit 2 Reihen, Platzwahl, Takt (3 s, −10 % alle 30 s, min. 0,8 s), Buchstabenwahl mit Vokal-Ausgleich, Wischen ohne Zurück und ohne Live-Prüfung, gültige Wörter (alle Formen, Eigennamen, Abkürzungen), Punkte 5 · n · (n − 1).
 - **v3.1:** Wörterbuch-Quellen: Trennmuster-Wortliste (MIT) + Wiktionary (CC BY-SA), Aufbereitung und Lizenzpflichten.
+- **v4:** Wort-Hilfe per Vorausschau, „mindestens X Wörter“, 5 Schwierigkeitsstufen (nur Hilfe), Rekord pro Stufe, geläufige Wörter = Trennmuster-Liste.

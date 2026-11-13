@@ -52,13 +52,15 @@ Vier Screens: **Startbildschirm, Spiel, Game-Over, Einstellungen.** Keine Anleit
   - **Menü:** zurück zum Startbildschirm.
 
 ### Einstellungen
+- **Schwierigkeitsstufe** 1–5 (Standard: 3 Mittel), siehe [game-rules.md](game-rules.md). Gilt ab der nächsten Runde.
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
-- **Rekord zurücksetzen** (mit Nachfrage).
+- **Rekord zurücksetzen** (mit Nachfrage; setzt die Rekorde aller Stufen zurück).
 - Einstellungen werden lokal gespeichert.
 
 ## Rekord
 
+- **Eigener Rekord pro Schwierigkeitsstufe.** Startbildschirm, Infobereich und Game-Over zeigen den Rekord der eingestellten Stufe.
 - Wird **lokal auf dem Gerät** gespeichert.
 - Architektur so anlegen, dass **später Online-Ranglisten** möglich sind (Google Play Games, Game Center).
 
@@ -71,3 +73,4 @@ Vier Screens: **Startbildschirm, Spiel, Game-Over, Einstellungen.** Keine Anleit
 ## Verlauf
 
 - **v1:** Screens für Version 1, Ablauf, Menü-Knopf statt Pause, Verhalten im Hintergrund, Game-Over mit Nochmal und Menü, Einstellungen, Rekord lokal.
+- **v1.1:** Schwierigkeitsstufe in den Einstellungen, Rekord pro Stufe.

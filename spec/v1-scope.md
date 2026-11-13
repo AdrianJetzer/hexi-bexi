@@ -11,7 +11,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - Start mit **2 gefüllten Reihen**.
 - Neue Hexagons **erscheinen** im **festen Takt** (3 s, alle 30 s 10 % schneller, min. 0,8 s) mit Fade-in und **3D-Drehung**.
 - Platzwahl: zuerst tiefste Löcher, sonst tiefste freie Plätze, bei Gleichstand zufällig.
-- Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich**.
+- Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); **5 Schwierigkeitsstufen** (nur Hilfe), Rekord pro Stufe.
 - **Wörter wischen** über Nachbarn, Mindestlänge 3, kein Zurückwischen, Prüfung beim Loslassen.
 - Gültige Wörter **verschwinden**, Löcher bleiben offen.
 - **Punkte** = 5 · n · (n − 1).
@@ -47,7 +47,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Werbung und Käufe**.
 - **Anleitung / Tutorial**.
 - **Pause-Funktion**.
-- **Ausgefeilte Füll-Logik** (Version 1 nutzt die einfache Regel).
+- **Wörter gezielt säen** (Ausbaustufe der Wort-Hilfe).
 - **Vibration**.
 - **Statistik und Wortliste** auf dem Game-Over-Screen.
 - **Öffentliche Veröffentlichung** im Play Store.
