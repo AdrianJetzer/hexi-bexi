@@ -212,16 +212,30 @@ func clear_candidates() -> Array[Vector2i]:
 	return cells
 
 
-## Hilfe „Aufräumen“: die clear_count am wenigsten hilfreichen Steine entfernen.
-## Gibt die entfernten Plätze zurück (leer = keine Steine, kostet nichts).
+## Wie viele Steine Aufräumen gerade entfernen darf: höchstens clear_count, und es bleiben
+## immer so viele Steine liegen, wie das längste noch gesuchte Wort Buchstaben hat.
+func clear_amount() -> int:
+	if quest == null:
+		return 0
+	var lengths := quest.free_lengths()
+	var keep := lengths[lengths.size() - 1] if not lengths.is_empty() else 0
+	var tiles := grid.size() - grid.free_count()
+	return clampi(tiles - keep, 0, _balance.clear_count)
+
+
+## Hilfe „Aufräumen“: die am wenigsten hilfreichen Steine entfernen (siehe clear_amount()).
+## Gibt die entfernten Plätze zurück (leer = nichts zu entfernen, kostet nichts).
 func clear_useless() -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if not can_clear():
 		return cells
+	var amount := clear_amount()
+	if amount <= 0:
+		return cells
 	cells = clear_candidates()
+	cells.resize(mini(cells.size(), amount))
 	if cells.is_empty():
 		return cells
-	cells.resize(mini(cells.size(), _balance.clear_count))
 	for cell in cells:
 		grid.clear(cell)
 	_pay(_balance.clear_price)

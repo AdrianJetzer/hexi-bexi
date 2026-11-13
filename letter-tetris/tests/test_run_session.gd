@@ -554,13 +554,38 @@ func test_clear_always_removes_five_if_possible() -> void:
 	assert_eq(run.coins, 0)
 
 
-func test_clear_with_few_tiles() -> void:
+func test_clear_keeps_enough_tiles_for_longest_word() -> void:
 	run.start()
-	_use_rows([4])
-	_column(3, "QX")
+	_use_rows([6])
+	_column(0, "STERNE")
+	_column(2, "QX", false)
 	run.coins = 100
-	assert_eq(run.clear_useless().size(), 2)
+	assert_eq(run.clear_amount(), 2, "8 Steine, 6 müssen bleiben")
+	var removed := run.clear_useless()
+	assert_eq(removed.size(), 2)
+	assert_eq(run.grid.size() - run.grid.free_count(), 6)
 	assert_eq(run.coins, 0, "kostet trotzdem 100")
+
+
+func test_clear_uses_longest_free_row() -> void:
+	run.start()
+	_use_rows([3, 5])
+	_column(0, "STERNE")
+	_column(2, "QX", false)
+	assert_eq(run.clear_amount(), 3, "8 Steine, 5 müssen bleiben")
+	run.quest.fill(1, "STERN")
+	assert_eq(run.clear_amount(), 5, "nur noch die 3er-Zeile frei")
+
+
+func test_clear_blocked_when_too_few_tiles_is_free() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "STERN")
+	run.coins = 100
+	assert_eq(run.clear_amount(), 0)
+	assert_eq(run.clear_useless().size(), 0)
+	assert_eq(run.coins, 100)
+	assert_signal_not_emitted(run, "tiles_removed")
 
 
 func test_clear_on_empty_board_is_free() -> void:
@@ -585,7 +610,7 @@ func test_clear_keeps_hint_tiles() -> void:
 func test_clear_needs_coins() -> void:
 	run.start()
 	_use_rows([4])
-	_column(3, "QXY")
+	_column(3, "QXYEE")
 	run.coins = 99
 	assert_false(run.can_clear())
 	assert_eq(run.clear_useless().size(), 0)
