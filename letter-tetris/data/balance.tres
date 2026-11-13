@@ -45,5 +45,5 @@ speedup_factor = 0.9
 spawn_interval_min = 0.8
 points_factor = 5
 difficulty_levels = Array[ExtResource("2")]([SubResource("level_1"), SubResource("level_2"), SubResource("level_3"), SubResource("level_4"), SubResource("level_5")])
-default_difficulty = 2
+default_difficulty = 1
 help_max_word_length = 6

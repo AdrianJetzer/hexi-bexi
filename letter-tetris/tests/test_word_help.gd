@@ -18,7 +18,7 @@ func _level(strength: float, min_words: int) -> DifficultyLevel:
 
 func test_five_levels_from_spec() -> void:
 	assert_eq(balance.difficulty_levels.size(), 5)
-	assert_eq(balance.default_difficulty, 2)
+	assert_eq(balance.default_difficulty, 1)
 	var names := ["Sehr leicht", "Leicht", "Mittel", "Schwer", "Profi"]
 	var mins := [8, 5, 3, 1, 0]
 	for i in 5:
