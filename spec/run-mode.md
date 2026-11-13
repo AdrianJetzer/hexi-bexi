@@ -1,10 +1,10 @@
 # Lauf-Modus (Roguelike)
 
-Status: **Entwurf v1**. Konzept gesammelt; Umfang für Version 1 und viele Details noch **offen**.
+Status: **Entwurf v2**. Offene Fragen geklärt, Umfang für Version 1 festgelegt.
 
 Markierungen: **[v1]** = kommt in Version 1 · **[später]** = gute Idee, nach Version 1 · **[offen]** = noch nicht entschieden.
 
-Bis zur Entscheidung sind alle Ideen **[offen]**; die Markierungen werden beim Klären der offenen Fragen gesetzt.
+Abschnitte ohne Markierung gehören zum Grundgerüst und sind **[v1]**.
 
 ## Idee in einem Satz
 
@@ -14,12 +14,12 @@ Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwe
 
 ## Ablauf eines Laufs
 
-1. **Start:** Level 1, ein Startbetrag an Münzen, Spielfeld mit Start-Hexagons. [offen: Startbetrag, Anzahl Start-Hexagons]
+1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **20 Hexagons** (Platzwahl wie bisher). Das erste Level muss ohne Hilfe klappen.
 2. **Level:** Der Spieler bekommt einen Auftrag und versucht ihn mit Wörtern im Feld zu erfüllen.
 3. **Erfüllt:** Münzen gutschreiben, weiter zum nächsten, schwereren Level.
-4. **Gescheitert:** kein Geld mehr und kein Weiterkommen, oder der Spieler gibt auf. Der Lauf endet.
+4. **Gescheitert:** Der Spieler kommt nicht weiter (z. B. kein Geld mehr für Hilfen) und tippt **„Aufgeben“**. Nach einer Nachfrage endet der Lauf. Kein automatisches Ende.
 5. **Ende:** Bilanz (erreichtes Level, Münzen, gefundene Wörter). Danach neuer Lauf ab Level 1.
-6. **Rekord:** höchstes erreichtes Level. [offen: zusätzlich Münzen oder Punkte als Rekord?]
+6. **Rekord:** nur das **höchste erreichte Level**.
 
 ## Aufträge
 
@@ -28,7 +28,7 @@ Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwe
 - **Bestimmtes Wort:** „Finde HIMMEL“. Das Spiel muss die nötigen Buchstaben ins Feld bringen, verteilt statt nebeneinander.
 - **Anzahl:** „Finde 3 Wörter mit 3 Buchstaben“.
 - **Mit Bedingung:**
-  - „… ohne Nachziehen“
+  - „… ohne Nachziehen“ (im Level ist „Nachfüllen“ gesperrt)
   - „… in höchstens 5 Zügen“
   - „… mit dem Buchstaben X“
   - „… Wort endet auf -EN“
@@ -38,19 +38,37 @@ Die Levels werden schwerer. Stellschrauben pro Level:
 - Wortlänge (3 → 5 → 6 …)
 - Anzahl der Wörter
 - Bedingungen (ohne Nachziehen, Zuglimit, bestimmte Buchstaben)
-- schwächere Wort-Hilfe (schwierigere Buchstaben)
+- schwächere Wort-Hilfe (schwierigere Buchstaben): **Das Level steuert die Hilfe**, am Anfang stark, später schwächer. Die 5 wählbaren Schwierigkeitsstufen entfallen; damit gibt es nur einen Rekord.
 - weniger Steine im Feld oder weniger Nachschub
-- Hindernisse (siehe [Besondere Steine](#besondere-steine))
+- Hindernisse [später] (siehe Abschnitt „Besondere Steine“)
 
-[offen: konkrete Kurve, z. B. welche Aufträge in Level 1–10]
+### Kurve (Startwerte)
+Pro Level zwei Auftragskarten: A sicher, B riskant. Zahlen sind Startwerte für das Feintuning.
 
-### Auftrag wählen
+| Level | Karte A (sicher) | Karte B (riskant) | Wort-Hilfe |
+|---|---|---|---|
+| 1 | Wort mit 3 Buchstaben, +100 | Wort mit 4, +150 | sehr stark |
+| 2 | Wort mit 4, +100 | Wort mit 5, +200 | sehr stark |
+| 3 | 2 Wörter mit 4, +100 | Wort mit 5, +200 | stark |
+| 4 | Wort mit 5, +100 | bestimmtes Wort mit 4 (z. B. HAUS), +200 | stark |
+| 5 | Wort mit 5 ohne Nachfüllen, +150 | Wort mit 6, +250 | mittel |
+| 6–7 | 3 Wörter mit 4 in höchstens 4 Zügen, +150 | bestimmtes Wort mit 5, +250 | mittel |
+| 8–10 | Wort mit 6, +150 | bestimmtes Wort mit 6 (z. B. HIMMEL), +300 | schwach |
+| ab 11 | nach Regeln erzeugt, immer etwas schwerer | | ohne Hilfe |
+
+- Sichere Karten reichen für 2–3 Nachfüllungen; riskante bringen etwa das Doppelte als Polster.
+- Die Wort-Hilfe nutzt die bisherigen 5 Stufen (sehr stark = „Sehr leicht“ … ohne Hilfe = „Profi“), jetzt automatisch nach Level.
+
+### Zug
+Ein **Zug** ist ein **angenommenes Wort**. Ungültige Versuche und gekaufte Hilfen zählen nicht als Zug.
+
+### Auftrag wählen [v1]
 Vor jedem Level gibt es **2 Auftragskarten** zur Wahl, z. B. „4 Buchstaben, +100“ oder „6 Buchstaben, +250“. Sicher oder riskant?
 
-### Zufall
+### Zufall [v1]
 Aufträge werden pro Lauf **zufällig** gezogen, passend zur Schwierigkeit des Levels. Jeder Lauf ist anders.
 
-### Bosse
+### Bosse [später]
 Alle **5 Levels** ein schwerer Auftrag mit großer Belohnung, z. B. „Finde HIMMEL in 8 Zügen“.
 
 ## Münzen
@@ -58,22 +76,22 @@ Alle **5 Levels** ein schwerer Auftrag mit großer Belohnung, z. B. „Finde HIM
 | Ereignis | Münzen |
 |---|---|
 | Auftrag erfüllt | **+100** (je nach Auftrag mehr, siehe Auftragskarten) |
-| Bonus: Auftrag mit wenigen Zügen | +50 [offen] |
-| Langes Wort nebenbei (ab 6 Buchstaben) | +5 [offen] |
+| Bonus: Auftrag mit wenigen Zügen [später] | +50 |
+| Langes Wort nebenbei, ab 6 Buchstaben [später] | +5 |
 | **5 Steine nachfüllen** | **−50** |
 | **Tipp: Anfangsbuchstabe zeigen** | **−100** |
 | **Stein ersetzen** | **−100** |
 
-- Münzen sind die **Währung** des Laufs; die bisherigen Punkte entfallen oder sind nur noch Anzeige. [offen]
+- Münzen sind die **Währung** des Laufs. **Punkte entfallen**; es gibt nur noch Münzen und Level.
 - Ohne Münzen gibt es keine Hilfen mehr; findet man dann nichts, ist der Lauf vorbei.
 
 ## Hilfen
 
-- **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher).
+- **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Ist das Feld voll, ist Nachfüllen gesperrt; dann bleiben nur Stein ersetzen, Tipp oder Aufgeben.
 - **Tipp, Anfangsbuchstabe:** Der erste Stein eines passenden Wortes leuchtet auf. Das gilt bei gesuchten Wörtern („HIMMEL“) und bei allgemeinen Aufträgen („Wort mit 5 Buchstaben“), denn die Wortsuche kennt die möglichen Wörter im Feld.
-- **Stein ersetzen:** Stein antippen, er wird ersetzt. [offen: zufälliger Buchstabe oder Wunschbuchstabe, ggf. teurer]
+- **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**, also möglichst passend zu Wörtern im Feld. Kein Wunschbuchstabe.
 
-## Laden und Vorteile
+## Laden und Vorteile [später]
 
 Zwischen den Levels ein **Laden**: dauerhafte Vorteile für den laufenden Lauf, bezahlt mit Münzen. Beispiele:
 - **Vokal-Magnet:** mehr Vokale
@@ -81,7 +99,7 @@ Zwischen den Levels ein **Laden**: dauerhafte Vorteile für den laufenden Lauf, 
 - **Erster Tipp gratis** (pro Level)
 - **Goldener Stein:** doppelte Münzen, wenn er im Wort ist
 
-## Besondere Steine
+## Besondere Steine [später]
 
 - **Goldener Stein:** doppelte Belohnung.
 - **Kristallstein:** bringt einen Zug zurück.
@@ -90,33 +108,32 @@ Zwischen den Levels ein **Laden**: dauerhafte Vorteile für den laufenden Lauf, 
 
 ## Spielfeld zwischen den Levels
 
-[offen] Zwei Möglichkeiten:
-- **Liegen lassen:** Übrige Steine gehen ins nächste Level mit. Der Lauf ist ein durchgehendes Spiel, jede Entscheidung wirkt nach.
-- **Neues Feld:** Jedes Level ist ein sauberes, einzelnes Rätsel.
+**Das Feld bleibt liegen.** Übrige Steine gehen ins nächste Level mit. Der Lauf ist ein durchgehendes Spiel; ein gutes oder schlechtes Feld wirkt nach.
 
-## Fortschritt über Läufe (Meta)
+## Fortschritt über Läufe (Meta) [später]
 
 Über viele Läufe neue Vorteile oder besondere Steine freischalten, die dann in Läufen auftauchen können.
 
-## Ausblick: Münzen kaufen
+## Ausblick: Münzen kaufen [später]
 
 Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel **ohne Kauf fair** bleiben. Entscheidung gesondert, nicht Teil dieser Spec.
 
 ## Offene Fragen
 
-1. **Spielfeld** zwischen den Levels: liegen lassen oder neu?
-2. **Start:** Münzen und Anzahl Hexagons zu Beginn.
-3. **Umfang Version 1:** Welche Ideen sind [v1], welche [später]?
-4. **Was ist ein „Zug“?** Ein gewischtes Wort? Zählen Hilfen mit?
-5. **Punkte:** fallen sie weg, oder bleiben sie für Bonus/Rekord?
-6. **Aufgeben:** Gibt es einen Knopf dafür, und kostet es etwas?
-7. **„Ohne Nachziehen“:** Ist der Knopf im Level gesperrt, oder scheitert der Auftrag beim Drücken?
-8. **Wort-Hilfe und Schwierigkeitsstufen:** Bleiben die 5 Stufen, oder steuert jetzt das Level die Hilfe?
-9. **Stein ersetzen:** zufällig oder Wunschbuchstabe?
-10. **Feld voll:** Was passiert, wenn kein Platz frei ist und der Auftrag nicht lösbar ist? (nur Stein ersetzen oder aufgeben?)
-11. **Schwierigkeitskurve:** konkrete Aufträge pro Level.
-12. **Rekord:** nur Level, oder auch Münzen/Wörter?
+1. ~~**Spielfeld** zwischen den Levels~~ → bleibt liegen.
+2. ~~**Start**~~ → 0 Münzen, 20 Hexagons.
+3. ~~**Umfang Version 1**~~ → Grundgerüst + Auftrag wählen + Zufall; Bosse, Laden, besondere Steine, Meta, Münzkauf später.
+4. ~~**Was ist ein „Zug“?**~~ → nur angenommene Wörter; ungültige Versuche und Hilfen zählen nicht.
+5. ~~**Punkte**~~ → fallen weg.
+6. ~~**Aufgeben**~~ → Knopf „Aufgeben“ mit Nachfrage beendet den Lauf; kein automatisches Ende.
+7. ~~**„Ohne Nachziehen“**~~ → Knopf „Nachfüllen“ ist im Level gesperrt.
+8. ~~**Wort-Hilfe und Schwierigkeitsstufen**~~ → Level steuert die Hilfe; die 5 Stufen entfallen.
+9. ~~**Stein ersetzen**~~ → neuer Buchstabe von der Wort-Hilfe, kein Wunschbuchstabe.
+10. ~~**Feld voll**~~ → Nachfüllen gesperrt; Stein ersetzen, Tipp oder Aufgeben.
+11. ~~**Schwierigkeitskurve**~~ → Startwerte siehe „Kurve“; ab Level 11 Regeln noch festzulegen.
+12. ~~**Rekord**~~ → nur das höchste Level.
 
 ## Verlauf
 
 - **v1:** Konzept gesammelt: Lauf mit Aufträgen als Levels, Münzen (+100 pro Auftrag; Nachfüllen 5 Steine −50, Tipp −100, Stein ersetzen −100), Neustart bei Level 1 nach Scheitern (Roguelike). Ideen: Auftragswahl, Zufall, Bosse, Laden, besondere Steine, Meta-Fortschritt. Umfang und Details offen.
+- **v2:** Offene Fragen geklärt: Feld bleibt zwischen Levels liegen; Start mit 0 Münzen und 20 Hexagons; Zug = angenommenes Wort; Punkte entfallen; Knopf „Aufgeben“ (kein automatisches Ende); „ohne Nachziehen“ sperrt den Knopf; Level steuert die Wort-Hilfe, die 5 Stufen entfallen; Stein ersetzen über Wort-Hilfe; volles Feld sperrt Nachfüllen; Rekord = höchstes Level; Kurve für Level 1–10. Umfang v1: Grundgerüst + Auftrag wählen + Zufall; später: Bosse, Laden, besondere Steine, Bonus-Münzen, Meta, Münzkauf.
