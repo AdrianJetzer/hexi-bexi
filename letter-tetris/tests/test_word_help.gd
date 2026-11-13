@@ -78,8 +78,8 @@ func test_easy_level_yields_more_words_than_profi() -> void:
 		for seed_value in range(1, 4):
 			var s := GameSession.new(balance, lang, words, seed_value, common, level)
 			s.start()
-			for i in 22:
-				s.update(s._spawner.time_until_next() + 0.01)
+			for i in 5:
+				s.request_more_letters()
 			totals[level] += counter.words_on_board(s.grid).size()
-	gut.p("Wörter im Feld (3 Runden, je 34 Buchstaben): Stufe 1 = %d, Stufe 5 = %d" % [totals[1], totals[5]])
+	gut.p("Wörter im Feld (3 Runden, je 30 Buchstaben): Stufe 1 = %d, Stufe 5 = %d" % [totals[1], totals[5]])
 	assert_gt(totals[1], totals[5])

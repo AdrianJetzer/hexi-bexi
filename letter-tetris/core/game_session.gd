@@ -1,9 +1,11 @@
 class_name GameSession
 extends RefCounted
-## Eine Spielrunde (reine Logik). Verbindet Raster, Takt, Buchstabenwahl,
-## Wörterbuch und Punkte und meldet alles Wichtige über Signale.
+## Eine Spielrunde im ruhigen Level-Modus (reine Logik, ohne Zeit).
+## Verbindet Raster, Buchstabenwahl, Wörterbuch, Punkte und Level und meldet alles
+## Wichtige über Signale.
 ##
-## Ablauf: start() → regelmäßig update(delta) → Wörter mit submit_path(cells) einlösen.
+## Ablauf: start() → Wörter mit submit_path(cells) einlösen → Level-Ups bringen neue
+## Hexagons → request_more_letters() bei Bedarf → end_round().
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -12,14 +14,15 @@ signal word_accepted(word: String, cells: Array[Vector2i], points: int)
 ## Gewischte Buchstaben ergeben kein gültiges Wort (oder der Weg ist ungültig).
 signal word_rejected(cells: Array[Vector2i], reason: String)
 signal score_changed(score: int)
+## Neues Level erreicht (vor dem Nachschub an Hexagons).
 signal level_changed(level: int)
-## Kein Platz mehr frei.
-signal game_over(final_score: int)
+## Der Spieler hat die Runde beendet.
+signal round_ended(final_score: int, final_level: int)
 
 const REASON_TOO_SHORT := "too_short"
 const REASON_INVALID_PATH := "invalid_path"
 const REASON_NOT_A_WORD := "not_a_word"
-const REASON_GAME_OVER := "game_over"
+const REASON_ROUND_OVER := "round_over"
 
 var grid: HexGrid
 var score: int = 0
@@ -27,9 +30,8 @@ var words_found: int = 0
 var last_word: String = ""
 var last_points: int = 0
 var is_over: bool = false
-var is_paused: bool = false
 ## Schwierigkeitsstufe dieser Runde (1..5).
-var difficulty: int = 3
+var difficulty: int = 1
 
 var _balance: GameBalance
 var _dictionary: WordDictionary
@@ -54,17 +56,17 @@ func _init(balance: GameBalance, lang: LanguageData, dictionary: WordDictionary,
 		rng_letters.randomize()
 		rng_cells.randomize()
 	_picker = LetterPicker.new(lang, rng_letters)
-	_spawner = Spawner.new(balance, _picker, rng_cells)
+	_spawner = Spawner.new(_picker, rng_cells)
 	difficulty = difficulty_level if difficulty_level > 0 else balance.default_difficulty
 	if common_words != null:
-		_spawner.finder = WordFinder.new(common_words, balance.min_word_length, balance.help_max_word_length)
+		_spawner.finder = WordFinder.new(common_words, balance.min_word_length(1), balance.help_max_word_length)
 		_spawner.difficulty = balance.difficulty(difficulty)
 	grid = HexGrid.new(balance.grid_cols, balance.grid_rows)
 
 
 # --- Rundenablauf ----------------------------------------------------------------
 
-## Neue Runde: Feld leeren und die Startreihen füllen.
+## Neue Runde: Feld leeren und die Start-Hexagons setzen.
 func start() -> void:
 	grid.clear_all()
 	score = 0
@@ -72,48 +74,44 @@ func start() -> void:
 	last_word = ""
 	last_points = 0
 	is_over = false
-	is_paused = false
 	_level = 1
-	for i in _balance.start_rows * _balance.grid_cols:
-		_spawn_one()
+	_update_finder_length()
+	_spawn(_balance.start_tiles)
 	score_changed.emit(score)
 	level_changed.emit(_level)
 
 
-## Spielzeit weiterzählen; setzt fällige neue Hexagons.
-func update(delta: float) -> void:
-	if is_over or is_paused:
+## Knopf „Neue Buchstaben“: einige Hexagons gegen Punkte. Gibt die Anzahl neuer Hexagons zurück.
+## Ist kein Platz frei, passiert nichts (und es kostet nichts).
+func request_more_letters() -> int:
+	if is_over or grid.free_count() == 0:
+		return 0
+	var placed := _spawn(_balance.refill_tiles)
+	score = maxi(score - _balance.refill_cost, 0)
+	score_changed.emit(score)
+	return placed
+
+
+## Runde beenden (Menü-Knopf → „Ja“).
+func end_round() -> void:
+	if is_over:
 		return
-	var due := _spawner.tick(delta)
-	var new_level := _spawner.level()
-	if new_level != _level:
-		_level = new_level
-		level_changed.emit(_level)
-	for i in due:
-		if not _spawn_one():
-			return
-
-
-## Anhalten (App im Hintergrund, Nachfrage „Runde beenden?“).
-func pause() -> void:
-	is_paused = true
-
-
-func resume() -> void:
-	is_paused = false
-
-
-## Runde vorzeitig beenden (Menü-Knopf → „Ja“). Löst kein game_over aus.
-func abort() -> void:
 	is_over = true
+	round_ended.emit(score, _level)
 
 
 func level() -> int:
 	return _level
 
 
-func elapsed() -> float:
-	return _spawner.elapsed
+## Mindestlänge eines Wortes im aktuellen Level.
+func min_word_length() -> int:
+	return _balance.min_word_length(_level)
+
+
+## Punkte, ab denen das nächste Level erreicht ist.
+func next_level_score() -> int:
+	return _balance.threshold(_level + 1)
 
 
 # --- Wischen ---------------------------------------------------------------------
@@ -137,12 +135,12 @@ func word_for(path: Array[Vector2i]) -> String:
 ## Gewischten Weg einlösen (beim Loslassen). Gibt true zurück, wenn das Wort gültig war.
 func submit_path(path: Array[Vector2i]) -> bool:
 	if is_over:
-		word_rejected.emit(path, REASON_GAME_OVER)
+		word_rejected.emit(path, REASON_ROUND_OVER)
 		return false
 	if not _is_valid_path(path):
 		word_rejected.emit(path, REASON_INVALID_PATH)
 		return false
-	if path.size() < _balance.min_word_length:
+	if path.size() < min_word_length():
 		word_rejected.emit(path, REASON_TOO_SHORT)
 		return false
 	var word := word_for(path)
@@ -158,10 +156,27 @@ func submit_path(path: Array[Vector2i]) -> bool:
 	last_points = points
 	word_accepted.emit(word, path, points)
 	score_changed.emit(score)
+	_check_level_up()
 	return true
 
 
 # --- intern ----------------------------------------------------------------------
+
+## Level steigt, solange die nächste Schwelle erreicht ist; je Level kommt Nachschub.
+func _check_level_up() -> void:
+	while score >= next_level_score():
+		_level += 1
+		_update_finder_length()
+		level_changed.emit(_level)
+		_spawn(_balance.tiles_per_level)
+
+
+## Die Wort-Hilfe zählt nur Wörter, die im aktuellen Level gültig sind.
+func _update_finder_length() -> void:
+	if _spawner.finder != null:
+		_spawner.finder.min_length = min_word_length()
+		_spawner.finder.max_length = maxi(_balance.help_max_word_length, min_word_length() + 1)
+
 
 func _is_valid_path(path: Array[Vector2i]) -> bool:
 	var seen := {}
@@ -175,21 +190,13 @@ func _is_valid_path(path: Array[Vector2i]) -> bool:
 	return true
 
 
-## Ein neues Hexagon setzen. Gibt false zurück, wenn das Spiel dadurch endet.
-func _spawn_one() -> bool:
-	var r := _spawner.spawn_into(grid)
-	if r.is_empty():
-		_end()
-		return false
-	tile_spawned.emit(r["cell"], r["letter"])
-	if grid.is_full():
-		_end()
-		return false
-	return true
-
-
-func _end() -> void:
-	if is_over:
-		return
-	is_over = true
-	game_over.emit(score)
+## Bis zu `count` neue Hexagons setzen (weniger, wenn kein Platz). Gibt die Anzahl zurück.
+func _spawn(count: int) -> int:
+	var placed := 0
+	for i in count:
+		var r := _spawner.spawn_into(grid)
+		if r.is_empty():
+			break
+		placed += 1
+		tile_spawned.emit(r["cell"], r["letter"])
+	return placed

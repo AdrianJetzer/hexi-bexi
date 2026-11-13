@@ -7,25 +7,26 @@ extends Resource
 @export var grid_rows: int = 9
 
 @export_group("Runde")
-## Anzahl Reihen, die zu Beginn gefüllt sind.
-@export var start_rows: int = 2
-## Mindestlänge eines Wortes.
-@export var min_word_length: int = 3
+## Anzahl Hexagons zu Beginn einer Runde.
+@export var start_tiles: int = 15
 
-@export_group("Tempo")
-## Sekunden zwischen zwei neuen Hexagons zu Beginn.
-@export var spawn_interval_start: float = 3.0
-## Alle so viele Sekunden wird der Takt kürzer.
-@export var speedup_every: float = 30.0
-## Faktor pro Verkürzung (0.9 = 10 % kürzer).
-@export var speedup_factor: float = 0.9
-## Kürzester Takt in Sekunden.
-@export var spawn_interval_min: float = 0.8
+@export_group("Level")
+## Punkte für Level 2.
+@export var first_threshold: int = 100
+## Jeder weitere Schritt ist um diesen Faktor größer (1.5 = +50 %).
+@export var threshold_growth: float = 1.5
+## Neue Hexagons pro Level-Up.
+@export var tiles_per_level: int = 10
+## Mindestlänge eines Wortes je Level (Index 0 = Level 1); danach gilt der letzte Wert.
+@export var min_length_by_level: PackedInt32Array = PackedInt32Array([3, 3, 4, 4, 5])
+
+@export_group("Knopf „Neue Buchstaben“")
+@export var refill_tiles: int = 3
+@export var refill_cost: int = 20
 
 @export_group("Punkte")
 ## Punkte = points_factor · n · (n − 1).
 @export var points_factor: int = 5
-
 
 @export_group("Schwierigkeit (Wort-Hilfe)")
 ## Stufen 1 (leicht) bis 5 (Profi), siehe spec/game-rules.md.
@@ -43,21 +44,17 @@ func difficulty(level: int) -> DifficultyLevel:
 	return difficulty_levels[clampi(level, 1, difficulty_levels.size()) - 1]
 
 
-## Takt (Sekunden) für eine Tempo-Stufe (Stufe 1 = Start).
-func interval_for_level(level: int) -> float:
-	var raw := spawn_interval_start * pow(speedup_factor, maxi(level, 1) - 1)
-	return maxf(raw, spawn_interval_min)
+## Punkte, ab denen ein Level erreicht ist (Level 1 = 0).
+## Schritt k = first_threshold · growth^(k−1), aufsummiert, abgerundet.
+func threshold(level: int) -> int:
+	var total := 0.0
+	for k in range(1, level):
+		total += first_threshold * pow(threshold_growth, k - 1)
+	return int(floor(total))
 
 
-## Höchste Tempo-Stufe: die erste, bei der der kürzeste Takt erreicht ist.
-func max_level() -> int:
-	var level := 1
-	while interval_for_level(level) > spawn_interval_min and level < 1000:
-		level += 1
-	return level
-
-
-## Tempo-Stufe nach so vielen Sekunden Spielzeit.
-func level_at(elapsed: float) -> int:
-	var level := 1 + int(floor(maxf(elapsed, 0.0) / speedup_every))
-	return mini(level, max_level())
+## Mindestlänge eines Wortes in einem Level.
+func min_word_length(level: int) -> int:
+	if min_length_by_level.is_empty():
+		return 3
+	return min_length_by_level[clampi(level, 1, min_length_by_level.size()) - 1]
