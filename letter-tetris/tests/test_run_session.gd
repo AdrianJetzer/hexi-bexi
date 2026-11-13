@@ -631,3 +631,40 @@ func test_clear_with_real_dictionary_is_fast_enough() -> void:
 	var ms := Time.get_ticks_msec() - t0
 	gut.p("Aufräumen bei %d Steinen: %d ms" % [ranked.size(), ms])
 	assert_lt(ms, 2000)
+
+
+# --- Schlaues Tauschen -------------------------------------------------------------------
+
+func test_stuck_when_no_fitting_common_word() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "WABUH")
+	assert_true(run.is_stuck())
+	_column(0, "STERN")
+	assert_false(run.is_stuck())
+
+
+func test_swap_plants_word_when_stuck() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "WABUH")
+	run.coins = 50
+	var changed := run.swap()
+	assert_eq(changed.size(), 5)
+	assert_eq(run.coins, 0)
+	assert_false(run.is_stuck(), "danach liegt ein passendes Wort im Feld")
+	var finder := WordFinder.new(dict)
+	assert_false(finder.find_paths(run.grid, 5, 5, func(w: String) -> bool: return w == "STERN").is_empty())
+
+
+func test_swap_fills_up_with_normal_swaps() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "STERX")
+	_column(2, "EEEEE", false)
+	run.coins = 50
+	var changed := run.swap()
+	assert_eq(changed.size(), 5, "1 für das Wort, 4 normal getauscht")
+	assert_false(run.is_stuck())
+	for i in 4:
+		assert_eq(run.grid.get_letter(Vector2i(0, i)), "STER"[i], "Kette bleibt unangetastet")

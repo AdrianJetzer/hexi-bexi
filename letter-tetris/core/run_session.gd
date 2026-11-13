@@ -58,6 +58,9 @@ var _picker: LetterPicker
 ## Sucht Wörter für den Tipp: zuerst geläufige, dann alle.
 var _hint_finders: Array[WordFinder] = []
 var _hint_rng: RandomNumberGenerator
+var _planter: WordPlanter
+## Woraus schlaues Tauschen seine Wörter nimmt (geläufige Wörter, sonst alle).
+var _plant_words: WordDictionary
 ## Laufender Tipp: Weg und Wort, davon _hint_count Buchstaben gezeigt.
 var _hint_cells: Array[Vector2i] = []
 var _hint_word: String = ""
@@ -91,6 +94,8 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 	_spawner = Spawner.new(_picker, rng_cells)
 	_generator = QuestGenerator.new(curve, rng_quests)
 	_hint_rng = rng_cells
+	_planter = WordPlanter.new(rng_quests)
+	_plant_words = common_words if common_words != null else dictionary
 	if common_words != null:
 		_hint_finders.append(WordFinder.new(common_words))
 	_hint_finders.append(WordFinder.new(dictionary))
@@ -156,25 +161,53 @@ func can_swap() -> bool:
 
 
 ## Hilfe „Tauschen“: einige zufällige Steine bekommen neue Buchstaben (Wort-Hilfe).
-## Gibt die getauschten Plätze zurück.
+## Steckt man fest (kein geläufiges passendes Wort im Feld), legt es zuerst ein passendes
+## Wort über eine Kette vorhandener Steine (siehe WordPlanter). Gibt die getauschten Plätze zurück.
 func swap() -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if not can_swap():
 		return cells
+	var changed: Array[Vector2i] = []
+	var keep := {}
+	if is_stuck():
+		var plan := _planter.plant(grid, _plant_words, quest.free_lengths(), _balance.swap_count)
+		if not plan.is_empty():
+			var path: Array[Vector2i] = []
+			path.assign(plan["path"])
+			var word: String = plan["word"]
+			for i in path.size():
+				keep[path[i]] = true
+				if grid.get_letter(path[i]) != word[i]:
+					grid.set_letter(path[i], word[i])
+					changed.append(path[i])
+					tile_changed.emit(path[i], word[i])
 	for cell in grid.all_cells():
-		if grid.is_occupied(cell):
+		if grid.is_occupied(cell) and not keep.has(cell):
 			cells.append(cell)
 	for i in range(cells.size() - 1, 0, -1):
 		var j := _hint_rng.randi_range(0, i)
 		var t := cells[i]
 		cells[i] = cells[j]
 		cells[j] = t
-	cells.resize(mini(cells.size(), _balance.swap_count))
+	cells.resize(clampi(_balance.swap_count - changed.size(), 0, cells.size()))
 	for cell in cells:
 		tile_changed.emit(cell, _new_letter(cell))
 	_pay(_balance.swap_price)
 	_check_hint()
-	return cells
+	return changed + cells
+
+
+## Steckt man fest? Kein geläufiges Wort im Feld passt in eine freie Zeile.
+func is_stuck() -> bool:
+	if quest == null:
+		return false
+	var lengths := quest.free_lengths()
+	if lengths.is_empty():
+		return false
+	var q := quest
+	var finder: WordFinder = _hint_finders[0]
+	return finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
+			func(w: String) -> bool: return q.matches(w), 1).is_empty()
 
 
 ## Aufräumen möglich? (Auftrag aktiv, Münzen reichen)
