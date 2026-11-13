@@ -1,135 +1,54 @@
 extends GutTest
 
 
-func _length_quest(length: int, count: int = 1, max_moves: int = 0) -> Quest:
+func _quest(rows: Array) -> Quest:
 	var q := Quest.new()
-	q.kind = Quest.Kind.LENGTH
-	q.word_length = length
-	q.count = count
-	q.max_moves = max_moves
+	q.rows = PackedInt32Array(rows)
 	return q.start()
 
 
-func _word_quest(target: String, max_moves: int = 0) -> Quest:
-	var q := Quest.new()
-	q.kind = Quest.Kind.SPECIFIC_WORD
-	q.word_length = target.length()
-	q.max_moves = max_moves
-	return q.start(target)
+func test_word_must_match_length_exactly() -> void:
+	var q := _quest([4])
+	assert_false(q.matches("AST"), "zu kurz")
+	assert_true(q.matches("HAUS"))
+	assert_false(q.matches("HAUSE"), "zu lang")
 
 
-# --- Wortlänge ---------------------------------------------------------------
+func test_word_fills_topmost_free_row_of_its_length() -> void:
+	var q := _quest([3, 4, 3])
+	assert_eq(q.free_row_for("AST"), 0)
+	q.fill(0, "ast")
+	assert_eq(q.filled[0], "AST")
+	assert_eq(q.free_row_for("OHR"), 2, "nächste freie 3er-Zeile")
+	assert_eq(q.free_row_for("HAUS"), 1)
+	assert_eq(q.free_row_for("STERN"), -1, "keine 5er-Zeile")
 
-func test_length_counts_at_least() -> void:
-	var q := _length_quest(5)
-	assert_false(q.matches("HAUS"), "zu kurz")
-	assert_true(q.matches("HAUSE"), "genau 5")
-	assert_true(q.matches("HIMMEL"), "länger zählt auch")
 
-
-func test_single_word_completes() -> void:
-	var q := _length_quest(3)
+func test_done_when_all_rows_filled() -> void:
+	var q := _quest([3, 4])
+	q.fill(q.free_row_for("AST"), "AST")
 	assert_false(q.is_done())
-	assert_true(q.register("AST"))
+	assert_false(q.matches("OHR"), "3er-Zeile schon voll")
+	q.fill(q.free_row_for("HAUS"), "HAUS")
 	assert_true(q.is_done())
 
 
-func test_count_needs_several_words() -> void:
-	var q := _length_quest(4, 3)
-	q.register("HAUS")
-	q.register("BAUM")
-	assert_false(q.is_done())
-	assert_eq(q.found, 2)
-	q.register("MAUS")
-	assert_true(q.is_done())
+func test_free_lengths() -> void:
+	var q := _quest([4, 3, 4, 5])
+	assert_eq(q.free_lengths(), PackedInt32Array([3, 4, 5]))
+	q.fill(1, "AST")
+	assert_eq(q.free_lengths(), PackedInt32Array([4, 5]))
+	assert_eq(q.block_count(), 16)
 
-
-func test_non_matching_word_is_move_without_progress() -> void:
-	var q := _length_quest(5)
-	assert_false(q.register("AST"))
-	assert_eq(q.moves, 1)
-	assert_eq(q.found, 0)
-
-
-# --- Bestimmtes Wort -------------------------------------------------------------
-
-func test_specific_word_only_target_counts() -> void:
-	var q := _word_quest("himmel")
-	assert_eq(q.target, "HIMMEL")
-	assert_false(q.matches("HAMMEL"))
-	assert_false(q.matches("HIMMELS"), "längeres Wort zählt nicht")
-	assert_true(q.matches("HIMMEL"))
-	q.register("HIMMEL")
-	assert_true(q.is_done())
-
-
-func test_specific_word_without_target_never_matches() -> void:
-	var q := Quest.new()
-	q.kind = Quest.Kind.SPECIFIC_WORD
-	assert_false(q.start().matches(""))
-
-
-# --- Zuglimit ------------------------------------------------------------------
-
-func test_no_limit_never_fails() -> void:
-	var q := _length_quest(8)
-	for i in 50:
-		q.register("AST")
-	assert_false(q.is_failed())
-	assert_eq(q.moves_left(), -1)
-
-
-func test_fails_when_moves_used_up() -> void:
-	var q := _length_quest(4, 3, 4)
-	q.register("HAUS")
-	q.register("AST")
-	q.register("BAUM")
-	assert_eq(q.moves_left(), 1)
-	assert_false(q.is_failed())
-	q.register("OHR")
-	assert_true(q.is_failed())
-	assert_eq(q.moves_left(), 0)
-
-
-func test_done_on_last_move_is_not_failed() -> void:
-	var q := _length_quest(4, 2, 2)
-	q.register("HAUS")
-	q.register("BAUM")
-	assert_true(q.is_done())
-	assert_false(q.is_failed())
-
-
-func test_nothing_changes_after_end() -> void:
-	var q := _length_quest(3)
-	q.register("AST")
-	assert_false(q.register("OHR"))
-	assert_eq(q.moves, 1)
-	assert_eq(q.found, 1)
-
-
-func test_miss_costs_move_only() -> void:
-	var q := _length_quest(4, 1, 2)
-	q.register_miss()
-	assert_eq(q.moves, 1)
-	assert_eq(q.found, 0)
-	q.register_miss()
-	assert_true(q.is_failed())
-	q.register_miss()
-	assert_eq(q.moves, 2, "nach dem Scheitern zählt nichts mehr")
-
-
-# --- Vorlage ------------------------------------------------------------------
 
 func test_start_copies_template() -> void:
 	var template := Quest.new()
-	template.word_length = 4
-	template.count = 2
-	template.reward = 250
-	template.no_refill = true
+	template.rows = PackedInt32Array([3, 4])
+	template.reward = 150
 	var a := template.start()
-	a.register("HAUS")
+	a.fill(0, "AST")
 	var b := template.start()
-	assert_eq(b.found, 0, "neue Kopie beginnt bei 0")
-	assert_eq(template.found, 0, "Vorlage bleibt unverändert")
-	assert_eq(b.reward, 250)
-	assert_true(b.no_refill)
+	assert_eq(b.filled[0], "", "neue Kopie ist leer")
+	assert_eq(b.reward, 150)
+	a.rows[0] = 9
+	assert_eq(template.rows[0], 3, "Vorlage bleibt unverändert")

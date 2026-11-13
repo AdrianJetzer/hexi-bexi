@@ -16,8 +16,6 @@ const GLOW := Color(0.55, 0.95, 1.0)
 const SIDE_MARGIN := 0.06
 const TOP_AREA := 0.11
 const BOTTOM_AREA := 0.2
-## Pause, bevor nach einem erfüllten Auftrag die neuen Karten erscheinen (Sekunden).
-const CARDS_DELAY := 1.3
 
 var session: RunSession
 
@@ -35,15 +33,11 @@ var _hint_button: Button
 var _replace_button: Button
 var _give_up_button: Button
 var _confirm: ColorRect
-var _cards: ColorRect
-var _cards_title: Label
-var _card_buttons: Array[Button] = []
 var _summary: ColorRect
 var _summary_label: Label
 ## Nach dem Ende: Lösung ansehen, dann „Weiter“ zur Bilanz.
 var _continue_button: Button
 var _flash_tween: Tween
-var _cards_tween: Tween
 
 
 func _ready() -> void:
@@ -59,10 +53,7 @@ func _ready() -> void:
 
 ## Neuen Lauf starten (Level 1).
 func new_run(seed_value: int = -1) -> void:
-	if _cards_tween:
-		_cards_tween.kill()
 	session = RunSession.new(BALANCE, CURVE, LANG, _dictionary, seed_value, _common)
-	session.quest_offered.connect(_on_quest_offered)
 	session.quest_started.connect(_on_quest_started)
 	session.quest_progress.connect(func(_q: Quest) -> void: _update_labels())
 	session.quest_completed.connect(_on_quest_completed)
@@ -79,7 +70,6 @@ func new_run(seed_value: int = -1) -> void:
 	for b in [_refill_button, _swap_button, _hint_button, _replace_button]:
 		b.visible = true
 	_confirm.visible = false
-	_cards.visible = false
 	_word_label.text = ""
 	_board.setup(session)
 	session.start()
@@ -126,18 +116,6 @@ func _build_ui() -> void:
 	_give_up_button.add_theme_color_override("font_color", TEXT_DIM)
 	_give_up_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
-
-	# Auftragswahl
-	var k := _overlay("")
-	_cards = k[0]
-	_cards_title = k[2]
-	for i in 2:
-		var b := _button("", 40, k[1])
-		b.custom_minimum_size = Vector2(820, 260)
-		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		var index := i
-		b.pressed.connect(func() -> void: session.choose_quest(index))
-		_card_buttons.append(b)
 
 	# Nachfrage „Aufgeben?“
 	var c := _overlay("Aufgeben?")
@@ -253,8 +231,8 @@ func _update_labels() -> void:
 		return
 	var q := session.quest
 	if q != null:
-		_quest_label.text = describe(q, true)
-		_progress_label.text = _progress_text(q)
+		_quest_label.text = rows_text(q)
+		_progress_label.text = ""
 	else:
 		_quest_label.text = ""
 		_progress_label.text = ""
@@ -272,34 +250,12 @@ func _update_labels() -> void:
 		_set_replace_mode(false)
 
 
-## Auftrag als Text. started: Zielwort ist bekannt (laufender Auftrag).
-static func describe(q: Quest, started: bool) -> String:
-	var t := ""
-	match q.kind:
-		Quest.Kind.SPECIFIC_WORD:
-			if started and q.target != "":
-				t = "Finde das Wort %s" % q.target
-			else:
-				t = "Finde ein bestimmtes Wort mit %d Buchstaben" % q.word_length
-		_:
-			if q.count == 1:
-				t = "Finde ein Wort mit mind. %d Buchstaben" % q.word_length
-			else:
-				t = "Finde %d Wörter mit mind. %d Buchstaben" % [q.count, q.word_length]
-	if q.max_moves > 0:
-		t += " in höchstens %d Zügen" % q.max_moves
-	if q.no_refill:
-		t += ", ohne Nachfüllen"
-	return t
-
-
-func _progress_text(q: Quest) -> String:
+## Vorläufig (bis zur Block-Anzeige): Zeilen als Text, z. B. „AST  ▢▢▢▢“.
+static func rows_text(q: Quest) -> String:
 	var parts: Array[String] = []
-	if q.count > 1:
-		parts.append("%d von %d" % [q.found, q.count])
-	if q.max_moves > 0:
-		parts.append("noch %d Züge" % q.moves_left())
-	return " · ".join(parts)
+	for i in q.rows.size():
+		parts.append(q.filled[i] if q.filled[i] != "" else "▢".repeat(q.rows[i]))
+	return "   ".join(parts)
 
 
 ## Kurz einen Text oben anzeigen, danach ausblenden.
@@ -355,39 +311,16 @@ func _on_hint_pressed() -> void:
 		_flash("Tipp: %d. Buchstabe blinkt" % n, GLOW, 1.4)
 
 
-func _on_quest_offered(cards: Array[Quest]) -> void:
-	_cards_title.text = "Level %d\nWähle deinen Auftrag" % session.level()
-	var names := ["Sicher", "Riskant"]
-	for i in _card_buttons.size():
-		var b := _card_buttons[i]
-		b.visible = i < cards.size()
-		if b.visible:
-			b.text = "%s\n%s\n+%d Münzen" % [names[i], describe(cards[i], false), cards[i].reward]
-	if _cards_tween:
-		_cards_tween.kill()
-	if session.level() == 1:
-		_cards.visible = true
-	else:
-		# Erst die Erfolgsmeldung und das Verschwinden des Worts zeigen.
-		_cards_tween = create_tween()
-		_cards_tween.tween_interval(CARDS_DELAY)
-		_cards_tween.tween_callback(func() -> void: _cards.visible = not session.is_over)
+func _on_quest_started(_q: Quest) -> void:
 	_update_labels()
-
-
-func _on_quest_started(q: Quest) -> void:
-	_cards.visible = false
-	_update_labels()
-	if q.kind == Quest.Kind.SPECIFIC_WORD and q.target != "":
-		_flash("Finde: %s" % q.target, ACCENT, 2.2)
 
 
 func _on_quest_completed(_q: Quest, reward: int) -> void:
 	_flash("Geschafft!  +%d Münzen" % reward, GLOW, 1.0)
 
 
-func _on_word_accepted(_word: String, _cells: Array[Vector2i]) -> void:
-	pass
+func _on_word_accepted(_word: String, _cells: Array[Vector2i], _row: int) -> void:
+	_update_labels()
 
 
 ## Grund der Ablehnung kurz oben anzeigen (die Steine wackeln dazu).
@@ -399,10 +332,8 @@ func _on_word_rejected(_cells: Array[Vector2i], reason: String) -> void:
 		RunSession.REASON_NOT_A_WORD:
 			_flash("Kein Wort", TEXT_DIM, 1.0)
 		RunSession.REASON_NOT_MATCHING:
-			if q != null and q.kind == Quest.Kind.SPECIFIC_WORD:
-				_flash("Gesucht ist %s" % q.target, ACCENT, 1.4)
-			elif q != null:
-				_flash("Mind. %d Buchstaben für den Auftrag" % q.word_length, ACCENT, 1.4)
+			if q != null:
+				_flash("Passt in keine freie Zeile", ACCENT, 1.4)
 
 
 func _on_confirm_give_up() -> void:
@@ -410,10 +341,9 @@ func _on_confirm_give_up() -> void:
 	session.give_up()
 
 
-func _on_run_ended(level: int, reason: String) -> void:
-	_cards.visible = false
+func _on_run_ended(level: int, _reason: String) -> void:
 	var new_record := SaveData.submit_level(level)
-	var why := "Züge aufgebraucht" if reason == RunSession.REASON_OUT_OF_MOVES else "Lauf beendet"
+	var why := "Lauf beendet"
 	_summary_label.text = "%s\n\nLevel %d erreicht\n\nRekord: Level %d%s" % [
 		why, level, SaveData.best_level(), "\nNeuer Rekord!" if new_record else ""]
 	_update_labels()
