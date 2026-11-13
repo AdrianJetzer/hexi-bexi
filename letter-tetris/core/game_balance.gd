@@ -27,6 +27,22 @@ extends Resource
 @export var points_factor: int = 5
 
 
+@export_group("Schwierigkeit (Wort-Hilfe)")
+## Stufen 1 (leicht) bis 5 (Profi), siehe spec/game-rules.md.
+@export var difficulty_levels: Array[DifficultyLevel] = []
+## Stufe beim ersten Start (1-basiert).
+@export var default_difficulty: int = 3
+## Längste Wortlänge, die die Wort-Hilfe berücksichtigt (wegen Rechenzeit).
+@export var help_max_word_length: int = 6
+
+
+## Stufe 1..n; außerhalb des Bereichs wird begrenzt. null, wenn keine Stufen definiert sind.
+func difficulty(level: int) -> DifficultyLevel:
+	if difficulty_levels.is_empty():
+		return null
+	return difficulty_levels[clampi(level, 1, difficulty_levels.size()) - 1]
+
+
 ## Takt (Sekunden) für eine Tempo-Stufe (Stufe 1 = Start).
 func interval_for_level(level: int) -> float:
 	var raw := spawn_interval_start * pow(speedup_factor, maxi(level, 1) - 1)

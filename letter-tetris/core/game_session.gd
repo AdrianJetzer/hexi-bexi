@@ -28,6 +28,8 @@ var last_word: String = ""
 var last_points: int = 0
 var is_over: bool = false
 var is_paused: bool = false
+## Schwierigkeitsstufe dieser Runde (1..5).
+var difficulty: int = 3
 
 var _balance: GameBalance
 var _dictionary: WordDictionary
@@ -37,7 +39,10 @@ var _level: int = 1
 
 
 ## seed_value < 0: zufällig; sonst reproduzierbar (für Tests).
-func _init(balance: GameBalance, lang: LanguageData, dictionary: WordDictionary, seed_value: int = -1) -> void:
+## common_words: geläufige Wörter für die Wort-Hilfe (null = keine Hilfe).
+## difficulty_level: Schwierigkeitsstufe 1..5 (siehe GameBalance.difficulty_levels).
+func _init(balance: GameBalance, lang: LanguageData, dictionary: WordDictionary, seed_value: int = -1,
+		common_words: WordDictionary = null, difficulty_level: int = -1) -> void:
 	_balance = balance
 	_dictionary = dictionary
 	var rng_letters := RandomNumberGenerator.new()
@@ -50,6 +55,10 @@ func _init(balance: GameBalance, lang: LanguageData, dictionary: WordDictionary,
 		rng_cells.randomize()
 	_picker = LetterPicker.new(lang, rng_letters)
 	_spawner = Spawner.new(balance, _picker, rng_cells)
+	difficulty = difficulty_level if difficulty_level > 0 else balance.default_difficulty
+	if common_words != null:
+		_spawner.finder = WordFinder.new(common_words, balance.min_word_length, balance.help_max_word_length)
+		_spawner.difficulty = balance.difficulty(difficulty)
 	grid = HexGrid.new(balance.grid_cols, balance.grid_rows)
 
 

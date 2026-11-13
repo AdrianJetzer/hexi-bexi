@@ -1,6 +1,37 @@
-[gd_resource type="Resource" script_class="GameBalance" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="GameBalance" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://core/game_balance.gd" id="1"]
+[ext_resource type="Script" path="res://core/difficulty_level.gd" id="2"]
+
+[sub_resource type="Resource" id="level_1"]
+script = ExtResource("2")
+display_name = "Sehr leicht"
+help_strength = 3.0
+min_words = 8
+
+[sub_resource type="Resource" id="level_2"]
+script = ExtResource("2")
+display_name = "Leicht"
+help_strength = 1.5
+min_words = 5
+
+[sub_resource type="Resource" id="level_3"]
+script = ExtResource("2")
+display_name = "Mittel"
+help_strength = 0.8
+min_words = 3
+
+[sub_resource type="Resource" id="level_4"]
+script = ExtResource("2")
+display_name = "Schwer"
+help_strength = 0.3
+min_words = 1
+
+[sub_resource type="Resource" id="level_5"]
+script = ExtResource("2")
+display_name = "Profi"
+help_strength = 0.0
+min_words = 0
 
 [resource]
 script = ExtResource("1")
@@ -13,3 +44,6 @@ speedup_every = 30.0
 speedup_factor = 0.9
 spawn_interval_min = 0.8
 points_factor = 5
+difficulty_levels = Array[ExtResource("2")]([SubResource("level_1"), SubResource("level_2"), SubResource("level_3"), SubResource("level_4"), SubResource("level_5")])
+default_difficulty = 3
+help_max_word_length = 6

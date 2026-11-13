@@ -7,6 +7,10 @@ extends RefCounted
 
 var elapsed: float = 0.0
 
+## Wort-Hilfe (optional): Wortsucher für geläufige Wörter und Schwierigkeitsstufe.
+var finder: WordFinder
+var difficulty: DifficultyLevel
+
 var _balance: GameBalance
 var _picker: LetterPicker
 var _rng: RandomNumberGenerator
@@ -63,7 +67,7 @@ func spawn_into(grid: HexGrid) -> Dictionary:
 	var cell := choose_cell(grid)
 	if cell.x < 0:
 		return {}
-	var letter := _picker.pick(_board_letters(grid))
+	var letter := _picker.pick_for_cell(grid, cell, finder, difficulty)
 	grid.set_letter(cell, letter)
 	return {"cell": cell, "letter": letter}
 
