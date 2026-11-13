@@ -48,7 +48,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu die **Auft
 - Nach einem erfüllten Auftrag: kurze Erfolgsmeldung mit Münzen, dann die nächste Auftragswahl.
 
 ### Bilanz (ersetzt „Game-Over“)
-- Erscheint, wenn der Spieler **aufgibt**.
+- Erscheint, wenn der Spieler **aufgibt** oder ein **Zuglimit verfehlt** (dann mit Hinweis „Züge aufgebraucht“).
 - Zeigt **erreichtes Level** und **Rekord**, mit Hinweis bei **neuem Rekord**.
 - Knöpfe:
   - **Nochmal:** startet sofort einen neuen Lauf ab Level 1.

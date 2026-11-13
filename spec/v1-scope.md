@@ -59,8 +59,6 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.
-- Regeln für Aufträge ab Level 11.
-- Wie das gezielte Säen eines bestimmten Worts funktioniert.
 - Feintuning von Auftrags-Kurve, Münz-Preisen, Hilfe-Stufen und Vokal-Ausgleich durch Testspiele.
 
 ## Fertig, wenn

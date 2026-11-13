@@ -17,7 +17,9 @@ Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwe
 1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **20 Hexagons** (Platzwahl wie bisher). Das erste Level muss ohne Hilfe klappen.
 2. **Level:** Der Spieler bekommt einen Auftrag und versucht ihn mit Wörtern im Feld zu erfüllen.
 3. **Erfüllt:** Münzen gutschreiben, weiter zum nächsten, schwereren Level.
-4. **Gescheitert:** Der Spieler kommt nicht weiter (z. B. kein Geld mehr für Hilfen) und tippt **„Aufgeben“**. Nach einer Nachfrage endet der Lauf. Kein automatisches Ende.
+4. **Gescheitert:** Der Lauf endet, wenn
+   - der Spieler nicht weiterkommt (z. B. kein Geld mehr für Hilfen) und **„Aufgeben“** tippt (mit Nachfrage), oder
+   - bei einem Auftrag mit **Zuglimit** die Züge aufgebraucht sind, ohne dass er erfüllt ist (automatisch).
 5. **Ende:** Bilanz (erreichtes Level, Münzen, gefundene Wörter). Danach neuer Lauf ab Level 1.
 6. **Rekord:** nur das **höchste erreichte Level**.
 
@@ -25,11 +27,14 @@ Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwe
 
 ### Arten (Beispiele)
 - **Länge:** „Finde ein Wort mit 3 Buchstaben“, später „… mit 5 Buchstaben“.
-- **Bestimmtes Wort:** „Finde HIMMEL“. Das Spiel muss die nötigen Buchstaben ins Feld bringen, verteilt statt nebeneinander.
+- **Bestimmtes Wort:** „Finde HIMMEL“. Das Zielwort kommt aus der Liste geläufiger Wörter.
+  - **Säen durch Verwandeln:** Beim Start des Auftrags legt das Spiel das Wort als **zusammenhängende Kette** ins Feld. Die betroffenen Steine **drehen sich um** und zeigen dabei ihre neuen Buchstaben. Reichen die Steine nicht, werden freie Plätze mitbenutzt; dort erscheinen neue Steine (Füllen von unten nach oben bleibt gültig).
+  - Das Wort ist damit **garantiert lösbar**, auch bei vollem Feld. Man muss es nur finden.
+  - Die Kette soll nicht auffallen (z. B. nicht immer gerade, gemischt mit vorhandenen Steinen). Details bei der Umsetzung.
 - **Anzahl:** „Finde 3 Wörter mit 3 Buchstaben“.
 - **Mit Bedingung:**
   - „… ohne Nachziehen“ (im Level ist „Nachfüllen“ gesperrt)
-  - „… in höchstens 5 Zügen“
+  - „… in höchstens 5 Zügen“ (Züge aufgebraucht, Auftrag nicht erfüllt → **Lauf endet**)
   - „… mit dem Buchstaben X“
   - „… Wort endet auf -EN“
 
@@ -58,6 +63,15 @@ Pro Level zwei Auftragskarten: A sicher, B riskant. Zahlen sind Startwerte für 
 
 - Sichere Karten reichen für 2–3 Nachfüllungen; riskante bringen etwa das Doppelte als Polster.
 - Die Wort-Hilfe nutzt die bisherigen 5 Stufen (sehr stark = „Sehr leicht“ … ohne Hilfe = „Profi“), jetzt automatisch nach Level.
+
+**Ab Level 11 (Mischen + steigern):**
+- Beide Karten werden **zufällig** aus allen Auftragsarten von Level 6–10 gezogen (eine sicher, eine riskant).
+- **Alle 5 Levels** (11, 16, 21 …) wird eine Stellschraube verschärft, reihum:
+  1. Wortlänge **+1** (höchstens 8 Buchstaben),
+  2. Anzahl Wörter **+1**,
+  3. Zuglimit **−1** (mindestens so viele Züge wie Wörter).
+- Die **Belohnung** steigt je Verschärfung um **+50**.
+- Wort-Hilfe: keine. Alle Werte sind Startwerte für das Feintuning.
 
 ### Zug
 Ein **Zug** ist ein **angenommenes Wort**. Ungültige Versuche und gekaufte Hilfen zählen nicht als Zug. Jedes gültige Wort (mindestens 3 Buchstaben) wird angenommen und verschwindet, auch wenn es nicht zum Auftrag passt; für den Auftrag zählen nur passende Wörter.
@@ -130,10 +144,13 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 8. ~~**Wort-Hilfe und Schwierigkeitsstufen**~~ → Level steuert die Hilfe; die 5 Stufen entfallen.
 9. ~~**Stein ersetzen**~~ → neuer Buchstabe von der Wort-Hilfe, kein Wunschbuchstabe.
 10. ~~**Feld voll**~~ → Nachfüllen gesperrt; Stein ersetzen, Tipp oder Aufgeben.
-11. ~~**Schwierigkeitskurve**~~ → Startwerte siehe „Kurve“; ab Level 11 Regeln noch festzulegen.
+11. ~~**Schwierigkeitskurve**~~ → Startwerte siehe „Kurve“; ab Level 11 Mischen + steigern.
 12. ~~**Rekord**~~ → nur das höchste Level.
 
 ## Verlauf
 
 - **v1:** Konzept gesammelt: Lauf mit Aufträgen als Levels, Münzen (+100 pro Auftrag; Nachfüllen 5 Steine −50, Tipp −100, Stein ersetzen −100), Neustart bei Level 1 nach Scheitern (Roguelike). Ideen: Auftragswahl, Zufall, Bosse, Laden, besondere Steine, Meta-Fortschritt. Umfang und Details offen.
 - **v2:** Offene Fragen geklärt: Feld bleibt zwischen Levels liegen; Start mit 0 Münzen und 20 Hexagons; Zug = angenommenes Wort; Punkte entfallen; Knopf „Aufgeben“ (kein automatisches Ende); „ohne Nachziehen“ sperrt den Knopf; Level steuert die Wort-Hilfe, die 5 Stufen entfallen; Stein ersetzen über Wort-Hilfe; volles Feld sperrt Nachfüllen; Rekord = höchstes Level; Kurve für Level 1–10. Umfang v1: Grundgerüst + Auftrag wählen + Zufall; später: Bosse, Laden, besondere Steine, Bonus-Münzen, Meta, Münzkauf.
+- **v2.1:** Zuglimit verfehlt → Lauf endet automatisch.
+- **v2.2:** Ab Level 11: Aufträge aus Level 6–10 gemischt, alle 5 Levels eine Verschärfung (Länge, Anzahl, Zuglimit reihum), Belohnung +50 je Verschärfung.
+- **v2.3:** Bestimmtes Wort wird gesät, indem Steine sich zu einer zusammenhängenden Kette verwandeln (garantiert lösbar).

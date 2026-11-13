@@ -94,7 +94,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Entfallen.** An ihre Stelle treten Münzen und Level (siehe [run-mode.md](run-mode.md)).
 
 ### Ende eines Laufs
-- Der Lauf endet nur, wenn der Spieler **aufgibt** (Knopf „Aufgeben“ mit Nachfrage). Kein automatisches Ende.
+- Der Lauf endet, wenn der Spieler **aufgibt** (Knopf „Aufgeben“ mit Nachfrage) oder bei einem Auftrag mit **Zuglimit** die Züge aufgebraucht sind, ohne dass er erfüllt ist.
 - Danach zeigt ein **Bilanz-Screen** das erreichte Level und den Rekord (siehe [screens.md](screens.md)).
 - **Rekord** = höchstes erreichtes Level (ein Rekord, keine Stufen).
 
@@ -105,7 +105,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ## Später festlegen
 
-- **Wörter gezielt säen:** wird für Aufträge „Finde ein bestimmtes Wort“ gebraucht (Version 1): Die Buchstaben des Ziel-Worts müssen ins Feld kommen, verteilt statt nebeneinander. Wie genau, legen wir bei der Umsetzung fest.
+- **Wörter gezielt säen** (Version 1, für Aufträge „Finde ein bestimmtes Wort“): Steine verwandeln sich bei Auftragsstart zu einer zusammenhängenden Kette mit dem Zielwort (siehe [run-mode.md](run-mode.md)). Wie die Kette unauffällig gewählt wird, legen wir bei der Umsetzung fest.
 - **Bessere Liste geläufiger Wörter** (z. B. Häufigkeitsliste mit passender Lizenz).
 - **Feintuning** von Hilfe-Stufen, Auftrags-Kurve und Münz-Preisen anhand von Testspielen.
 - **Wörterbuch:** Abdeckung und Größe der aufbereiteten Liste prüfen (Quellen siehe oben).
@@ -123,3 +123,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v5:** Ruhiger Level-Modus: kein Takt; Start mit 15 Hexagons; Level-Up bei wachsenden Punktschwellen bringt 10 Hexagons; Mindestlänge 3/4/5 je Level; Knopf „Neue Buchstaben“ (3 für 20 Punkte); endlos, Rundenende mit Bilanz. Entfällt: Takt, Tempo-Stufe, Verlieren bei vollem Feld.
 - **v6:** Lauf-Modus (siehe [run-mode.md](run-mode.md)): Start mit 20 Hexagons und 0 Münzen; Feld bleibt zwischen Levels; Nachschub nur über gekaufte Hilfen; Mindestlänge immer 3, jedes gültige Wort zählt als Zug; Hilfe-Stufe folgt dem Level; Ende nur durch Aufgeben; Rekord = höchstes Level. Entfällt: Punkte, Punkt-Schwellen, +10 Hexagons pro Level, Knopf „Neue Buchstaben“, wählbare Schwierigkeitsstufen.
 - **v6.1:** Raster 5 × 9 (45 Plätze).
+- **v6.2:** Lauf endet auch, wenn ein Zuglimit verfehlt wird.
