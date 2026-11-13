@@ -14,9 +14,11 @@ const TOP_AREA := 0.11
 const BOTTOM_AREA := 0.15
 
 var session: GameSession
-var record: int = 0
 
 var _dictionary: WordDictionary
+var _common: WordDictionary
+## Vorläufig: Stufe im Spiel umschalten (zieht später in die Einstellungen um).
+var _difficulty_button: Button
 var _board: BoardView3D
 var _word_label: Label
 var _score_label: Label
@@ -32,6 +34,7 @@ func _ready() -> void:
 	# Berührungen nicht hier abfangen, sondern ans Spielfeld (_unhandled_input) durchlassen.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_dictionary = WordDictionary.from_file(LANG.words_path)
+	_common = WordDictionary.from_file(LANG.common_words_path)
 	_build_ui()
 	get_viewport().size_changed.connect(_relayout)
 	new_round()
@@ -54,7 +57,7 @@ func _notification(what: int) -> void:
 
 ## Neue Runde starten.
 func new_round(seed_value: int = -1) -> void:
-	session = GameSession.new(BALANCE, LANG, _dictionary, seed_value)
+	session = GameSession.new(BALANCE, LANG, _dictionary, seed_value, _common, Settings.difficulty)
 	session.score_changed.connect(_on_score_changed)
 	session.level_changed.connect(_on_level_changed)
 	session.word_accepted.connect(_on_word_accepted)
@@ -83,6 +86,13 @@ func _build_ui() -> void:
 	_level_label = _label(38, TEXT_DIM)
 	_record_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	_difficulty_button = Button.new()
+	_difficulty_button.add_theme_font_size_override("font_size", 34)
+	_difficulty_button.flat = true
+	_difficulty_button.add_theme_color_override("font_color", TEXT_DIM)
+	_difficulty_button.pressed.connect(_next_difficulty)
+	add_child(_difficulty_button)
 
 	_overlay = ColorRect.new()
 	_overlay.color = Color(0, 0, 0, 0.7)
@@ -144,6 +154,8 @@ func _relayout() -> void:
 	_last_label.size = Vector2(half, 60)
 	_level_label.position = Vector2(side + half, info_top + 90)
 	_level_label.size = Vector2(half, 60)
+	_difficulty_button.position = Vector2(side * 0.5, s.y * 0.02)
+	_difficulty_button.size = Vector2(s.x * 0.36, s.y * 0.05)
 	_update_labels()
 
 
@@ -151,8 +163,10 @@ func _update_labels() -> void:
 	if session == null:
 		return
 	_score_label.text = "Punkte %d" % session.score
-	_record_label.text = "Rekord %d" % maxi(record, session.score)
-	_level_label.text = "Stufe %d" % session.level()
+	_record_label.text = "Rekord %d" % maxi(SaveData.record(session.difficulty), session.score)
+	_level_label.text = "Tempo %d" % session.level()
+	var d := BALANCE.difficulty(session.difficulty)
+	_difficulty_button.text = "%s %s ▸" % [_stars(session.difficulty), d.display_name if d else ""]
 
 
 # --- Signale --------------------------------------------------------------------
@@ -170,8 +184,19 @@ func _on_word_accepted(word: String, _cells: Array[Vector2i], points: int) -> vo
 
 
 func _on_game_over(final_score: int) -> void:
-	var new_record := final_score > record
-	record = maxi(record, final_score)
+	var new_record := SaveData.submit_score(session.difficulty, final_score)
 	_overlay_label.text = "Spiel vorbei\n%d Punkte%s" % [final_score, "\nNeuer Rekord!" if new_record else ""]
 	_overlay.visible = true
 	_update_labels()
+
+
+## Vorläufig: nächste Stufe wählen (1 → 2 → … → 5 → 1) und neu starten.
+func _next_difficulty() -> void:
+	var n := BALANCE.difficulty_levels.size()
+	Settings.difficulty = Settings.difficulty % n + 1
+	new_round()
+
+
+func _stars(level: int) -> String:
+	var n := BALANCE.difficulty_levels.size()
+	return "★".repeat(level) + "☆".repeat(maxi(n - level, 0))
