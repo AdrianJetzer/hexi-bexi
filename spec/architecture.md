@@ -1,6 +1,6 @@
 # Architektur
 
-Status: **Entwurf v1**. Grundaufbau abgestimmt; Details werden bei der Umsetzung verfeinert.
+Status: **Entwurf v2**. Grundaufbau abgestimmt; Details werden bei der Umsetzung verfeinert.
 
 Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.md](tech.md), Umfang siehe [v1-scope.md](v1-scope.md).
 
@@ -16,9 +16,10 @@ Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.m
 ```
 core/                  Reine Spiellogik (keine Grafik)
   hex_grid.gd          Raster 6×9, Koordinaten, Nachbarn, freie Plätze, Löcher
+  board_layout.gd      Geometrie des Rasters (Mittelpunkte, Treffer-Test, Zickzack-Umriss)
   spawner.gd           Takt, Tempo-Stufe, Platzwahl
   letter_picker.gd     Buchstabenwahl (Häufigkeit + Vokal-Ausgleich)
-  dictionary.gd        Wortprüfung
+  word_dictionary.gd   Wortprüfung
   scoring.gd           Punkte = 5·n·(n−1)
   game_session.gd      Eine Runde: verbindet alles, sendet Signale
 
@@ -30,7 +31,10 @@ data/
 scenes/
   main.tscn            Wurzel: wechselt zwischen den Screens
   screens/             start, game, game_over, settings
-  board/               board_view (Feld + Wisch-Eingabe), hex_tile (ein Hexagon)
+  board3d/             3D-Spielfeld: board_view_3d (Feld, Kamera, Wisch-Eingabe),
+                       hex_tile_3d (ein Hexagon), hex_mesh (Modell im Code erzeugt),
+                       cosmic_materials (Materialien des Themes Kosmisch)
+  prototypes/          Prototypen zum Ausprobieren der Optik (nicht Teil des Spiels)
   effects/             Energie-Strahl, Zerspringen, Erlöschen …
 
 shaders/               Kristall, 3D-Drehung, Nebel, Leuchtkante
@@ -48,9 +52,14 @@ tests/                 Automatische Tests (GUT) für core/
 
 ## Lösungsansätze für knifflige Stellen
 
-- **3D-Drehung im 2D-Spiel:** Shader auf dem Hexagon-Sprite, der eine perspektivische Drehung vortäuscht und bei 90° von der milchigen Rückseite zur Vorderseite wechselt. Leistungsgünstig.
-- **Kristall-Licht:** Sprites mit **Normal Maps**, **2D-Lichter** und **Glow**. Ob Glow mit dem Mobile-Renderer auf Android wie gewünscht aussieht, **früh auf einem echten Gerät prüfen**.
-- **Wischen:** Fingerposition wird in Raster-Koordinaten umgerechnet. Ein Hexagon zählt erst, wenn der Finger **nah genug an dessen Mitte** ist, damit an den Ecken nicht versehentlich der falsche Nachbar gewählt wird.
+- **3D-Spielfeld, 2D-Oberfläche:** Das Spielfeld (Hexagons, Rahmen, Licht, Kamera) ist eine 3D-Szene; Wort-Anzeige, Infobereich und Knöpfe sind 2D-Controls darüber. Die Spiellogik bleibt unverändert.
+  - **Kamera** senkrecht von oben mit Perspektive; ihr Abstand wird so berechnet, dass das Feld in den vorgesehenen Bildschirmbereich passt (Ränder, Bereich oben, Infobereich unten).
+  - **Raster in 3D:** dieselbe Geometrie wie `BoardLayout`, in der Ebene X/Z (Bildschirm-unten = +Z).
+- **Hexagon-Modell:** im Code erzeugtes Prisma mit runden Kanten (`HexMesh`), zwei Flächen (Vorder- und Rückseite), damit die Rückseite ein eigenes Material bekommt. Die milchige Rückseite wird nur gezeigt, solange sie oben liegt (sonst schiene sie durch das Glas).
+- **3D-Drehung:** echte Drehung des Hexagons um die eigene Achse.
+- **Kristall-Material:** eigener Shader `shaders/crystal.gdshader` (Lichtbrechung über die Bildschirmtextur, Fresnel-Kante, Leuchtkern) plus **Glow** der Umgebung. Leistung und Aussehen mit dem Mobile-Renderer **früh auf einem echten Gerät prüfen**.
+- **Spiegelungen:** eine unsichtbare Himmels-Umgebung dient nur als Quelle für Spiegelungen; der sichtbare Hintergrund bleibt dunkel.
+- **Wischen:** Der Fingerpunkt wird über einen Strahl von der Kamera auf die Ebene der Hexagons umgerechnet, dann in Raster-Koordinaten. Ein Hexagon zählt erst, wenn der Finger **nah genug an dessen Mitte** ist, damit an den Ecken nicht versehentlich der falsche Nachbar gewählt wird.
 - **Wörterbuch:** Kompaktes Binärformat **„LTW1“** (`data/languages/<code>/words.bin`): Wörter nach Länge gruppiert, je Gruppe sortiert, ohne Trennzeichen; Suche per binärer Suche in der passenden Längengruppe. Erzeugt von `tools/dictionary/pack_words.py`.
   - Gemessen (Mac, 850.724 Wörter): **9,9 MB** Arbeitsspeicher, Laden ~1 ms, Prüfen eines Worts ~2,4 µs. (Zum Vergleich: als Text-Array 70 MB.)
   - **Beim Export beachten:** `*.bin` ist keine Godot-Ressource und muss im Export-Filter ausdrücklich eingeschlossen werden (z. B. `data/languages/*/words.bin`).
@@ -71,3 +80,4 @@ tests/                 Automatische Tests (GUT) für core/
 
 - **v1:** Grundprinzipien, Ordnerstruktur, Lösungsansätze, Tests mit GUT.
 - **v1.1:** Wörterbuch-Format „LTW1“ (kompakt, ~10 MB).
+- **v2:** Spielfeld in 3D mit 2D-Oberfläche; Hexagon-Modell im Code, Kristall-Shader, Kamera von oben mit Perspektive.
