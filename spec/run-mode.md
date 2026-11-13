@@ -26,7 +26,7 @@ Ersetzt den ruhigen Level-Modus aus [game-rules.md](game-rules.md) (Punkte-Schwe
 ## Aufträge
 
 ### Arten (Beispiele)
-- **Länge:** „Finde ein Wort mit 3 Buchstaben“, später „… mit 5 Buchstaben“.
+- **Länge:** „Finde ein Wort mit 3 Buchstaben“, später „… mit 5 Buchstaben“. Gemeint ist **mindestens** diese Länge; längere Wörter zählen auch (Anzeige z. B. „mind. 5 Buchstaben“). Beim bestimmten Wort zählt nur genau das Zielwort.
 - **Bestimmtes Wort:** „Finde HIMMEL“. Das Zielwort kommt aus der Liste geläufiger Wörter.
   - **Säen durch Verwandeln:** Beim Start des Auftrags legt das Spiel das Wort als **zusammenhängende Kette** ins Feld. Die betroffenen Steine **drehen sich um** und zeigen dabei ihre neuen Buchstaben. Reichen die Steine nicht, werden freie Plätze mitbenutzt; dort erscheinen neue Steine (Füllen von unten nach oben bleibt gültig).
   - Das Wort ist damit **garantiert lösbar**, auch bei vollem Feld. Man muss es nur finden.
@@ -154,3 +154,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v2.1:** Zuglimit verfehlt → Lauf endet automatisch.
 - **v2.2:** Ab Level 11: Aufträge aus Level 6–10 gemischt, alle 5 Levels eine Verschärfung (Länge, Anzahl, Zuglimit reihum), Belohnung +50 je Verschärfung.
 - **v2.3:** Bestimmtes Wort wird gesät, indem Steine sich zu einer zusammenhängenden Kette verwandeln (garantiert lösbar).
+- **v2.4:** Längen-Aufträge zählen Wörter mit mindestens der verlangten Länge.
