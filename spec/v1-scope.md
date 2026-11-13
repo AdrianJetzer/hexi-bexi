@@ -58,7 +58,6 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.
-- **Git und GitHub** einrichten.
 - Feintuning von Tempo und Vokal-Ausgleich durch Testspiele.
 
 ## Fertig, wenn

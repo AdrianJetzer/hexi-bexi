@@ -47,7 +47,8 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 ## Versionsverwaltung
 
 - **Git** lokal im Ordner `godot-game/`, zusätzlich **GitHub** (privates Repository).
-- Einrichtung ist ein eigener Schritt und erfolgt erst auf ausdrücklichen Wunsch.
+- **Eingerichtet** am 13.11.2026: Branch `main`, privates Repository `github.com/TangoPazzafini/letter-tetris`.
+- Heruntergeladene Quellen und Export-Ergebnisse (APK/AAB, Signierschlüssel) sind per `.gitignore` ausgeschlossen.
 
 ## Offene Fragen
 
