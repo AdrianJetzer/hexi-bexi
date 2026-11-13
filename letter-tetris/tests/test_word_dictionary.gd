@@ -1,6 +1,8 @@
 extends GutTest
 
-const SAMPLE_PATH := "res://tests/data/words_sample.txt"
+## Erzeugt mit: python3 -I tools/dictionary/pack_words.py tests/data/words_sample.txt tests/data/words_sample.bin
+const SAMPLE_TXT := "res://tests/data/words_sample.txt"
+const SAMPLE_BIN := "res://tests/data/words_sample.bin"
 
 var dict: WordDictionary
 
@@ -20,7 +22,7 @@ func test_case_insensitive() -> void:
 
 
 func test_unknown_words() -> void:
-	for w in ["STER", "STERNEN", "HAUSE", "XYZ", ""]:
+	for w in ["STER", "STERNEN", "HAUSE", "XYZ", "", "A", "SEHRSEHRLANGESWORT"]:
 		assert_false(dict.contains(w), w)
 
 
@@ -28,16 +30,29 @@ func test_duplicates_removed() -> void:
 	assert_eq(dict.size(), 5)
 
 
-func test_boundaries_of_sorted_list() -> void:
-	var d := WordDictionary.from_words(PackedStringArray(["AAL", "MOND", "ZOO"]))
-	assert_true(d.contains("AAL"))
-	assert_true(d.contains("ZOO"))
-	assert_false(d.contains("AA"))
-	assert_false(d.contains("ZOOS"))
+func test_boundaries_of_each_length_group() -> void:
+	var d := WordDictionary.from_words(PackedStringArray(["AAL", "MAL", "ZOO", "AXT", "ZZZZ", "AAAA"]))
+	for w in ["AAL", "ZOO", "AXT", "MAL", "AAAA", "ZZZZ"]:
+		assert_true(d.contains(w), w)
+	for w in ["AAK", "ZOP", "AAAB", "ZZZY"]:
+		assert_false(d.contains(w), w)
 
 
-func test_load_from_file() -> void:
-	var d := WordDictionary.from_file(SAMPLE_PATH)
+func test_many_words_all_found() -> void:
+	var words := PackedStringArray()
+	for a in ["A", "E", "I", "O", "U"]:
+		for b in ["B", "D", "K", "M", "S", "T"]:
+			for c in ["A", "N", "R", "X"]:
+				words.append(a + b + c)
+				words.append(b + a + c + a)
+	var d := WordDictionary.from_words(words)
+	for w in words:
+		assert_true(d.contains(w), w)
+	assert_false(d.contains("QQQ"))
+
+
+func test_load_packed_file() -> void:
+	var d := WordDictionary.from_file(SAMPLE_BIN)
 	assert_not_null(d)
 	assert_eq(d.size(), 12)
 	assert_true(d.contains("STERN"))
@@ -45,6 +60,34 @@ func test_load_from_file() -> void:
 	assert_false(d.contains("NICHTDA"))
 
 
+func test_python_and_gdscript_pack_identically() -> void:
+	var lines := FileAccess.get_file_as_string(SAMPLE_TXT).split("\n", false)
+	var built := WordDictionary.from_words(lines).to_bytes()
+	assert_eq(built, FileAccess.get_file_as_bytes(SAMPLE_BIN))
+
+
+func test_real_german_dictionary() -> void:
+	var lang := load("res://data/languages/de/language.tres") as LanguageData
+	var d := WordDictionary.from_file(lang.words_path)
+	assert_not_null(d)
+	assert_gt(d.size(), 500000)
+	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "BERLIN", "ANNA", "USA", "KFZ", "HAUS"]:
+		assert_true(d.contains(w), w)
+	for w in ["XQZT", "STERNX", "QQQ", "AB"]:
+		assert_false(d.contains(w), w)
+
+
 func test_missing_file_returns_null() -> void:
-	assert_null(WordDictionary.from_file("res://tests/data/gibt_es_nicht.txt"))
+	assert_null(WordDictionary.from_file("res://tests/data/gibt_es_nicht.bin"))
 	assert_push_error("Wortliste nicht gefunden")
+
+
+func test_wrong_format_returns_null() -> void:
+	assert_null(WordDictionary.from_bytes("HALLO WELT".to_ascii_buffer()))
+	assert_push_error("kein gültiges Format")
+
+
+func test_truncated_data_returns_null() -> void:
+	var bytes := FileAccess.get_file_as_bytes(SAMPLE_BIN)
+	assert_null(WordDictionary.from_bytes(bytes.slice(0, bytes.size() - 3)))
+	assert_push_error("beschädigt")

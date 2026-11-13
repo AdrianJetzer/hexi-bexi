@@ -12,4 +12,4 @@ vowels = PackedStringArray("A", "E", "I", "O", "U")
 min_vowel_ratio = 0.3
 max_vowel_ratio = 0.55
 balance_min_letters = 4
-words_path = "res://data/languages/de/words.txt"
+words_path = "res://data/languages/de/words.bin"

@@ -38,7 +38,7 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 - Das Spiel läuft **komplett offline**.
 - **Keine Datensammlung:** kein Tracking, keine Analyse, keine Absturzberichte.
 - Folge: Das **Wörterbuch ist in der App enthalten** (Größe und Lizenz beachten).
-- Das Wörterbuch braucht ein **speichersparendes Format** (kein riesiges Wörterbuch-Objekt in GDScript); Quellen siehe [game-rules.md](game-rules.md).
+- Das Wörterbuch nutzt ein **kompaktes Binärformat** (~10 MB im Arbeitsspeicher), siehe [architecture.md](architecture.md); Quellen siehe [game-rules.md](game-rules.md).
 
 ## Veröffentlichung
 
@@ -52,7 +52,6 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 
 ## Offene Fragen
 
-- Speicherformat des Wörterbuchs (Quellen sind festgelegt, siehe [game-rules.md](game-rules.md)).
 - Quelle für Musik und Soundeffekte (siehe [look-and-sound.md](look-and-sound.md)).
 
 ## Verlauf

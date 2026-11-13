@@ -16,7 +16,9 @@ tools/dictionary/build.sh
 ```
 
 - Lädt beide Quellen nach `tools/dictionary/src/` (ca. 340 MB, wird beim nächsten Lauf wiederverwendet).
-- Schreibt das Ergebnis nach `tools/dictionary/out/de-words.txt`.
+- Schreibt die Textliste nach `tools/dictionary/out/de-words.txt`.
+- Packt sie ins Spielformat **LTW1** und legt sie nach `letter-tetris/data/languages/de/words.bin` (ca. 10 MB).
+- Wortlänge begrenzen (optional): `MAX_LEN=15 tools/dictionary/build.sh`.
 - `src/` und `out/` gehören **nicht** in die Versionsverwaltung.
 - Benötigt: `git`, `curl`, `python3` (keine Zusatzpakete).
 
@@ -38,7 +40,6 @@ tools/dictionary/build.sh
 
 ## Offen
 
-- Speicherformat in der App (siehe `spec/tech.md`).
 - Evtl. Begrenzung der Wortlänge (z. B. max. 15 Buchstaben).
 
 ## Dateien
@@ -46,3 +47,4 @@ tools/dictionary/build.sh
 - `build.sh`: alles in einem Schritt.
 - `build_trennmuster.py`: Trennmuster-Wortliste → Wörter.
 - `build_wiktionary.py`: Wiktionary-Auszug → Wörter.
+- `pack_words.py`: Textliste → kompaktes Spielformat LTW1 (Formatbeschreibung im Skript).

@@ -51,7 +51,9 @@ tests/                 Automatische Tests (GUT) für core/
 - **3D-Drehung im 2D-Spiel:** Shader auf dem Hexagon-Sprite, der eine perspektivische Drehung vortäuscht und bei 90° von der milchigen Rückseite zur Vorderseite wechselt. Leistungsgünstig.
 - **Kristall-Licht:** Sprites mit **Normal Maps**, **2D-Lichter** und **Glow**. Ob Glow mit dem Mobile-Renderer auf Android wie gewünscht aussieht, **früh auf einem echten Gerät prüfen**.
 - **Wischen:** Fingerposition wird in Raster-Koordinaten umgerechnet. Ein Hexagon zählt erst, wenn der Finger **nah genug an dessen Mitte** ist, damit an den Ecken nicht versehentlich der falsche Nachbar gewählt wird.
-- **Wörterbuch:** Mit allen Wortformen, Eigennamen und Abkürzungen kann die Liste sehr groß werden. Speicherformat (kompakt in der App) wird mit der Wörterbuch-Quelle entschieden.
+- **Wörterbuch:** Kompaktes Binärformat **„LTW1“** (`data/languages/<code>/words.bin`): Wörter nach Länge gruppiert, je Gruppe sortiert, ohne Trennzeichen; Suche per binärer Suche in der passenden Längengruppe. Erzeugt von `tools/dictionary/pack_words.py`.
+  - Gemessen (Mac, 850.724 Wörter): **9,9 MB** Arbeitsspeicher, Laden ~1 ms, Prüfen eines Worts ~2,4 µs. (Zum Vergleich: als Text-Array 70 MB.)
+  - **Beim Export beachten:** `*.bin` ist keine Godot-Ressource und muss im Export-Filter ausdrücklich eingeschlossen werden (z. B. `data/languages/*/words.bin`).
 - **App im Hintergrund:** Godot meldet das Pausieren der App; dann stoppt die Runde automatisch.
 
 ## Tests
@@ -61,10 +63,11 @@ tests/                 Automatische Tests (GUT) für core/
 
 ## Offene Punkte
 
-- Speicherformat des Wörterbuchs (abhängig von der Quelle).
+- Begrenzung der Wortlänge (z. B. max. 15 Buchstaben) – noch nicht entschieden; derzeit ungekürzt.
 - Genaue Signal-Namen und Schnittstellen zwischen `core/` und `scenes/`.
 - Glow und Licht auf echtem Android-Gerät prüfen.
 
 ## Verlauf
 
 - **v1:** Grundprinzipien, Ordnerstruktur, Lösungsansätze, Tests mit GUT.
+- **v1.1:** Wörterbuch-Format „LTW1“ (kompakt, ~10 MB).
