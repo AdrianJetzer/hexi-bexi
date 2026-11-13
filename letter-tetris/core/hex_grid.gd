@@ -18,7 +18,7 @@ var rows: int
 var _cells: PackedStringArray
 
 
-func _init(p_cols: int = 6, p_rows: int = 9) -> void:
+func _init(p_cols: int = 5, p_rows: int = 9) -> void:
 	assert(p_cols > 0 and p_rows > 0)
 	cols = p_cols
 	rows = p_rows

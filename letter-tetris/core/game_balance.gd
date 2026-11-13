@@ -3,7 +3,7 @@ extends Resource
 ## Alle einstellbaren Spielwerte (siehe spec/game-rules.md). Keine Werte fest im Code.
 
 @export_group("Raster")
-@export var grid_cols: int = 6
+@export var grid_cols: int = 5
 @export var grid_rows: int = 9
 
 @export_group("Runde")

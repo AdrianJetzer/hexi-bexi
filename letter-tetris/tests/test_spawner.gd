@@ -17,7 +17,7 @@ func _spawner(seed_value: int = 1) -> Spawner:
 
 func test_spawn_into_places_letter_on_candidate() -> void:
 	var s := _spawner()
-	var grid := HexGrid.new()
+	var grid := HexGrid.new(6, 9)
 	var candidates := grid.spawn_candidates()
 	var r := s.spawn_into(grid)
 	assert_has(candidates, r["cell"])
@@ -27,7 +27,7 @@ func test_spawn_into_places_letter_on_candidate() -> void:
 
 func test_spawn_into_full_grid_returns_empty() -> void:
 	var s := _spawner()
-	var grid := HexGrid.new()
+	var grid := HexGrid.new(6, 9)
 	for cell in grid.all_cells():
 		grid.set_letter(cell, "A")
 	assert_eq(s.spawn_into(grid), {})
@@ -35,7 +35,7 @@ func test_spawn_into_full_grid_returns_empty() -> void:
 
 func test_spawn_fills_hole_first() -> void:
 	var s := _spawner()
-	var grid := HexGrid.new()
+	var grid := HexGrid.new(6, 9)
 	for c in 6:
 		for r in 3:
 			grid.set_letter(Vector2i(c, r), "E")
@@ -47,7 +47,7 @@ func test_spawn_fills_hole_first() -> void:
 func test_random_choice_among_equal_candidates() -> void:
 	var seen := {}
 	for seed_value in range(1, 40):
-		var grid := HexGrid.new()
+		var grid := HexGrid.new(6, 9)
 		var r := _spawner(seed_value).spawn_into(grid)
 		seen[r["cell"]] = true
 	assert_eq(seen.size(), 3, "alle drei tiefsten Plätze kommen vor")

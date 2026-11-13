@@ -35,7 +35,7 @@ min_words = 0
 
 [resource]
 script = ExtResource("1")
-grid_cols = 6
+grid_cols = 5
 grid_rows = 9
 start_tiles = 15
 first_threshold = 100

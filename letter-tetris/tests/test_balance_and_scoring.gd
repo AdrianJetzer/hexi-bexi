@@ -22,7 +22,7 @@ func test_points_zero_for_empty() -> void:
 func test_balance_file_loads_with_spec_values() -> void:
 	var b := load("res://data/balance.tres") as GameBalance
 	assert_not_null(b)
-	assert_eq(b.grid_cols, 6)
+	assert_eq(b.grid_cols, 5)
 	assert_eq(b.grid_rows, 9)
 	assert_eq(b.start_tiles, 15)
 	assert_eq(b.first_threshold, 100)

@@ -7,7 +7,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 ## Drin
 
 ### Spiel ([game-rules.md](game-rules.md))
-- Hexagon-Raster **6 × 9**, Hexagons unten flach.
+- Hexagon-Raster **5 × 9**, Hexagons unten flach.
 - **Lauf-Modus (Roguelike)** ohne Zeitdruck ([run-mode.md](run-mode.md)): Start mit **20 Hexagons** und **0 Münzen**; jedes Level ist ein **Auftrag**, gewählt aus **2 Auftragskarten** (sicher/riskant), zufällig passend zum Level; Feld bleibt zwischen den Levels liegen.
 - **Münzen** für erfüllte Aufträge; Hilfen: **5 Steine nachfüllen** (50), **Tipp Anfangsbuchstabe** (100), **Stein ersetzen** (100). Neue Hexagons erscheinen mit **3D-Drehung**.
 - Aufträge „Finde ein bestimmtes Wort“ brauchen **gezieltes Säen** der Buchstaben.

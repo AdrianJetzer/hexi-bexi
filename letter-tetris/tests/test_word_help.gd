@@ -34,7 +34,7 @@ func test_forced_help_picks_the_only_useful_letter() -> void:
 	var dict := WordDictionary.from_words(PackedStringArray(["TEE", "TEER"]))
 	var finder := WordFinder.new(dict)
 	for seed_value in 30:
-		var grid := HexGrid.new()
+		var grid := HexGrid.new(6, 9)
 		grid.set_letter(Vector2i(0, 0), "T")
 		grid.set_letter(Vector2i(0, 1), "E")
 		var rng := RandomNumberGenerator.new()
@@ -48,7 +48,7 @@ func test_no_help_behaves_like_plain_pick() -> void:
 	var finder := WordFinder.new(dict)
 	var seen := {}
 	for seed_value in 60:
-		var grid := HexGrid.new()
+		var grid := HexGrid.new(6, 9)
 		grid.set_letter(Vector2i(0, 0), "T")
 		grid.set_letter(Vector2i(0, 1), "E")
 		var rng := RandomNumberGenerator.new()
@@ -59,7 +59,7 @@ func test_no_help_behaves_like_plain_pick() -> void:
 
 func test_counts_are_reported() -> void:
 	var dict := WordDictionary.from_words(PackedStringArray(["TEE", "TEN"]))
-	var grid := HexGrid.new()
+	var grid := HexGrid.new(6, 9)
 	grid.set_letter(Vector2i(0, 0), "T")
 	grid.set_letter(Vector2i(0, 1), "E")
 	var picker := LetterPicker.new(lang)
