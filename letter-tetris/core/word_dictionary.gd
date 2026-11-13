@@ -95,8 +95,47 @@ func contains(word: String) -> bool:
 	return false
 
 
+## Gibt es mindestens ein Wort, das mit prefix beginnt (das Wort selbst eingeschlossen)?
+func has_prefix(prefix: String) -> bool:
+	var p := prefix.to_upper()
+	var n := p.length()
+	if n == 0:
+		return _size > 0
+	for length in range(n, _counts.size()):
+		if _counts[length] == 0:
+			continue
+		var i := _lower_bound(length, p)
+		if i < _counts[length]:
+			var start := _offsets[length] + i * length
+			if _data.slice(start, start + n).get_string_from_ascii() == p:
+				return true
+	return false
+
+
+## Längste gespeicherte Wortlänge.
+func max_length() -> int:
+	return _counts.size() - 1
+
+
 func size() -> int:
 	return _size
+
+
+## Erster Index in der Gruppe „length“, dessen Anfang (Länge von p) ≥ p ist.
+func _lower_bound(length: int, p: String) -> int:
+	var n := p.length()
+	var lo := 0
+	var hi := _counts[length]
+	var base := _offsets[length]
+	while lo < hi:
+		var mid := (lo + hi) >> 1
+		var start := base + mid * length
+		var head := _data.slice(start, start + n).get_string_from_ascii()
+		if head < p:
+			lo = mid + 1
+		else:
+			hi = mid
+	return lo
 
 
 ## Gepackte Bytes (z. B. zum Vergleich mit der Datei aus pack_words.py).

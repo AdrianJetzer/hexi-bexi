@@ -66,6 +66,27 @@ func test_python_and_gdscript_pack_identically() -> void:
 	assert_eq(built, FileAccess.get_file_as_bytes(SAMPLE_BIN))
 
 
+func test_has_prefix() -> void:
+	for p in ["S", "ST", "STE", "STER", "STERN", "STERNE", "ber", "U", "HAU"]:
+		assert_true(dict.has_prefix(p), p)
+	for p in ["X", "STERNEN", "SZ", "HAUSE", "BERLINER", "USAA"]:
+		assert_false(dict.has_prefix(p), p)
+
+
+func test_has_prefix_matches_brute_force() -> void:
+	var words := PackedStringArray(["AAL", "AALE", "ABER", "ABT", "BAD", "BADEN", "ZOO", "ZOOS", "ZUG"])
+	var d := WordDictionary.from_words(words)
+	for a in ["A", "B", "Z", "Q"]:
+		for b in ["", "A", "B", "O", "U", "D"]:
+			for c in ["", "L", "E", "O", "T", "G"]:
+				var p: String = a + b + c
+				var expected := false
+				for w in words:
+					if w.begins_with(p):
+						expected = true
+				assert_eq(d.has_prefix(p), expected, p)
+
+
 func test_real_german_dictionary() -> void:
 	var lang := load("res://data/languages/de/language.tres") as LanguageData
 	var d := WordDictionary.from_file(lang.words_path)
