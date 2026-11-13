@@ -282,6 +282,7 @@ func submit_path(path: Array[Vector2i]) -> bool:
 		grid.clear(cell)
 	words_found += 1
 	quest.fill(row, word)
+	_aim_help()
 	word_accepted.emit(word, path, row)
 	# Automatisch auffüllen: eine Wortlänge minus eins.
 	_spawn(maxi(word.length() - _balance.auto_refill_less, 0))
@@ -370,6 +371,7 @@ func _complete_quest() -> void:
 func _start_quest() -> void:
 	_reset_hint()
 	quest = _generator.quest_for(_level).start()
+	_aim_help()
 	quest_started.emit(quest)
 
 
@@ -383,6 +385,20 @@ func _end(reason: String) -> void:
 func _pay(amount: int) -> void:
 	coins = maxi(coins - amount, 0)
 	coins_changed.emit(coins)
+
+
+## Wort-Hilfe auf den Auftrag ausrichten: nur Wörter in den Längen der freien Zeilen zählen
+## (z. B. ▢▢▢▢▢ → nur Wörter mit 5 Buchstaben). Siehe spec/game-rules.md, „Wort-Hilfe“.
+func _aim_help() -> void:
+	var f := _spawner.finder
+	if f == null or quest == null:
+		return
+	var lengths := quest.free_lengths()
+	if lengths.is_empty():
+		return
+	f.only_lengths = lengths
+	f.min_length = lengths[0]
+	f.max_length = mini(lengths[lengths.size() - 1], _balance.help_max_word_length)
 
 
 ## Stärke der Wort-Hilfe folgt dem Level (Hilfe-Stufe aus der Kurve).

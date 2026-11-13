@@ -47,7 +47,8 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Grundlage: Zufall, **gewichtet nach Buchstabenhäufigkeit** der Sprache (viel E, N, I, S, R; selten Q, X, Y).
 - **Vokal-Ausgleich:** Es wird darauf geachtet, dass nie zu wenige Vokale im Feld liegen. Die genaue Regel ist Teil der Umsetzung und wird getunt.
 - **Wort-Hilfe (Vorausschau):** Bevor ein neues Hexagon erscheint, steht sein Platz fest. Das Spiel bewertet für diesen Platz jeden möglichen Buchstaben danach, wie viele **geläufige Wörter** er zusammen mit den Nachbarn möglich macht, und bevorzugt gute Buchstaben – gewichtet, nicht immer (sonst zu vorhersehbar).
-- **Mindestens X Wörter:** Das Spiel zählt, wie viele geläufige Wörter gerade im Feld möglich sind. Sind es weniger als die Stufe verlangt, hilft es stärker nach (wählt den Buchstaben mit den meisten Wörtern).
+- **Auf den Auftrag ausgerichtet:** Gezählt werden nur Wörter in den **Längen der noch freien Zeilen** (z. B. bei ▢▢▢▢▢ nur Wörter mit 5 Buchstaben, bis 8 Buchstaben). So legt die Hilfe gezielt Bausteine für die gesuchten Wörter ins Feld, statt viele kurze Wörter zu ermöglichen.
+- **Mindestens X Wörter:** Das Spiel zählt, wie viele geläufige Wörter (in den gesuchten Längen) gerade im Feld möglich sind. Sind es weniger als die Stufe verlangt, hilft es stärker nach (wählt den Buchstaben mit den meisten Wörtern).
 - **Geläufige Wörter** für die Hilfe: vorerst die Einträge der Trennmuster-Wortliste. **Gültig** bleiben weiterhin alle Wörter des Wörterbuchs.
 - Wie stark geholfen wird, bestimmt die **Hilfe-Stufe**, und die ergibt sich aus dem **Level** des Laufs.
 
@@ -131,3 +132,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v6.5:** Automatisches Auffüllen nach gefundenen Wörtern (Wortlänge − 1).
 - **v6.6:** Eigennamen und Abkürzungen gelten nicht mehr (außer sie sind auch normale Wörter).
 - **v7:** Aufträge als Block-Zeilen (genaue Länge), Ablehnung nur durch Wackeln, Lauf endet nur durch Aufgeben. Entfallen: Zug, Zuglimit, „ohne Nachziehen“, gezieltes Säen.
+- **v7.1:** Wort-Hilfe zählt nur Wörter in den Längen der freien Auftrags-Zeilen (bis 8 Buchstaben).

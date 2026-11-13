@@ -86,3 +86,26 @@ func test_easy_level_yields_more_words_than_profi() -> void:
 			totals[level] += counter.words_on_board(grid).size()
 	gut.p("Wörter im Feld (3 Felder, je 30 Buchstaben): Stufe 1 = %d, Stufe 5 = %d" % [totals[1], totals[5]])
 	assert_gt(totals[1], totals[5])
+
+
+func test_targeted_help_brings_more_words_of_wanted_length() -> void:
+	var common := WordDictionary.from_file(lang.common_words_path)
+	var counter := WordFinder.new(common, 5, 5)
+	var totals := {"gezielt": 0, "allgemein": 0}
+	for mode in totals:
+		for seed_value in range(1, 5):
+			var rng := RandomNumberGenerator.new()
+			rng.seed = seed_value
+			var spawner := Spawner.new(LetterPicker.new(lang, rng), rng)
+			spawner.finder = WordFinder.new(common, 3, 6)
+			if mode == "gezielt":
+				spawner.finder.only_lengths = PackedInt32Array([5])
+				spawner.finder.min_length = 5
+				spawner.finder.max_length = 5
+			spawner.difficulty = balance.difficulty(1)
+			var grid := HexGrid.new()
+			for i in 30:
+				spawner.spawn_into(grid)
+			totals[mode] += counter.words_on_board(grid).size()
+	gut.p("Wörter mit 5 Buchstaben (4 Felder): gezielt = %d, allgemein = %d" % [totals["gezielt"], totals["allgemein"]])
+	assert_gt(totals["gezielt"], totals["allgemein"])

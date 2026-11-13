@@ -34,7 +34,7 @@ extends Resource
 ## Welche Stufe gilt, legt das Level über die Auftrags-Kurve fest.
 @export var difficulty_levels: Array[DifficultyLevel] = []
 ## Längste Wortlänge, die die Wort-Hilfe berücksichtigt (wegen Rechenzeit).
-@export var help_max_word_length: int = 6
+@export var help_max_word_length: int = 8
 
 
 ## Stufe 1..n; außerhalb des Bereichs wird begrenzt. null, wenn keine Stufen definiert sind.

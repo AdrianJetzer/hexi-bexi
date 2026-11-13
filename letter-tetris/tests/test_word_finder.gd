@@ -140,3 +140,14 @@ func test_speed_with_real_common_words() -> void:
 		all.size(), (t1 - t0) / 1000.0, (t4 - t3) / 1000.0, (t5 - t4) / 1000.0, (t6 - t5) / 1000.0,
 		through.size(), (t2 - t1) / 1000.0])
 	assert_gt(all.size(), 0)
+
+
+func test_only_lengths_filters_words() -> void:
+	var d := WordDictionary.from_words(PackedStringArray(["TEE", "TEER", "TEERE"]))
+	var g := HexGrid.new()
+	for i in 5:
+		g.set_letter(Vector2i(0, i), "TEERE"[i])
+	var f := WordFinder.new(d, 3, 5)
+	assert_eq(f.words_on_board(g).size(), 3)
+	f.only_lengths = PackedInt32Array([4])
+	assert_eq(f.words_on_board(g).keys(), ["TEER"])

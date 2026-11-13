@@ -500,3 +500,22 @@ func test_hint_finds_word_for_any_free_row() -> void:
 	var ast := _column(0, "AST")
 	run.coins = 100
 	assert_eq(run.hint(), ast[0], "AST passt in die 3er-Zeile")
+
+
+# --- Wort-Hilfe auf den Auftrag ausgerichtet ------------------------------------------------
+
+func test_help_aims_at_free_row_lengths() -> void:
+	var common := WordDictionary.from_words(PackedStringArray(["TEE", "HAUS", "STERN"]))
+	var r := RunSession.new(balance, curve, lang, dict, 3, common)
+	r.start()
+	assert_eq(r._spawner.finder.only_lengths, PackedInt32Array([3]), "Level 1: ▢▢▢")
+	var q := Quest.new()
+	q.rows = PackedInt32Array([4, 7])
+	r.quest = q.start()
+	r._aim_help()
+	assert_eq(r._spawner.finder.only_lengths, PackedInt32Array([4, 7]))
+	assert_eq(r._spawner.finder.min_length, 4)
+	assert_eq(r._spawner.finder.max_length, 7)
+	r.quest.fill(0, "HAUS")
+	r._aim_help()
+	assert_eq(r._spawner.finder.only_lengths, PackedInt32Array([7]), "nur noch die freie Zeile")
