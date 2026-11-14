@@ -27,6 +27,10 @@ extends Resource
 @export var clear_price: int = 100
 ## Hilfe „Tipp“: Preis je gezeigtem Buchstaben.
 @export var hint_price: int = 100
+## Hilfen „Joker“, „Mischen“, „Schwerkraft“.
+@export var joker_price: int = 50
+@export var shuffle_price: int = 50
+@export var gravity_price: int = 50
 ## Hilfe „Lösen“: ganzen Auftrag lösen (ohne Belohnung).
 @export var solve_price: int = 100
 ## Hilfe „Stein ersetzen“.

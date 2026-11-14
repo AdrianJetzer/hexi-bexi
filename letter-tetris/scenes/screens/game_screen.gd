@@ -16,7 +16,7 @@ const GLOW := Color(0.55, 0.95, 1.0)
 ## Anteile der Bildschirmhöhe/-breite für die Bereiche.
 const SIDE_MARGIN := 0.06
 const TOP_AREA := 0.2
-const BOTTOM_AREA := 0.17
+const BOTTOM_AREA := 0.21
 
 ## Flug eines Buchstabens vom Stein in den Block (Sekunden) und Abstand zwischen Buchstaben.
 const FLY_TIME := 0.5
@@ -40,6 +40,9 @@ var _clear_button: Button
 var _hint_button: Button
 var _replace_button: Button
 var _solve_button: Button
+var _joker_button: Button
+var _shuffle_button: Button
+var _gravity_button: Button
 var _give_up_button: Button
 var _confirm: ColorRect
 var _summary: ColorRect
@@ -128,6 +131,21 @@ func _build_ui() -> void:
 	_replace_button = _button("", 26)
 	_replace_button.toggle_mode = true
 	_replace_button.toggled.connect(_set_replace_mode)
+	_joker_button = _button("", 26)
+	_joker_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.joker() == RunSession.NO_CELL:
+			_shake(_joker_button))
+	_shuffle_button = _button("", 26)
+	_shuffle_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.shuffle().is_empty():
+			_shake(_shuffle_button))
+	_gravity_button = _button("", 26)
+	_gravity_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.gravity().is_empty():
+			_shake(_gravity_button))
 	_solve_button = _button("", 26)
 	_solve_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -215,7 +233,8 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 
 
 func _help_buttons() -> Array[Button]:
-	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button, _solve_button]
+	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button,
+			_joker_button, _shuffle_button, _gravity_button, _solve_button]
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
@@ -246,12 +265,14 @@ func _relayout() -> void:
 	_coins_label.size = Vector2(inner * 0.45, 60)
 	var gap := 12.0
 	var buttons := _help_buttons()
-	var bw := (inner - (buttons.size() - 1) * gap) / buttons.size()
+	# Vorläufig (zum Testen): Knöpfe in Reihen zu je 5.
+	var per_row := 5
+	var bw := (inner - (per_row - 1) * gap) / per_row
 	_continue_button.position = Vector2(side + inner * 0.25, info_top + 80)
 	_continue_button.size = Vector2(inner * 0.5, 120)
 	for i in buttons.size():
-		buttons[i].position = Vector2(side + i * (bw + gap), info_top + 85)
-		buttons[i].size = Vector2(bw, 110)
+		buttons[i].position = Vector2(side + (i % per_row) * (bw + gap), info_top + 70 + (i / per_row) * 100)
+		buttons[i].size = Vector2(bw, 90)
 	_update_labels()
 
 
@@ -270,6 +291,12 @@ func _update_labels() -> void:
 	_hint_button.disabled = not session.can_hint()
 	_replace_button.text = "Ersetzen\n−%d" % BALANCE.replace_price
 	_replace_button.disabled = not session.can_replace() and not _replace_button.button_pressed
+	_joker_button.text = "Joker\n−%d" % BALANCE.joker_price
+	_joker_button.disabled = not session.can_joker()
+	_shuffle_button.text = "Mischen\n−%d" % BALANCE.shuffle_price
+	_shuffle_button.disabled = not session.can_shuffle()
+	_gravity_button.text = "Schwerkraft\n−%d" % BALANCE.gravity_price
+	_gravity_button.disabled = session.is_over or session.coins < BALANCE.gravity_price
 	_solve_button.text = "Lösen\n−%d" % BALANCE.solve_price
 	_solve_button.disabled = not session.can_solve()
 	if session.is_over:

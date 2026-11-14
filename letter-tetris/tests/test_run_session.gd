@@ -722,3 +722,126 @@ func test_solve_keeps_filled_rows() -> void:
 	run.coins = balance.solve_price
 	run.solve()
 	assert_signal_emit_count(run, "word_accepted", 2, "nur die 4er-Zeile wird noch gelöst")
+
+
+# --- Joker -------------------------------------------------------------------------------
+
+func test_joker_turns_a_tile_into_joker() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "AST")
+	run.coins = 50
+	var cell := run.joker()
+	assert_ne(cell, RunSession.NO_CELL)
+	assert_eq(run.grid.get_letter(cell), RunSession.JOKER)
+	assert_eq(run.coins, 0)
+	assert_signal_emitted_with_parameters(run, "tile_changed", [cell, RunSession.JOKER])
+
+
+func test_joker_stands_for_any_letter() -> void:
+	run.start()
+	_use_rows([4])
+	var cells := _column(0, "H*US")
+	assert_true(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_accepted", ["HAUS", cells, 0])
+	assert_eq(run.level(), 2)
+
+
+func test_joker_word_must_fit_a_row() -> void:
+	run.start()
+	_use_rows([5])
+	var cells := _column(0, "H*US")
+	assert_false(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_MATCHING])
+
+
+func test_joker_without_valid_word_rejected() -> void:
+	run.start()
+	_use_rows([4])
+	var cells := _column(0, "XQ*Z")
+	assert_false(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_rejected", [cells, RunSession.REASON_NOT_A_WORD])
+
+
+func test_two_jokers() -> void:
+	run.start()
+	_use_rows([5])
+	var cells := _column(0, "S**RN")
+	assert_true(run.submit_path(cells))
+	assert_signal_emitted_with_parameters(run, "word_accepted", ["STERN", cells, 0])
+
+
+func test_joker_needs_coins_and_normal_tile() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "**")
+	run.coins = 50
+	assert_false(run.can_joker(), "nur Joker im Feld")
+	_column(0, "AST")
+	run.coins = 49
+	assert_false(run.can_joker())
+
+
+# --- Mischen -------------------------------------------------------------------------------
+
+func test_shuffle_keeps_letters_and_places() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "ABCDEFGH")
+	_column(2, "IJKLMNOP", false)
+	run.coins = 50
+	var before := {}
+	for cell in run.grid.all_cells():
+		if run.grid.is_occupied(cell):
+			before[run.grid.get_letter(cell)] = true
+	var changed := run.shuffle()
+	assert_gt(changed.size(), 0)
+	assert_eq(run.grid.size() - run.grid.free_count(), 16, "gleich viele Steine")
+	var after := {}
+	for cell in run.grid.all_cells():
+		if run.grid.is_occupied(cell):
+			after[run.grid.get_letter(cell)] = true
+	assert_eq(after.keys().size(), 16)
+	for l in before:
+		assert_true(after.has(l), "Buchstabe %s bleibt" % l)
+	assert_eq(run.coins, 0)
+
+
+func test_shuffle_needs_two_tiles() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "A")
+	run.coins = 50
+	assert_false(run.can_shuffle())
+
+
+# --- Schwerkraft ----------------------------------------------------------------------------
+
+func test_gravity_closes_holes() -> void:
+	run.start()
+	_use_rows([3])
+	run.grid.clear_all()
+	run.grid.set_letter(Vector2i(1, 2), "A")
+	run.grid.set_letter(Vector2i(1, 4), "B")
+	run.grid.set_letter(Vector2i(3, 0), "C")
+	run.grid.set_letter(Vector2i(3, 3), "D")
+	run.coins = 50
+	var moves := run.gravity()
+	assert_eq(moves.size(), 3)
+	assert_eq(run.grid.get_letter(Vector2i(1, 0)), "A")
+	assert_eq(run.grid.get_letter(Vector2i(1, 1)), "B", "Reihenfolge bleibt")
+	assert_eq(run.grid.get_letter(Vector2i(3, 0)), "C")
+	assert_eq(run.grid.get_letter(Vector2i(3, 1)), "D")
+	assert_true(run.grid.holes().is_empty())
+	assert_eq(run.coins, 0)
+	assert_signal_emitted(run, "tiles_moved")
+
+
+func test_gravity_without_holes_is_free() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "AST")
+	run.coins = 50
+	assert_false(run.can_gravity())
+	assert_eq(run.gravity().size(), 0)
+	assert_eq(run.coins, 50)

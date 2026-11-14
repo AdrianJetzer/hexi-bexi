@@ -23,4 +23,7 @@ func test_balance_run_values_from_spec() -> void:
 	assert_eq(b.hint_price, 100)
 	assert_eq(b.replace_price, 100)
 	assert_eq(b.solve_price, 100)
+	assert_eq(b.joker_price, 50)
+	assert_eq(b.shuffle_price, 50)
+	assert_eq(b.gravity_price, 50)
 
