@@ -71,7 +71,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen (ein passendes Wort bleibt)** | **−100** |
 | **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
 | **Stein ersetzen** | **−100** |
-| **Lösen: ganzen Auftrag lösen** | **−500**, ohne Belohnung |
+| **Lösen: ganzen Auftrag lösen** | **−100** vorläufig zum Testen (Ziel: 500), ohne Belohnung |
 
 - Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
 
@@ -87,7 +87,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
 - **Aufräumen:** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 100. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
 - **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein Wort fest, das in eine freie Zeile passt, und lässt seinen ersten Stein **blinken**; jeder weitere Tipp (je 100) lässt den nächsten Stein desselben Worts blinken. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Liegt kein passendes Wort im Feld, kostet der Tipp nichts. Kein Text, nur Blinken.
-- **Lösen (500):** Der aktuelle Auftrag wird sofort gelöst, es geht ins nächste Level; **keine Belohnung**. Für jede freie Zeile wird ein passendes **geläufiges Wort aus dem Feld** genommen (jeder Stein nur einmal): die Steine verschwinden, die Buchstaben fliegen in die Zeile, danach kommen wie gewohnt Wortlänge − 1 neue Steine. Gibt es für eine Zeile kein Wort im Feld, wird sie mit einem zufälligen geläufigen Wort passender Länge gefüllt (Buchstaben ploppen direkt in den Blöcken auf, das Feld bleibt dafür unverändert). Ein laufender Tipp verfällt.
+- **Lösen (vorläufig 100 zum Testen, Ziel 500):** Der aktuelle Auftrag wird sofort gelöst, es geht ins nächste Level; **keine Belohnung**. Für jede freie Zeile wird ein passendes **geläufiges Wort aus dem Feld** genommen (jeder Stein nur einmal): die Steine verschwinden, die Buchstaben fliegen in die Zeile, danach kommen wie gewohnt Wortlänge − 1 neue Steine. Gibt es für eine Zeile kein Wort im Feld, wird sie mit einem zufälligen geläufigen Wort passender Länge gefüllt (Buchstaben ploppen direkt in den Blöcken auf, das Feld bleibt dafür unverändert). Ein laufender Tipp verfällt.
 - **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
 - **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
 
@@ -161,3 +161,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.8:** Hilfe heißt „Auffüllen“ (statt Nachfüllen / „+5 Steine“) und kostet fest 100 (kein Preisanstieg mehr).
 - **v3.9:** Aufräumen lässt mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben.
 - **v3.10:** Neue Hilfe „Lösen“ (500, ohne Belohnung): löst den ganzen Auftrag mit Wörtern aus dem Feld, wo möglich.
+- **v3.11:** Lösen vorläufig für 100 (zum Testen), später wieder 500.
