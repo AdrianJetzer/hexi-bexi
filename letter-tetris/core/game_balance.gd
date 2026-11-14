@@ -27,6 +27,8 @@ extends Resource
 @export var clear_price: int = 100
 ## Hilfe „Tipp“: Preis je gezeigtem Buchstaben.
 @export var hint_price: int = 100
+## Hilfe „Lösen“: ganzen Auftrag lösen (ohne Belohnung).
+@export var solve_price: int = 500
 ## Hilfe „Stein ersetzen“.
 @export var replace_price: int = 100
 

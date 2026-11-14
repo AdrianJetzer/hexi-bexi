@@ -49,5 +49,6 @@ clear_count = 5
 clear_price = 100
 hint_price = 100
 replace_price = 100
+solve_price = 500
 difficulty_levels = Array[ExtResource("2")]([SubResource("level_1"), SubResource("level_2"), SubResource("level_3"), SubResource("level_4"), SubResource("level_5")])
 help_max_word_length = 8

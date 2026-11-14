@@ -39,6 +39,7 @@ var _swap_button: Button
 var _clear_button: Button
 var _hint_button: Button
 var _replace_button: Button
+var _solve_button: Button
 var _give_up_button: Button
 var _confirm: ColorRect
 var _summary: ColorRect
@@ -78,6 +79,7 @@ func new_run(seed_value: int = -1) -> void:
 	session.coins_changed.connect(func(_c: int) -> void: _update_labels())
 	session.level_changed.connect(func(_l: int) -> void: _update_labels())
 	session.word_accepted.connect(_on_word_accepted)
+	session.row_filled.connect(_on_row_filled)
 	session.tile_spawned.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
@@ -126,6 +128,11 @@ func _build_ui() -> void:
 	_replace_button = _button("", 26)
 	_replace_button.toggle_mode = true
 	_replace_button.toggled.connect(_set_replace_mode)
+	_solve_button = _button("", 26)
+	_solve_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if not session.solve():
+			_shake(_solve_button))
 
 	_give_up_button = _button("Aufgeben", 34)
 	_give_up_button.flat = true
@@ -208,7 +215,7 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 
 
 func _help_buttons() -> Array[Button]:
-	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button]
+	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button, _solve_button]
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
@@ -263,6 +270,8 @@ func _update_labels() -> void:
 	_hint_button.disabled = not session.can_hint()
 	_replace_button.text = "Ersetzen\n−%d" % BALANCE.replace_price
 	_replace_button.disabled = not session.can_replace() and not _replace_button.button_pressed
+	_solve_button.text = "Lösen\n−%d" % BALANCE.solve_price
+	_solve_button.disabled = not session.can_solve()
 	if session.is_over:
 		_set_replace_mode(false)
 
@@ -366,7 +375,8 @@ func _on_word_accepted(word: String, cells: Array[Vector2i], row: int) -> void:
 
 func _on_quest_completed(_q: Quest, reward: int) -> void:
 	_completing = true
-	_show_reward(reward)
+	if reward > 0:
+		_show_reward(reward)
 	# Erst alle Buchstaben ankommen lassen, dann Auftrag ausblenden und den nächsten zeigen.
 	if _sequence:
 		_sequence.kill()
@@ -378,6 +388,17 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
 			_pending_quest = null))
+
+
+## Lösen ohne Wort aus dem Feld: Buchstaben ploppen nacheinander direkt in der Zeile auf.
+func _on_row_filled(row: int, word: String) -> void:
+	for i in word.length():
+		var letter := word[i]
+		var index := i
+		var t := create_tween()
+		t.tween_interval(FLY_TIME * 0.5 + i * FLY_STAGGER)
+		t.tween_callback(func() -> void: _blocks.put_letter(row, index, letter))
+	_last_flight = maxf(_last_flight, FLY_TIME * 0.5 + word.length() * FLY_STAGGER)
 
 
 func _on_confirm_give_up() -> void:

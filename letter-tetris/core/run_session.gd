@@ -5,12 +5,14 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell).
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve().
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
 ## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Tauschen, Ersetzen).
 signal tile_changed(cell: Vector2i, letter: String)
+## Lösen: eine Zeile wurde ohne Wort aus dem Feld gefüllt (Buchstaben erscheinen direkt).
+signal row_filled(row: int, word: String)
 ## Aufräumen: diese Steine sind entfernt (die Plätze bleiben frei).
 signal tiles_removed(cells: Array[Vector2i])
 ## Tipp: die bisher gezeigten Steine eines passenden Worts, in Wortreihenfolge
@@ -351,6 +353,61 @@ func solution() -> Array[Vector2i]:
 	return _find_matching_path()
 
 
+## Lösen möglich? (Auftrag aktiv, Münzen reichen)
+func can_solve() -> bool:
+	return not is_over and quest != null and coins >= _balance.solve_price
+
+
+## Hilfe „Lösen“: den ganzen Auftrag lösen, ohne Belohnung. Für jede freie Zeile wird ein
+## passendes geläufiges Wort aus dem Feld genommen (Steine verschwinden, automatisches
+## Auffüllen wie gewohnt); fehlt eines, wird die Zeile mit einem zufälligen Wort gefüllt.
+## Gibt true zurück, wenn gelöst wurde.
+func solve() -> bool:
+	if not can_solve():
+		return false
+	_pay(_balance.solve_price)
+	_reset_hint()
+	for row in quest.rows.size():
+		if quest.filled[row] != "":
+			continue
+		var n := quest.rows[row]
+		var path := _find_word_of_length(n)
+		if path.is_empty():
+			var word := _random_word(n)
+			quest.fill(row, word)
+			row_filled.emit(row, word)
+		else:
+			var word := word_for(path)
+			for cell in path:
+				grid.clear(cell)
+			words_found += 1
+			quest.fill(row, word)
+			word_accepted.emit(word, path, row)
+			_spawn(maxi(n - _balance.auto_refill_less, 0))
+		quest_progress.emit(quest)
+	_complete_quest(false)
+	return true
+
+
+## Weg eines Worts mit genau n Buchstaben im Feld (zuerst geläufige Wörter), oder leer.
+func _find_word_of_length(n: int) -> Array[Vector2i]:
+	for finder in _hint_finders:
+		var found := finder.find_paths(grid, n, n, func(w: String) -> bool: return w.length() == n)
+		if not found.is_empty():
+			var path: Array[Vector2i] = []
+			path.assign(found[_hint_rng.randi_range(0, found.size() - 1)]["path"])
+			return path
+	return []
+
+
+## Zufälliges geläufiges Wort mit n Buchstaben (für Zeilen ohne passendes Wort im Feld).
+func _random_word(n: int) -> String:
+	var count := _plant_words.count_of_length(n)
+	if count == 0:
+		return "?".repeat(n)
+	return _plant_words.word_at(n, _hint_rng.randi_range(0, count - 1))
+
+
 ## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)
 func can_replace(cell: Vector2i = NO_CELL) -> bool:
 	if is_over or coins < _balance.replace_price:
@@ -489,11 +546,13 @@ func _check_path(path: Array[Vector2i]) -> String:
 	return ""
 
 
-func _complete_quest() -> void:
+## rewarded = false: ohne Belohnung (Hilfe „Lösen“).
+func _complete_quest(rewarded: bool = true) -> void:
 	var done := quest
 	quest = null
-	coins += done.reward
-	quest_completed.emit(done, done.reward)
+	var reward := done.reward if rewarded else 0
+	coins += reward
+	quest_completed.emit(done, reward)
 	coins_changed.emit(coins)
 	_level += 1
 	_apply_help()

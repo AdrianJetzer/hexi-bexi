@@ -666,3 +666,59 @@ func test_swap_fills_up_with_normal_swaps() -> void:
 	assert_false(run.is_stuck())
 	for i in 4:
 		assert_eq(run.grid.get_letter(Vector2i(0, i)), "STER"[i], "Kette bleibt unangetastet")
+
+
+# --- Lösen --------------------------------------------------------------------------------
+
+func test_solve_uses_words_from_board_without_reward() -> void:
+	run.start()
+	_use_rows([3, 4], 150)
+	var ast := _column(0, "AST")
+	var haus := _column(2, "HAUS", false)
+	run.coins = 600
+	assert_true(run.solve())
+	assert_eq(run.coins, 100, "500 bezahlt, keine Belohnung")
+	assert_eq(run.level(), 2, "nächstes Level")
+	assert_signal_emit_count(run, "word_accepted", 2)
+	assert_eq(get_signal_parameters(run, "quest_completed")[1], 0, "Belohnung 0")
+	assert_signal_not_emitted(run, "row_filled")
+	var used: Array = []
+	for p in [get_signal_parameters(run, "word_accepted", 0), get_signal_parameters(run, "word_accepted", 1)]:
+		used.append(p[0])
+	assert_true(used.has("AST") and used.has("HAUS"), "Wörter aus dem Feld")
+
+
+func test_solve_fills_missing_rows_with_random_words() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "AST")
+	run.coins = 500
+	assert_true(run.solve())
+	assert_signal_emitted(run, "row_filled")
+	var params: Array = get_signal_parameters(run, "row_filled")
+	assert_eq(params[0], 0)
+	assert_eq((params[1] as String).length(), 5)
+	assert_true(dict.contains(params[1]))
+	assert_eq(run.grid.get_letter(Vector2i(0, 0)), "A", "Feld bleibt dafür unverändert")
+	assert_eq(run.level(), 2)
+
+
+func test_solve_needs_coins() -> void:
+	run.start()
+	_use_rows([3])
+	run.coins = 499
+	assert_false(run.can_solve())
+	assert_false(run.solve())
+	assert_eq(run.level(), 1)
+	assert_eq(run.coins, 499)
+
+
+func test_solve_keeps_filled_rows() -> void:
+	run.start()
+	_use_rows([3, 4])
+	run.submit_path(_column(0, "AST"))
+	assert_signal_emit_count(run, "word_accepted", 1)
+	_column(2, "HAUS", false)
+	run.coins = 500
+	run.solve()
+	assert_signal_emit_count(run, "word_accepted", 2, "nur die 4er-Zeile wird noch gelöst")
