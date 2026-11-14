@@ -16,7 +16,7 @@ const GLOW := Color(0.55, 0.95, 1.0)
 ## Anteile der Bildschirmhöhe/-breite für die Bereiche.
 const SIDE_MARGIN := 0.06
 const TOP_AREA := 0.2
-const BOTTOM_AREA := 0.17
+const BOTTOM_AREA := 0.25
 
 ## Flug eines Buchstabens vom Stein in den Block (Sekunden) und Abstand zwischen Buchstaben.
 const FLY_TIME := 0.5
@@ -39,6 +39,14 @@ var _swap_button: Button
 var _clear_button: Button
 var _hint_button: Button
 var _replace_button: Button
+var _solve_button: Button
+var _joker_button: Button
+var _shuffle_button: Button
+var _gravity_button: Button
+var _magnet_button: Button
+var _column_button: Button
+## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet", "column".
+var _tap_action: String = ""
 var _give_up_button: Button
 var _confirm: ColorRect
 var _summary: ColorRect
@@ -78,6 +86,7 @@ func new_run(seed_value: int = -1) -> void:
 	session.coins_changed.connect(func(_c: int) -> void: _update_labels())
 	session.level_changed.connect(func(_l: int) -> void: _update_labels())
 	session.word_accepted.connect(_on_word_accepted)
+	session.row_filled.connect(_on_row_filled)
 	session.tile_spawned.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
@@ -125,7 +134,33 @@ func _build_ui() -> void:
 	_hint_button.pressed.connect(_on_hint_pressed)
 	_replace_button = _button("", 26)
 	_replace_button.toggle_mode = true
-	_replace_button.toggled.connect(_set_replace_mode)
+	_replace_button.toggled.connect(func(on: bool) -> void: _set_tap_action("replace" if on else ""))
+	_magnet_button = _button("", 26)
+	_magnet_button.toggle_mode = true
+	_magnet_button.toggled.connect(func(on: bool) -> void: _set_tap_action("magnet" if on else ""))
+	_column_button = _button("", 26)
+	_column_button.toggle_mode = true
+	_column_button.toggled.connect(func(on: bool) -> void: _set_tap_action("column" if on else ""))
+	_joker_button = _button("", 26)
+	_joker_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.joker() == RunSession.NO_CELL:
+			_shake(_joker_button))
+	_shuffle_button = _button("", 26)
+	_shuffle_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.shuffle().is_empty():
+			_shake(_shuffle_button))
+	_gravity_button = _button("", 26)
+	_gravity_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.gravity().is_empty():
+			_shake(_gravity_button))
+	_solve_button = _button("", 26)
+	_solve_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if not session.solve():
+			_shake(_solve_button))
 
 	_give_up_button = _button("Aufgeben", 34)
 	_give_up_button.flat = true
@@ -208,7 +243,8 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 
 
 func _help_buttons() -> Array[Button]:
-	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button]
+	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button,
+			_joker_button, _shuffle_button, _gravity_button, _magnet_button, _column_button, _solve_button]
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
@@ -239,12 +275,14 @@ func _relayout() -> void:
 	_coins_label.size = Vector2(inner * 0.45, 60)
 	var gap := 12.0
 	var buttons := _help_buttons()
-	var bw := (inner - (buttons.size() - 1) * gap) / buttons.size()
+	# Vorläufig (zum Testen): Knöpfe in Reihen zu je 5.
+	var per_row := 5
+	var bw := (inner - (per_row - 1) * gap) / per_row
 	_continue_button.position = Vector2(side + inner * 0.25, info_top + 80)
 	_continue_button.size = Vector2(inner * 0.5, 120)
 	for i in buttons.size():
-		buttons[i].position = Vector2(side + i * (bw + gap), info_top + 85)
-		buttons[i].size = Vector2(bw, 110)
+		buttons[i].position = Vector2(side + (i % per_row) * (bw + gap), info_top + 70 + (i / per_row) * 100)
+		buttons[i].size = Vector2(bw, 90)
 	_update_labels()
 
 
@@ -263,6 +301,18 @@ func _update_labels() -> void:
 	_hint_button.disabled = not session.can_hint()
 	_replace_button.text = "Ersetzen\n−%d" % BALANCE.replace_price
 	_replace_button.disabled = not session.can_replace() and not _replace_button.button_pressed
+	_joker_button.text = "Joker\n−%d" % BALANCE.joker_price
+	_joker_button.disabled = not session.can_joker()
+	_shuffle_button.text = "Mischen\n−%d" % BALANCE.shuffle_price
+	_shuffle_button.disabled = not session.can_shuffle()
+	_gravity_button.text = "Schwerkraft\n−%d" % BALANCE.gravity_price
+	_gravity_button.disabled = session.is_over or session.coins < BALANCE.gravity_price
+	_magnet_button.text = "Magnet\n−%d" % BALANCE.magnet_price
+	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
+	_column_button.text = "Säule\n−%d" % BALANCE.column_price
+	_column_button.disabled = not session.can_column() and not _column_button.button_pressed
+	_solve_button.text = "Lösen\n−%d" % BALANCE.solve_price
+	_solve_button.disabled = not session.can_solve()
 	if session.is_over:
 		_set_replace_mode(false)
 
@@ -327,15 +377,29 @@ func _show_reward(amount: int) -> void:
 
 ## Antipp-Modus für „Stein ersetzen“ an/aus (der gedrückte Knopf zeigt ihn an).
 func _set_replace_mode(on: bool) -> void:
-	if _board.tap_mode == on and _replace_button.button_pressed == on:
-		return
-	_board.tap_mode = on
-	_replace_button.set_pressed_no_signal(on)
+	_set_tap_action("replace" if on else "")
+
+
+## Antipp-Modus für Ersetzen, Magnet oder Säule ("" = aus). Der gedrückte Knopf zeigt ihn an.
+func _set_tap_action(action: String) -> void:
+	_tap_action = action
+	_board.tap_mode = action != ""
+	_replace_button.set_pressed_no_signal(action == "replace")
+	_magnet_button.set_pressed_no_signal(action == "magnet")
+	_column_button.set_pressed_no_signal(action == "column")
 
 
 func _on_cell_tapped(cell: Vector2i) -> void:
-	_set_replace_mode(false)
-	session.replace(cell)
+	var action := _tap_action
+	_set_tap_action("")
+	match action:
+		"replace":
+			session.replace(cell)
+		"magnet":
+			if session.magnet(cell).is_empty():
+				_shake(_magnet_button)
+		"column":
+			session.column(cell)
 
 
 func _on_hint_pressed() -> void:
@@ -366,7 +430,8 @@ func _on_word_accepted(word: String, cells: Array[Vector2i], row: int) -> void:
 
 func _on_quest_completed(_q: Quest, reward: int) -> void:
 	_completing = true
-	_show_reward(reward)
+	if reward > 0:
+		_show_reward(reward)
 	# Erst alle Buchstaben ankommen lassen, dann Auftrag ausblenden und den nächsten zeigen.
 	if _sequence:
 		_sequence.kill()
@@ -378,6 +443,17 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
 			_pending_quest = null))
+
+
+## Lösen ohne Wort aus dem Feld: Buchstaben ploppen nacheinander direkt in der Zeile auf.
+func _on_row_filled(row: int, word: String) -> void:
+	for i in word.length():
+		var letter := word[i]
+		var index := i
+		var t := create_tween()
+		t.tween_interval(FLY_TIME * 0.5 + i * FLY_STAGGER)
+		t.tween_callback(func() -> void: _blocks.put_letter(row, index, letter))
+	_last_flight = maxf(_last_flight, FLY_TIME * 0.5 + word.length() * FLY_STAGGER)
 
 
 func _on_confirm_give_up() -> void:

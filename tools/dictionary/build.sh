@@ -22,11 +22,14 @@ if [ ! -f "$SRC/dewiktionary.jsonl.gz" ]; then
 fi
 
 # 3) Aufbereiten und zusammenführen
-python3 -I "$HERE/build_trennmuster.py" "$SRC/wortliste/wortliste" "$OUT/trennmuster-all.txt"
-python3 -I "$HERE/build_wiktionary.py"  "$SRC/dewiktionary.jsonl.gz" "$OUT/wiktionary.txt" "$OUT/excluded.txt"
+python3 -I "$HERE/build_trennmuster.py" "$SRC/wortliste/wortliste" "$OUT/trennmuster-all.txt" "$OUT/trennmuster-abbrevs.txt"
+python3 -I "$HERE/build_wiktionary.py"  "$SRC/dewiktionary.jsonl.gz" "$OUT/wiktionary-all.txt" "$OUT/excluded.txt"
+# Abkürzungen/Akronyme laut Trennmuster dazunehmen (außer normal geschriebene Wörter wie Aids)
+python3 -I "$HERE/combine_exclusions.py" "$OUT/excluded.txt" "$OUT/trennmuster-abbrevs.txt" "$OUT/excluded-normalcase.txt" "$OUT/excluded-all.txt"
 # Eigennamen und Abkürzungen (laut Wiktionary nur Name/Abkürzung) sowie römische Zahlen
 # auch aus Trennmuster entfernen
-python3 -I "$HERE/filter_words.py" "$OUT/trennmuster-all.txt" "$OUT/excluded.txt" "$OUT/trennmuster.txt" "$OUT/excluded-roman-keep.txt"
+python3 -I "$HERE/filter_words.py" "$OUT/trennmuster-all.txt" "$OUT/excluded-all.txt" "$OUT/trennmuster.txt" "$OUT/excluded-roman-keep.txt"
+python3 -I "$HERE/filter_words.py" "$OUT/wiktionary-all.txt" "$OUT/excluded-all.txt" "$OUT/wiktionary.txt" "$OUT/excluded-roman-keep.txt"
 LC_ALL=C sort -u "$OUT/trennmuster.txt" "$OUT/wiktionary.txt" > "$OUT/de-words.txt"
 
 wc -l "$OUT/trennmuster.txt" "$OUT/wiktionary.txt" "$OUT/de-words.txt"

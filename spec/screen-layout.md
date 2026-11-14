@@ -39,7 +39,7 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - **Größe: 5 Spalten × 9 Reihen = 45 Plätze** (siehe [Screenshot](images/ingame-shot-5x9-v1.png)).
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
 - **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
-- **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis: Auffüllen (100), Tauschen (50), Aufräumen (100), Tipp (100), Stein ersetzen (100).
+- **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis: Auffüllen (100), Tauschen (50), Aufräumen (100), Tipp (100), Stein ersetzen (100), Lösen (vorläufig 100, Ziel 500).
 - **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)

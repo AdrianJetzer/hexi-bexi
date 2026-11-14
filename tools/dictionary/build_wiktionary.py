@@ -67,6 +67,7 @@ def main(src, dst, excluded_dst=None):
     names = set()          # Eigennamen / Abkürzungen (inkl. Formen)
     head_normal = set()    # Stichwörter mit normaler Wortart
     head_name = set()      # Stichwörter mit Wortart Name/Abkürzung
+    normalcase = set()     # normale Wörter, deren Stichwort nicht ganz großgeschrieben ist (z. B. Aids)
     form_of = []           # (Wörter des Eintrags, Grundwörter) für reine Formen-Einträge
     pos_count = collections.Counter()
     entries = 0
@@ -110,6 +111,10 @@ def main(src, dst, excluded_dst=None):
                 words |= own
                 if n:
                     head_normal.add(n)
+                    hw = e.get("word") or ""
+                    # Normale Schreibweise: ganz klein oder nur der erste Buchstabe groß (nicht „AfD“, „GmbH“).
+                    if hw == hw.lower() or hw == hw[:1].upper() + hw[1:].lower():
+                        normalcase.add(n)
     name_only = head_name - head_normal
     for own, bases in form_of:
         if bases and bases <= name_only:
@@ -126,6 +131,9 @@ def main(src, dst, excluded_dst=None):
         for w in sorted(words):
             out.write(w + "\n")
     if excluded_dst:
+        with open(excluded_dst.replace(".txt", "-normalcase.txt"), "w", encoding="utf-8") as out:
+            for w in sorted(normalcase):
+                out.write(w + "\n")
         with open(excluded_dst.replace(".txt", "-roman-keep.txt"), "w", encoding="utf-8") as out:
             for w in sorted(roman_keep):
                 out.write(w + "\n")

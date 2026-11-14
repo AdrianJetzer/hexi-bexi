@@ -5,12 +5,16 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell).
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), column(cell).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
 ## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Tauschen, Ersetzen).
 signal tile_changed(cell: Vector2i, letter: String)
+## Schwerkraft: Steine sind gerutscht. moves: [{"from": Vector2i, "to": Vector2i}, …]
+signal tiles_moved(moves: Array)
+## Lösen: eine Zeile wurde ohne Wort aus dem Feld gefüllt (Buchstaben erscheinen direkt).
+signal row_filled(row: int, word: String)
 ## Aufräumen: diese Steine sind entfernt (die Plätze bleiben frei).
 signal tiles_removed(cells: Array[Vector2i])
 ## Tipp: die bisher gezeigten Steine eines passenden Worts, in Wortreihenfolge
@@ -39,6 +43,8 @@ const REASON_NO_QUEST := "no_quest"
 const REASON_RUN_OVER := "run_over"
 
 const NO_CELL := Vector2i(-1, -1)
+## Buchstabe eines Joker-Steins im Raster (steht beim Wischen für jeden Buchstaben).
+const JOKER := "*"
 
 const REASON_GAVE_UP := "gave_up"
 
@@ -351,6 +357,208 @@ func solution() -> Array[Vector2i]:
 	return _find_matching_path()
 
 
+## Lösen möglich? (Auftrag aktiv, Münzen reichen)
+func can_solve() -> bool:
+	return not is_over and quest != null and coins >= _balance.solve_price
+
+
+## Hilfe „Lösen“: den ganzen Auftrag lösen, ohne Belohnung. Für jede freie Zeile wird ein
+## passendes geläufiges Wort aus dem Feld genommen (Steine verschwinden, automatisches
+## Auffüllen wie gewohnt); fehlt eines, wird die Zeile mit einem zufälligen Wort gefüllt.
+## Gibt true zurück, wenn gelöst wurde.
+func solve() -> bool:
+	if not can_solve():
+		return false
+	_pay(_balance.solve_price)
+	_reset_hint()
+	for row in quest.rows.size():
+		if quest.filled[row] != "":
+			continue
+		var n := quest.rows[row]
+		var path := _find_word_of_length(n)
+		if path.is_empty():
+			var word := _random_word(n)
+			quest.fill(row, word)
+			row_filled.emit(row, word)
+		else:
+			var word := word_for(path)
+			for cell in path:
+				grid.clear(cell)
+			words_found += 1
+			quest.fill(row, word)
+			word_accepted.emit(word, path, row)
+			_spawn(maxi(n - _balance.auto_refill_less, 0))
+		quest_progress.emit(quest)
+	_complete_quest(false)
+	return true
+
+
+## Weg eines Worts mit genau n Buchstaben im Feld (zuerst geläufige Wörter), oder leer.
+func _find_word_of_length(n: int) -> Array[Vector2i]:
+	for finder in _hint_finders:
+		var found := finder.find_paths(grid, n, n, func(w: String) -> bool: return w.length() == n)
+		if not found.is_empty():
+			var path: Array[Vector2i] = []
+			path.assign(found[_hint_rng.randi_range(0, found.size() - 1)]["path"])
+			return path
+	return []
+
+
+## Zufälliges geläufiges Wort mit n Buchstaben (für Zeilen ohne passendes Wort im Feld).
+func _random_word(n: int) -> String:
+	var count := _plant_words.count_of_length(n)
+	if count == 0:
+		return "?".repeat(n)
+	return _plant_words.word_at(n, _hint_rng.randi_range(0, count - 1))
+
+
+## Joker möglich? (Auftrag aktiv, Münzen reichen, ein normaler Stein liegt im Feld)
+func can_joker() -> bool:
+	if is_over or quest == null or coins < _balance.joker_price:
+		return false
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell) and grid.get_letter(cell) != JOKER:
+			return true
+	return false
+
+
+## Hilfe „Joker“: ein zufälliger Stein wird zum Joker. Gibt den Platz zurück (NO_CELL = nicht möglich).
+func joker() -> Vector2i:
+	if not can_joker():
+		return NO_CELL
+	var cells: Array[Vector2i] = []
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell) and grid.get_letter(cell) != JOKER:
+			cells.append(cell)
+	var cell := cells[_hint_rng.randi_range(0, cells.size() - 1)]
+	grid.set_letter(cell, JOKER)
+	_pay(_balance.joker_price)
+	tile_changed.emit(cell, JOKER)
+	_check_hint()
+	return cell
+
+
+## Mischen möglich? (Münzen reichen, mindestens zwei Steine)
+func can_shuffle() -> bool:
+	return not is_over and coins >= _balance.shuffle_price and grid.size() - grid.free_count() >= 2
+
+
+## Hilfe „Mischen“: die Buchstaben aller Steine werden zufällig auf die belegten Plätze verteilt.
+## Gibt die Plätze zurück, deren Buchstabe sich geändert hat.
+func shuffle() -> Array[Vector2i]:
+	var changed: Array[Vector2i] = []
+	if not can_shuffle():
+		return changed
+	var cells: Array[Vector2i] = []
+	var letters: Array[String] = []
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell):
+			cells.append(cell)
+			letters.append(grid.get_letter(cell))
+	for i in range(letters.size() - 1, 0, -1):
+		var j := _hint_rng.randi_range(0, i)
+		var t := letters[i]
+		letters[i] = letters[j]
+		letters[j] = t
+	for i in cells.size():
+		if grid.get_letter(cells[i]) != letters[i]:
+			grid.set_letter(cells[i], letters[i])
+			changed.append(cells[i])
+			tile_changed.emit(cells[i], letters[i])
+	_pay(_balance.shuffle_price)
+	_check_hint()
+	return changed
+
+
+## Schwerkraft möglich? (Münzen reichen, es gibt Löcher)
+func can_gravity() -> bool:
+	return not is_over and coins >= _balance.gravity_price and not grid.holes().is_empty()
+
+
+## Hilfe „Schwerkraft“: in jeder Spalte rutschen die Steine nach unten, Löcher schließen sich.
+## Gibt die Bewegungen zurück (leer = keine Löcher, kostet nichts).
+func gravity() -> Array:
+	var moves: Array = []
+	if not can_gravity():
+		return moves
+	for c in grid.cols:
+		var target := 0
+		for r in grid.rows:
+			var from := Vector2i(c, r)
+			if grid.is_free(from):
+				continue
+			var to := Vector2i(c, target)
+			if to != from:
+				grid.set_letter(to, grid.get_letter(from))
+				grid.clear(from)
+				moves.append({"from": from, "to": to})
+			target += 1
+	_pay(_balance.gravity_price)
+	tiles_moved.emit(moves)
+	_check_hint()
+	return moves
+
+
+## Magnet möglich? (Auftrag aktiv, Münzen reichen; mit Platz: dieser Stein liegt im Feld)
+func can_magnet(cell: Vector2i = NO_CELL) -> bool:
+	if is_over or quest == null or coins < _balance.magnet_price:
+		return false
+	return cell == NO_CELL or grid.is_occupied(cell)
+
+
+## Hilfe „Magnet“: um den angetippten Stein entsteht ein passendes geläufiges Wort (der Stein
+## behält seinen Buchstaben, die übrigen Steine der Kette verwandeln sich).
+## Gibt die geänderten Plätze zurück (leer = nicht möglich, kostet nichts).
+func magnet(cell: Vector2i) -> Array[Vector2i]:
+	var changed: Array[Vector2i] = []
+	if not can_magnet(cell):
+		return changed
+	var letter := grid.get_letter(cell)
+	var plan := _planter.plant_around(grid, _plant_words, quest.free_lengths(), cell,
+			"" if letter == JOKER else letter)
+	if plan.is_empty():
+		return changed
+	var path: Array[Vector2i] = []
+	path.assign(plan["path"])
+	var word: String = plan["word"]
+	for i in path.size():
+		if grid.get_letter(path[i]) != word[i]:
+			grid.set_letter(path[i], word[i])
+			changed.append(path[i])
+			tile_changed.emit(path[i], word[i])
+	_pay(_balance.magnet_price)
+	_check_hint()
+	return changed
+
+
+## Säule möglich? (Münzen reichen; mit Platz: in dieser Spalte liegt ein Stein)
+func can_column(cell: Vector2i = NO_CELL) -> bool:
+	if is_over or coins < _balance.column_price:
+		return false
+	if cell == NO_CELL:
+		return grid.free_count() < grid.size()
+	for r in grid.rows:
+		if grid.is_occupied(Vector2i(cell.x, r)):
+			return true
+	return false
+
+
+## Hilfe „Säule“: alle Steine der Spalte des angetippten Platzes bekommen neue Buchstaben
+## (Wort-Hilfe). Gibt die geänderten Plätze zurück (leer = nicht möglich, kostet nichts).
+func column(cell: Vector2i) -> Array[Vector2i]:
+	var changed: Array[Vector2i] = []
+	if not can_column(cell):
+		return changed
+	for r in grid.rows:
+		var c := Vector2i(cell.x, r)
+		if grid.is_occupied(c):
+			tile_changed.emit(c, _new_letter(c))
+			changed.append(c)
+	_pay(_balance.column_price)
+	_check_hint()
+	return changed
+
+
 ## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)
 func can_replace(cell: Vector2i = NO_CELL) -> bool:
 	if is_over or coins < _balance.replace_price:
@@ -410,7 +618,7 @@ func submit_path(path: Array[Vector2i]) -> bool:
 	if reason != "":
 		word_rejected.emit(path, reason)
 		return false
-	var word := word_for(path)
+	var word := _resolved_word(path)
 	var row := quest.free_row_for(word)
 	for cell in path:
 		grid.clear(cell)
@@ -481,19 +689,64 @@ func _check_path(path: Array[Vector2i]) -> String:
 		return REASON_INVALID_PATH
 	if path.size() < _balance.min_length:
 		return REASON_TOO_SHORT
-	var word := word_for(path)
-	if not _dictionary.contains(word):
+	var raw := word_for(path)
+	if raw.contains(JOKER):
+		if _resolve_joker(raw, false) == "":
+			return REASON_NOT_A_WORD
+		if _resolve_joker(raw, true) == "":
+			return REASON_NOT_MATCHING
+		return ""
+	if not _dictionary.contains(raw):
 		return REASON_NOT_A_WORD
-	if not quest.matches(word):
+	if not quest.matches(raw):
 		return REASON_NOT_MATCHING
 	return ""
 
 
-func _complete_quest() -> void:
+## Wort eines Wegs; Joker werden durch passende Buchstaben ersetzt.
+func _resolved_word(path: Array[Vector2i]) -> String:
+	var raw := word_for(path)
+	return _resolve_joker(raw, true) if raw.contains(JOKER) else raw
+
+
+## Joker in `raw` so ersetzen, dass ein gültiges Wort entsteht (bei must_fit: das auch in eine
+## freie Zeile passt). Geläufige Wörter zuerst. Leer, wenn keine Belegung passt.
+func _resolve_joker(raw: String, must_fit: bool) -> String:
+	if must_fit and quest != null and not quest.free_lengths().has(raw.length()):
+		return ""
+	var dicts: Array[WordDictionary] = []
+	if _plant_words != _dictionary:
+		dicts.append(_plant_words)
+	dicts.append(_dictionary)
+	for d in dicts:
+		var w := _fill_joker(raw, d)
+		if w != "" and _dictionary.contains(w):
+			return w
+	return ""
+
+
+func _fill_joker(raw: String, d: WordDictionary) -> String:
+	var i := raw.find(JOKER)
+	if i < 0:
+		return raw if d.contains(raw) else ""
+	for letter in _lang.alphabet:
+		var candidate := raw.substr(0, i) + letter + raw.substr(i + 1)
+		var prefix := candidate.substr(0, i + 1)
+		if not d.has_prefix(prefix):
+			continue
+		var w := _fill_joker(candidate, d)
+		if w != "":
+			return w
+	return ""
+
+
+## rewarded = false: ohne Belohnung (Hilfe „Lösen“).
+func _complete_quest(rewarded: bool = true) -> void:
 	var done := quest
 	quest = null
-	coins += done.reward
-	quest_completed.emit(done, done.reward)
+	var reward := done.reward if rewarded else 0
+	coins += reward
+	quest_completed.emit(done, reward)
 	coins_changed.emit(coins)
 	_level += 1
 	_apply_help()

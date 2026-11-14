@@ -1,6 +1,8 @@
 """Extract game words (reformed spelling) from the Trennmuster 'wortliste'.
 
-Usage: python3 -I build_trennmuster.py <wortliste> <out.txt>
+Usage: python3 -I build_trennmuster.py <wortliste> <out.txt> [<abbrevs.txt>]
+<abbrevs.txt>: words marked as abbreviation ("# Abk."), written fully in capitals (acronyms),
+or marked as a name in the comment ("# Name", "# geogr. Name", "# engl. Name" …).
 """
 import re
 import sys
@@ -30,11 +32,13 @@ def reformed_ok(fields):
     return False
 
 
-def main(src, dst):
+def main(src, dst, abbrev_dst=None):
     words = set()
+    abbrevs = set()
     total = 0
     with open(src, encoding="utf-8") as f:
         for line in f:
+            comment = line.split("#", 1)[1] if "#" in line else ""
             line = line.split("#", 1)[0].strip()
             if not line:
                 continue
@@ -45,11 +49,18 @@ def main(src, dst):
             n = normalize(fields[0])
             if n:
                 words.add(n)
+                raw = fields[0]
+                if "Abk" in comment or "Name" in comment or (len(raw) >= 2 and raw.isupper()):
+                    abbrevs.add(n)
     with open(dst, "w", encoding="utf-8") as out:
         for w in sorted(words):
             out.write(w + "\n")
-    print(f"entries={total} words={len(words)}")
+    if abbrev_dst:
+        with open(abbrev_dst, "w", encoding="utf-8") as out:
+            for w in sorted(abbrevs):
+                out.write(w + "\n")
+    print(f"entries={total} words={len(words)} abbrevs={len(abbrevs)}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)

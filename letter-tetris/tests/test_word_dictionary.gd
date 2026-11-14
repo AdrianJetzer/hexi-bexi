@@ -94,10 +94,10 @@ func test_real_german_dictionary() -> void:
 	assert_gt(d.size(), 500000)
 	# Normale Wörter, auch Namen, die zugleich normale Wörter sind (ROSE, WOLF), und Zusammenziehungen.
 	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "HAUS", "ROSE",
-			"WOLF", "ERNST", "BEIM", "ZUM", "MIX"]:
+			"WOLF", "ERNST", "BEIM", "ZUM", "MIX", "AIDS", "UFO", "TAXI"]:
 		assert_true(d.contains(w), w)
 	# Unsinn und reine Eigennamen/Abkürzungen gelten nicht.
-	for w in ["XQZT", "STERNX", "QQQ", "AB", "BERLIN", "OLGAS", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV"]:
+	for w in ["XQZT", "STERNX", "QQQ", "AB", "BERLIN", "OLGAS", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV", "DEA", "CIA", "CPU", "AFD", "HTTP", "POE", "ARMSTRONG", "AADORF"]:
 		assert_false(d.contains(w), w)
 
 

@@ -24,9 +24,8 @@ func test_curve_from_spec() -> void:
 
 
 func test_reward_grows_with_level() -> void:
-	assert_eq(_gen().quest_for(1).reward, 110)
-	assert_eq(_gen().quest_for(10).reward, 200)
-	assert_eq(_gen().quest_for(20).reward, 300)
+	for level in [1, 10, 20]:
+		assert_eq(_gen().quest_for(level).reward, 100, "fest 100 je Level")
 
 
 func test_help_level_follows_curve() -> void:

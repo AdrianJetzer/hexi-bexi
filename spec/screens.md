@@ -38,7 +38,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** **Münzen**, **Level**, **Rekord**.
-- **Hilfe-Knöpfe** mit Preis: **Auffüllen** (5 Steine, 100), **Tauschen** (5 Steine, 50), **Aufräumen** (die 5 am wenigsten hilfreichen Steine, 100), **Tipp** (100), **Stein ersetzen** (100). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
+- **Hilfe-Knöpfe** mit Preis: **Auffüllen** (5 Steine, 100), **Tauschen** (5 Steine, 50), **Aufräumen** (die 5 am wenigsten hilfreichen Steine, 100), **Tipp** (100), **Stein ersetzen** (100), **Joker** (50), **Mischen** (50), **Schwerkraft** (50), **Magnet** (50, Stein antippen), **Säule** (50, Stein antippen), **Lösen** (ganzer Auftrag, vorläufig 100, Ziel 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
@@ -77,3 +77,6 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v3:** Lauf-Modus: Auftragswahl als Ebene über dem Spiel, Anzeige von Auftrag und Münzen, Hilfe-Knöpfe, „Aufgeben“ statt „Runde beenden“, Bilanz mit Level, ein Rekord (höchstes Level), Schwierigkeitsstufe aus den Einstellungen entfernt.
 - **v4:** Auftragswahl entfällt; Auftrag als Block-Zeilen über dem Spielfeld; kein Text für Auftrag und gewischtes Wort; Bilanz nur nach Aufgeben.
 - **v4.1:** Fünfter Hilfe-Knopf „Aufräumen“.
+- **v4.2:** Sechster Hilfe-Knopf „Lösen“.
+- **v4.3:** Hilfe-Knöpfe Joker, Mischen, Schwerkraft; zum Testen in zwei Reihen, gute Platzierung später.
+- **v4.4:** Hilfe-Knöpfe Magnet und Säule (Antipp-Modus wie Ersetzen); zum Testen in drei Reihen.

@@ -24,7 +24,7 @@ extends Resource
 @export_group("Belohnung")
 ## Münzen = reward_base + reward_per_level × Level.
 @export var reward_base: int = 100
-@export var reward_per_level: int = 10
+@export var reward_per_level: int = 0
 
 
 ## Letztes Level der festen Kurve.
