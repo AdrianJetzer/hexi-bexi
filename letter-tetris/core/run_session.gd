@@ -597,21 +597,20 @@ func can_scan() -> bool:
 	return not is_over and quest != null and coins >= _balance.scan_price
 
 
-## Hilfe „Scan“: alle Steine, die zu einem geläufigen Wort in der Länge einer freien Zeile
-## gehören. Gibt sie zurück (leer = keines im Feld, kostet nichts).
+## Hilfe „Scan“: die Steine **eines** geläufigen Worts für die längste freie Zeile (gibt es dafür
+## keines, für die nächstkürzere). Gibt sie zurück (leer = keines im Feld, kostet nichts).
 func scan() -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if not can_scan():
 		return cells
 	var lengths := quest.free_lengths()
-	var q := quest
-	var seen := {}
-	for hit in (_hint_finders[0] as WordFinder).find_paths(grid, lengths[0], lengths[lengths.size() - 1],
-			func(w: String) -> bool: return q.matches(w), 1000000):
-		for cell in hit["path"]:
-			if not seen.has(cell):
-				seen[cell] = true
-				cells.append(cell)
+	for k in range(lengths.size() - 1, -1, -1):
+		var n := lengths[k]
+		var found := (_hint_finders[0] as WordFinder).find_paths(grid, n, n,
+				func(w: String) -> bool: return w.length() == n)
+		if not found.is_empty():
+			cells.assign(found[_hint_rng.randi_range(0, found.size() - 1)]["path"])
+			break
 	if cells.is_empty():
 		return cells
 	_pay(_balance.scan_price)
