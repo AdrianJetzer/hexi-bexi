@@ -97,7 +97,7 @@ func test_real_german_dictionary() -> void:
 			"WOLF", "ERNST", "BEIM", "ZUM", "MIX", "AIDS", "UFO", "TAXI"]:
 		assert_true(d.contains(w), w)
 	# Unsinn und reine Eigennamen/Abkürzungen gelten nicht.
-	for w in ["XQZT", "STERNX", "QQQ", "AB", "BERLIN", "OLGAS", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV", "DEA", "CIA", "CPU", "AFD", "HTTP"]:
+	for w in ["XQZT", "STERNX", "QQQ", "AB", "BERLIN", "OLGAS", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV", "DEA", "CIA", "CPU", "AFD", "HTTP", "POE", "ARMSTRONG", "AADORF"]:
 		assert_false(d.contains(w), w)
 
 

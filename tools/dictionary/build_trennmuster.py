@@ -1,7 +1,8 @@
 """Extract game words (reformed spelling) from the Trennmuster 'wortliste'.
 
 Usage: python3 -I build_trennmuster.py <wortliste> <out.txt> [<abbrevs.txt>]
-<abbrevs.txt>: words marked as abbreviation ("# Abk.") or written fully in capitals (acronyms).
+<abbrevs.txt>: words marked as abbreviation ("# Abk."), written fully in capitals (acronyms),
+or marked as a name in the comment ("# Name", "# geogr. Name", "# engl. Name" …).
 """
 import re
 import sys
@@ -49,7 +50,7 @@ def main(src, dst, abbrev_dst=None):
             if n:
                 words.add(n)
                 raw = fields[0]
-                if "Abk" in comment or (len(raw) >= 2 and raw.isupper()):
+                if "Abk" in comment or "Name" in comment or (len(raw) >= 2 and raw.isupper()):
                     abbrevs.add(n)
     with open(dst, "w", encoding="utf-8") as out:
         for w in sorted(words):

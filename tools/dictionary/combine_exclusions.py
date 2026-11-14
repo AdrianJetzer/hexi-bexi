@@ -1,5 +1,6 @@
 """Combine exclusion lists: proper names/abbreviations from Wiktionary plus acronyms and
-abbreviations marked in the Trennmuster list ("# Abk." or all capitals), except words that
+abbreviations and names marked in the Trennmuster list ("# Abk.", "# … Name", all capitals),
+except words that
 Wiktionary knows as normal words in normal spelling (e.g. Aids, Abc).
 
 Usage: python3 -I combine_exclusions.py <excluded.txt> <trennmuster-abbrevs.txt> <wiktionary-normalcase.txt> <out.txt>
