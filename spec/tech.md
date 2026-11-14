@@ -44,6 +44,13 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 
 - Version 1 zuerst im **Play Store als interner Test**, später öffentlich.
 
+## Android-Build (Test aufs Handy)
+
+- Export-Vorlage **„Android“** in `letter-tetris/export_presets.cfg`: Debug-APK nach `build/LetterTetris.apk` (nicht versioniert), nur **arm64-v8a**, Paketname vorläufig `com.lettertetris.game` (vor einer Veröffentlichung festlegen).
+- **Wichtig:** Filter `*.bin`, damit das Wörterbuch (`words.bin`, `common.bin`) in die App kommt; Tests und GUT werden nicht mit exportiert.
+- Voraussetzungen auf dem Mac: Godot-**Export-Vorlagen 4.7.2**, **JDK 17** (Pfad in den Editor-Einstellungen), **Android SDK** (über Android Studio). Den Debug-Schlüssel legt Godot beim ersten Export an.
+- Aufs Handy: USB-Debugging einschalten, anschließen, im Editor oben rechts auf das Android-Symbol (Remote Deploy) – oder APK exportieren und installieren.
+
 ## Versionsverwaltung
 
 - **Git** lokal im Ordner `godot-game/`, zusätzlich **GitHub** (privates Repository).
@@ -57,3 +64,4 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 ## Verlauf
 
 - **v1:** Engine und Werkzeuge, Zielgeräte (Android 10+, nur Handys, 60 fps), Austauschbarkeit, kostenlos ohne Werbung, offline ohne Daten, interner Test im Play Store, Git + GitHub.
+- **v1.1:** Android-Build: Export-Vorlage mit `*.bin`-Filter, Voraussetzungen.
