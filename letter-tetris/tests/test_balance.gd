@@ -17,7 +17,9 @@ func test_balance_run_values_from_spec() -> void:
 	assert_eq(b.min_length, 3)
 	assert_eq(b.refill_count, 5)
 	# Preise: zum Testen vorläufig alle 50 (werden am Schluss abgestimmt).
-	for p in ["refill_price", "swap_price", "clear_price", "hint_price", "replace_price", "solve_price",
+	# Auffüllen ist gratis (siehe spec/run-mode.md).
+	assert_eq(b.refill_price, 0)
+	for p in ["swap_price", "clear_price", "hint_price", "replace_price", "solve_price",
 			"joker_price", "shuffle_price", "gravity_price", "magnet_price", "column_price",
 			"split_price", "scan_price"]:
 		assert_eq(b.get(p), 50, p)

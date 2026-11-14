@@ -38,7 +38,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** **Münzen**, **Level**, **Rekord**.
-- **Hilfe-Knöpfe** mit Preis: **Auffüllen** (5 Steine, 100), **Tauschen** (5 Steine, 50), **Aufräumen** (die 5 am wenigsten hilfreichen Steine, 100), **Tipp** (100), **Stein ersetzen** (100), **Joker** (50), **Mischen** (50), **Schwerkraft** (50), **Magnet** (50, Stein antippen), **Säule** (50, Stein antippen), **Teilen** (50), **Scan** (50, ein Wort für die längste Zeile), **Lösen** (ganzer Auftrag, vorläufig 100, Ziel 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
+- **Hilfe-Knöpfe** mit Preis: **Auffüllen** (5 Steine, gratis), **Tauschen** (5 Steine, 50), **Aufräumen** (die 5 am wenigsten hilfreichen Steine, 100), **Tipp** (100), **Stein ersetzen** (100), **Joker** (50), **Mischen** (50), **Schwerkraft** (50), **Magnet** (50, Stein antippen), **Säule** (50, Stein antippen), **Teilen** (50), **Scan** (50, ein Wort für die längste Zeile), **Lösen** (ganzer Auftrag, vorläufig 100, Ziel 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.

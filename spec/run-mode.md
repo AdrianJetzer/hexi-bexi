@@ -66,7 +66,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 |---|---|
 | Auftrag gelöst | **+100** (fest, unabhängig vom Level) |
 | Langes Wort nebenbei [später] | Bonus |
-| **Auffüllen: 5 neue Steine** | **−100** (fest) |
+| **Auffüllen: 5 neue Steine** | **gratis** |
 | **5 Steine tauschen** | **−50** |
 | **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen (ein passendes Wort bleibt)** | **−100** |
 | **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
@@ -80,7 +80,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Säule: Spalte neu beschriften** | **−50** |
 | **Lösen: ganzen Auftrag lösen** | **−100** vorläufig zum Testen (Ziel: 500), ohne Belohnung |
 
-- **Vorläufig zum Testen kosten alle Hilfen 50.** Die Preise in der Tabelle sind die Ziel-Preise; abgestimmt wird am Schluss (Spielwerte in `data/balance.tres`).
+- **Vorläufig zum Testen kosten alle Hilfen 50** (außer Auffüllen: gratis). Die Preise in der Tabelle sind die Ziel-Preise; abgestimmt wird am Schluss (Spielwerte in `data/balance.tres`).
 - Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
 
 ## Spielfeld
@@ -90,7 +90,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ## Hilfen
 
-- **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet **fest 100**. Ist das Feld voll, ist Auffüllen gesperrt.
+- **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). **Gratis.** Das balanciert sich selbst: Zu wenige Steine – kein Wort möglich; zu viele Steine – unübersichtlich, schwerer zu finden. Der Spieler entscheidet, wann er nachlegt. Ist das Feld voll, ist Auffüllen gesperrt.
 - **Tauschen:** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Fester Preis 50. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
 - **Aufräumen:** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 100. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
@@ -188,3 +188,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.15:** Neue Hilfen Teilen und Scan (je 50).
 - **v3.16:** Zum Testen kosten vorläufig alle Hilfen 50; endgültige Preise am Schluss.
 - **v3.17:** Scan zeigt nur noch ein Wort, für die längste freie Zeile.
+- **v3.18:** Auffüllen ist gratis (mehr Steine machen es für Menschen nicht leichter, sondern unübersichtlicher).
