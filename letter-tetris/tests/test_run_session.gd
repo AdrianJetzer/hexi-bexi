@@ -675,9 +675,9 @@ func test_solve_uses_words_from_board_without_reward() -> void:
 	_use_rows([3, 4], 150)
 	var ast := _column(0, "AST")
 	var haus := _column(2, "HAUS", false)
-	run.coins = 600
+	run.coins = balance.solve_price + 100
 	assert_true(run.solve())
-	assert_eq(run.coins, 100, "500 bezahlt, keine Belohnung")
+	assert_eq(run.coins, 100, "Preis bezahlt, keine Belohnung")
 	assert_eq(run.level(), 2, "nächstes Level")
 	assert_signal_emit_count(run, "word_accepted", 2)
 	assert_eq(get_signal_parameters(run, "quest_completed")[1], 0, "Belohnung 0")
@@ -692,7 +692,7 @@ func test_solve_fills_missing_rows_with_random_words() -> void:
 	run.start()
 	_use_rows([5])
 	_column(0, "AST")
-	run.coins = 500
+	run.coins = balance.solve_price
 	assert_true(run.solve())
 	assert_signal_emitted(run, "row_filled")
 	var params: Array = get_signal_parameters(run, "row_filled")
@@ -706,11 +706,11 @@ func test_solve_fills_missing_rows_with_random_words() -> void:
 func test_solve_needs_coins() -> void:
 	run.start()
 	_use_rows([3])
-	run.coins = 499
+	run.coins = balance.solve_price - 1
 	assert_false(run.can_solve())
 	assert_false(run.solve())
 	assert_eq(run.level(), 1)
-	assert_eq(run.coins, 499)
+	assert_eq(run.coins, balance.solve_price - 1)
 
 
 func test_solve_keeps_filled_rows() -> void:
@@ -719,6 +719,6 @@ func test_solve_keeps_filled_rows() -> void:
 	run.submit_path(_column(0, "AST"))
 	assert_signal_emit_count(run, "word_accepted", 1)
 	_column(2, "HAUS", false)
-	run.coins = 500
+	run.coins = balance.solve_price
 	run.solve()
 	assert_signal_emit_count(run, "word_accepted", 2, "nur die 4er-Zeile wird noch gelöst")
