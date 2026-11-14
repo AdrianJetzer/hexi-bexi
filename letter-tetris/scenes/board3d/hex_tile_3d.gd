@@ -19,6 +19,8 @@ var _flip: float = 1.0
 var _base_position: Vector3 = Vector3.ZERO
 var _shake_tween: Tween
 var _pulse_tween: Tween
+## Leuchtender Rand (z. B. für „Scan“), nur die Kante, damit der Buchstabe lesbar bleibt.
+var _outline: MeshInstance3D
 
 ## 0 = Rückseite oben, 1 = Vorderseite oben (für Animationen).
 var flip: float:
@@ -146,6 +148,23 @@ func stop_pulse() -> void:
 		_pulse_tween.kill()
 		_pulse_tween = null
 		set_selected(false)
+
+
+## Leuchtenden Rand an- oder ausschalten.
+func set_outline(on: bool, color: Color = Color(1.6, 1.3, 0.4)) -> void:
+	if on and _outline == null:
+		_outline = MeshInstance3D.new()
+		_outline.mesh = HexMesh.ring(radius * 1.02, radius * 0.86)
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		mat.albedo_color = color
+		_outline.material_override = mat
+		_outline.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_outline.position = Vector3(0, thickness * 0.5 + 0.012, 0)
+		add_child(_outline)
+	if _outline:
+		_outline.visible = on
 
 
 ## Wackeln (ungültiges Wort).
