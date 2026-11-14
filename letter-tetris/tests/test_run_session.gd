@@ -186,7 +186,7 @@ func test_give_up_ends_run_once() -> void:
 	assert_signal_emitted_with_parameters(run, "run_ended", [1, RunSession.REASON_GAVE_UP])
 
 
-# --- Nachfüllen ----------------------------------------------------------------------
+# --- Auffüllen -----------------------------------------------------------------------
 
 func test_refill_needs_coins() -> void:
 	run.start()
@@ -205,25 +205,15 @@ func test_refill_brings_5_tiles_for_100() -> void:
 	assert_eq(run.coins, 20)
 
 
-func test_refill_price_rises_per_purchase() -> void:
+func test_refill_price_is_fixed() -> void:
 	run.start()
 	_use_rows([3])
 	run.coins = 1000
 	assert_eq(run.refill_price(), 100)
 	run.refill()
-	assert_eq(run.refill_price(), 125)
 	run.refill()
-	assert_eq(run.refill_price(), 150)
-	assert_eq(run.coins, 1000 - 100 - 125)
-
-
-func test_refill_price_resets_with_new_run() -> void:
-	run.start()
-	_use_rows([3])
-	run.coins = 1000
-	run.refill()
-	run.start()
-	assert_eq(run.refill_price(), 100)
+	assert_eq(run.refill_price(), 100, "wird nicht teurer")
+	assert_eq(run.coins, 800)
 
 
 func test_refill_blocked_on_full_board() -> void:

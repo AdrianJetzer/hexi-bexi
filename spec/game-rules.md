@@ -40,7 +40,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Es gibt **keinen Takt**: Neue Hexagons kommen **nicht nach Zeit**.
 - Nach jedem gefundenen Wort kommen automatisch **Wortlänge − 1** neue Hexagons (siehe [run-mode.md](run-mode.md)).
 - Weitere neue Hexagons gibt es über die **Hilfen** des Lauf-Modus: **5 Steine nachfüllen** (ab 100 Münzen, mit jedem Kauf teurer); **Steine tauschen** und **Stein ersetzen** ändern nur Buchstaben (siehe [run-mode.md](run-mode.md)).
-- **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, ist Nachfüllen gesperrt.
+- **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, ist Auffüllen gesperrt.
 - Alle Zahlen sind Spielwerte (tunebar), nicht fest im Code.
 
 ### Buchstabenwahl

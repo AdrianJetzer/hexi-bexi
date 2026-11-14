@@ -13,14 +13,12 @@ extends Resource
 @export var start_coins: int = 0
 ## Mindestlänge eines Worts (immer, unabhängig vom Level).
 @export var min_length: int = 3
-## Hilfe „Nachfüllen“: so viele Hexagons für so viele Münzen.
+## Hilfe „Auffüllen“: so viele Hexagons für so viele Münzen (fester Preis).
 @export var refill_count: int = 5
 @export var refill_price: int = 100
 ## Nach einem gefundenen Wort kommen automatisch (Wortlänge − dieser Wert) neue Hexagons
 ## (nicht bei Aufträgen „ohne Nachziehen“).
 @export var auto_refill_less: int = 1
-## Jeder weitere Kauf im selben Lauf kostet so viel mehr.
-@export var refill_price_step: int = 25
 ## Hilfe „Tauschen“: so viele zufällige Steine bekommen neue Buchstaben.
 @export var swap_count: int = 5
 @export var swap_price: int = 50

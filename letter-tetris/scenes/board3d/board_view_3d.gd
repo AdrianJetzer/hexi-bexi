@@ -243,7 +243,7 @@ func _make_tile(cell: Vector2i, letter: String) -> HexTile3D:
 # --- Signale der Spiellogik ------------------------------------------------------
 
 func _on_tile_spawned(cell: Vector2i, letter: String) -> void:
-	# Mehrere Hexagons im selben Moment (Start, Nachfüllen, Säen) erscheinen nacheinander.
+	# Mehrere Hexagons im selben Moment (Start, Auffüllen, nach einem Wort) erscheinen nacheinander.
 	_make_tile(cell, letter).appear(_next_burst_delay())
 
 

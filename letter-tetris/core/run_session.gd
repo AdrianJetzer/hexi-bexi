@@ -67,8 +67,6 @@ var _hint_word: String = ""
 var _hint_count: int = 0
 var _spawner: Spawner
 var _level: int = 1
-## Wie oft in diesem Lauf nachgefüllt wurde (Preis steigt).
-var _refills: int = 0
 
 
 ## seed_value < 0: zufällig; sonst reproduzierbar (für Tests).
@@ -114,7 +112,6 @@ func start() -> void:
 	is_over = false
 	quest = null
 	_level = 1
-	_refills = 0
 	_reset_hint()
 	_apply_help()
 	_spawn(_balance.run_start_tiles)
@@ -134,23 +131,22 @@ func level() -> int:
 
 # --- Hilfen ---------------------------------------------------------------------------
 
-## Aktueller Preis fürs Nachfüllen (steigt mit jedem Kauf im Lauf).
+## Preis fürs Auffüllen (fest).
 func refill_price() -> int:
-	return _balance.refill_price + _refills * _balance.refill_price_step
+	return _balance.refill_price
 
 
-## Nachfüllen möglich? (Münzen reichen, Platz frei)
+## Auffüllen möglich? (Münzen reichen, Platz frei)
 func can_refill() -> bool:
 	return not is_over and coins >= refill_price() and grid.free_count() > 0
 
 
-## Hilfe „Nachfüllen“: einige neue Hexagons gegen Münzen. Gibt die Anzahl neuer Hexagons zurück.
+## Hilfe „Auffüllen“: einige neue Hexagons gegen Münzen. Gibt die Anzahl neuer Hexagons zurück.
 func refill() -> int:
 	if not can_refill():
 		return 0
 	var price := refill_price()
 	var placed := _spawn(_balance.refill_count)
-	_refills += 1
 	_pay(price)
 	return placed
 
