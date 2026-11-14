@@ -46,7 +46,7 @@ func _occupied() -> int:
 
 func test_start_from_spec() -> void:
 	run.start()
-	assert_eq(_occupied(), 20)
+	assert_eq(_occupied(), 10)
 	assert_eq(run.coins, 0)
 	assert_eq(run.level(), 1)
 	assert_not_null(run.quest, "Auftrag kommt sofort")
@@ -186,7 +186,7 @@ func test_give_up_ends_run_once() -> void:
 	assert_signal_emitted_with_parameters(run, "run_ended", [1, RunSession.REASON_GAVE_UP])
 
 
-# --- Nachfüllen ----------------------------------------------------------------------
+# --- Auffüllen -----------------------------------------------------------------------
 
 func test_refill_needs_coins() -> void:
 	run.start()
@@ -205,25 +205,15 @@ func test_refill_brings_5_tiles_for_100() -> void:
 	assert_eq(run.coins, 20)
 
 
-func test_refill_price_rises_per_purchase() -> void:
+func test_refill_price_is_fixed() -> void:
 	run.start()
 	_use_rows([3])
 	run.coins = 1000
 	assert_eq(run.refill_price(), 100)
 	run.refill()
-	assert_eq(run.refill_price(), 125)
 	run.refill()
-	assert_eq(run.refill_price(), 150)
-	assert_eq(run.coins, 1000 - 100 - 125)
-
-
-func test_refill_price_resets_with_new_run() -> void:
-	run.start()
-	_use_rows([3])
-	run.coins = 1000
-	run.refill()
-	run.start()
-	assert_eq(run.refill_price(), 100)
+	assert_eq(run.refill_price(), 100, "wird nicht teurer")
+	assert_eq(run.coins, 800)
 
 
 func test_refill_blocked_on_full_board() -> void:
@@ -392,7 +382,7 @@ func test_found_word_refills_length_minus_one() -> void:
 	_column(2, "OHR", false)
 	assert_true(run.submit_path(_column(0, "HAUS", false)))
 	assert_eq(_occupied(), 3 + 3, "OHR bleibt, 3 neue für HAUS")
-	assert_signal_emit_count(run, "tile_spawned", 20 + 3)
+	assert_signal_emit_count(run, "tile_spawned", 10 + 3)
 
 
 func test_rejected_word_does_not_refill() -> void:
@@ -553,6 +543,20 @@ func test_clear_keeps_a_fitting_word() -> void:
 	for cell in stern:
 		assert_true(run.grid.is_occupied(cell))
 	assert_false(run.is_stuck(), "danach lässt sich noch STERN schreiben")
+
+
+func test_clear_keeps_enough_tiles_for_all_free_rows() -> void:
+	run.start()
+	_use_rows([4, 5])
+	_column(0, "HAUS")
+	_column(2, "QXYQX", false)
+	_column(4, "QX", false)
+	run.coins = 100
+	assert_eq(run.clear_amount(), 2, "11 Steine, 4 + 5 = 9 müssen bleiben")
+	assert_eq(run.clear_useless().size(), 2)
+	assert_eq(run.grid.size() - run.grid.free_count(), 9)
+	run.quest.fill(0, "HAUS")
+	assert_eq(run.clear_amount(), 4, "nur noch die 5er-Zeile frei")
 
 
 func test_clear_does_nothing_when_no_word_fits() -> void:

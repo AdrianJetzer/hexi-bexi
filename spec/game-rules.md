@@ -15,7 +15,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Das Spielfeld ist **geschlossen**; seine Innenkante folgt dem Raster im Zickzack (siehe [screen-layout.md](screen-layout.md)).
 
 ### Spielstart
-- Ein Lauf beginnt mit **20 Hexagons**, verteilt nach der Platzwahl (zuerst die tiefsten Plätze).
+- Ein Lauf beginnt mit **10 Hexagons**, verteilt nach der Platzwahl (zuerst die tiefsten Plätze).
 - Start in **Level 1** mit **0 Münzen** (siehe [run-mode.md](run-mode.md)).
 - Das Feld bleibt zwischen den Levels liegen.
 
@@ -40,7 +40,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Es gibt **keinen Takt**: Neue Hexagons kommen **nicht nach Zeit**.
 - Nach jedem gefundenen Wort kommen automatisch **Wortlänge − 1** neue Hexagons (siehe [run-mode.md](run-mode.md)).
 - Weitere neue Hexagons gibt es über die **Hilfen** des Lauf-Modus: **5 Steine nachfüllen** (ab 100 Münzen, mit jedem Kauf teurer); **Steine tauschen** und **Stein ersetzen** ändern nur Buchstaben (siehe [run-mode.md](run-mode.md)).
-- **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, ist Nachfüllen gesperrt.
+- **Feld voll:** Ist nicht genug Platz frei, kommen nur so viele Hexagons, wie hineinpassen. Ist gar kein Platz frei, ist Auffüllen gesperrt.
 - Alle Zahlen sind Spielwerte (tunebar), nicht fest im Code.
 
 ### Buchstabenwahl
@@ -135,3 +135,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7:** Aufträge als Block-Zeilen (genaue Länge), Ablehnung nur durch Wackeln, Lauf endet nur durch Aufgeben. Entfallen: Zug, Zuglimit, „ohne Nachziehen“, gezieltes Säen.
 - **v7.1:** Wort-Hilfe zählt nur Wörter in den Längen der freien Auftrags-Zeilen (bis 8 Buchstaben).
 - **v7.2:** Römische Zahlen gelten nicht (außer sie sind auch ein normales Wort).
+- **v7.3:** Start mit 10 Hexagons.

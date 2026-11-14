@@ -67,8 +67,6 @@ var _hint_word: String = ""
 var _hint_count: int = 0
 var _spawner: Spawner
 var _level: int = 1
-## Wie oft in diesem Lauf nachgefüllt wurde (Preis steigt).
-var _refills: int = 0
 
 
 ## seed_value < 0: zufällig; sonst reproduzierbar (für Tests).
@@ -114,7 +112,6 @@ func start() -> void:
 	is_over = false
 	quest = null
 	_level = 1
-	_refills = 0
 	_reset_hint()
 	_apply_help()
 	_spawn(_balance.run_start_tiles)
@@ -134,23 +131,22 @@ func level() -> int:
 
 # --- Hilfen ---------------------------------------------------------------------------
 
-## Aktueller Preis fürs Nachfüllen (steigt mit jedem Kauf im Lauf).
+## Preis fürs Auffüllen (fest).
 func refill_price() -> int:
-	return _balance.refill_price + _refills * _balance.refill_price_step
+	return _balance.refill_price
 
 
-## Nachfüllen möglich? (Münzen reichen, Platz frei)
+## Auffüllen möglich? (Münzen reichen, Platz frei)
 func can_refill() -> bool:
 	return not is_over and coins >= refill_price() and grid.free_count() > 0
 
 
-## Hilfe „Nachfüllen“: einige neue Hexagons gegen Münzen. Gibt die Anzahl neuer Hexagons zurück.
+## Hilfe „Auffüllen“: einige neue Hexagons gegen Münzen. Gibt die Anzahl neuer Hexagons zurück.
 func refill() -> int:
 	if not can_refill():
 		return 0
 	var price := refill_price()
 	var placed := _spawn(_balance.refill_count)
-	_refills += 1
 	_pay(price)
 	return placed
 
@@ -267,7 +263,20 @@ func clear_candidates(keep: Array[Vector2i] = []) -> Array[Vector2i]:
 	return cells
 
 
-## Hilfe „Aufräumen“: bis zu clear_count der am wenigsten hilfreichen Steine entfernen, aber nur
+## Wie viele Steine Aufräumen höchstens entfernen darf: clear_count, und es bleiben immer so viele
+## Steine liegen, wie alle freien Zeilen zusammen Blöcke haben (z. B. 4 + 5 → mindestens 9).
+func clear_amount() -> int:
+	if quest == null:
+		return 0
+	var blocks := 0
+	for i in quest.rows.size():
+		if quest.filled[i] == "":
+			blocks += quest.rows[i]
+	var tiles := grid.size() - grid.free_count()
+	return clampi(tiles - blocks, 0, _balance.clear_count)
+
+
+## Hilfe „Aufräumen“: bis zu clear_amount() der am wenigsten hilfreichen Steine entfernen, aber nur
 ## so, dass danach noch ein passendes geläufiges Wort im Feld liegt (dessen Steine bleiben).
 ## Liegt kein solches Wort im Feld, wird nichts entfernt (kostet nichts).
 ## Gibt die entfernten Plätze zurück.
@@ -275,11 +284,14 @@ func clear_useless() -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if not can_clear():
 		return cells
+	var amount := clear_amount()
+	if amount <= 0:
+		return cells
 	var keep := protected_word()
 	if keep.is_empty():
 		return cells
 	cells = clear_candidates(keep)
-	cells.resize(mini(cells.size(), _balance.clear_count))
+	cells.resize(mini(cells.size(), amount))
 	if cells.is_empty():
 		return cells
 	for cell in cells:

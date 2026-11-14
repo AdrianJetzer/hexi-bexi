@@ -16,7 +16,7 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 
 ## Ablauf eines Laufs
 
-1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **20 Hexagons** (Platzwahl wie bisher). Der erste Auftrag erscheint sofort.
+1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **10 Hexagons** (Platzwahl wie bisher; weniger Steine sind übersichtlicher). Der erste Auftrag erscheint sofort.
 2. **Level:** Über dem Spielfeld stehen die Block-Zeilen des Auftrags. Der Spieler wischt Wörter.
 3. **Gelöst:** Sind alle Zeilen gefüllt, gibt es Münzen, der Auftrag verschwindet und der **nächste erscheint automatisch** (keine Wahl, keine Unterbrechung).
 4. **Ende:** Nur durch **„Aufgeben“** (mit Nachfrage), z. B. wenn man nicht weiterkommt und kein Geld mehr für Hilfen hat. Dann wird die **Lösung** gezeigt, danach die Bilanz (erreichtes Level, Rekord). Neuer Lauf ab Level 1.
@@ -66,7 +66,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 |---|---|
 | Auftrag gelöst | **+100 + 10 × Level** (Level 1: 110, Level 10: 200) |
 | Langes Wort nebenbei [später] | Bonus |
-| **5 Steine nachfüllen** | **−100**, jeder weitere Kauf im Lauf **+25** (100, 125, 150 …) |
+| **Auffüllen: 5 neue Steine** | **−100** (fest) |
 | **5 Steine tauschen** | **−50** |
 | **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen (ein passendes Wort bleibt)** | **−100** |
 | **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
@@ -77,14 +77,14 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 ## Spielfeld
 
 - **Das Feld bleibt zwischen den Levels liegen.** Ein gutes oder schlechtes Feld wirkt nach.
-- **Automatisch auffüllen:** Nach jedem angenommenen Wort kommen **Wortlänge − 1** neue Steine ins Feld (Platzwahl wie bisher; 5 Buchstaben → 4 neue). Das Feld leert sich so langsam; Nachfüllen bleibt wichtig.
+- **Automatisch auffüllen:** Nach jedem angenommenen Wort kommen **Wortlänge − 1** neue Steine ins Feld (Platzwahl wie bisher; 5 Buchstaben → 4 neue). Das Feld leert sich so langsam; Auffüllen bleibt wichtig.
 
 ## Hilfen
 
-- **Nachfüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet 100 und wird mit jedem Kauf im selben Lauf um 25 teurer; ein neuer Lauf beginnt wieder bei 100. Ist das Feld voll, ist Nachfüllen gesperrt.
+- **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). Kostet **fest 100**. Ist das Feld voll, ist Auffüllen gesperrt.
 - **Tauschen:** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Fester Preis 50. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
-- **Aufräumen:** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, die **am wenigsten hilfreichen** zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Nachfüllen füllt sie zuerst). Preis 100. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
+- **Aufräumen:** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 100. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
 - **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein Wort fest, das in eine freie Zeile passt, und lässt seinen ersten Stein **blinken**; jeder weitere Tipp (je 100) lässt den nächsten Stein desselben Worts blinken. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Liegt kein passendes Wort im Feld, kostet der Tipp nichts. Kein Text, nur Blinken.
 - **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
 - **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
@@ -100,7 +100,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
   | Aufräumen | 5 zufällige Steine weg | die 5 am wenigsten hilfreichen weg |
   | Tipp | erster Buchstabe | Buchstabe für Buchstabe |
   | Ersetzen | zufälliger neuer Buchstabe | Wunschbuchstabe |
-  | Nachfüllen | 5 Steine | 5 Steine mit stärkerer Wort-Hilfe |
+  | Auffüllen | 5 Steine | 5 Steine mit stärkerer Wort-Hilfe |
 
 - **Freigeschaltet wird im Lauf** (Roguelike): Jeder Lauf beginnt mit wenigen, einfachen Hilfen; mit Münzen schaltet man weitere Hilfen und die starken Stufen frei. Beim nächsten Lauf beginnt man wieder von vorn.
 - Damit die Knopfleiste nicht überläuft (mehr als 5–6 Knöpfe passen schlecht), evtl. **Slots**: eine begrenzte Zahl Hilfe-Plätze, weitere Plätze freikaufbar.
@@ -155,3 +155,6 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.4:** Tauschen legt ein passendes geläufiges Wort ins Feld, wenn man feststeckt (Kette vorhandener Steine, höchstens 5 Änderungen).
 - **v3.5:** Idee festgehalten: Hilfen in einfacher und starker Stufe, im Lauf freischalten (Roguelike), evtl. Slots; Kauf-Ort offen.
 - **v3.6:** Aufräumen schützt ein passendes geläufiges Wort und räumt nur auf, wenn es eines gibt (ersetzt die Regel „Wortlänge an Steinen bleibt liegen“).
+- **v3.7:** Start mit 10 statt 20 Hexagons (weniger Steine sind übersichtlicher).
+- **v3.8:** Hilfe heißt „Auffüllen“ (statt Nachfüllen / „+5 Steine“) und kostet fest 100 (kein Preisanstieg mehr).
+- **v3.9:** Aufräumen lässt mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben.
