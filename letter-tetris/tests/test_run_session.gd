@@ -46,7 +46,7 @@ func _occupied() -> int:
 
 func test_start_from_spec() -> void:
 	run.start()
-	assert_eq(_occupied(), 20)
+	assert_eq(_occupied(), 10)
 	assert_eq(run.coins, 0)
 	assert_eq(run.level(), 1)
 	assert_not_null(run.quest, "Auftrag kommt sofort")
@@ -392,7 +392,7 @@ func test_found_word_refills_length_minus_one() -> void:
 	_column(2, "OHR", false)
 	assert_true(run.submit_path(_column(0, "HAUS", false)))
 	assert_eq(_occupied(), 3 + 3, "OHR bleibt, 3 neue für HAUS")
-	assert_signal_emit_count(run, "tile_spawned", 20 + 3)
+	assert_signal_emit_count(run, "tile_spawned", 10 + 3)
 
 
 func test_rejected_word_does_not_refill() -> void:

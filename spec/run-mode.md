@@ -16,7 +16,7 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 
 ## Ablauf eines Laufs
 
-1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **20 Hexagons** (Platzwahl wie bisher). Der erste Auftrag erscheint sofort.
+1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **10 Hexagons** (Platzwahl wie bisher; weniger Steine sind übersichtlicher). Der erste Auftrag erscheint sofort.
 2. **Level:** Über dem Spielfeld stehen die Block-Zeilen des Auftrags. Der Spieler wischt Wörter.
 3. **Gelöst:** Sind alle Zeilen gefüllt, gibt es Münzen, der Auftrag verschwindet und der **nächste erscheint automatisch** (keine Wahl, keine Unterbrechung).
 4. **Ende:** Nur durch **„Aufgeben“** (mit Nachfrage), z. B. wenn man nicht weiterkommt und kein Geld mehr für Hilfen hat. Dann wird die **Lösung** gezeigt, danach die Bilanz (erreichtes Level, Rekord). Neuer Lauf ab Level 1.
@@ -155,3 +155,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.4:** Tauschen legt ein passendes geläufiges Wort ins Feld, wenn man feststeckt (Kette vorhandener Steine, höchstens 5 Änderungen).
 - **v3.5:** Idee festgehalten: Hilfen in einfacher und starker Stufe, im Lauf freischalten (Roguelike), evtl. Slots; Kauf-Ort offen.
 - **v3.6:** Aufräumen schützt ein passendes geläufiges Wort und räumt nur auf, wenn es eines gibt (ersetzt die Regel „Wortlänge an Steinen bleibt liegen“).
+- **v3.7:** Start mit 10 statt 20 Hexagons (weniger Steine sind übersichtlicher).

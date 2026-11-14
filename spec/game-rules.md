@@ -15,7 +15,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Das Spielfeld ist **geschlossen**; seine Innenkante folgt dem Raster im Zickzack (siehe [screen-layout.md](screen-layout.md)).
 
 ### Spielstart
-- Ein Lauf beginnt mit **20 Hexagons**, verteilt nach der Platzwahl (zuerst die tiefsten Plätze).
+- Ein Lauf beginnt mit **10 Hexagons**, verteilt nach der Platzwahl (zuerst die tiefsten Plätze).
 - Start in **Level 1** mit **0 Münzen** (siehe [run-mode.md](run-mode.md)).
 - Das Feld bleibt zwischen den Levels liegen.
 
@@ -135,3 +135,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7:** Aufträge als Block-Zeilen (genaue Länge), Ablehnung nur durch Wackeln, Lauf endet nur durch Aufgeben. Entfallen: Zug, Zuglimit, „ohne Nachziehen“, gezieltes Säen.
 - **v7.1:** Wort-Hilfe zählt nur Wörter in den Längen der freien Auftrags-Zeilen (bis 8 Buchstaben).
 - **v7.2:** Römische Zahlen gelten nicht (außer sie sind auch ein normales Wort).
+- **v7.3:** Start mit 10 Hexagons.

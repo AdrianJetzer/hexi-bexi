@@ -8,7 +8,7 @@ extends Resource
 
 @export_group("Lauf")
 ## Hexagons zu Beginn eines Laufs.
-@export var run_start_tiles: int = 20
+@export var run_start_tiles: int = 10
 ## Münzen zu Beginn eines Laufs.
 @export var start_coins: int = 0
 ## Mindestlänge eines Worts (immer, unabhängig vom Level).
