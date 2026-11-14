@@ -41,7 +41,7 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 6 Reihen. 7 Reihen wären möglich, wenn der Knopf-Bereich unten kleiner wird.
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
 - **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
-- **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis: Auffüllen (gratis), Tauschen (50), Aufräumen (100), Tipp (100), Stein ersetzen (100), Lösen (vorläufig 100, Ziel 500).
+- **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis: Auffüllen (gratis) und die übrigen Hilfen mit Preis (siehe [run-mode.md](run-mode.md), „Münzen“).
 - **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
