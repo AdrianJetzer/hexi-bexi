@@ -545,6 +545,20 @@ func test_clear_keeps_a_fitting_word() -> void:
 	assert_false(run.is_stuck(), "danach lässt sich noch STERN schreiben")
 
 
+func test_clear_keeps_enough_tiles_for_all_free_rows() -> void:
+	run.start()
+	_use_rows([4, 5])
+	_column(0, "HAUS")
+	_column(2, "QXYQX", false)
+	_column(4, "QX", false)
+	run.coins = 100
+	assert_eq(run.clear_amount(), 2, "11 Steine, 4 + 5 = 9 müssen bleiben")
+	assert_eq(run.clear_useless().size(), 2)
+	assert_eq(run.grid.size() - run.grid.free_count(), 9)
+	run.quest.fill(0, "HAUS")
+	assert_eq(run.clear_amount(), 4, "nur noch die 5er-Zeile frei")
+
+
 func test_clear_does_nothing_when_no_word_fits() -> void:
 	run.start()
 	_use_rows([5])
