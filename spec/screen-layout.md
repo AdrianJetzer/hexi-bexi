@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v6**, Rastergröße 5 × 9 und Auftrags-Zeilen oben abgestimmt; Optik und Details offen.
+Status: **Entwurf v7**, Rastergröße 5 × 6 und Auftrags-Zeilen oben abgestimmt; Optik und Details offen.
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -23,7 +23,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 | [v2](images/ingame-mock-v2.png) | 11 × 17 | 187 | verworfen: zu viele, zu kleine Hexagons |
 | [v4](images/ingame-mock-v4.png) | 7 × 11 | 77 | verworfen |
 | [v5](images/ingame-mock-v5.png) | 6 × 9 | 54 | verworfen: asymmetrischer Rahmen |
-| **[Screenshot 5 × 9](images/ingame-shot-5x9-v1.png)** | **5 × 9** | **45** | **gewählt** |
+| [Screenshot 5 × 9](images/ingame-shot-5x9-v1.png) | 5 × 9 | 45 | verworfen: Hexagons auf dem Handy zu klein |
+| **[Screenshot 5 × 6](images/ingame-shot-5x6-v1.png)** | **5 × 6** | **30** | **gewählt** (Test auf Pixel 10 Pro) |
 | [v3](images/ingame-mock-v3.png) | 5 × 8 | 40 | verworfen: zu wenige Buchstaben |
 
 ## Festgelegt
@@ -36,7 +37,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - Liegt **über** dem Hintergrund und wirkt schwebend (Tiefe, Schatten, Licht), **nicht flach**.
   - Füllt **nicht** den ganzen Screen: Links, rechts und oben bleibt ein Rand frei, durch den der Hintergrund sichtbar ist.
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
-  - **Größe: 5 Spalten × 9 Reihen = 45 Plätze** (siehe [Screenshot](images/ingame-shot-5x9-v1.png)).
+  - **Größe: 5 Spalten × 6 Reihen = 30 Plätze** (siehe [Screenshot](images/ingame-shot-5x6-v1.png)).
+  - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 6 Reihen. 7 Reihen wären möglich, wenn der Knopf-Bereich unten kleiner wird.
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
 - **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
 - **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis: Auffüllen (100), Tauschen (50), Aufräumen (100), Tipp (100), Stein ersetzen (100), Lösen (vorläufig 100, Ziel 500).
@@ -65,3 +67,4 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v4:** Lauf-Modus: Infobereich zeigt Auftrag, Münzen, Level, Rekord und Hilfe-Knöpfe statt Punkte und „Neue Buchstaben“; „Aufgeben“ statt Menü-Knopf. Anordnung offen.
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
+- **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.

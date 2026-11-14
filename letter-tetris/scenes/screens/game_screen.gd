@@ -14,7 +14,7 @@ const ACCENT := Color(1.0, 0.84, 0.6)
 const GLOW := Color(0.55, 0.95, 1.0)
 
 ## Anteile der Bildschirmhöhe/-breite für die Bereiche.
-const SIDE_MARGIN := 0.06
+const SIDE_MARGIN := 0.03
 const TOP_AREA := 0.2
 const BOTTOM_AREA := 0.25
 

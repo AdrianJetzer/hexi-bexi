@@ -243,8 +243,9 @@ func test_refill_partial_when_little_space() -> void:
 	run.coins = 100
 	for cell in run.grid.all_cells():
 		run.grid.set_letter(cell, "E")
-	run.grid.clear(Vector2i(0, 8))
-	run.grid.clear(Vector2i(1, 8))
+	var top := run.grid.rows - 1
+	run.grid.clear(Vector2i(0, top))
+	run.grid.clear(Vector2i(1, top))
 	assert_eq(run.refill(), 2)
 	assert_eq(run.coins, 0)
 
@@ -798,8 +799,9 @@ func test_joker_needs_coins_and_normal_tile() -> void:
 func test_shuffle_keeps_letters_and_places() -> void:
 	run.start()
 	_use_rows([3])
-	_column(0, "ABCDEFGH")
-	_column(2, "IJKLMNOP", false)
+	_column(0, "ABCDEF")
+	_column(2, "GHIJKL", false)
+	_column(4, "MNOP", false)
 	run.coins = 50
 	var before := {}
 	for cell in run.grid.all_cells():
@@ -958,6 +960,24 @@ func test_scan_shows_tiles_of_fitting_words() -> void:
 		assert_true(cells.has(c))
 	assert_eq(run.coins, 0)
 	assert_signal_emitted(run, "scan_shown")
+
+
+func test_scan_shows_one_word_for_longest_row() -> void:
+	run.start()
+	_use_rows([3, 4])
+	_column(0, "AST")
+	var haus := _column(2, "HAUS", false)
+	run.coins = 50
+	var cells := run.scan()
+	assert_eq(cells, haus, "nur HAUS (längere Zeile), nicht auch AST")
+
+
+func test_scan_falls_back_to_shorter_row() -> void:
+	run.start()
+	_use_rows([3, 5])
+	var ast := _column(0, "AST")
+	run.coins = 50
+	assert_eq(run.scan(), ast, "kein 5er-Wort, also das 3er-Wort")
 
 
 func test_scan_without_words_is_free() -> void:

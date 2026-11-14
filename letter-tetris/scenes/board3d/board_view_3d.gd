@@ -254,13 +254,13 @@ func show_scan(cells: Array[Vector2i]) -> void:
 	for cell in cells:
 		if _tiles.has(cell):
 			_scan_cells.append(cell)
-			_tiles[cell].set_selected(true)
+			_tiles[cell].set_outline(true)
 
 
 func clear_scan() -> void:
 	for cell in _scan_cells:
-		if _tiles.has(cell) and not _path.has(cell):
-			_tiles[cell].set_selected(false)
+		if _tiles.has(cell):
+			_tiles[cell].set_outline(false)
 	_scan_cells.clear()
 
 
@@ -395,7 +395,7 @@ func _finish_swipe() -> void:
 func _cancel_swipe() -> void:
 	for cell in _path:
 		if _tiles.has(cell):
-			_tiles[cell].set_selected(_scan_cells.has(cell))
+			_tiles[cell].set_selected(false)
 	_path.clear()
 	_touch_index = -1
 	if _beam:
