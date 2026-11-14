@@ -65,6 +65,19 @@ func free_lengths() -> PackedInt32Array:
 	return result
 
 
+## Zeile halbieren (Hilfe „Teilen“): aus n Blöcken werden ceil(n/2) + floor(n/2).
+## Nur für freie Zeilen; gibt false zurück, wenn nicht möglich.
+func split_row(row: int) -> bool:
+	_ensure_filled()
+	if row < 0 or row >= rows.size() or filled[row] != "":
+		return false
+	var n := rows[row]
+	rows[row] = (n + 1) / 2
+	rows.insert(row + 1, n / 2)
+	filled.insert(row + 1, "")
+	return true
+
+
 ## Anzahl aller Blöcke.
 func block_count() -> int:
 	var n := 0

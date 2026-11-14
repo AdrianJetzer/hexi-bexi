@@ -25,7 +25,7 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 ## Aufträge
 
 ### Block-Zeilen
-- Ein Auftrag besteht aus **1 bis 3 Zeilen** leerer Blöcke. Jede Zeile hat ihre **eigene Länge** (3 bis 8 Blöcke).
+- Ein Auftrag besteht aus **1 bis 3 Zeilen** leerer Blöcke (durch die Hilfe „Teilen“ auch 4). Jede Zeile hat ihre **eigene Länge** (3 bis 8 Blöcke).
   - ▢▢▢ = ein Wort mit 3 Buchstaben.
   - ▢▢▢ / ▢▢▢ / ▢▢▢▢ = zwei Wörter mit 3 und ein Wort mit 4 Buchstaben.
 - Ein Wort passt, wenn es **genau so lang** ist wie eine noch **freie** Zeile. Gibt es mehrere freie Zeilen dieser Länge, füllt es die oberste davon.
@@ -75,9 +75,12 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Mischen: Buchstaben neu verteilen** | **−50** |
 | **Schwerkraft: Löcher schließen** | **−50** |
 | **Magnet: Wort um einen Stein bilden** | **−50** |
+| **Teilen: lange Zeile halbieren** | **−50** |
+| **Scan: passende Steine zeigen** | **−50** |
 | **Säule: Spalte neu beschriften** | **−50** |
 | **Lösen: ganzen Auftrag lösen** | **−100** vorläufig zum Testen (Ziel: 500), ohne Belohnung |
 
+- **Vorläufig zum Testen kosten alle Hilfen 50.** Die Preise in der Tabelle sind die Ziel-Preise; abgestimmt wird am Schluss (Spielwerte in `data/balance.tres`).
 - Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
 
 ## Spielfeld
@@ -98,6 +101,8 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 - **Schwerkraft (50):** In jeder Spalte rutschen die Steine nach unten, die **Löcher schließen sich**. Gibt es keine Löcher, wackelt der Knopf und es kostet nichts.
 - **Magnet (50):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
 - **Säule (50):** Knopf drücken, dann einen Stein **antippen**: Alle Steine **dieser Spalte** bekommen neue Buchstaben (Wort-Hilfe); die Anzahl der Steine bleibt.
+- **Teilen (50):** Die **längste freie Zeile** mit mindestens 6 Blöcken wird halbiert: 6 → 3 + 3, 7 → 4 + 3, 8 → 4 + 4. Dadurch können 4 Zeilen entstehen (die Blöcke werden dann etwas kleiner). Gibt es keine solche Zeile, wackelt der Knopf, es kostet nichts.
+- **Scan (50):** Alle Steine, die zu einem **geläufigen Wort** in der Länge einer freien Zeile gehören, leuchten – bis ein Wort angenommen wird oder sich das Feld ändert. Gibt es keines, wackelt der Knopf, es kostet nichts.
 - **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
 - **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
 
@@ -180,3 +185,5 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.12:** Neue Hilfen Joker, Mischen, Schwerkraft (je 50, zum Testen alle sichtbar). Draft-Plan festgehalten: Start nur mit Auffüllen, alle ~5 Levels eine von zwei zufälligen Hilfen wählen (später).
 - **v3.13:** Neue Hilfen Magnet und Säule (je 50, per Antippen).
 - **v3.14:** Belohnung fest 100 je gelöstem Auftrag (statt 100 + 10 × Level).
+- **v3.15:** Neue Hilfen Teilen und Scan (je 50).
+- **v3.16:** Zum Testen kosten vorläufig alle Hilfen 50; endgültige Preise am Schluss.

@@ -32,10 +32,17 @@ func _ready() -> void:
 func layout(rect: Rect2) -> void:
 	position = rect.position
 	size = rect.size
-	var by_width := rect.size.x / (MAX_COLS + (MAX_COLS - 1) * GAP)
-	var by_height := rect.size.y / (MAX_ROWS + (MAX_ROWS - 1) * GAP)
-	block_size = minf(by_width, by_height)
+	_fit()
 	_place()
+
+
+## Blockgröße: passend für MAX_ROWS Zeilen (gleich für alle Aufträge); nur bei mehr Zeilen
+## (z. B. nach „Teilen“) kleiner.
+func _fit() -> void:
+	var n := maxi(MAX_ROWS, _rows.size())
+	var by_width := size.x / (MAX_COLS + (MAX_COLS - 1) * GAP)
+	var by_height := size.y / (n + (n - 1) * GAP)
+	block_size = minf(by_width, by_height)
 
 
 ## Neuen Auftrag zeigen (Blöcke ploppen nacheinander auf).
@@ -48,6 +55,7 @@ func show_quest(q: Quest, animate: bool = true) -> void:
 			b["panel"].queue_free()
 	_blocks.clear()
 	_rows = q.rows.duplicate()
+	_fit()
 	var k := 0
 	for r in _rows.size():
 		var row: Array = []

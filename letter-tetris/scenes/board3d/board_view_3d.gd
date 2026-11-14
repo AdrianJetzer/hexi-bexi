@@ -43,6 +43,8 @@ var _burst_index: int = 0
 var tap_mode: bool = false
 ## Steine, die gerade als Tipp oder Lösung pulsieren.
 var _hint_cells: Array[Vector2i] = []
+## Steine, die gerade als Scan-Ergebnis leuchten.
+var _scan_cells: Array[Vector2i] = []
 
 ## Verzögerung zwischen Hexagons, die gleichzeitig erscheinen (Sekunden).
 const BURST_DELAY := 0.09
@@ -246,13 +248,31 @@ func _make_tile(cell: Vector2i, letter: String) -> HexTile3D:
 
 # --- Signale der Spiellogik ------------------------------------------------------
 
+## Scan: diese Steine leuchten, bis sich das Feld ändert oder ein Wort angenommen wird.
+func show_scan(cells: Array[Vector2i]) -> void:
+	clear_scan()
+	for cell in cells:
+		if _tiles.has(cell):
+			_scan_cells.append(cell)
+			_tiles[cell].set_selected(true)
+
+
+func clear_scan() -> void:
+	for cell in _scan_cells:
+		if _tiles.has(cell) and not _path.has(cell):
+			_tiles[cell].set_selected(false)
+	_scan_cells.clear()
+
+
 func _on_tile_spawned(cell: Vector2i, letter: String) -> void:
+	clear_scan()
 	# Mehrere Hexagons im selben Moment (Start, Auffüllen, nach einem Wort) erscheinen nacheinander.
 	_make_tile(cell, letter).appear(_next_burst_delay())
 
 
 ## Ein Stein bekommt einen neuen Buchstaben (Ersetzen, Säen): er dreht sich einmal um.
 func _on_tile_changed(cell: Vector2i, letter: String) -> void:
+	clear_scan()
 	_make_tile(cell, letter).turn(_next_burst_delay())
 
 
@@ -283,6 +303,7 @@ func _next_burst_delay() -> float:
 
 
 func _on_word_accepted(_word: String, cells: Array[Vector2i], _row: int) -> void:
+	clear_scan()
 	for i in cells.size():
 		var cell := cells[i]
 		if _tiles.has(cell):
@@ -293,6 +314,7 @@ func _on_word_accepted(_word: String, cells: Array[Vector2i], _row: int) -> void
 
 ## Schwerkraft: Steine gleiten an ihre neuen Plätze.
 func _on_tiles_moved(moves: Array) -> void:
+	clear_scan()
 	var moving := []
 	for m in moves:
 		if _tiles.has(m["from"]):
@@ -373,7 +395,7 @@ func _finish_swipe() -> void:
 func _cancel_swipe() -> void:
 	for cell in _path:
 		if _tiles.has(cell):
-			_tiles[cell].set_selected(false)
+			_tiles[cell].set_selected(_scan_cells.has(cell))
 	_path.clear()
 	_touch_index = -1
 	if _beam:
