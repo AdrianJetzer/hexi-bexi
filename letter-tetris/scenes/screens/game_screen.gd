@@ -45,6 +45,8 @@ var _shuffle_button: Button
 var _gravity_button: Button
 var _magnet_button: Button
 var _column_button: Button
+var _split_button: Button
+var _scan_button: Button
 ## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet", "column".
 var _tap_action: String = ""
 var _give_up_button: Button
@@ -87,6 +89,8 @@ func new_run(seed_value: int = -1) -> void:
 	session.level_changed.connect(func(_l: int) -> void: _update_labels())
 	session.word_accepted.connect(_on_word_accepted)
 	session.row_filled.connect(_on_row_filled)
+	session.quest_reshaped.connect(func(q: Quest) -> void: _blocks.show_quest(q))
+	session.scan_shown.connect(func(cells: Array[Vector2i]) -> void: _board.show_scan(cells))
 	session.tile_spawned.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
@@ -156,6 +160,16 @@ func _build_ui() -> void:
 		_set_replace_mode(false)
 		if session.gravity().is_empty():
 			_shake(_gravity_button))
+	_split_button = _button("", 26)
+	_split_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if not session.split():
+			_shake(_split_button))
+	_scan_button = _button("", 26)
+	_scan_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.scan().is_empty():
+			_shake(_scan_button))
 	_solve_button = _button("", 26)
 	_solve_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -244,7 +258,8 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 
 func _help_buttons() -> Array[Button]:
 	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button,
-			_joker_button, _shuffle_button, _gravity_button, _magnet_button, _column_button, _solve_button]
+			_joker_button, _shuffle_button, _gravity_button, _magnet_button, _column_button,
+			_split_button, _scan_button, _solve_button]
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
@@ -311,6 +326,10 @@ func _update_labels() -> void:
 	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
 	_column_button.text = "Säule\n−%d" % BALANCE.column_price
 	_column_button.disabled = not session.can_column() and not _column_button.button_pressed
+	_split_button.text = "Teilen\n−%d" % BALANCE.split_price
+	_split_button.disabled = session.is_over or session.coins < BALANCE.split_price
+	_scan_button.text = "Scan\n−%d" % BALANCE.scan_price
+	_scan_button.disabled = not session.can_scan()
 	_solve_button.text = "Lösen\n−%d" % BALANCE.solve_price
 	_solve_button.disabled = not session.can_solve()
 	if session.is_over:

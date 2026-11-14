@@ -52,3 +52,12 @@ func test_start_copies_template() -> void:
 	assert_eq(b.reward, 150)
 	a.rows[0] = 9
 	assert_eq(template.rows[0], 3, "Vorlage bleibt unverändert")
+
+
+func test_split_row_halves_free_row() -> void:
+	var q := _quest([3, 7])
+	assert_true(q.split_row(1))
+	assert_eq(q.rows, PackedInt32Array([3, 4, 3]))
+	assert_eq(q.filled.size(), 3)
+	q.fill(0, "AST")
+	assert_false(q.split_row(0), "gefüllte Zeile nicht teilbar")

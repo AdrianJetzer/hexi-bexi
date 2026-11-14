@@ -893,3 +893,66 @@ func test_column_needs_coins() -> void:
 	run.coins = 49
 	assert_false(run.can_column(col[0]))
 	assert_eq(run.column(col[0]).size(), 0)
+
+
+# --- Teilen und Scan ---------------------------------------------------------------------------
+
+func test_split_halves_longest_free_row() -> void:
+	run.start()
+	_use_rows([6, 8])
+	run.coins = 50
+	assert_true(run.split())
+	assert_eq(run.quest.rows, PackedInt32Array([6, 4, 4]))
+	assert_eq(run.coins, 0)
+	assert_signal_emitted(run, "quest_reshaped")
+
+
+func test_split_odd_length() -> void:
+	run.start()
+	_use_rows([7])
+	run.coins = 50
+	run.split()
+	assert_eq(run.quest.rows, PackedInt32Array([4, 3]))
+
+
+func test_split_needs_long_row_and_is_free_otherwise() -> void:
+	run.start()
+	_use_rows([5, 4])
+	run.coins = 50
+	assert_false(run.can_split())
+	assert_false(run.split())
+	assert_eq(run.coins, 50)
+
+
+func test_split_then_short_words_solve_it() -> void:
+	run.start()
+	_use_rows([8])
+	run.coins = 50
+	run.split()
+	run.submit_path(_column(0, "HAUS"))
+	assert_eq(run.level(), 1)
+	run.submit_path(_column(0, "BAUM"))
+	assert_eq(run.level(), 2, "4 + 4 statt 8")
+
+
+func test_scan_shows_tiles_of_fitting_words() -> void:
+	run.start()
+	_use_rows([4])
+	var haus := _column(0, "HAUS")
+	_column(2, "QXZ", false)
+	run.coins = 50
+	var cells := run.scan()
+	assert_eq(cells.size(), 4)
+	for c in haus:
+		assert_true(cells.has(c))
+	assert_eq(run.coins, 0)
+	assert_signal_emitted(run, "scan_shown")
+
+
+func test_scan_without_words_is_free() -> void:
+	run.start()
+	_use_rows([4])
+	_column(0, "QXZ")
+	run.coins = 50
+	assert_eq(run.scan().size(), 0)
+	assert_eq(run.coins, 50)

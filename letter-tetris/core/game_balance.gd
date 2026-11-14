@@ -34,6 +34,10 @@ extends Resource
 ## Hilfen „Magnet“ und „Säule“.
 @export var magnet_price: int = 50
 @export var column_price: int = 50
+## Hilfen „Teilen“ (ab dieser Zeilenlänge) und „Scan“.
+@export var split_price: int = 50
+@export var split_min_length: int = 6
+@export var scan_price: int = 50
 ## Hilfe „Lösen“: ganzen Auftrag lösen (ohne Belohnung).
 @export var solve_price: int = 100
 ## Hilfe „Stein ersetzen“.

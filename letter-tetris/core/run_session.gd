@@ -5,7 +5,7 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), column(cell).
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), column(cell), split(), scan().
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -26,6 +26,10 @@ signal word_accepted(word: String, cells: Array[Vector2i], row: int)
 ## Gewischte Buchstaben ergeben kein gültiges Wort (oder es ist gerade kein Auftrag aktiv).
 signal word_rejected(cells: Array[Vector2i], reason: String)
 signal quest_started(quest: Quest)
+## Die Zeilen des laufenden Auftrags haben sich geändert (Hilfe „Teilen“).
+signal quest_reshaped(quest: Quest)
+## Scan: diese Steine gehören zu einem passenden Wort.
+signal scan_shown(cells: Array[Vector2i])
 ## Eine Zeile des Auftrags wurde gefüllt.
 signal quest_progress(quest: Quest)
 signal quest_completed(quest: Quest, reward: int)
@@ -557,6 +561,62 @@ func column(cell: Vector2i) -> Array[Vector2i]:
 	_pay(_balance.column_price)
 	_check_hint()
 	return changed
+
+
+## Teilen möglich? (Münzen reichen, es gibt eine freie Zeile mit mindestens split_min_length Blöcken)
+func can_split() -> bool:
+	return not is_over and coins >= _balance.split_price and _split_row() >= 0
+
+
+## Hilfe „Teilen“: die längste freie Zeile (ab split_min_length) wird halbiert.
+## Gibt true zurück, wenn geteilt wurde (sonst kostet es nichts).
+func split() -> bool:
+	if not can_split():
+		return false
+	quest.split_row(_split_row())
+	_pay(_balance.split_price)
+	_aim_help()
+	_check_hint()
+	quest_reshaped.emit(quest)
+	return true
+
+
+func _split_row() -> int:
+	if quest == null:
+		return -1
+	var best := -1
+	for i in quest.rows.size():
+		if quest.filled[i] == "" and quest.rows[i] >= _balance.split_min_length:
+			if best < 0 or quest.rows[i] > quest.rows[best]:
+				best = i
+	return best
+
+
+## Scan möglich? (Auftrag aktiv, Münzen reichen)
+func can_scan() -> bool:
+	return not is_over and quest != null and coins >= _balance.scan_price
+
+
+## Hilfe „Scan“: alle Steine, die zu einem geläufigen Wort in der Länge einer freien Zeile
+## gehören. Gibt sie zurück (leer = keines im Feld, kostet nichts).
+func scan() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if not can_scan():
+		return cells
+	var lengths := quest.free_lengths()
+	var q := quest
+	var seen := {}
+	for hit in (_hint_finders[0] as WordFinder).find_paths(grid, lengths[0], lengths[lengths.size() - 1],
+			func(w: String) -> bool: return q.matches(w), 1000000):
+		for cell in hit["path"]:
+			if not seen.has(cell):
+				seen[cell] = true
+				cells.append(cell)
+	if cells.is_empty():
+		return cells
+	_pay(_balance.scan_price)
+	scan_shown.emit(cells)
+	return cells
 
 
 ## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)

@@ -28,4 +28,7 @@ func test_balance_run_values_from_spec() -> void:
 	assert_eq(b.gravity_price, 50)
 	assert_eq(b.magnet_price, 50)
 	assert_eq(b.column_price, 50)
+	assert_eq(b.split_price, 50)
+	assert_eq(b.split_min_length, 6)
+	assert_eq(b.scan_price, 50)
 
