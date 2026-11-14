@@ -5,7 +5,7 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity().
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), column(cell).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -497,6 +497,66 @@ func gravity() -> Array:
 	tiles_moved.emit(moves)
 	_check_hint()
 	return moves
+
+
+## Magnet möglich? (Auftrag aktiv, Münzen reichen; mit Platz: dieser Stein liegt im Feld)
+func can_magnet(cell: Vector2i = NO_CELL) -> bool:
+	if is_over or quest == null or coins < _balance.magnet_price:
+		return false
+	return cell == NO_CELL or grid.is_occupied(cell)
+
+
+## Hilfe „Magnet“: um den angetippten Stein entsteht ein passendes geläufiges Wort (der Stein
+## behält seinen Buchstaben, die übrigen Steine der Kette verwandeln sich).
+## Gibt die geänderten Plätze zurück (leer = nicht möglich, kostet nichts).
+func magnet(cell: Vector2i) -> Array[Vector2i]:
+	var changed: Array[Vector2i] = []
+	if not can_magnet(cell):
+		return changed
+	var letter := grid.get_letter(cell)
+	var plan := _planter.plant_around(grid, _plant_words, quest.free_lengths(), cell,
+			"" if letter == JOKER else letter)
+	if plan.is_empty():
+		return changed
+	var path: Array[Vector2i] = []
+	path.assign(plan["path"])
+	var word: String = plan["word"]
+	for i in path.size():
+		if grid.get_letter(path[i]) != word[i]:
+			grid.set_letter(path[i], word[i])
+			changed.append(path[i])
+			tile_changed.emit(path[i], word[i])
+	_pay(_balance.magnet_price)
+	_check_hint()
+	return changed
+
+
+## Säule möglich? (Münzen reichen; mit Platz: in dieser Spalte liegt ein Stein)
+func can_column(cell: Vector2i = NO_CELL) -> bool:
+	if is_over or coins < _balance.column_price:
+		return false
+	if cell == NO_CELL:
+		return grid.free_count() < grid.size()
+	for r in grid.rows:
+		if grid.is_occupied(Vector2i(cell.x, r)):
+			return true
+	return false
+
+
+## Hilfe „Säule“: alle Steine der Spalte des angetippten Platzes bekommen neue Buchstaben
+## (Wort-Hilfe). Gibt die geänderten Plätze zurück (leer = nicht möglich, kostet nichts).
+func column(cell: Vector2i) -> Array[Vector2i]:
+	var changed: Array[Vector2i] = []
+	if not can_column(cell):
+		return changed
+	for r in grid.rows:
+		var c := Vector2i(cell.x, r)
+		if grid.is_occupied(c):
+			tile_changed.emit(c, _new_letter(c))
+			changed.append(c)
+	_pay(_balance.column_price)
+	_check_hint()
+	return changed
 
 
 ## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)

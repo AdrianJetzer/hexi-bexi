@@ -53,5 +53,7 @@ solve_price = 100
 joker_price = 50
 shuffle_price = 50
 gravity_price = 50
+magnet_price = 50
+column_price = 50
 difficulty_levels = Array[ExtResource("2")]([SubResource("level_1"), SubResource("level_2"), SubResource("level_3"), SubResource("level_4"), SubResource("level_5")])
 help_max_word_length = 8

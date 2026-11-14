@@ -845,3 +845,51 @@ func test_gravity_without_holes_is_free() -> void:
 	assert_false(run.can_gravity())
 	assert_eq(run.gravity().size(), 0)
 	assert_eq(run.coins, 50)
+
+
+# --- Magnet und Säule ------------------------------------------------------------------------
+
+func test_magnet_builds_word_around_tapped_tile() -> void:
+	run.start()
+	_use_rows([5])
+	var cells := _column(0, "QQQRQ")
+	run.coins = 50
+	var changed := run.magnet(cells[3])
+	assert_gt(changed.size(), 0)
+	assert_false(changed.has(cells[3]), "angetippter Stein bleibt")
+	assert_eq(run.grid.get_letter(cells[3]), "R")
+	assert_false(run.is_stuck(), "STERN liegt jetzt im Feld")
+	assert_eq(run.coins, 0)
+
+
+func test_magnet_impossible_is_free() -> void:
+	run.start()
+	_use_rows([5])
+	var cells := _column(0, "RQ")
+	run.coins = 50
+	assert_eq(run.magnet(cells[0]).size(), 0)
+	assert_eq(run.coins, 50)
+
+
+func test_column_gives_new_letters_to_whole_column() -> void:
+	run.start()
+	_use_rows([3])
+	var col := _column(1, "EEEE")
+	_column(3, "EEE", false)
+	run.coins = 50
+	var changed := run.column(col[2])
+	assert_eq(changed.size(), 4, "nur die angetippte Spalte")
+	for cell in col:
+		assert_true(run.grid.is_occupied(cell))
+	assert_eq(run.grid.get_letter(Vector2i(3, 0)), "E", "andere Spalte unverändert")
+	assert_eq(run.grid.size() - run.grid.free_count(), 7, "Anzahl bleibt")
+	assert_eq(run.coins, 0)
+
+
+func test_column_needs_coins() -> void:
+	run.start()
+	_use_rows([3])
+	var col := _column(1, "EEEE")
+	run.coins = 49
+	assert_false(run.can_column(col[0]))
+	assert_eq(run.column(col[0]).size(), 0)

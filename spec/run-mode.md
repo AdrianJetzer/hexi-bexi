@@ -74,6 +74,8 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Joker: ein Stein wird zum Joker** | **−50** |
 | **Mischen: Buchstaben neu verteilen** | **−50** |
 | **Schwerkraft: Löcher schließen** | **−50** |
+| **Magnet: Wort um einen Stein bilden** | **−50** |
+| **Säule: Spalte neu beschriften** | **−50** |
 | **Lösen: ganzen Auftrag lösen** | **−100** vorläufig zum Testen (Ziel: 500), ohne Belohnung |
 
 - Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
@@ -94,6 +96,8 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 - **Joker (50):** Ein zufälliger Stein wird zum **Joker** (zeigt ★). Beim Wischen steht er für **jeden Buchstaben**, mit dem ein gültiges Wort entsteht, das in eine freie Zeile passt; in die Blöcke fliegt der passende echte Buchstabe. Tipp, Lösen, Aufräumen und die Feststeck-Erkennung beziehen Joker vorerst nicht ein.
 - **Mischen (50):** Die Buchstaben aller Steine werden zufällig auf die belegten Plätze neu verteilt; das Feld bleibt gleich voll. Die Steine drehen sich dabei um.
 - **Schwerkraft (50):** In jeder Spalte rutschen die Steine nach unten, die **Löcher schließen sich**. Gibt es keine Löcher, wackelt der Knopf und es kostet nichts.
+- **Magnet (50):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
+- **Säule (50):** Knopf drücken, dann einen Stein **antippen**: Alle Steine **dieser Spalte** bekommen neue Buchstaben (Wort-Hilfe); die Anzahl der Steine bleibt.
 - **Stein ersetzen:** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
 - **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
 
@@ -174,3 +178,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.10:** Neue Hilfe „Lösen“ (500, ohne Belohnung): löst den ganzen Auftrag mit Wörtern aus dem Feld, wo möglich.
 - **v3.11:** Lösen vorläufig für 100 (zum Testen), später wieder 500.
 - **v3.12:** Neue Hilfen Joker, Mischen, Schwerkraft (je 50, zum Testen alle sichtbar). Draft-Plan festgehalten: Start nur mit Auffüllen, alle ~5 Levels eine von zwei zufälligen Hilfen wählen (später).
+- **v3.13:** Neue Hilfen Magnet und Säule (je 50, per Antippen).

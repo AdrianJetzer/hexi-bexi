@@ -49,3 +49,21 @@ func test_impossible_when_too_many_changes_needed() -> void:
 	var grid := HexGrid.new()
 	_column(grid, 0, "XXXXXX")
 	assert_true(_planter().plant(grid, words, PackedInt32Array([6]), 5).is_empty(), "6 Änderungen nötig")
+
+
+func test_plant_around_keeps_center_letter() -> void:
+	var words := WordDictionary.from_words(PackedStringArray(["STERN", "HAUS"]))
+	var grid := HexGrid.new()
+	var cells := _column(grid, 0, "XXXRX")
+	var plan := _planter().plant_around(grid, words, PackedInt32Array([5]), cells[3], "R")
+	assert_false(plan.is_empty())
+	assert_eq(plan["word"], "STERN")
+	var path: Array = plan["path"]
+	assert_eq(path.find(cells[3]), 3, "R steht an der R-Stelle von STERN")
+
+
+func test_plant_around_impossible_with_too_few_tiles() -> void:
+	var words := WordDictionary.from_words(PackedStringArray(["STERN"]))
+	var grid := HexGrid.new()
+	var cells := _column(grid, 0, "RX")
+	assert_true(_planter().plant_around(grid, words, PackedInt32Array([5]), cells[0], "R").is_empty())
