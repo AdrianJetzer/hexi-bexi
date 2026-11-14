@@ -64,7 +64,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 | Ereignis | Münzen |
 |---|---|
-| Auftrag gelöst | **+100 + 10 × Level** (Level 1: 110, Level 10: 200) |
+| Auftrag gelöst | **+100** (fest, unabhängig vom Level) |
 | Langes Wort nebenbei [später] | Bonus |
 | **Auffüllen: 5 neue Steine** | **−100** (fest) |
 | **5 Steine tauschen** | **−50** |
@@ -179,3 +179,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.11:** Lösen vorläufig für 100 (zum Testen), später wieder 500.
 - **v3.12:** Neue Hilfen Joker, Mischen, Schwerkraft (je 50, zum Testen alle sichtbar). Draft-Plan festgehalten: Start nur mit Auffüllen, alle ~5 Levels eine von zwei zufälligen Hilfen wählen (später).
 - **v3.13:** Neue Hilfen Magnet und Säule (je 50, per Antippen).
+- **v3.14:** Belohnung fest 100 je gelöstem Auftrag (statt 100 + 10 × Level).

@@ -14,4 +14,4 @@ row_max = 8
 rows_max = 3
 endless_help_level = 5
 reward_base = 100
-reward_per_level = 10
+reward_per_level = 0

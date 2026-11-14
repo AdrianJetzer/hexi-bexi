@@ -90,7 +90,7 @@ func test_reward_from_curve() -> void:
 	run.start()
 	_column(0, "AST")
 	run.submit_path(_column(0, "AST", false))
-	assert_eq(run.coins, 110, "Level 1: 100 + 10")
+	assert_eq(run.coins, 100, "fest 100")
 
 
 func test_word_fills_row_and_reports_it() -> void:
