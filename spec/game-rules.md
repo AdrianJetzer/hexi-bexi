@@ -11,7 +11,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 ### Hexagons und Raster
 - Jeder Buchstabe sitzt in einem **Hexagon**, **unten flach** (flache Unter- und Oberseite).
 - Das Raster hat senkrechte Spalten; jede zweite Spalte ist um ein halbes Feld versetzt.
-- Größe: **5 Spalten × 9 Reihen = 45 Plätze** (siehe [screen-layout.md](screen-layout.md)).
+- Größe: **5 Spalten × 6 Reihen = 30 Plätze** (siehe [screen-layout.md](screen-layout.md)).
 - Das Spielfeld ist **geschlossen**; seine Innenkante folgt dem Raster im Zickzack (siehe [screen-layout.md](screen-layout.md)).
 
 ### Spielstart
@@ -139,3 +139,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.3:** Start mit 10 Hexagons.
 - **v7.4:** Akronyme und als „Abk.“ markierte Trennmuster-Einträge gelten nicht (außer normal geschriebene Wörter wie Aids, Ufo).
 - **v7.5:** Als Name vermerkte Trennmuster-Einträge (POE, ARMSTRONG, AADORF …) gelten nicht.
+- **v7.6:** Raster 5 × 6 (größere Hexagons, Feld fast so breit wie das Handy).
