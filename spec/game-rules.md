@@ -81,6 +81,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Eigennamen** (z. B. BERLIN, ANNA, OLGAS) und **Abkürzungen** (z. B. USA, KFZ) gelten **nicht**.
   - Ausnahme: Ist ein Name **auch ein normales Wort** (z. B. ROSE, WOLF, BACH, ERNST, WINTER), gilt er.
   - Entfernt wird ein Wort, wenn Wiktionary es **nur** als Eigenname oder Abkürzung kennt (samt Formen). Seltene Namen, die Wiktionary nicht kennt, können durchrutschen; dafür später ggf. eine eigene Sperrliste.
+- **Akronyme** wie DEA, CIA, CPU, AfD gelten ebenfalls nicht (in der Trennmuster-Liste als „Abk.“ markiert oder ganz großgeschrieben), außer Wiktionary kennt sie als normal geschriebenes Wort (z. B. Aids, Ufo, Abc).
 - **Römische Zahlen** (z. B. LIII, XII) gelten nicht, außer sie sind auch ein normales Wort (z. B. MIX).
 - Weiterhin: nur A–Z, Wörter mit Umlauten vorerst nicht (siehe „Sprache“).
 
@@ -136,3 +137,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.1:** Wort-Hilfe zählt nur Wörter in den Längen der freien Auftrags-Zeilen (bis 8 Buchstaben).
 - **v7.2:** Römische Zahlen gelten nicht (außer sie sind auch ein normales Wort).
 - **v7.3:** Start mit 10 Hexagons.
+- **v7.4:** Akronyme und als „Abk.“ markierte Trennmuster-Einträge gelten nicht (außer normal geschriebene Wörter wie Aids, Ufo).
