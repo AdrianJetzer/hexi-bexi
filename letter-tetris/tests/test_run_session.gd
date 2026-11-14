@@ -8,7 +8,18 @@ var run: RunSession
 
 
 func before_each() -> void:
-	balance = load("res://data/balance.tres") as GameBalance
+	# Eigene Kopie mit festen Test-Preisen: so brechen die Tests nicht, wenn die Spielwerte
+	# (Preise) in balance.tres zum Feintuning geändert werden.
+	balance = (load("res://data/balance.tres") as GameBalance).duplicate() as GameBalance
+	balance.refill_price = 100
+	balance.swap_price = 50
+	balance.clear_price = 100
+	balance.hint_price = 100
+	balance.replace_price = 100
+	balance.solve_price = 100
+	for p in ["joker_price", "shuffle_price", "gravity_price", "magnet_price", "column_price",
+			"split_price", "scan_price"]:
+		balance.set(p, 50)
 	curve = load("res://data/quest_curve.tres") as QuestCurve
 	lang = load("res://data/languages/de/language.tres") as LanguageData
 	dict = WordDictionary.from_words(PackedStringArray([

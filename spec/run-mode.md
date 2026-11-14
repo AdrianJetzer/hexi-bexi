@@ -80,6 +80,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Säule: Spalte neu beschriften** | **−50** |
 | **Lösen: ganzen Auftrag lösen** | **−100** vorläufig zum Testen (Ziel: 500), ohne Belohnung |
 
+- **Vorläufig zum Testen kosten alle Hilfen 50.** Die Preise in der Tabelle sind die Ziel-Preise; abgestimmt wird am Schluss (Spielwerte in `data/balance.tres`).
 - Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
 
 ## Spielfeld
@@ -185,3 +186,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.13:** Neue Hilfen Magnet und Säule (je 50, per Antippen).
 - **v3.14:** Belohnung fest 100 je gelöstem Auftrag (statt 100 + 10 × Level).
 - **v3.15:** Neue Hilfen Teilen und Scan (je 50).
+- **v3.16:** Zum Testen kosten vorläufig alle Hilfen 50; endgültige Preise am Schluss.
