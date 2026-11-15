@@ -85,14 +85,12 @@ func setup(p_session: RunSession) -> void:
 		session.word_rejected.disconnect(_on_word_rejected)
 		session.tile_changed.disconnect(_on_tile_changed)
 		session.tiles_removed.disconnect(_on_tiles_removed)
-		session.tiles_moved.disconnect(_on_tiles_moved)
 	session = p_session
 	session.tile_spawned.connect(_on_tile_spawned)
 	session.word_accepted.connect(_on_word_accepted)
 	session.word_rejected.connect(_on_word_rejected)
 	session.tile_changed.connect(_on_tile_changed)
 	session.tiles_removed.connect(_on_tiles_removed)
-	session.tiles_moved.connect(_on_tiles_moved)
 	tap_mode = false
 	_hint_cells.clear()
 
@@ -310,25 +308,6 @@ func _on_word_accepted(_word: String, cells: Array[Vector2i], _row: int) -> void
 			var tile: HexTile3D = _tiles[cell]
 			_tiles.erase(cell)
 			tile.vanish(i * 0.06)
-
-
-## Schwerkraft: Steine gleiten an ihre neuen Plätze.
-func _on_tiles_moved(moves: Array) -> void:
-	clear_scan()
-	var moving := []
-	for m in moves:
-		if _tiles.has(m["from"]):
-			moving.append([_tiles[m["from"]], m["to"]])
-			_tiles.erase(m["from"])
-			_hint_cells.erase(m["from"])
-	for pair in moving:
-		var tile: HexTile3D = pair[0]
-		var to: Vector2i = pair[1]
-		_tiles[to] = tile
-		var target := cell_position(to)
-		var t := tile.create_tween()
-		t.tween_property(tile, "position", target, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		t.tween_callback(tile.place.bind(target))
 
 
 ## Aufräumen: diese Steine verschwinden (wie bei einem gefundenen Wort).

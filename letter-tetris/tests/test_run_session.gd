@@ -17,7 +17,7 @@ func before_each() -> void:
 	balance.hint_price = 100
 	balance.replace_price = 100
 	balance.solve_price = 100
-	for p in ["joker_price", "shuffle_price", "gravity_price", "magnet_price", "column_price",
+	for p in ["joker_price", "shuffle_price", "magnet_price",
 			"split_price", "scan_price"]:
 		balance.set(p, 50)
 	curve = load("res://data/quest_curve.tres") as QuestCurve
@@ -875,39 +875,7 @@ func test_shuffle_needs_two_tiles() -> void:
 	assert_false(run.can_shuffle())
 
 
-# --- Schwerkraft ----------------------------------------------------------------------------
-
-func test_gravity_closes_holes() -> void:
-	run.start()
-	_use_rows([3])
-	run.grid.clear_all()
-	run.grid.set_letter(Vector2i(1, 2), "A")
-	run.grid.set_letter(Vector2i(1, 4), "B")
-	run.grid.set_letter(Vector2i(3, 0), "C")
-	run.grid.set_letter(Vector2i(3, 3), "D")
-	run.coins = 50
-	var moves := run.gravity()
-	assert_eq(moves.size(), 3)
-	assert_eq(run.grid.get_letter(Vector2i(1, 0)), "A")
-	assert_eq(run.grid.get_letter(Vector2i(1, 1)), "B", "Reihenfolge bleibt")
-	assert_eq(run.grid.get_letter(Vector2i(3, 0)), "C")
-	assert_eq(run.grid.get_letter(Vector2i(3, 1)), "D")
-	assert_true(run.grid.holes().is_empty())
-	assert_eq(run.coins, 0)
-	assert_signal_emitted(run, "tiles_moved")
-
-
-func test_gravity_without_holes_is_free() -> void:
-	run.start()
-	_use_rows([3])
-	_column(0, "AST")
-	run.coins = 50
-	assert_false(run.can_gravity())
-	assert_eq(run.gravity().size(), 0)
-	assert_eq(run.coins, 50)
-
-
-# --- Magnet und Säule ------------------------------------------------------------------------
+# --- Magnet ------------------------------------------------------------------------
 
 func test_magnet_builds_word_around_tapped_tile() -> void:
 	run.start()
@@ -929,30 +897,6 @@ func test_magnet_impossible_is_free() -> void:
 	run.coins = 50
 	assert_eq(run.magnet(cells[0]).size(), 0)
 	assert_eq(run.coins, 50)
-
-
-func test_column_gives_new_letters_to_whole_column() -> void:
-	run.start()
-	_use_rows([3])
-	var col := _column(1, "EEEE")
-	_column(3, "EEE", false)
-	run.coins = 50
-	var changed := run.column(col[2])
-	assert_eq(changed.size(), 4, "nur die angetippte Spalte")
-	for cell in col:
-		assert_true(run.grid.is_occupied(cell))
-	assert_eq(run.grid.get_letter(Vector2i(3, 0)), "E", "andere Spalte unverändert")
-	assert_eq(run.grid.size() - run.grid.free_count(), 7, "Anzahl bleibt")
-	assert_eq(run.coins, 0)
-
-
-func test_column_needs_coins() -> void:
-	run.start()
-	_use_rows([3])
-	var col := _column(1, "EEEE")
-	run.coins = 49
-	assert_false(run.can_column(col[0]))
-	assert_eq(run.column(col[0]).size(), 0)
 
 
 # --- Teilen und Scan ---------------------------------------------------------------------------
@@ -1025,6 +969,31 @@ func test_scan_falls_back_to_shorter_row() -> void:
 	var ast := _column(0, "AST")
 	run.coins = 50
 	assert_eq(run.scan(), ast, "kein 5er-Wort, also das 3er-Wort")
+
+
+func test_hint_after_scan_reveals_scanned_word() -> void:
+	run.start()
+	_use_rows([4])
+	_column(0, "HAUS")
+	_column(2, "MAUS", false)
+	run.coins = 1000
+	var scanned := run.scan()
+	assert_eq(scanned.size(), 4)
+	for i in 4:
+		assert_eq(run.hint(), scanned[i], "Tipp zeigt das Scan-Wort, Buchstabe %d" % (i + 1))
+
+
+func test_scan_after_hint_shows_hinted_word() -> void:
+	run.start()
+	_use_rows([4])
+	_column(0, "HAUS")
+	_column(2, "MAUS", false)
+	run.coins = 1000
+	var first := run.hint()
+	var scanned := run.scan()
+	assert_eq(scanned[0], first, "Scan zeigt das schon getippte Wort")
+	assert_eq(run.hinted_cells().size(), 1, "gezeigte Tipp-Buchstaben bleiben")
+	assert_eq(run.hint(), scanned[1])
 
 
 func test_scan_without_words_is_free() -> void:

@@ -46,12 +46,10 @@ var _replace_button: Button
 var _solve_button: Button
 var _joker_button: Button
 var _shuffle_button: Button
-var _gravity_button: Button
 var _magnet_button: Button
-var _column_button: Button
 var _split_button: Button
 var _scan_button: Button
-## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet", "column".
+## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
 var _tap_action: String = ""
 var _give_up_button: Button
 var _confirm: ColorRect
@@ -101,7 +99,6 @@ func new_run(seed_value: int = -1) -> void:
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
 	session.hint_changed.connect(func(cells: Array[Vector2i]) -> void: _board.show_hint(cells))
-	session.tiles_moved.connect(func(_m: Array) -> void: _queue_pulse_check())
 	session.tiles_removed.connect(func(_c: Array[Vector2i]) -> void: _queue_pulse_check())
 	session.quest_progress.connect(func(_q: Quest) -> void: _queue_pulse_check())
 	session.quest_reshaped.connect(func(_q: Quest) -> void: _queue_pulse_check())
@@ -152,9 +149,6 @@ func _build_ui() -> void:
 	_magnet_button = _button("", 26)
 	_magnet_button.toggle_mode = true
 	_magnet_button.toggled.connect(func(on: bool) -> void: _set_tap_action("magnet" if on else ""))
-	_column_button = _button("", 26)
-	_column_button.toggle_mode = true
-	_column_button.toggled.connect(func(on: bool) -> void: _set_tap_action("column" if on else ""))
 	_joker_button = _button("", 26)
 	_joker_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -165,11 +159,6 @@ func _build_ui() -> void:
 		_set_replace_mode(false)
 		if session.shuffle().is_empty():
 			_shake(_shuffle_button))
-	_gravity_button = _button("", 26)
-	_gravity_button.pressed.connect(func() -> void:
-		_set_replace_mode(false)
-		if session.gravity().is_empty():
-			_shake(_gravity_button))
 	_split_button = _button("", 26)
 	_split_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -266,10 +255,23 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 	return b
 
 
+## Hilfe-Knöpfe in Anzeige-Reihenfolge: von gratis bis teuer (gleicher Preis: Reihenfolge dieser Liste).
 func _help_buttons() -> Array[Button]:
-	return [_refill_button, _swap_button, _clear_button, _hint_button, _replace_button,
-			_joker_button, _shuffle_button, _gravity_button, _magnet_button, _column_button,
-			_split_button, _scan_button, _solve_button]
+	var list := [
+		[_refill_button, BALANCE.refill_price], [_hint_button, BALANCE.hint_price],
+		[_replace_button, BALANCE.replace_price],
+		[_swap_button, BALANCE.swap_price], [_clear_button, BALANCE.clear_price],
+		[_joker_button, BALANCE.joker_price], [_magnet_button, BALANCE.magnet_price],
+		[_split_button, BALANCE.split_price], [_shuffle_button, BALANCE.shuffle_price],
+		[_scan_button, BALANCE.scan_price], [_solve_button, BALANCE.solve_price]]
+	for i in list.size():
+		list[i].append(i)
+	list.sort_custom(func(a: Array, b: Array) -> bool:
+		return a[1] < b[1] or (a[1] == b[1] and a[2] < b[2]))
+	var result: Array[Button] = []
+	for e in list:
+		result.append(e[0])
+	return result
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
@@ -331,12 +333,8 @@ func _update_labels() -> void:
 	_joker_button.disabled = not session.can_joker()
 	_shuffle_button.text = "Mischen\n−%d" % BALANCE.shuffle_price
 	_shuffle_button.disabled = not session.can_shuffle()
-	_gravity_button.text = "Schwerkraft\n−%d" % BALANCE.gravity_price
-	_gravity_button.disabled = session.is_over or session.coins < BALANCE.gravity_price
 	_magnet_button.text = "Magnet\n−%d" % BALANCE.magnet_price
 	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
-	_column_button.text = "Säule\n−%d" % BALANCE.column_price
-	_column_button.disabled = not session.can_column() and not _column_button.button_pressed
 	_split_button.text = "Teilen\n−%d" % BALANCE.split_price
 	_split_button.disabled = session.is_over or session.coins < BALANCE.split_price
 	_scan_button.text = "Scan\n−%d" % BALANCE.scan_price
@@ -439,13 +437,12 @@ func _set_replace_mode(on: bool) -> void:
 	_set_tap_action("replace" if on else "")
 
 
-## Antipp-Modus für Ersetzen, Magnet oder Säule ("" = aus). Der gedrückte Knopf zeigt ihn an.
+## Antipp-Modus für Ersetzen oder Magnet ("" = aus). Der gedrückte Knopf zeigt ihn an.
 func _set_tap_action(action: String) -> void:
 	_tap_action = action
 	_board.tap_mode = action != ""
 	_replace_button.set_pressed_no_signal(action == "replace")
 	_magnet_button.set_pressed_no_signal(action == "magnet")
-	_column_button.set_pressed_no_signal(action == "column")
 
 
 func _on_cell_tapped(cell: Vector2i) -> void:
@@ -457,8 +454,6 @@ func _on_cell_tapped(cell: Vector2i) -> void:
 		"magnet":
 			if session.magnet(cell).is_empty():
 				_shake(_magnet_button)
-		"column":
-			session.column(cell)
 
 
 func _on_hint_pressed() -> void:

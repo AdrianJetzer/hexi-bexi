@@ -5,14 +5,12 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), column(cell), split(), scan().
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), split(), scan().
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
 ## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Tauschen, Ersetzen).
 signal tile_changed(cell: Vector2i, letter: String)
-## Schwerkraft: Steine sind gerutscht. moves: [{"from": Vector2i, "to": Vector2i}, …]
-signal tiles_moved(moves: Array)
 ## Lösen: eine Zeile wurde ohne Wort aus dem Feld gefüllt (Buchstaben erscheinen direkt).
 signal row_filled(row: int, word: String)
 ## Aufräumen: diese Steine sind entfernt (die Plätze bleiben frei).
@@ -498,35 +496,6 @@ func shuffle() -> Array[Vector2i]:
 	return changed
 
 
-## Schwerkraft möglich? (Münzen reichen, es gibt Löcher)
-func can_gravity() -> bool:
-	return not is_over and coins >= _balance.gravity_price and not grid.holes().is_empty()
-
-
-## Hilfe „Schwerkraft“: in jeder Spalte rutschen die Steine nach unten, Löcher schließen sich.
-## Gibt die Bewegungen zurück (leer = keine Löcher, kostet nichts).
-func gravity() -> Array:
-	var moves: Array = []
-	if not can_gravity():
-		return moves
-	for c in grid.cols:
-		var target := 0
-		for r in grid.rows:
-			var from := Vector2i(c, r)
-			if grid.is_free(from):
-				continue
-			var to := Vector2i(c, target)
-			if to != from:
-				grid.set_letter(to, grid.get_letter(from))
-				grid.clear(from)
-				moves.append({"from": from, "to": to})
-			target += 1
-	_pay(_balance.gravity_price)
-	tiles_moved.emit(moves)
-	_check_hint()
-	return moves
-
-
 ## Magnet möglich? (Auftrag aktiv, Münzen reichen; mit Platz: dieser Stein liegt im Feld)
 func can_magnet(cell: Vector2i = NO_CELL) -> bool:
 	if is_over or quest == null or coins < _balance.magnet_price:
@@ -555,34 +524,6 @@ func magnet(cell: Vector2i) -> Array[Vector2i]:
 			changed.append(path[i])
 			tile_changed.emit(path[i], word[i])
 	_pay(_balance.magnet_price)
-	_check_hint()
-	return changed
-
-
-## Säule möglich? (Münzen reichen; mit Platz: in dieser Spalte liegt ein Stein)
-func can_column(cell: Vector2i = NO_CELL) -> bool:
-	if is_over or coins < _balance.column_price:
-		return false
-	if cell == NO_CELL:
-		return grid.free_count() < grid.size()
-	for r in grid.rows:
-		if grid.is_occupied(Vector2i(cell.x, r)):
-			return true
-	return false
-
-
-## Hilfe „Säule“: alle Steine der Spalte des angetippten Platzes bekommen neue Buchstaben
-## (Wort-Hilfe). Gibt die geänderten Plätze zurück (leer = nicht möglich, kostet nichts).
-func column(cell: Vector2i) -> Array[Vector2i]:
-	var changed: Array[Vector2i] = []
-	if not can_column(cell):
-		return changed
-	for r in grid.rows:
-		var c := Vector2i(cell.x, r)
-		if grid.is_occupied(c):
-			tile_changed.emit(c, _new_letter(c))
-			changed.append(c)
-	_pay(_balance.column_price)
 	_check_hint()
 	return changed
 
@@ -623,13 +564,19 @@ func can_scan() -> bool:
 
 ## Hilfe „Scan“: die Steine **eines** geläufigen Worts für die längste freie Zeile (gibt es dafür
 ## keines, für die nächstkürzere). Gibt sie zurück (leer = keines im Feld, kostet nichts).
+## Danach tippt „Tipp“ dasselbe Wort. Läuft schon ein Tipp mit einem Wort dieser Länge,
+## zeigt Scan dieses Wort.
 func scan() -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if not can_scan():
 		return cells
+	_check_hint()
 	var lengths := quest.free_lengths()
 	for k in range(lengths.size() - 1, -1, -1):
 		var n := lengths[k]
+		if _hint_valid() and _hint_word.length() == n:
+			cells = _hint_cells.duplicate()
+			break
 		var found := (_hint_finders[0] as WordFinder).find_paths(grid, n, n,
 				func(w: String) -> bool: return w.length() == n)
 		if not found.is_empty():
@@ -637,6 +584,11 @@ func scan() -> Array[Vector2i]:
 			break
 	if cells.is_empty():
 		return cells
+	if cells != _hint_cells:
+		_reset_hint()
+		_hint_cells = cells.duplicate()
+		_hint_word = word_for(cells)
+		_hint_count = 0
 	_pay(_balance.scan_price)
 	scan_shown.emit(cells)
 	return cells
