@@ -87,6 +87,11 @@ const BTN_DISABLED_ALPHA := 0.55
 const BTN_NAME_FONT := 36
 const BTN_NAME_FONT_LONG := 27
 const BTN_PRICE_FONT := 30
+## Auswahl-Bildschirm (Power-up / Upgrade): Titel, Karten.
+const CHOICE_TITLE_FONT := 64
+const CHOICE_NAME_FONT := 46
+const CHOICE_INFO_FONT := 38
+const CHOICE_CARD_HEIGHT := 230.0
 ## Auffüllen-Hinweis: Schrift blinkt dezent zwischen Weiß und dunklem Weiß (je halbe Sekunde).
 const BLINK_HALF := 0.5
 const BLINK_BRIGHT := Color(1.0, 1.0, 1.0)
@@ -401,8 +406,11 @@ func _build_ui() -> void:
 	var ch := _overlay("")
 	_choice = ch[0]
 	_choice_title = ch[2]
-	_choice_title.add_theme_font_size_override("font_size", 52)
-	_choice_title.add_theme_color_override("font_color", ACCENT)
+	_choice_title.add_theme_font_size_override("font_size", CHOICE_TITLE_FONT)
+	_choice_title.add_theme_color_override("font_color", BTN_GOLD)
+	_choice_title.add_theme_color_override("font_outline_color", Color(BTN_GOLD, 0.35))
+	_choice_title.add_theme_constant_override("outline_size", 10)
+	_choice_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	(ch[1] as VBoxContainer).add_theme_constant_override("separation", 40)
 	_choice_cards = VBoxContainer.new()
 	_choice_cards.add_theme_constant_override("separation", 24)
@@ -864,23 +872,65 @@ func _show_choice() -> void:
 	for c in _choice_cards.get_children():
 		c.queue_free()
 	var upgrade: bool = session.offer["kind"] == "upgrade"
-	_choice_title.text = "Upgrade\nWelche Hilfe wird günstiger?" if upgrade else "Power-up\nWähle eine Hilfe"
+	_choice_title.text = "Welche Hilfe wird günstiger?" if upgrade else "Wähle eine Hilfe"
 	var w := _column(get_viewport_rect().size).y * 0.86
+	_choice_title.custom_minimum_size = Vector2(w, 0)
 	for id in session.offer["options"]:
-		var card := Button.new()
-		card.custom_minimum_size = Vector2(w, 190)
-		card.add_theme_font_size_override("font_size", 34)
-		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var p := session.price(id)
 		var price_text := ("%d → %d" % [p, session.upgraded_price(id)]) if upgrade else str(p)
-		card.text = "%s  ·  %s\n%s" % [HELP_NAMES[id], price_text, HELP_INFO[id]]
 		var chosen: String = id
+		var card := _choice_card(id, price_text, w)
 		card.pressed.connect(func() -> void:
 			session.choose(chosen)
 			_choice.visible = false
 			_relayout())
 		_choice_cards.add_child(card)
 	_choice.visible = true
+
+
+## Karte für die Auswahl im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis, darunter die Erklärung.
+func _choice_card(id: String, price_text: String, width: float) -> Button:
+	var edge := BTN_EDGE_SOLVE if id == "solve" else BTN_EDGE
+	var card := Button.new()
+	card.custom_minimum_size = Vector2(width, CHOICE_CARD_HEIGHT)
+	card.add_theme_stylebox_override("normal", _btn_box(BTN_BG, edge, 0.85, 0.35, 14))
+	card.add_theme_stylebox_override("hover", _btn_box(BTN_BG, edge, 1.0, 0.45, 16))
+	card.add_theme_stylebox_override("pressed", _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.65, 22))
+	card.add_theme_stylebox_override("focus", _btn_box(BTN_BG, edge, 0.85, 0.35, 14))
+	var box := VBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	box.offset_left = 28
+	box.offset_right = -28
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 10)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(box)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 16)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(row)
+	var name := Label.new()
+	name.text = HELP_NAMES[id]
+	name.add_theme_font_size_override("font_size", CHOICE_NAME_FONT)
+	name.add_theme_color_override("font_color", BTN_TEXT)
+	row.add_child(name)
+	var coin := _coin(30)
+	coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(coin)
+	var price := Label.new()
+	price.text = price_text
+	price.add_theme_font_size_override("font_size", CHOICE_NAME_FONT)
+	price.add_theme_color_override("font_color", BTN_GOLD)
+	row.add_child(price)
+	var info := Label.new()
+	info.text = HELP_INFO[id]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.add_theme_font_size_override("font_size", CHOICE_INFO_FONT)
+	info.add_theme_color_override("font_color", Color(BTN_TEXT, 0.85))
+	box.add_child(info)
+	return card
 
 
 # --- Fliegende Buchstaben ----------------------------------------------------------
@@ -928,6 +978,8 @@ func _fly_word(word: String, cells: Array[Vector2i], row: int) -> float:
 ## Münz-Gewinn kurz neben der Münzanzeige aufsteigen lassen.
 func _show_reward(amount: int) -> void:
 	var l := _label(48, ACCENT)
+	# Unter Auswahl- und Einstellungs-Ebenen (Flug-Ebene liegt darunter).
+	l.reparent(_fly_layer)
 	l.text = "+%d" % amount
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	l.size = _coins_label.size
