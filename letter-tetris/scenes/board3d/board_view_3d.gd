@@ -42,6 +42,14 @@ var _static: Node3D
 var _burst_frame: int = -1
 var _burst_index: int = 0
 ## Antipp-Modus statt Wischen (z. B. „Stein ersetzen“).
+## Neigung der Kamera in Grad (0 = senkrecht von oben). Mehr Neigung = mehr 3D-Tiefe.
+@export var tilt_deg: float = 0.0
+## Hintergrund: 0 = alter Nebel (Rauschen), 1–3 = animierte Stile (siehe CosmicMaterials).
+@export var background_style: int = 3
+## Funkeln: kleine Lichtpunkte blitzen entlang der Kante auf und schweben langsam weg.
+@export var sparkles: bool = true
+var _bg: MeshInstance3D
+var _fit_area: Rect2
 var tap_mode: bool = false
 ## Wortanfang-Modus: Gewischtes wird nicht eingelöst, sondern als prefix_swiped gemeldet.
 var prefix_mode: bool = false
@@ -113,21 +121,54 @@ func setup(p_session: RunSession) -> void:
 
 
 ## Kamera so setzen, dass das Feld (mit Rahmen) in area passt (Pixel im Viewport).
+## Bei tilt_deg > 0 schaut die Kamera schräg von unten auf das Feld (mehr Tiefe); die Größe
+## wird dann schrittweise angepasst, bis das Feld (perspektivisch verzerrt) in den Bereich passt.
 func fit_to_screen(area: Rect2, viewport_size: Vector2) -> void:
 	if layout == null:
 		return
-	var size := layout.grid_size() + Vector2.ONE * FRAME_MARGIN * 2.0
+	_fit_area = area
+	camera.rotation = Vector3(-PI / 2.0 + deg_to_rad(tilt_deg), 0, 0)
+	var look := -camera.global_transform.basis.z
+	var target := Vector3.ZERO
 	var tan_half := tan(deg_to_rad(CAMERA_FOV) / 2.0)
+	var size := layout.grid_size() + Vector2.ONE * FRAME_MARGIN * 2.0
 	var aspect := viewport_size.x / viewport_size.y
-	var fw := area.size.x / viewport_size.x
 	var fh := area.size.y / viewport_size.y
+	var fw := area.size.x / viewport_size.x
 	var d := maxf(size.y / (fh * 2.0 * tan_half), size.x / (fw * aspect * 2.0 * tan_half))
-	var visible_h := 2.0 * d * tan_half
-	var visible_w := visible_h * aspect
-	var cx := (area.position.x + area.size.x / 2.0) / viewport_size.x
-	var cy := (area.position.y + area.size.y / 2.0) / viewport_size.y
-	var top := THICKNESS * 0.5
-	camera.position = Vector3(-(cx - 0.5) * visible_w, top + d, -(cy - 0.5) * visible_h)
+	for i in 12:
+		camera.position = target - look * d + Vector3(0, THICKNESS * 0.5, 0)
+		var r := _projected_rect()
+		var scale := maxf(r.size.x / area.size.x, r.size.y / area.size.y)
+		d *= scale
+		camera.position = target - look * d + Vector3(0, THICKNESS * 0.5, 0)
+		r = _projected_rect()
+		# Mitte verschieben: Pixel-Abstand in Welt-Einheiten auf der Feld-Ebene umrechnen.
+		var px := area.get_center() - r.get_center()
+		var units_per_px := size.x / maxf(r.size.x, 1.0)
+		target.x -= px.x * units_per_px
+		target.z -= px.y * units_per_px
+	camera.position = target - look * d + Vector3(0, THICKNESS * 0.5, 0)
+
+
+## Bildschirm-Rechteck, das das Feld samt Rand gerade einnimmt (Pixel).
+func _projected_rect() -> Rect2:
+	var r := layout.grid_rect().grow(FRAME_MARGIN)
+	var y := THICKNESS * 0.5
+	var pts := [Vector3(r.position.x, y, r.position.y), Vector3(r.end.x, y, r.position.y),
+		Vector3(r.position.x, y, r.end.y), Vector3(r.end.x, y, r.end.y)]
+	var out := Rect2(camera.unproject_position(pts[0]), Vector2.ZERO)
+	for p in pts:
+		out = out.expand(camera.unproject_position(p))
+	return out
+
+
+## Hintergrund-Stil wechseln (0 = alter Nebel, 1–3 = animiert).
+func set_background(style: int) -> void:
+	background_style = style
+	if _bg:
+		_bg.material_override = CosmicMaterials.background() if style == 0 \
+				else CosmicMaterials.nebula_background(style)
 
 
 ## Oberkante des Felds (leuchtende Kante) in Bildschirm-Pixeln (nach fit_to_screen).
@@ -190,6 +231,10 @@ func _build_static() -> void:
 	var frame_top := THICKNESS * 0.1
 	# Kein dunkler Rahmen mehr: das Feld wird nur von der leuchtenden Zickzack-Kante umschlossen.
 
+	# Schatten unter dem Feld (es schwebt über dem Hintergrund) und Leuchten um die Kante
+	if sparkles:
+		_build_sparkles(inner, frame_top)
+
 	# Boden im Feld
 	var well := _csg_polygon(inner, 0.05, CosmicMaterials.well_floor())
 	well.position.y = floor_y - 0.05
@@ -214,10 +259,52 @@ func _build_static() -> void:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(400, 400)  # groß genug auch für breite Fenster (Nebel ist triplanar)
 	bg.mesh = plane
-	bg.material_override = CosmicMaterials.background()
+	bg.material_override = CosmicMaterials.background() if background_style == 0 \
+			else CosmicMaterials.nebula_background(background_style)
+	_bg = bg
 	bg.position.y = -3.0
 	bg.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_static.add_child(bg)
+
+
+## Funkeln: kleine Lichtpunkte, die entlang der Kante aufblitzen und langsam wegschweben.
+func _build_sparkles(contour: PackedVector2Array, y: float) -> void:
+	var pts := PackedVector3Array()
+	var n := contour.size()
+	for i in n:
+		var a := contour[i]
+		var b := contour[(i + 1) % n]
+		for k in 6:
+			var p := a.lerp(b, k / 6.0)
+			pts.append(Vector3(p.x, y + 0.05, p.y))
+	var p := CPUParticles3D.new()
+	p.amount = 42
+	p.lifetime = 2.4
+	p.preprocess = 2.4
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_POINTS
+	p.emission_points = pts
+	p.direction = Vector3(0, 1, 0)
+	p.spread = 180.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 0.05
+	p.initial_velocity_max = 0.25
+	p.scale_amount_min = 0.6
+	p.scale_amount_max = 1.3
+	var curve := Curve.new()
+	curve.add_point(Vector2(0, 0))
+	curve.add_point(Vector2(0.3, 1))
+	curve.add_point(Vector2(1, 0))
+	p.scale_amount_curve = curve
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(0.7, 1.6, 2.0, 0.0))
+	ramp.add_point(0.3, Color(1.4, 1.9, 2.2, 1.0))
+	ramp.set_color(1, Color(0.6, 1.2, 1.8, 0.0))
+	p.color_ramp = ramp
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.32, 0.32)
+	quad.material = CosmicMaterials.sparkle()
+	p.mesh = quad
+	_static.add_child(p)
 
 
 ## Flaches Polygon (in X/Z) nach oben extrudiert.
