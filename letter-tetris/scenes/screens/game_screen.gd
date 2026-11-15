@@ -93,6 +93,10 @@ const BTN_PRICE_FONT := 30
 const BLINK_HALF := 0.5
 const BLINK_BRIGHT := Color(1.0, 1.0, 1.0)
 const BLINK_DIM := Color(0.5, 0.52, 0.6)
+## Feststecken: Abdunkeln des Felds und Größe des Auffüllen-Knopfs darauf (Pixel).
+const STUCK_VEIL := Color(0.0, 0.01, 0.04, 0.62)
+const STUCK_BUTTON_SIZE := Vector2(460, 200)
+const STUCK_FADE := 0.3
 
 var session: RunSession
 
@@ -141,6 +145,10 @@ var _buttons: Dictionary = {}
 ## Hilfe-ID → {"name": Label, "price": Label, "coin": Panel} (Beschriftung der Knöpfe).
 var _button_parts: Dictionary = {}
 var _offer_hint: Label
+## Steckt man fest (kein gültiges Wort passt): Feld abdunkeln und großer Auffüllen-Knopf darauf.
+var _stuck_veil: ColorRect
+var _stuck_button: Button
+var _stuck_tween: Tween
 var _offer_hint_pulse: Tween
 ## Auswahl-Bildschirm für Power-ups und Upgrades.
 var _choice: ColorRect
@@ -188,6 +196,7 @@ func new_run(seed_value: int = -1) -> void:
 	_continue_button.visible = false
 	_choice.visible = false
 	_offer_hint.visible = true
+	_stuck_veil.visible = false
 	_confirm.visible = false
 	_board.setup(session)
 	_relayout()
@@ -302,6 +311,23 @@ func _build_ui() -> void:
 	_continue_button.pressed.connect(func() -> void:
 		_continue_button.visible = false
 		_summary.visible = true)
+
+	# Abdunkeln des Felds + großer Auffüllen-Knopf, wenn man feststeckt
+	_stuck_veil = ColorRect.new()
+	_stuck_veil.color = STUCK_VEIL
+	_stuck_veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	_stuck_veil.visible = false
+	add_child(_stuck_veil)
+	_stuck_button = Button.new()
+	_style_help_button(_stuck_button, "refill", false)
+	for c in _stuck_button.get_children():
+		for l in c.get_children():
+			if l is Label:
+				l.add_theme_font_size_override("font_size", 52)
+	_stuck_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		session.refill())
+	_stuck_veil.add_child(_stuck_button)
 
 	_fly_layer = Control.new()
 	_fly_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -468,6 +494,8 @@ func _relayout() -> void:
 	if _board.session != null:
 		hint_y = minf(_board.screen_bottom() + INFO_GAP, buttons_top - INFO_HEIGHT)
 	_offer_hint.position = Vector2(side, hint_y)
+	if _stuck_veil.visible:
+		_place_stuck_veil()
 	_offer_hint.size = Vector2(inner, INFO_HEIGHT)
 	var gap := 12.0
 	var buttons := _help_buttons()
@@ -563,7 +591,7 @@ func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow
 
 
 ## Stil „Kombi“ und Beschriftung (Name, Münze, Preis) für einen Hilfe-Knopf.
-func _style_help_button(b: Button, id: String) -> void:
+func _style_help_button(b: Button, id: String, register: bool = true) -> void:
 	var edge := BTN_EDGE_SOLVE if id == "solve" else BTN_EDGE
 	var normal := _btn_box(BTN_BG, edge, 0.8, 0.3, 12)
 	var pressed := _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.6, 20)
@@ -625,7 +653,12 @@ func _style_help_button(b: Button, id: String) -> void:
 	var price := Label.new()
 	price.add_theme_font_size_override("font_size", BTN_PRICE_FONT)
 	row.add_child(price)
-	_button_parts[id] = {"name": name, "price": price, "coin": coin}
+	if register:
+		_button_parts[id] = {"name": name, "price": price, "coin": coin}
+	else:
+		price.text = "gratis"
+		price.add_theme_color_override("font_color", BTN_FREE)
+		coin.visible = false
 
 
 # --- Pulsierender Auffüllen-Knopf ----------------------------------------------------
@@ -653,6 +686,36 @@ func _update_refill_pulse() -> void:
 		_refill_pulse.kill()
 		_refill_pulse = null
 		(_button_parts["refill"]["name"] as Label).add_theme_color_override("font_color", BTN_TEXT)
+	_show_stuck(want)
+
+
+## Feld abdunkeln und den großen Auffüllen-Knopf zeigen (oder wieder ausblenden).
+func _show_stuck(on: bool) -> void:
+	if on == (_stuck_veil.visible and _stuck_veil.modulate.a > 0.5):
+		return
+	if _stuck_tween:
+		_stuck_tween.kill()
+	if on:
+		_place_stuck_veil()
+		_stuck_veil.visible = true
+		_stuck_veil.modulate.a = 0.0
+	_stuck_tween = create_tween()
+	_stuck_tween.tween_property(_stuck_veil, "modulate:a", 1.0 if on else 0.0, STUCK_FADE)
+	if not on:
+		_stuck_tween.tween_callback(func() -> void: _stuck_veil.visible = false)
+
+
+## Abdunkeln genau über dem Feld (Oberkante bis Unterkante), Knopf in der Mitte.
+func _place_stuck_veil() -> void:
+	if _board.session == null:
+		return
+	var area := _board_area()
+	var top := _board.screen_top()
+	var bottom := _board.screen_bottom()
+	_stuck_veil.position = Vector2(area.position.x, top)
+	_stuck_veil.size = Vector2(area.size.x, bottom - top)
+	_stuck_button.size = STUCK_BUTTON_SIZE
+	_stuck_button.position = (_stuck_veil.size - STUCK_BUTTON_SIZE) / 2.0
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------
