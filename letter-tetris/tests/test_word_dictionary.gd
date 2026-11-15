@@ -104,10 +104,24 @@ func test_real_german_dictionary() -> void:
 func test_common_words_without_names() -> void:
 	var lang := load("res://data/languages/de/language.tres") as LanguageData
 	var c := WordDictionary.from_file(lang.common_words_path)
-	assert_gt(c.size(), 300000)
 	for w in ["OLGA", "OLGAS", "BERLIN", "PETER"]:
 		assert_false(c.contains(w), w)
 	assert_true(c.contains("HIMMEL"))
+
+
+func test_suggestion_words_are_nice() -> void:
+	# Vorschlags-Wörter: ca. 10.000 Grundformen plus Mehrzahl, 3 bis 8 Buchstaben,
+	# ohne Artikel, Pronomen, gebeugte Formen und Wörter der Sperrliste (spec/game-rules.md).
+	var lang := load("res://data/languages/de/language.tres") as LanguageData
+	var c := WordDictionary.from_file(lang.common_words_path)
+	var d := WordDictionary.from_file(lang.words_path)
+	assert_between(c.size(), 9000, 11000)
+	for w in ["TISCH", "TISCHE", "KATZE", "BLUMEN", "LAUFEN", "ABER", "OBEN", "SEIN"]:
+		assert_true(c.contains(w), w)
+		assert_true(d.contains(w), w)
+	for w in ["DER", "DIE", "DAS", "EINE", "ICH", "WIR", "IHM", "HAUSES", "TISCHES", "LIEF", "WILDEN",
+			"ABIRRTE", "LOTS", "SCHEISSE", "UNRWA"]:
+		assert_false(c.contains(w), w)
 
 
 func test_missing_file_returns_null() -> void:
