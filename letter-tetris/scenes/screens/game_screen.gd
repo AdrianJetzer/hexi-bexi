@@ -23,6 +23,10 @@ const FLY_TIME := 0.5
 const FLY_STAGGER := 0.07
 ## Kurze Pause nach dem letzten Buchstaben, bevor ein gelöster Auftrag verschwindet.
 const DONE_PAUSE := 0.35
+## Pulsieren des Auffüllen-Knopfs, wenn kein gültiges Wort passt: Dauer je halbem Puls, Größe, Helligkeit.
+const PULSE_HALF := 0.7
+const PULSE_SCALE := 1.06
+const PULSE_BRIGHT := Color(1.35, 1.3, 1.15)
 
 var session: RunSession
 
@@ -61,6 +65,8 @@ var _pending_quest: Quest
 ## Dauer des zuletzt gestarteten Flugs (bis der letzte Buchstabe ankommt).
 var _last_flight: float = 0.0
 var _sequence: Tween
+var _refill_pulse: Tween
+var _pulse_check_queued: bool = false
 
 
 func _ready() -> void:
@@ -95,6 +101,10 @@ func new_run(seed_value: int = -1) -> void:
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
 	session.hint_changed.connect(func(cells: Array[Vector2i]) -> void: _board.show_hint(cells))
+	session.tiles_moved.connect(func(_m: Array) -> void: _queue_pulse_check())
+	session.tiles_removed.connect(func(_c: Array[Vector2i]) -> void: _queue_pulse_check())
+	session.quest_progress.connect(func(_q: Quest) -> void: _queue_pulse_check())
+	session.quest_reshaped.connect(func(_q: Quest) -> void: _queue_pulse_check())
 	_summary.visible = false
 	_continue_button.visible = false
 	for b in _help_buttons():
@@ -335,6 +345,35 @@ func _update_labels() -> void:
 	_solve_button.disabled = not session.can_solve()
 	if session.is_over:
 		_set_replace_mode(false)
+	_queue_pulse_check()
+
+
+# --- Pulsierender Auffüllen-Knopf ----------------------------------------------------
+
+## Prüfung einmal pro Frame bündeln (beim Auffüllen kommen mehrere Steine nacheinander).
+func _queue_pulse_check() -> void:
+	if _pulse_check_queued:
+		return
+	_pulse_check_queued = true
+	_update_refill_pulse.call_deferred()
+
+
+func _update_refill_pulse() -> void:
+	_pulse_check_queued = false
+	var want := session != null and not _completing and session.refill_suggested()
+	if want and _refill_pulse == null:
+		_refill_button.pivot_offset = _refill_button.size / 2.0
+		_refill_pulse = create_tween().set_loops()
+		_refill_pulse.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		_refill_pulse.tween_property(_refill_button, "scale", Vector2.ONE * PULSE_SCALE, PULSE_HALF)
+		_refill_pulse.parallel().tween_property(_refill_button, "modulate", PULSE_BRIGHT, PULSE_HALF)
+		_refill_pulse.tween_property(_refill_button, "scale", Vector2.ONE, PULSE_HALF)
+		_refill_pulse.parallel().tween_property(_refill_button, "modulate", Color.WHITE, PULSE_HALF)
+	elif not want and _refill_pulse != null:
+		_refill_pulse.kill()
+		_refill_pulse = null
+		_refill_button.scale = Vector2.ONE
+		_refill_button.modulate = Color.WHITE
 
 
 # --- Fliegende Buchstaben ----------------------------------------------------------
@@ -462,7 +501,8 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 			_completing = false
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
-			_pending_quest = null))
+			_pending_quest = null
+			_queue_pulse_check()))
 
 
 ## Lösen ohne Wort aus dem Feld: Buchstaben ploppen nacheinander direkt in der Zeile auf.

@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v7**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v7.8**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -49,7 +49,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Wort-Hilfe (Vorausschau):** Bevor ein neues Hexagon erscheint, steht sein Platz fest. Das Spiel bewertet für diesen Platz jeden möglichen Buchstaben danach, wie viele **geläufige Wörter** er zusammen mit den Nachbarn möglich macht, und bevorzugt gute Buchstaben – gewichtet, nicht immer (sonst zu vorhersehbar).
 - **Auf den Auftrag ausgerichtet:** Gezählt werden nur Wörter in den **Längen der noch freien Zeilen** (z. B. bei ▢▢▢▢▢ nur Wörter mit 5 Buchstaben, bis 8 Buchstaben). So legt die Hilfe gezielt Bausteine für die gesuchten Wörter ins Feld, statt viele kurze Wörter zu ermöglichen.
 - **Mindestens X Wörter:** Das Spiel zählt, wie viele geläufige Wörter (in den gesuchten Längen) gerade im Feld möglich sind. Sind es weniger als die Stufe verlangt, hilft es stärker nach (wählt den Buchstaben mit den meisten Wörtern).
-- **Geläufige Wörter** für die Hilfe: vorerst die Einträge der Trennmuster-Wortliste. **Gültig** bleiben weiterhin alle Wörter des Wörterbuchs.
+- **Geläufige Wörter** für die Hilfe: die **Vorschlags-Wörter** (siehe unten). **Gültig** bleiben weiterhin alle Wörter des Wörterbuchs.
 - Wie stark geholfen wird, bestimmt die **Hilfe-Stufe**, und die ergibt sich aus dem **Level** des Laufs.
 
 ### Hilfe-Stufen
@@ -85,6 +85,21 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Römische Zahlen** (z. B. LIII, XII) gelten nicht, außer sie sind auch ein normales Wort (z. B. MIX).
 - Weiterhin: nur A–Z, Wörter mit Umlauten vorerst nicht (siehe „Sprache“).
 
+### Vorschlags-Wörter (geläufige Wörter)
+- Zwei Listen mit getrennten Aufgaben:
+  - **Gültige Wörter** (ganzes Wörterbuch, siehe oben): entscheiden, ob ein gewischtes Wort zählt. Auch gebeugte Formen wie HAUSES oder ABIRRTE zählen weiter.
+  - **Vorschlags-Wörter** (neu, eigene kleine Liste): nur diese Wörter bringt das Spiel **selbst** ins Spiel, also bei Wort-Hilfe, Nachfüllen, Tauschen, Magnet, Tipp, Scan, Lösen und der Lösung beim Aufgeben. Ziel: Die angebotenen Wörter sind **schön, bekannt und alltäglich**, nicht seltene Beugungsformen.
+- **Formen:** nur **Grundformen plus Mehrzahl**: Hauptwort im Nominativ Einzahl und Mehrzahl (TISCH, TISCHE, BLUME, BLUMEN), Verb im Infinitiv (LAUFEN), Adjektiv in der Grundform (WILD). Keine Genitive, keine gebeugten Verb- oder Adjektivformen (HAUSES, LIEF, WILDEN).
+  - Erkennung über Wiktionary: Stichwort oder nur Beugungsform; die Mehrzahl steht dort beim Hauptwort.
+- **Ohne Artikel und Pronomen:** DER, DIE, DAS, EINE, ICH, WIR, IHM u. ä. und all ihre Formen werden nicht vorgeschlagen, auch wenn es sie zufällig auch als seltenes Hauptwort oder Verb gibt (das Ich, einen = vereinen). Ausnahme: SEIN (vor allem ein Verb). Bindewörter, Adverbien und Präpositionen bleiben (ABER, ODER, OBEN, UNTER).
+- **Nur 3 bis 8 Buchstaben** (die Längen, die Aufträge verlangen).
+- **Häufigkeit:** nur die **10.000 häufigsten** passenden Wörter (Spielwert, beim Bauen änderbar). Bis etwa Rang 10.000 sind die Wörter bekannt; danach werden sie selten (KUMPAN, LYZEUM, KAMBRIUM).
+  - Quelle der Häufigkeit: **Leipzig Corpora Collection** (Uni Leipzig, Wortschatz), Korpora `deu_news_2023_1M` und `deu_mixed-typical_2011_1M`, je auf relative Häufigkeit umgerechnet und gemittelt. Die Download-Korpora stehen laut Nutzungsbedingungen unter **CC BY**, also kommerziell nutzbar mit Namensnennung. Lizenz vor der Veröffentlichung selbst auf der Quellseite prüfen (die Seite ließ sich nicht automatisch lesen).
+  - Nicht geeignet: DeReKo (nur nicht-kommerziell); Untertitel-Listen und wordfreq (CC BY-SA, eher heikel).
+- **Sperrliste** (`tools/dictionary/blocklist-suggestions.txt`): Wörter, die gültig bleiben, aber nie vorgeschlagen werden: beleidigend, vulgär oder anzüglich (SCHEISSE, HURE …), belastet (NAZI) sowie Namen und Abkürzungen, die als Wort durchrutschen (HEIDI, UNRWA). Wird beim Spielen ergänzt.
+- **Ohne Akronyme:** Wörter, die in den Korpora meist ganz großgeschrieben stehen (UNRWA, FIFA, CFO), entfallen automatisch.
+- Nur Wörter, die auch **gültig** sind (Vorschlags-Wörter sind eine Teilmenge des Wörterbuchs).
+
 ### Wörterbuch (Deutsch)
 - **Quellen:**
   - **Basis:** Trennmuster-Wortliste (DANTE / Werner Lemberg, `repo.or.cz/wortliste.git`), Lizenz **MIT**.
@@ -111,7 +126,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ## Später festlegen
 
-- **Bessere Liste geläufiger Wörter** (z. B. Häufigkeitsliste mit passender Lizenz).
+- **Vorschlags-Wörter:** Größe und Sperrliste an Testspielen nachjustieren.
 - **Feintuning** von Hilfe-Stufen, Auftrags-Kurve und Münz-Preisen anhand von Testspielen.
 - **Wörterbuch:** Abdeckung und Größe der aufbereiteten Liste prüfen (Quellen siehe oben).
 - **Effekte und Feedback:** Einblenden, 3D-Drehung, Sound, Wischen, gültige und ungültige Wörter.
@@ -140,3 +155,5 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.4:** Akronyme und als „Abk.“ markierte Trennmuster-Einträge gelten nicht (außer normal geschriebene Wörter wie Aids, Ufo).
 - **v7.5:** Als Name vermerkte Trennmuster-Einträge (POE, ARMSTRONG, AADORF …) gelten nicht.
 - **v7.6:** Raster 5 × 6 (größere Hexagons, Feld fast so breit wie das Handy).
+- **v7.7:** Vorschlags-Wörter: eigene Liste für alles, was das Spiel selbst anbietet (Grundformen plus Mehrzahl, ohne Artikel und Pronomen, ca. 15.000 häufigste, Häufigkeit aus Leipzig Corpora). Gültig bleiben alle Wörter.
+- **v7.8:** Vorschlags-Wörter umgesetzt: 10.000 häufigste, nur 3 bis 8 Buchstaben, Sperrliste, ohne Akronyme.

@@ -1,0 +1,55 @@
+# Sperrliste für Vorschlags-Wörter (spec/game-rules.md, „Vorschlags-Wörter“).
+# Diese Wörter bleiben gültig, werden aber nie vom Spiel vorgeschlagen oder ins Feld gelegt.
+# Ein Wort pro Zeile, Großbuchstaben A–Z (ß als SS). Kommentare mit #.
+
+# Beleidigend, vulgär, anzüglich
+ARSCH
+BORDELL
+DEPP
+FICKEN
+FOTZE
+HURE
+HUREN
+IDIOT
+IDIOTEN
+KANAKE
+KANAKEN
+MILF
+NEGER
+NUTTE
+NUTTEN
+ORGASMUS
+PENIS
+PIMMEL
+PORNO
+PORNOS
+SCHEISSE
+SCHLAMPE
+SCHWANZ
+SCHWUCHTEL
+SEX
+SPAST
+TITTEN
+TROTTEL
+VAGINA
+WICHSER
+ZIGEUNER
+
+# Belastet
+NAZI
+NAZIS
+
+# Abkürzungen und Namen, die als Wort durchrutschen
+AHLEN
+AMIN
+DOC
+DREIEICH
+HANAUER
+HEIDI
+IBAN
+KANG
+SCHOBER
+UBA
+UNRWA
+VOX
+WAP

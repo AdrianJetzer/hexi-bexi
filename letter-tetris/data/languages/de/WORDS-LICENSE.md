@@ -19,5 +19,9 @@ und in ein kompaktes Binärformat gepackt.
 Die Wortliste `words.bin` steht als abgeleitetes Werk unter **CC BY-SA 3.0**.
 Der Programmcode des Spiels ist davon nicht betroffen.
 
-`common.bin` (geläufige Wörter für die Wort-Hilfe) enthält nur die Trennmuster-Wortliste
-(MIT, Copyright siehe oben), bearbeitet wie oben beschrieben.
+`common.bin` (Vorschlags-Wörter für Wort-Hilfe, Tipp, Scan, Lösen …) ist eine Auswahl aus
+`words.bin`: Grundformen und Mehrzahl laut Wiktionary (siehe oben), ausgewählt nach Worthäufigkeit
+aus der **Leipzig Corpora Collection** (Deutscher Wortschatz, Universität Leipzig;
+Korpora deu_news_2023_1M und deu_mixed-typical_2011_1M), Lizenz CC BY.
+Quelle: https://wortschatz.uni-leipzig.de. Als Auswahl aus Wiktionary-Daten steht auch
+`common.bin` unter **CC BY-SA 3.0**.

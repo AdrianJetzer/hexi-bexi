@@ -643,6 +643,53 @@ func test_clear_with_real_dictionary_is_fast_enough() -> void:
 	assert_lt(ms, 2000)
 
 
+# --- Auffüllen-Knopf pulsiert ---------------------------------------------------------
+
+func test_refill_suggested_when_no_valid_word_fits() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "WABUH")
+	run.coins = 1000
+	assert_false(run.has_fitting_word())
+	assert_true(run.refill_suggested())
+	_column(0, "STERN")
+	assert_true(run.has_fitting_word())
+	assert_false(run.refill_suggested())
+
+
+func test_refill_suggested_only_for_exact_free_length() -> void:
+	run.start()
+	_use_rows([4])
+	_column(0, "STERN")
+	run.coins = 1000
+	assert_false(run.has_fitting_word(), "STERN hat 5 Buchstaben, gesucht sind 4")
+	assert_true(run.refill_suggested())
+
+
+func test_refill_suggested_uses_full_dictionary() -> void:
+	# STERN ist gültig, aber kein Vorschlags-Wort: der Knopf pulsiert trotzdem nicht.
+	var common := WordDictionary.from_words(PackedStringArray(["HAUS"]))
+	run = RunSession.new(balance, curve, lang, dict, 42, common)
+	run.start()
+	_use_rows([5])
+	_column(0, "STERN")
+	run.coins = 1000
+	assert_true(run.is_stuck(), "kein Vorschlags-Wort")
+	assert_false(run.refill_suggested(), "aber ein gültiges Wort")
+
+
+func test_refill_not_suggested_when_board_full_or_joker() -> void:
+	run.start()
+	_use_rows([5])
+	run.coins = 1000
+	for cell in run.grid.all_cells():
+		run.grid.set_letter(cell, "Q")
+	assert_false(run.refill_suggested(), "Feld voll: Auffüllen geht nicht")
+	_column(0, "WAB*H")
+	assert_true(run.has_fitting_word(), "Joker zählt als vielleicht")
+	assert_false(run.refill_suggested())
+
+
 # --- Schlaues Tauschen -------------------------------------------------------------------
 
 func test_stuck_when_no_fitting_common_word() -> void:

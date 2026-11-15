@@ -44,5 +44,17 @@ else
   python3 -I "$HERE/pack_words.py" "$OUT/de-words.txt" "$DEST"
 fi
 
-# 5) Geläufige Wörter für die Wort-Hilfe (vorerst: Trennmuster-Liste)
-python3 -I "$HERE/pack_words.py" "$OUT/trennmuster.txt" "$HERE/../../letter-tetris/data/languages/de/common.bin"
+# 5) Vorschlags-Wörter (geläufige Wörter für Wort-Hilfe, Tipp, Scan, Lösen …):
+#    Grundformen plus Mehrzahl, nach Häufigkeit in der Leipzig Corpora Collection (CC BY 4.0).
+#    Anzahl ändern mit z. B.:  COMMON_COUNT=12000 tools/dictionary/build.sh
+LEIPZIG="$SRC/leipzig"
+mkdir -p "$LEIPZIG"
+for c in deu_news_2023_1M deu_mixed-typical_2011_1M; do
+  if [ ! -f "$LEIPZIG/$c/$c-words.txt" ]; then
+    [ -f "$LEIPZIG/$c.tar.gz" ] || curl -L --fail -o "$LEIPZIG/$c.tar.gz" "https://downloads.wortschatz-leipzig.de/corpora/$c.tar.gz"
+    tar -xzf "$LEIPZIG/$c.tar.gz" -C "$LEIPZIG" "$c/$c-words.txt"
+  fi
+done
+python3 -I "$HERE/build_common.py" "$SRC/dewiktionary.jsonl.gz" "$OUT/de-words.txt" \
+  "$HERE/blocklist-suggestions.txt" "$OUT/common.txt" "${COMMON_COUNT:-10000}" "$LEIPZIG"/*/*-words.txt
+python3 -I "$HERE/pack_words.py" "$OUT/common.txt" "$HERE/../../letter-tetris/data/languages/de/common.bin"
