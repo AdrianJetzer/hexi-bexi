@@ -10,7 +10,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - Hexagon-Raster **5 × 6**, Hexagons unten flach.
 - **Lauf-Modus (Roguelike)** ohne Zeitdruck ([run-mode.md](run-mode.md)): Start mit **10 Hexagons** und **0 Münzen**; jedes Level ist ein **Auftrag** aus **Block-Zeilen** über dem Spielfeld (1–3 Zeilen, je 3–8 Blöcke), der nächste kommt automatisch; Kurve für Level 1–10, danach Block-Budget; Feld bleibt zwischen den Levels liegen.
 - Nach jedem gefundenen Wort automatisch **Wortlänge − 1** neue Steine; die Buchstaben des Worts **fliegen in die Blöcke**.
-- **Münzen** für gelöste Aufträge (fest 100); Hilfen: **Auffüllen** (5 Steine, gratis), dazu weitere Hilfen in 25er-Preisen von 25 bis 400 (Tauschen, Aufräumen, Tipp, Ersetzen, Joker, Mischen, Schwerkraft, Magnet, Teilen, Scan, Lösen; Knöpfe von gratis bis teuer sortiert; Liste in [run-mode.md](run-mode.md)); **Lösung** beim Ende des Laufs. Neue Hexagons erscheinen mit **3D-Drehung**.
+- **Münzen** für gelöste Aufträge (fest 100); Hilfen: **Auffüllen** (5 Steine, gratis), dazu weitere Hilfen in 25er-Preisen von 25 bis 400 (Tauschen, Aufräumen, Tipp, Ersetzen, Joker, Mischen, Magnet, Teilen, Scan, Lösen; Knöpfe von gratis bis teuer sortiert; Liste in [run-mode.md](run-mode.md)); **Lösung** beim Ende des Laufs. Neue Hexagons erscheinen mit **3D-Drehung**.
 - Platzwahl: zuerst tiefste Löcher, sonst tiefste freie Plätze, bei Gleichstand zufällig.
 - Buchstaben **gewichtet nach Häufigkeit** mit **Vokal-Ausgleich** und **Wort-Hilfe** (Vorausschau); Stärke der Hilfe folgt dem **Level** (5 Hilfe-Stufen, nicht wählbar).
 - **Wörter wischen** über Nachbarn, kein Zurückwischen, Prüfung beim Loslassen.

@@ -5,14 +5,12 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), split(), scan().
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), split(), scan().
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
 ## Ein vorhandenes Hexagon hat einen neuen Buchstaben bekommen (Tauschen, Ersetzen).
 signal tile_changed(cell: Vector2i, letter: String)
-## Schwerkraft: Steine sind gerutscht. moves: [{"from": Vector2i, "to": Vector2i}, …]
-signal tiles_moved(moves: Array)
 ## Lösen: eine Zeile wurde ohne Wort aus dem Feld gefüllt (Buchstaben erscheinen direkt).
 signal row_filled(row: int, word: String)
 ## Aufräumen: diese Steine sind entfernt (die Plätze bleiben frei).
@@ -496,35 +494,6 @@ func shuffle() -> Array[Vector2i]:
 	_pay(_balance.shuffle_price)
 	_check_hint()
 	return changed
-
-
-## Schwerkraft möglich? (Münzen reichen, es gibt Löcher)
-func can_gravity() -> bool:
-	return not is_over and coins >= _balance.gravity_price and not grid.holes().is_empty()
-
-
-## Hilfe „Schwerkraft“: in jeder Spalte rutschen die Steine nach unten, Löcher schließen sich.
-## Gibt die Bewegungen zurück (leer = keine Löcher, kostet nichts).
-func gravity() -> Array:
-	var moves: Array = []
-	if not can_gravity():
-		return moves
-	for c in grid.cols:
-		var target := 0
-		for r in grid.rows:
-			var from := Vector2i(c, r)
-			if grid.is_free(from):
-				continue
-			var to := Vector2i(c, target)
-			if to != from:
-				grid.set_letter(to, grid.get_letter(from))
-				grid.clear(from)
-				moves.append({"from": from, "to": to})
-			target += 1
-	_pay(_balance.gravity_price)
-	tiles_moved.emit(moves)
-	_check_hint()
-	return moves
 
 
 ## Magnet möglich? (Auftrag aktiv, Münzen reichen; mit Platz: dieser Stein liegt im Feld)

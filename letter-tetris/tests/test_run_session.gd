@@ -17,7 +17,7 @@ func before_each() -> void:
 	balance.hint_price = 100
 	balance.replace_price = 100
 	balance.solve_price = 100
-	for p in ["joker_price", "shuffle_price", "gravity_price", "magnet_price",
+	for p in ["joker_price", "shuffle_price", "magnet_price",
 			"split_price", "scan_price"]:
 		balance.set(p, 50)
 	curve = load("res://data/quest_curve.tres") as QuestCurve
@@ -873,38 +873,6 @@ func test_shuffle_needs_two_tiles() -> void:
 	_column(0, "A")
 	run.coins = 50
 	assert_false(run.can_shuffle())
-
-
-# --- Schwerkraft ----------------------------------------------------------------------------
-
-func test_gravity_closes_holes() -> void:
-	run.start()
-	_use_rows([3])
-	run.grid.clear_all()
-	run.grid.set_letter(Vector2i(1, 2), "A")
-	run.grid.set_letter(Vector2i(1, 4), "B")
-	run.grid.set_letter(Vector2i(3, 0), "C")
-	run.grid.set_letter(Vector2i(3, 3), "D")
-	run.coins = 50
-	var moves := run.gravity()
-	assert_eq(moves.size(), 3)
-	assert_eq(run.grid.get_letter(Vector2i(1, 0)), "A")
-	assert_eq(run.grid.get_letter(Vector2i(1, 1)), "B", "Reihenfolge bleibt")
-	assert_eq(run.grid.get_letter(Vector2i(3, 0)), "C")
-	assert_eq(run.grid.get_letter(Vector2i(3, 1)), "D")
-	assert_true(run.grid.holes().is_empty())
-	assert_eq(run.coins, 0)
-	assert_signal_emitted(run, "tiles_moved")
-
-
-func test_gravity_without_holes_is_free() -> void:
-	run.start()
-	_use_rows([3])
-	_column(0, "AST")
-	run.coins = 50
-	assert_false(run.can_gravity())
-	assert_eq(run.gravity().size(), 0)
-	assert_eq(run.coins, 50)
 
 
 # --- Magnet ------------------------------------------------------------------------

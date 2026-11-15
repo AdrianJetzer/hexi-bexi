@@ -69,7 +69,6 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Auffüllen: 5 neue Steine** | **gratis** |
 | **Tipp: nächsten Buchstaben zeigen** | **−25** je Buchstabe |
 | **Stein ersetzen** | **−25** |
-| **Schwerkraft: Löcher schließen** | **−25** |
 | **Tauschen: 5 Steine neu** | **−50** |
 | **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−100** |
 | **Joker: ein Stein wird zum Joker** | **−100** |
@@ -98,7 +97,6 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 - **Lösen (400):** Der aktuelle Auftrag wird sofort gelöst, es geht ins nächste Level; **keine Belohnung**. Für jede freie Zeile wird ein passendes **geläufiges Wort aus dem Feld** genommen (jeder Stein nur einmal): die Steine verschwinden, die Buchstaben fliegen in die Zeile, danach kommen wie gewohnt Wortlänge − 1 neue Steine. Gibt es für eine Zeile kein Wort im Feld, wird sie mit einem zufälligen geläufigen Wort passender Länge gefüllt (Buchstaben ploppen direkt in den Blöcken auf, das Feld bleibt dafür unverändert). Ein laufender Tipp verfällt.
 - **Joker (100):** Ein zufälliger Stein wird zum **Joker** (zeigt ★). Beim Wischen steht er für **jeden Buchstaben**, mit dem ein gültiges Wort entsteht, das in eine freie Zeile passt; in die Blöcke fliegt der passende echte Buchstabe. Tipp, Lösen, Aufräumen und die Feststeck-Erkennung beziehen Joker vorerst nicht ein.
 - **Mischen (150):** Die Buchstaben aller Steine werden zufällig auf die belegten Plätze neu verteilt; das Feld bleibt gleich voll. Die Steine drehen sich dabei um.
-- **Schwerkraft (25):** In jeder Spalte rutschen die Steine nach unten, die **Löcher schließen sich**. Gibt es keine Löcher, wackelt der Knopf und es kostet nichts.
 - **Magnet (100):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
 - **Teilen (125):** Die **längste freie Zeile** mit mindestens 6 Blöcken wird halbiert: 6 → 3 + 3, 7 → 4 + 3, 8 → 4 + 4. Dadurch können 4 Zeilen entstehen (die Blöcke werden dann etwas kleiner). Gibt es keine solche Zeile, wackelt der Knopf, es kostet nichts.
 - **Scan (200):** Die Steine **eines** geläufigen Worts leuchten, und zwar für die **längste freie Zeile** (gibt es dafür keines, für die nächstkürzere) (nur ihr **Rand** leuchtet, damit die Buchstaben lesbar bleiben) – bis ein Wort angenommen wird oder sich das Feld ändert. Anders als der Tipp zeigt Scan alle Steine des Worts auf einmal, aber nicht ihre Reihenfolge. Gibt es kein passendes Wort, wackelt der Knopf, es kostet nichts.
@@ -191,3 +189,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.19:** Preise in 25er-Schritten nach Stärke (Lösen 400 … Mischen/Schwerkraft/Ersetzen/Tipp 25), Auffüllen gratis.
 - **v3.20:** Auffüllen-Knopf pulsiert, wenn kein gültiges Wort in eine freie Zeile passt.
 - **v3.21:** Neue Preise: Tauschen 50, Aufräumen 100, Magnet 100, Mischen 150, Scan 200. Säule entfällt. Hilfe-Knöpfe nach Preis sortiert (gratis bis teuer).
+- **v3.22:** Schwerkraft entfällt.

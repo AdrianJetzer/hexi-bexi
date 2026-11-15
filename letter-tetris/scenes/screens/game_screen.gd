@@ -46,7 +46,6 @@ var _replace_button: Button
 var _solve_button: Button
 var _joker_button: Button
 var _shuffle_button: Button
-var _gravity_button: Button
 var _magnet_button: Button
 var _split_button: Button
 var _scan_button: Button
@@ -100,7 +99,6 @@ func new_run(seed_value: int = -1) -> void:
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
 	session.hint_changed.connect(func(cells: Array[Vector2i]) -> void: _board.show_hint(cells))
-	session.tiles_moved.connect(func(_m: Array) -> void: _queue_pulse_check())
 	session.tiles_removed.connect(func(_c: Array[Vector2i]) -> void: _queue_pulse_check())
 	session.quest_progress.connect(func(_q: Quest) -> void: _queue_pulse_check())
 	session.quest_reshaped.connect(func(_q: Quest) -> void: _queue_pulse_check())
@@ -161,11 +159,6 @@ func _build_ui() -> void:
 		_set_replace_mode(false)
 		if session.shuffle().is_empty():
 			_shake(_shuffle_button))
-	_gravity_button = _button("", 26)
-	_gravity_button.pressed.connect(func() -> void:
-		_set_replace_mode(false)
-		if session.gravity().is_empty():
-			_shake(_gravity_button))
 	_split_button = _button("", 26)
 	_split_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -266,7 +259,7 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 func _help_buttons() -> Array[Button]:
 	var list := [
 		[_refill_button, BALANCE.refill_price], [_hint_button, BALANCE.hint_price],
-		[_replace_button, BALANCE.replace_price], [_gravity_button, BALANCE.gravity_price],
+		[_replace_button, BALANCE.replace_price],
 		[_swap_button, BALANCE.swap_price], [_clear_button, BALANCE.clear_price],
 		[_joker_button, BALANCE.joker_price], [_magnet_button, BALANCE.magnet_price],
 		[_split_button, BALANCE.split_price], [_shuffle_button, BALANCE.shuffle_price],
@@ -340,8 +333,6 @@ func _update_labels() -> void:
 	_joker_button.disabled = not session.can_joker()
 	_shuffle_button.text = "Mischen\n−%d" % BALANCE.shuffle_price
 	_shuffle_button.disabled = not session.can_shuffle()
-	_gravity_button.text = "Schwerkraft\n−%d" % BALANCE.gravity_price
-	_gravity_button.disabled = session.is_over or session.coins < BALANCE.gravity_price
 	_magnet_button.text = "Magnet\n−%d" % BALANCE.magnet_price
 	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
 	_split_button.text = "Teilen\n−%d" % BALANCE.split_price
