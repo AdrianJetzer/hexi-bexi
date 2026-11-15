@@ -67,6 +67,7 @@ var _split_button: Button
 var _shorten_button: Button
 var _scan_button: Button
 var _complete_button: Button
+var _strike_button: Button
 ## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
 var _tap_action: String = ""
 var _give_up_button: Button
@@ -198,6 +199,11 @@ func _build_ui() -> void:
 	_complete_button = _button("", BUTTON_FONT_SMALL)
 	_complete_button.toggle_mode = true
 	_complete_button.toggled.connect(func(on: bool) -> void: _set_tap_action("complete" if on else ""))
+	_strike_button = _button("", BUTTON_FONT)
+	_strike_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if not session.strike():
+			_shake(_strike_button))
 	_solve_button = _button("", BUTTON_FONT)
 	_solve_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -287,13 +293,16 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 ## Hilfe-Knöpfe in Anzeige-Reihenfolge: von gratis bis teuer (gleicher Preis: Reihenfolge dieser Liste).
 func _help_buttons() -> Array[Button]:
 	var list := [
-		[_refill_button, BALANCE.refill_price], [_hint_button, BALANCE.hint_price],
-		[_replace_button, BALANCE.replace_price],
-		[_swap_button, BALANCE.swap_price], [_clear_button, BALANCE.clear_price],
-		[_joker_button, BALANCE.joker_price], [_magnet_button, BALANCE.magnet_price],
-		[_shorten_button, BALANCE.shorten_price], [_split_button, BALANCE.split_price], [_shuffle_button, BALANCE.shuffle_price],
+		[_refill_button, BALANCE.refill_price],
+		[_hint_button, BALANCE.hint_price], [_replace_button, BALANCE.replace_price],
+		[_shuffle_button, BALANCE.shuffle_price],
+		[_clear_button, BALANCE.clear_price], [_joker_button, BALANCE.joker_price],
+		[_shorten_button, BALANCE.shorten_price],
+		[_swap_button, BALANCE.swap_price], [_split_button, BALANCE.split_price],
 		[_complete_button, BALANCE.complete_price],
-		[_scan_button, BALANCE.scan_price], [_solve_button, BALANCE.solve_price]]
+		[_magnet_button, BALANCE.magnet_price], [_scan_button, BALANCE.scan_price],
+		[_strike_button, BALANCE.strike_price],
+		[_solve_button, BALANCE.solve_price]]
 	for i in list.size():
 		list[i].append(i)
 	list.sort_custom(func(a: Array, b: Array) -> bool:
@@ -395,6 +404,8 @@ func _update_labels() -> void:
 	_complete_button.disabled = not session.can_complete() and not _complete_button.button_pressed
 	_scan_button.text = "Scan\n−%d" % BALANCE.scan_price
 	_scan_button.disabled = not session.can_scan()
+	_strike_button.text = "Streichen\n−%d" % BALANCE.strike_price
+	_strike_button.disabled = session.is_over or session.coins < BALANCE.strike_price
 	_solve_button.text = "Lösen\n−%d" % BALANCE.solve_price
 	_solve_button.disabled = not session.can_solve()
 	if session.is_over:

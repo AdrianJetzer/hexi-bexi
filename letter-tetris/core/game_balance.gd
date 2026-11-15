@@ -38,6 +38,8 @@ extends Resource
 @export var split_price: int = 50
 @export var split_min_length: int = 6
 @export var scan_price: int = 50
+## Hilfe „Zeile streichen“: freie Zeile mit den meisten Blöcken fällt weg.
+@export var strike_price: int = 50
 ## Hilfe „Vervollständigen“: so viele Buchstaben muss man mindestens anwischen.
 @export var complete_price: int = 50
 @export var complete_min_prefix: int = 2

@@ -5,7 +5,7 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), shorten(), split(), scan(), complete(prefix).
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), shorten(), split(), strike(), scan(), complete(prefix).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -584,6 +584,38 @@ func _shorten_row() -> int:
 			if best < 0 or quest.rows[i] > quest.rows[best]:
 				best = i
 	return best
+
+
+## Zeile streichen möglich? (Münzen reichen, mindestens 2 Zeilen frei)
+func can_strike() -> bool:
+	return not is_over and quest != null and coins >= _balance.strike_price \
+			and _free_row_count() >= 2
+
+
+## Hilfe „Zeile streichen“: die freie Zeile mit den meisten Blöcken (bei Gleichstand die oberste)
+## fällt weg. Nur bei mindestens 2 freien Zeilen (sonst wäre es ein billiges Lösen).
+## Gibt true zurück, wenn gestrichen wurde (sonst kostet es nichts).
+func strike() -> bool:
+	if not can_strike():
+		return false
+	var best := -1
+	for i in quest.rows.size():
+		if quest.filled[i] == "" and (best < 0 or quest.rows[i] > quest.rows[best]):
+			best = i
+	quest.remove_row(best)
+	_pay(_balance.strike_price)
+	_aim_help()
+	_check_hint()
+	quest_reshaped.emit(quest)
+	return true
+
+
+func _free_row_count() -> int:
+	var n := 0
+	for i in quest.rows.size():
+		if quest.filled[i] == "":
+			n += 1
+	return n
 
 
 ## Scan möglich? (Auftrag aktiv, Münzen reichen)
