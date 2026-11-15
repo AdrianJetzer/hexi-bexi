@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v9**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
+Status: **Entwurf v10**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -43,7 +43,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 5 Reihen. Der gewonnene Platz geht an die Hilfe-Knöpfe (155 statt 90 Pixel hoch, größere Schrift).
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
 - **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Der Bereich hat **immer Platz für 3 Zeilen mit 8 Blöcken** in voller Blockgröße (Blöcke so groß, wie die Breite für 8 Blöcke erlaubt); nur bei 4 Zeilen (nach „Teilen“) werden sie kleiner. Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
-- **Unter dem Spielfeld:** eine **Info-Zeile** in einheitlicher Schrift: links **Level · Rekord**, rechts **Münzen** (in Gold), darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
+- **Direkt über dem Spielfeld:** eine **Info-Zeile** in einheitlicher Schrift: links **Level · Rekord**, rechts **Münzen** (in Gold).
+- **Unter dem Spielfeld:** der Hinweis „Noch n Level bis zum Power-up“, darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
 - **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
@@ -70,5 +71,6 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
 - **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.
+- **v10:** Info-Zeile (Level · Rekord, Münzen) über das Spielfeld; unten nur Hinweis und Knöpfe (2 × 3).
 - **v9:** Raster 5 × 5 statt 5 × 6; dafür größere Hilfe-Knöpfe.
 - **v8:** Oben fester Platz für 3 Block-Zeilen (größere Blöcke), dunkler Rahmen ums Feld entfällt (nur leuchtende Kante), Info-Zeile unten in einer Schrift (Münzen in Gold). Unterer Bereich nur so hoch wie nötig. Breite Fenster: mittige Spalte.

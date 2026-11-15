@@ -74,6 +74,8 @@ func difficulty(level: int) -> DifficultyLevel:
 	PackedStringArray(["swap", "split", "complete"]),
 	PackedStringArray(["magnet", "scan", "strike"]),
 ]
+## So viele zufällige Hilfen der Stufe stehen beim Power-up zur Wahl.
+@export var draft_choices: int = 2
 ## Upgrade: Preis sinkt um diesen Anteil (gerundet auf 5), nie unter upgrade_min_price.
 @export var upgrade_discount: float = 0.25
 @export var upgrade_min_price: int = 25

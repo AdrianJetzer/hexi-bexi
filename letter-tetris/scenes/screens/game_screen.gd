@@ -22,7 +22,7 @@ const MAX_COLUMN_ASPECT := 0.6
 ## Der Bereich hat immer Platz für QuestBlocks.MAX_ROWS Zeilen mit MAX_COLS Blöcken.
 const BLOCKS_TOP := 100.0
 const BLOCKS_GAP_BELOW := 24.0
-## Unten: Info-Zeile und Hilfe-Knöpfe (Pixel); Knöpfe in Reihen zu BUTTONS_PER_ROW.
+## Info-Zeile (über dem Spielfeld) und Hilfe-Knöpfe unten (Pixel).
 const INFO_HEIGHT := 64.0
 const BUTTON_HEIGHT := 155.0
 const BUTTON_STEP := 168.0
@@ -30,7 +30,7 @@ const BUTTON_STEP := 168.0
 const BUTTONS_PER_ROW := 3
 const BUTTON_ROWS := 2
 const BUTTONS_PER_ROW_ALL := 5
-## Hinweis „Noch n Level bis zum Power-up“ zwischen Info-Zeile und Knöpfen.
+## Hinweis „Noch n Level bis zum Power-up“ über den Knöpfen.
 const OFFER_HINT_HEIGHT := 52.0
 const OFFER_HINT_FONT := 32
 ## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
@@ -72,8 +72,11 @@ const FLY_STAGGER := 0.07
 const DONE_PAUSE := 0.35
 ## Pulsieren des Auffüllen-Knopfs, wenn kein gültiges Wort passt: Dauer je halbem Puls, Größe, Helligkeit.
 const PULSE_HALF := 0.7
-const PULSE_SCALE := 1.06
 const PULSE_BRIGHT := Color(1.35, 1.3, 1.15)
+## Auffüllen-Hinweis: Schrift blinkt dezent zwischen Weiß und dunklem Weiß (je halbe Sekunde).
+const BLINK_HALF := 0.5
+const BLINK_BRIGHT := Color(1.0, 1.0, 1.0)
+const BLINK_DIM := Color(0.5, 0.52, 0.6)
 
 var session: RunSession
 
@@ -381,22 +384,22 @@ func _column(s: Vector2) -> Vector2:
 	return Vector2((s.x - w) / 2.0, w)
 
 
-## Höhe des oberen Bereichs: „Aufgeben“ und Platz für 3 Block-Zeilen in voller Blockgröße.
+## Höhe des oberen Bereichs: „Aufgeben“, Platz für 3 Block-Zeilen in voller Blockgröße und die Info-Zeile.
 func _top_height(s: Vector2) -> float:
 	var inner := _column(s).y * (1.0 - 2.0 * SIDE_MARGIN)
 	var b := inner / (QuestBlocks.MAX_COLS + (QuestBlocks.MAX_COLS - 1) * QuestBlocks.GAP)
 	var rows := QuestBlocks.MAX_ROWS
-	return BLOCKS_TOP + b * (rows + (rows - 1) * QuestBlocks.GAP) + BLOCKS_GAP_BELOW
+	return BLOCKS_TOP + b * (rows + (rows - 1) * QuestBlocks.GAP) + BLOCKS_GAP_BELOW + INFO_HEIGHT
 
 
-## Höhe des unteren Bereichs: Info-Zeile und alle Reihen Hilfe-Knöpfe.
+## Höhe des unteren Bereichs: Hinweis und alle Reihen Hilfe-Knöpfe.
 func _bottom_height() -> float:
 	var rows := BUTTON_ROWS
 	var hint := OFFER_HINT_HEIGHT
 	if not BALANCE.draft_enabled:
 		rows = ceili((RunSession.HELP_IDS.size() + 2) / float(BUTTONS_PER_ROW_ALL))
 		hint = 0.0
-	return INFO_HEIGHT + hint + rows * BUTTON_STEP + BOTTOM_PAD
+	return hint + rows * BUTTON_STEP + BOTTOM_PAD + 12.0
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rand.
@@ -419,23 +422,25 @@ func _relayout() -> void:
 	_give_up_button.position = Vector2(col.x + col.y - margin * 0.5 - col.y * 0.3, s.y * 0.012)
 	_give_up_button.size = Vector2(col.y * 0.3, 70)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
-	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, _top_height(s) - BLOCKS_TOP - BLOCKS_GAP_BELOW))
+	var info_y := _top_height(s) - INFO_HEIGHT
+	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
 
-	# Info-Zeile: Level · Rekord links, Münzen rechts, gleiche Schrift.
-	var info_top := s.y - _bottom_height()
-	_level_label.position = Vector2(side, info_top)
+	# Info-Zeile direkt über dem Spielfeld: Level · Rekord links, Münzen rechts.
+	_level_label.position = Vector2(side, info_y)
 	_level_label.size = Vector2(inner * 0.6, INFO_HEIGHT)
-	_coins_label.position = Vector2(side + inner * 0.6, info_top)
+	_coins_label.position = Vector2(side + inner * 0.6, info_y)
 	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
 	var hint_h := OFFER_HINT_HEIGHT if BALANCE.draft_enabled else 0.0
-	_offer_hint.position = Vector2(side, info_top + INFO_HEIGHT)
+	# Unten: nur der Hinweis „Noch n Level …“ und die Knöpfe.
+	var info_top := s.y - _bottom_height() + 12.0
+	_offer_hint.position = Vector2(side, info_top)
 	_offer_hint.size = Vector2(inner, hint_h)
-	var buttons_top := info_top + INFO_HEIGHT + hint_h
+	var buttons_top := info_top + hint_h
 	var gap := 12.0
 	var buttons := _help_buttons()
 	var per_row := _per_row()
 	var bw := (inner - (per_row - 1) * gap) / per_row
-	_continue_button.position = Vector2(side + inner * 0.25, info_top + INFO_HEIGHT + 10)
+	_continue_button.position = Vector2(side + inner * 0.25, info_top + 10)
 	_continue_button.size = Vector2(inner * 0.5, 120)
 	for b in _buttons.values():
 		b.visible = false
@@ -491,18 +496,18 @@ func _update_refill_pulse() -> void:
 	_pulse_check_queued = false
 	var want := session != null and not _completing and session.refill_suggested()
 	if want and _refill_pulse == null:
-		_refill_button.pivot_offset = _refill_button.size / 2.0
+		var set_color := func(c: Color) -> void:
+			_refill_button.add_theme_color_override("font_color", c)
+			_refill_button.add_theme_color_override("font_hover_color", c)
 		_refill_pulse = create_tween().set_loops()
 		_refill_pulse.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		_refill_pulse.tween_property(_refill_button, "scale", Vector2.ONE * PULSE_SCALE, PULSE_HALF)
-		_refill_pulse.parallel().tween_property(_refill_button, "modulate", PULSE_BRIGHT, PULSE_HALF)
-		_refill_pulse.tween_property(_refill_button, "scale", Vector2.ONE, PULSE_HALF)
-		_refill_pulse.parallel().tween_property(_refill_button, "modulate", Color.WHITE, PULSE_HALF)
+		_refill_pulse.tween_method(set_color, BLINK_BRIGHT, BLINK_DIM, BLINK_HALF)
+		_refill_pulse.tween_method(set_color, BLINK_DIM, BLINK_BRIGHT, BLINK_HALF)
 	elif not want and _refill_pulse != null:
 		_refill_pulse.kill()
 		_refill_pulse = null
-		_refill_button.scale = Vector2.ONE
-		_refill_button.modulate = Color.WHITE
+		_refill_button.remove_theme_color_override("font_color")
+		_refill_button.remove_theme_color_override("font_hover_color")
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------

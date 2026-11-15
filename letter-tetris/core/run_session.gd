@@ -89,6 +89,8 @@ var owned: PackedStringArray = PackedStringArray()
 var offer: Dictionary = {}
 ## Preise nach Upgrades (ID → Preis); sonst gilt der Grundpreis aus GameBalance.
 var _prices: Dictionary = {}
+## Zufall für die Power-up-Auswahl (welche Hilfen der Stufe angeboten werden).
+var _draft_rng: RandomNumberGenerator
 
 
 ## seed_value < 0: zufällig; sonst reproduzierbar (für Tests).
@@ -115,6 +117,11 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 	_generator = QuestGenerator.new(curve, rng_quests)
 	_hint_rng = rng_cells
 	_planter = WordPlanter.new(rng_quests)
+	_draft_rng = RandomNumberGenerator.new()
+	if seed_value >= 0:
+		_draft_rng.seed = seed_value + 31337
+	else:
+		_draft_rng.randomize()
 	_plant_words = common_words if common_words != null else dictionary
 	if common_words != null:
 		_hint_finders.append(WordFinder.new(common_words))
@@ -230,7 +237,19 @@ func _make_offer(completed: int) -> void:
 	var options := _options_after(completed)
 	if options.is_empty():
 		return
-	offer = {"kind": _kind_after(completed), "options": options}
+	var kind := _kind_after(completed)
+	if kind == "powerup":
+		# Nur draft_choices zufällige Hilfen der Stufe (Reihenfolge der Stufe bleibt).
+		var pool := Array(options)
+		var picked := PackedStringArray()
+		while picked.size() < _balance.draft_choices and not pool.is_empty():
+			picked.append(pool.pop_at(_draft_rng.randi_range(0, pool.size() - 1)))
+		var ordered := PackedStringArray()
+		for id in options:
+			if picked.has(id):
+				ordered.append(id)
+		options = ordered
+	offer = {"kind": kind, "options": options}
 	offer_made.emit(offer)
 
 

@@ -93,18 +93,18 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ### Power-ups und Upgrades (Roguelike) [v1]
 - **Start eines Laufs:** Unten sind nur **Auffüllen** (gratis) und **Lösen** (500) sichtbar.
-- **Power-up nach Level 4, 8, 12 und 16:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **3 Karten** (Name, Preis, kurze Erklärung) – den drei Hilfen der nächsten Preisstufe:
+- **Power-up nach Level 4, 8, 12 und 16:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** der drei Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
 
-  | nach Level | Stufe | Auswahl |
+  | nach Level | Stufe | Hilfen der Stufe (2 davon zur Wahl) |
   |---|---|---|
   | 4 | 50 | Tipp, Ersetzen, Mischen |
   | 8 | 100 | Aufräumen, Joker, Kürzen |
   | 12 | 150 | Tauschen, Teilen, Vervollständigen |
   | 16 | 200 | Magnet, Scan, Zeile streichen |
 
-  Man tippt eine Karte an, ihr Knopf kommt unten dazu, dann beginnt das nächste Level. Die anderen beiden gibt es in diesem Lauf **nicht**.
+  Man tippt eine Karte an, ihr Knopf kommt unten dazu, dann beginnt das nächste Level. Die anderen Hilfen der Stufe gibt es in diesem Lauf **nicht**.
 - **Upgrade nach Level 20, 24, 28 …:** Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
-- **Hinweis über den Knöpfen:** „Noch 3 Level bis zum Power-up“ bzw. „… bis zum Upgrade“; bei „Noch 1 Level“ leuchtet er.
+- **Hinweis über den Knöpfen** (nur diese Zeile; Level, Rekord und Münzen stehen über dem Spielfeld): „Noch 3 Level bis zum Power-up“ bzw. „… bis zum Upgrade“; bei „Noch 1 Level“ leuchtet er.
 - **Knöpfe:** höchstens 6 (Auffüllen, 4 Hilfen, Lösen), in **2 Reihen zu je 3**, sortiert von gratis bis teuer – deutlich größer als vorher.
 - **Neuer Lauf:** wieder nur Auffüllen und Lösen, alle Preise wie in der Tabelle.
 - **Test-Modus:** Ein Spielwert (`draft_enabled` in `data/balance.tres`) schaltet den Draft ab; dann sind alle Hilfen von Anfang an da (zum Testen).
@@ -112,7 +112,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 ### Die Hilfen im Einzelnen
 
 - **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). **Gratis.** Das balanciert sich selbst: Zu wenige Steine – kein Wort möglich; zu viele Steine – unübersichtlich, schwerer zu finden. Der Spieler entscheidet, wann er nachlegt. Ist das Feld voll, ist Auffüllen gesperrt.
-  - **Pulsiert als Hinweis:** Liegt im Feld **kein gültiges Wort** (ganzes Wörterbuch), das genau in eine freie Zeile passt, pulsiert der Knopf sanft (leicht größer und heller, etwa 1,4 s pro Puls). Sobald wieder ein passendes Wort liegt, hört er auf. Kein Pulsieren bei vollem Feld (Auffüllen gesperrt), während ein Auftrag abschließt, und solange ein Joker im Feld liegt (dann ist vielleicht ein Wort möglich).
+  - **Blinkt als Hinweis:** Liegt im Feld **kein gültiges Wort** (ganzes Wörterbuch), das genau in eine freie Zeile passt, blinkt die **Schrift** des Knopfs dezent zwischen Weiß und dunklem Weiß (je eine halbe Sekunde). Sobald wieder ein passendes Wort liegt, hört er auf. Kein Pulsieren bei vollem Feld (Auffüllen gesperrt), während ein Auftrag abschließt, und solange ein Joker im Feld liegt (dann ist vielleicht ein Wort möglich).
 - **Tauschen (150):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
 - **Aufräumen (100):** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 50. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
@@ -224,3 +224,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.26:** Tauschen kostet 100 statt 50 (Bot-Simulation: bei 50 hält man sich mit Tauschen fast endlos über Wasser, Ø Level 137 statt 58).
 - **v3.27:** Preisstufen: je drei Hilfen für 50 (Tipp, Ersetzen, Mischen), 100 (Aufräumen, Joker, Kürzen), 150 (Tauschen, Teilen, Vervollständigen), 200 (Magnet, Scan, Zeile streichen). Neue Hilfe Zeile streichen. Lösen als Sonderknopf für 500.
 - **v3.28:** Roguelike-Draft: Start nur mit Auffüllen und Lösen; nach Level 4/8/12/16 eine von drei Hilfen der Stufe 50/100/150/200 wählen; ab Level 20 alle 4 Level ein Upgrade (−25 %, auch für Lösen). Hinweis „Noch n Level bis zum Power-up“. Knöpfe in 2 × 3.
+- **v3.29:** Power-up: 2 zufällige von 3 Hilfen der Stufe zur Wahl. Auffüllen-Hinweis: Schrift blinkt dezent statt Pulsieren.
