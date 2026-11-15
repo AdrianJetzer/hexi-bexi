@@ -73,7 +73,8 @@ static func frame_glow() -> StandardMaterial3D:
 	return m
 
 
-## Funkel-Teilchen: weicher Lichtpunkt mit feinem Kreuz, immer zur Kamera gedreht, additiv.
+## Funkel-Teilchen: feiner Lichtpunkt mit zartem Kreuz, immer zur Kamera gedreht, additiv
+## (die Partikel-Farbe blendet über Schwarz weich ein und aus).
 static func sparkle() -> StandardMaterial3D:
 	var size := 64
 	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
@@ -84,14 +85,14 @@ static func sparkle() -> StandardMaterial3D:
 			var dy := (y - c) / c
 			var r := sqrt(dx * dx + dy * dy)
 			var dot := pow(clampf(1.0 - r, 0.0, 1.0), 3.0)
-			var cross := pow(clampf(1.0 - absf(dx) * 9.0, 0.0, 1.0), 2.0) * clampf(1.0 - absf(dy), 0.0, 1.0) \
-					+ pow(clampf(1.0 - absf(dy) * 9.0, 0.0, 1.0), 2.0) * clampf(1.0 - absf(dx), 0.0, 1.0)
-			var a := clampf(dot + cross * 0.7, 0.0, 1.0)
-			img.set_pixel(x, y, Color(1, 1, 1, a))
+			var cross := pow(clampf(1.0 - absf(dx) * 14.0, 0.0, 1.0), 2.0) * pow(clampf(1.0 - absf(dy), 0.0, 1.0), 2.0) \
+					+ pow(clampf(1.0 - absf(dy) * 14.0, 0.0, 1.0), 2.0) * pow(clampf(1.0 - absf(dx), 0.0, 1.0), 2.0)
+			var v := clampf(dot + cross * 0.6, 0.0, 1.0)
+			# Additiv: Helligkeit statt Deckkraft (Schwarz = unsichtbar).
+			img.set_pixel(x, y, Color(v, v, v, 1.0))
 	var m := StandardMaterial3D.new()
 	m.albedo_texture = ImageTexture.create_from_image(img)
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	m.vertex_color_use_as_albedo = true

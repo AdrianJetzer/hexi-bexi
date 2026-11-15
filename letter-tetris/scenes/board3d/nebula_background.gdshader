@@ -1,7 +1,8 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled;
 // Hintergrund: langsam ziehender Nebel in mehreren Schichten, Sterne (einige funkeln),
-// Lichtschein hinter dem Spielfeld und Vignette zum Rand hin.
+// Lichtschein hinter dem Spielfeld und Vignette zum Rand hin. Alles zieht langsam nach
+// unten, als ob man durchs All fliegt (Bildschirm-unten = Welt +Z).
 
 uniform vec4 color_deep : source_color = vec4(0.01, 0.01, 0.04, 1.0);
 uniform vec4 color_mid : source_color = vec4(0.07, 0.06, 0.24, 1.0);
@@ -15,6 +16,9 @@ uniform float star_brightness = 1.2;
 uniform float glow_strength = 0.25;
 uniform vec4 glow_color : source_color = vec4(0.25, 0.45, 0.9, 1.0);
 uniform float vignette = 0.75;
+// Flug durchs All: alles zieht langsam nach unten (Welt-Einheiten pro Sekunde), Sterne
+// schneller als der Nebel (Tiefe / Parallaxe).
+uniform float flight_speed = 0.35;
 
 varying vec3 world_pos;
 
@@ -62,7 +66,8 @@ float stars(vec2 p, float density, float t) {
 }
 
 void fragment() {
-	vec2 p = world_pos.xz * cloud_scale;
+	vec2 fly = vec2(0.0, TIME * flight_speed);
+	vec2 p = (world_pos.xz - fly * 0.35) * cloud_scale;
 	float t = TIME * drift_speed;
 	// Zwei Nebelschichten, verschieden schnell (Tiefe)
 	float n1 = fbm(p + vec2(t, t * 0.6));
@@ -73,7 +78,9 @@ void fragment() {
 	col += color_accent.rgb * smoothstep(0.6, 0.9, n1) * 0.5 * cloud_strength;
 	col = mix(color_deep.rgb, col, cloud_strength);
 	// Sterne in zwei Größen
-	float s = stars(world_pos.xz * 1.6, star_density, TIME) + 0.6 * stars(world_pos.xz * 3.1 + 17.0, star_density, TIME * 1.3);
+	// Zwei Sternschichten: nahe (größer, schneller) und ferne (kleiner, langsamer)
+	float s = stars((world_pos.xz - fly) * 1.6, star_density, TIME)
+			+ 0.6 * stars((world_pos.xz - fly * 0.55) * 3.1 + 17.0, star_density, TIME * 1.3);
 	col += vec3(0.85, 0.9, 1.0) * s * star_brightness;
 	// Lichtschein hinter dem Feld und Vignette (Bildschirmmitte)
 	vec2 c = SCREEN_UV - vec2(0.5, 0.48);
