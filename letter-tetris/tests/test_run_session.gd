@@ -17,7 +17,7 @@ func before_each() -> void:
 	balance.hint_price = 100
 	balance.replace_price = 100
 	balance.solve_price = 100
-	for p in ["joker_price", "shuffle_price", "magnet_price",
+	for p in ["joker_price", "shuffle_price", "magnet_price", "complete_price",
 			"split_price", "scan_price"]:
 		balance.set(p, 50)
 	curve = load("res://data/quest_curve.tres") as QuestCurve
@@ -994,6 +994,58 @@ func test_scan_after_hint_shows_hinted_word() -> void:
 	assert_eq(scanned[0], first, "Scan zeigt das schon getippte Wort")
 	assert_eq(run.hinted_cells().size(), 1, "gezeigte Tipp-Buchstaben bleiben")
 	assert_eq(run.hint(), scanned[1])
+
+
+# --- Vervollständigen -----------------------------------------------------------------
+
+func test_complete_shows_word_starting_with_prefix() -> void:
+	run.start()
+	_use_rows([4])
+	var haus := _column(0, "HAUS")
+	_column(2, "MAUS", false)
+	run.coins = 150
+	var cells := run.complete(haus.slice(0, 2))
+	assert_eq(cells, haus)
+	assert_eq(run.coins, 100)
+	assert_signal_emitted(run, "scan_shown")
+	assert_eq(run.hint(), haus[0], "Tipp zeigt danach dasselbe Wort")
+
+
+func test_complete_needs_two_letters_and_a_longer_word() -> void:
+	run.start()
+	_use_rows([4])
+	var haus := _column(0, "HAUS")
+	run.coins = 50
+	assert_eq(run.complete(haus.slice(0, 1)).size(), 0, "1 Buchstabe reicht nicht")
+	assert_eq(run.complete(haus).size(), 0, "das ganze Wort ist kein Anfang")
+	assert_eq(run.coins, 50, "kostet nichts")
+
+
+func test_complete_without_continuation_is_free() -> void:
+	run.start()
+	_use_rows([4])
+	var cells := _column(0, "QXHAUS")
+	run.coins = 50
+	assert_eq(run.complete(cells.slice(0, 2)).size(), 0)
+	assert_eq(run.coins, 50)
+
+
+func test_complete_only_for_free_row_length() -> void:
+	run.start()
+	_use_rows([6])
+	var sterne := _column(0, "STERNE")
+	run.coins = 50
+	assert_eq(run.complete(sterne.slice(0, 2)), sterne, "STERNE (6), nicht STERN (5)")
+
+
+func test_complete_falls_back_to_all_valid_words() -> void:
+	var common := WordDictionary.from_words(PackedStringArray(["TEE"]))
+	run = RunSession.new(balance, curve, lang, dict, 42, common)
+	run.start()
+	_use_rows([5])
+	var stern := _column(0, "STERN")
+	run.coins = 50
+	assert_eq(run.complete(stern.slice(0, 2)), stern, "STERN ist kein Vorschlags-Wort, aber gültig")
 
 
 func test_scan_without_words_is_free() -> void:

@@ -5,7 +5,7 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), split(), scan().
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), split(), scan(), complete(prefix).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -584,14 +584,54 @@ func scan() -> Array[Vector2i]:
 			break
 	if cells.is_empty():
 		return cells
-	if cells != _hint_cells:
-		_reset_hint()
-		_hint_cells = cells.duplicate()
-		_hint_word = word_for(cells)
-		_hint_count = 0
+	_adopt_hint(cells)
 	_pay(_balance.scan_price)
 	scan_shown.emit(cells)
 	return cells
+
+
+## Vervollständigen möglich? (Auftrag aktiv, Münzen reichen)
+func can_complete() -> bool:
+	return not is_over and quest != null and coins >= _balance.complete_price
+
+
+## Hilfe „Vervollständigen“: zum angewischten Wortanfang (mindestens complete_min_prefix Steine)
+## ein Wort suchen, das mit genau diesen Steinen beginnt, länger ist und genau in eine freie
+## Zeile passt (zuerst geläufige Wörter, dann alle). Gibt den ganzen Weg zurück; er leuchtet wie
+## beim Scan, und Tipp zeigt danach dasselbe Wort. Leer = keines (kostet nichts).
+func complete(prefix: Array[Vector2i]) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if not can_complete() or prefix.size() < _balance.complete_min_prefix:
+		return cells
+	_check_hint()
+	var lengths := quest.free_lengths()
+	var p_min := maxi(prefix.size() + 1, lengths[0])
+	var p_max := lengths[lengths.size() - 1]
+	if p_min > p_max:
+		return cells
+	var q := quest
+	for finder in _hint_finders:
+		var found := finder.find_paths_from(grid, prefix, p_min, p_max,
+				func(w: String) -> bool: return q.matches(w))
+		if not found.is_empty():
+			cells.assign(found[_hint_rng.randi_range(0, found.size() - 1)]["path"])
+			break
+	if cells.is_empty():
+		return cells
+	_adopt_hint(cells)
+	_pay(_balance.complete_price)
+	scan_shown.emit(cells)
+	return cells
+
+
+## Dieses Wort wird zum Tipp-Wort (Tipp zeigt es danach Buchstabe für Buchstabe).
+func _adopt_hint(cells: Array[Vector2i]) -> void:
+	if cells == _hint_cells:
+		return
+	_reset_hint()
+	_hint_cells = cells.duplicate()
+	_hint_word = word_for(cells)
+	_hint_count = 0
 
 
 ## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)
