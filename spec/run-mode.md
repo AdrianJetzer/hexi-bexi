@@ -67,20 +67,19 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | Auftrag gelöst | **+100** (fest, unabhängig vom Level) |
 | Langes Wort nebenbei [später] | Bonus |
 | **Auffüllen: 5 neue Steine** | **gratis** |
-| **Lösen: ganzen Auftrag lösen** (ohne Belohnung) | **−400** |
-| **Magnet: Wort um einen Stein bilden** | **−150** |
-| **Teilen: lange Zeile halbieren** | **−125** |
-| **Joker: ein Stein wird zum Joker** | **−100** |
-| **Tauschen: 5 Steine neu** | **−100** |
-| **Scan: Steine eines Worts zeigen (längste Zeile)** | **−75** |
-| **Säule: Spalte neu beschriften** | **−50** |
-| **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−50** |
 | **Tipp: nächsten Buchstaben zeigen** | **−25** je Buchstabe |
 | **Stein ersetzen** | **−25** |
-| **Mischen: Buchstaben neu verteilen** | **−25** |
 | **Schwerkraft: Löcher schließen** | **−25** |
+| **Tauschen: 5 Steine neu** | **−50** |
+| **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−100** |
+| **Joker: ein Stein wird zum Joker** | **−100** |
+| **Magnet: Wort um einen Stein bilden** | **−100** |
+| **Teilen: lange Zeile halbieren** | **−125** |
+| **Mischen: Buchstaben neu verteilen** | **−150** |
+| **Scan: Steine eines Worts zeigen (längste Zeile)** | **−200** |
+| **Lösen: ganzen Auftrag lösen** (ohne Belohnung) | **−400** |
 
-- **Preise in 25er-Schritten** (leicht zu rechnen), gestaffelt nach Stärke: Was einen Auftrag garantiert löst, kostet mehrere Level-Belohnungen; was fast sicher ein Wort bringt, etwa eine; kleine oder zufällige Eingriffe sind billig. Startwerte für das Feintuning (Spielwerte in `data/balance.tres`); per Bot-Simulation geprüft.
+- **Preise in 25er-Schritten** (leicht zu rechnen), nach Testspielen festgelegt. Die Hilfe-Knöpfe stehen in dieser Reihenfolge: **von gratis bis teuer** (gleicher Preis: Reihenfolge der Tabelle). Startwerte für das Feintuning (Spielwerte in `data/balance.tres`); per Bot-Simulation geprüft.
 - Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
 
 ## Spielfeld
@@ -92,18 +91,17 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 - **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). **Gratis.** Das balanciert sich selbst: Zu wenige Steine – kein Wort möglich; zu viele Steine – unübersichtlich, schwerer zu finden. Der Spieler entscheidet, wann er nachlegt. Ist das Feld voll, ist Auffüllen gesperrt.
   - **Pulsiert als Hinweis:** Liegt im Feld **kein gültiges Wort** (ganzes Wörterbuch), das genau in eine freie Zeile passt, pulsiert der Knopf sanft (leicht größer und heller, etwa 1,4 s pro Puls). Sobald wieder ein passendes Wort liegt, hört er auf. Kein Pulsieren bei vollem Feld (Auffüllen gesperrt), während ein Auftrag abschließt, und solange ein Joker im Feld liegt (dann ist vielleicht ein Wort möglich).
-- **Tauschen (100):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
+- **Tauschen (50):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
-- **Aufräumen (50):** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 50. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
+- **Aufräumen (100):** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 50. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
 - **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein Wort fest, das in eine freie Zeile passt, und lässt seinen ersten Stein **blinken**; jeder weitere Tipp (je 25) lässt den nächsten Stein desselben Worts blinken. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Liegt kein passendes Wort im Feld, kostet der Tipp nichts. Kein Text, nur Blinken.
 - **Lösen (400):** Der aktuelle Auftrag wird sofort gelöst, es geht ins nächste Level; **keine Belohnung**. Für jede freie Zeile wird ein passendes **geläufiges Wort aus dem Feld** genommen (jeder Stein nur einmal): die Steine verschwinden, die Buchstaben fliegen in die Zeile, danach kommen wie gewohnt Wortlänge − 1 neue Steine. Gibt es für eine Zeile kein Wort im Feld, wird sie mit einem zufälligen geläufigen Wort passender Länge gefüllt (Buchstaben ploppen direkt in den Blöcken auf, das Feld bleibt dafür unverändert). Ein laufender Tipp verfällt.
 - **Joker (100):** Ein zufälliger Stein wird zum **Joker** (zeigt ★). Beim Wischen steht er für **jeden Buchstaben**, mit dem ein gültiges Wort entsteht, das in eine freie Zeile passt; in die Blöcke fliegt der passende echte Buchstabe. Tipp, Lösen, Aufräumen und die Feststeck-Erkennung beziehen Joker vorerst nicht ein.
-- **Mischen (25):** Die Buchstaben aller Steine werden zufällig auf die belegten Plätze neu verteilt; das Feld bleibt gleich voll. Die Steine drehen sich dabei um.
+- **Mischen (150):** Die Buchstaben aller Steine werden zufällig auf die belegten Plätze neu verteilt; das Feld bleibt gleich voll. Die Steine drehen sich dabei um.
 - **Schwerkraft (25):** In jeder Spalte rutschen die Steine nach unten, die **Löcher schließen sich**. Gibt es keine Löcher, wackelt der Knopf und es kostet nichts.
-- **Magnet (150):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
-- **Säule (50):** Knopf drücken, dann einen Stein **antippen**: Alle Steine **dieser Spalte** bekommen neue Buchstaben (Wort-Hilfe); die Anzahl der Steine bleibt.
+- **Magnet (100):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
 - **Teilen (125):** Die **längste freie Zeile** mit mindestens 6 Blöcken wird halbiert: 6 → 3 + 3, 7 → 4 + 3, 8 → 4 + 4. Dadurch können 4 Zeilen entstehen (die Blöcke werden dann etwas kleiner). Gibt es keine solche Zeile, wackelt der Knopf, es kostet nichts.
-- **Scan (75):** Die Steine **eines** geläufigen Worts leuchten, und zwar für die **längste freie Zeile** (gibt es dafür keines, für die nächstkürzere) (nur ihr **Rand** leuchtet, damit die Buchstaben lesbar bleiben) – bis ein Wort angenommen wird oder sich das Feld ändert. Anders als der Tipp zeigt Scan alle Steine des Worts auf einmal, aber nicht ihre Reihenfolge. Gibt es kein passendes Wort, wackelt der Knopf, es kostet nichts.
+- **Scan (200):** Die Steine **eines** geläufigen Worts leuchten, und zwar für die **längste freie Zeile** (gibt es dafür keines, für die nächstkürzere) (nur ihr **Rand** leuchtet, damit die Buchstaben lesbar bleiben) – bis ein Wort angenommen wird oder sich das Feld ändert. Anders als der Tipp zeigt Scan alle Steine des Worts auf einmal, aber nicht ihre Reihenfolge. Gibt es kein passendes Wort, wackelt der Knopf, es kostet nichts.
 - **Stein ersetzen (25):** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
 - **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
 
@@ -192,3 +190,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.18:** Auffüllen ist gratis (mehr Steine machen es für Menschen nicht leichter, sondern unübersichtlicher).
 - **v3.19:** Preise in 25er-Schritten nach Stärke (Lösen 400 … Mischen/Schwerkraft/Ersetzen/Tipp 25), Auffüllen gratis.
 - **v3.20:** Auffüllen-Knopf pulsiert, wenn kein gültiges Wort in eine freie Zeile passt.
+- **v3.21:** Neue Preise: Tauschen 50, Aufräumen 100, Magnet 100, Mischen 150, Scan 200. Säule entfällt. Hilfe-Knöpfe nach Preis sortiert (gratis bis teuer).

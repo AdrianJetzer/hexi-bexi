@@ -5,7 +5,7 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), column(cell), split(), scan().
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), gravity(), magnet(cell), split(), scan().
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -555,34 +555,6 @@ func magnet(cell: Vector2i) -> Array[Vector2i]:
 			changed.append(path[i])
 			tile_changed.emit(path[i], word[i])
 	_pay(_balance.magnet_price)
-	_check_hint()
-	return changed
-
-
-## Säule möglich? (Münzen reichen; mit Platz: in dieser Spalte liegt ein Stein)
-func can_column(cell: Vector2i = NO_CELL) -> bool:
-	if is_over or coins < _balance.column_price:
-		return false
-	if cell == NO_CELL:
-		return grid.free_count() < grid.size()
-	for r in grid.rows:
-		if grid.is_occupied(Vector2i(cell.x, r)):
-			return true
-	return false
-
-
-## Hilfe „Säule“: alle Steine der Spalte des angetippten Platzes bekommen neue Buchstaben
-## (Wort-Hilfe). Gibt die geänderten Plätze zurück (leer = nicht möglich, kostet nichts).
-func column(cell: Vector2i) -> Array[Vector2i]:
-	var changed: Array[Vector2i] = []
-	if not can_column(cell):
-		return changed
-	for r in grid.rows:
-		var c := Vector2i(cell.x, r)
-		if grid.is_occupied(c):
-			tile_changed.emit(c, _new_letter(c))
-			changed.append(c)
-	_pay(_balance.column_price)
 	_check_hint()
 	return changed
 

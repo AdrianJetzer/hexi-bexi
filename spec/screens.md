@@ -38,7 +38,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** **Münzen**, **Level**, **Rekord**.
-- **Hilfe-Knöpfe** mit Preis: **Auffüllen** (5 Steine, gratis), **Tauschen** (5 Steine, 100), **Aufräumen** (50), **Tipp** (25 je Buchstabe), **Stein ersetzen** (25), **Joker** (100), **Mischen** (25), **Schwerkraft** (25), **Magnet** (150, Stein antippen), **Säule** (50, Stein antippen), **Teilen** (125), **Scan** (75, ein Wort für die längste Zeile), **Lösen** (ganzer Auftrag, 400). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
+- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis), **Tipp** (25 je Buchstabe), **Stein ersetzen** (25), **Schwerkraft** (25), **Tauschen** (5 Steine, 50), **Aufräumen** (100), **Joker** (100), **Magnet** (100, Stein antippen), **Teilen** (125), **Mischen** (150), **Scan** (200, ein Wort für die längste Zeile), **Lösen** (ganzer Auftrag, 400). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
@@ -81,3 +81,4 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.3:** Hilfe-Knöpfe Joker, Mischen, Schwerkraft; zum Testen in zwei Reihen, gute Platzierung später.
 - **v4.4:** Hilfe-Knöpfe Magnet und Säule (Antipp-Modus wie Ersetzen); zum Testen in drei Reihen.
 - **v4.5:** Hilfe-Knöpfe Teilen und Scan.
+- **v4.6:** Säule entfällt; Hilfe-Knöpfe nach Preis sortiert (gratis bis teuer).

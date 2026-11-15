@@ -17,7 +17,7 @@ func before_each() -> void:
 	balance.hint_price = 100
 	balance.replace_price = 100
 	balance.solve_price = 100
-	for p in ["joker_price", "shuffle_price", "gravity_price", "magnet_price", "column_price",
+	for p in ["joker_price", "shuffle_price", "gravity_price", "magnet_price",
 			"split_price", "scan_price"]:
 		balance.set(p, 50)
 	curve = load("res://data/quest_curve.tres") as QuestCurve
@@ -907,7 +907,7 @@ func test_gravity_without_holes_is_free() -> void:
 	assert_eq(run.coins, 50)
 
 
-# --- Magnet und Säule ------------------------------------------------------------------------
+# --- Magnet ------------------------------------------------------------------------
 
 func test_magnet_builds_word_around_tapped_tile() -> void:
 	run.start()
@@ -929,30 +929,6 @@ func test_magnet_impossible_is_free() -> void:
 	run.coins = 50
 	assert_eq(run.magnet(cells[0]).size(), 0)
 	assert_eq(run.coins, 50)
-
-
-func test_column_gives_new_letters_to_whole_column() -> void:
-	run.start()
-	_use_rows([3])
-	var col := _column(1, "EEEE")
-	_column(3, "EEE", false)
-	run.coins = 50
-	var changed := run.column(col[2])
-	assert_eq(changed.size(), 4, "nur die angetippte Spalte")
-	for cell in col:
-		assert_true(run.grid.is_occupied(cell))
-	assert_eq(run.grid.get_letter(Vector2i(3, 0)), "E", "andere Spalte unverändert")
-	assert_eq(run.grid.size() - run.grid.free_count(), 7, "Anzahl bleibt")
-	assert_eq(run.coins, 0)
-
-
-func test_column_needs_coins() -> void:
-	run.start()
-	_use_rows([3])
-	var col := _column(1, "EEEE")
-	run.coins = 49
-	assert_false(run.can_column(col[0]))
-	assert_eq(run.column(col[0]).size(), 0)
 
 
 # --- Teilen und Scan ---------------------------------------------------------------------------

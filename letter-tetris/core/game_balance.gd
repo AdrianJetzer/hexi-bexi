@@ -31,9 +31,8 @@ extends Resource
 @export var joker_price: int = 50
 @export var shuffle_price: int = 50
 @export var gravity_price: int = 50
-## Hilfen „Magnet“ und „Säule“.
+## Hilfe „Magnet“.
 @export var magnet_price: int = 50
-@export var column_price: int = 50
 ## Hilfen „Teilen“ (ab dieser Zeilenlänge) und „Scan“.
 @export var split_price: int = 50
 @export var split_min_length: int = 6
