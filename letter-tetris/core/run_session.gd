@@ -216,6 +216,30 @@ func is_stuck() -> bool:
 			func(w: String) -> bool: return q.matches(w), 1).is_empty()
 
 
+## Liegt im Feld ein gültiges Wort (ganzes Wörterbuch), das genau in eine freie Zeile passt?
+## Ein Joker im Feld zählt als „vielleicht“ (true), damit nichts fälschlich als ausweglos gilt.
+func has_fitting_word() -> bool:
+	if quest == null:
+		return false
+	var lengths := quest.free_lengths()
+	if lengths.is_empty():
+		return false
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell) and grid.get_letter(cell) == JOKER:
+			return true
+	var q := quest
+	var finder: WordFinder = _hint_finders[_hint_finders.size() - 1]
+	return not finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
+			func(w: String) -> bool: return q.matches(w), 1).is_empty()
+
+
+## Soll der Auffüllen-Knopf pulsieren? Kein gültiges passendes Wort im Feld und Auffüllen möglich.
+func refill_suggested() -> bool:
+	if quest == null or quest.is_done() or not can_refill():
+		return false
+	return not has_fitting_word()
+
+
 ## Aufräumen möglich? (Auftrag aktiv, Münzen reichen)
 func can_clear() -> bool:
 	return not is_over and quest != null and coins >= _balance.clear_price
