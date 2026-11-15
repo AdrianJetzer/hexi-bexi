@@ -72,8 +72,8 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 
 | | **Deutsch einfach** (Kinder) | **Deutsch mittel** | **Deutsch schwierig** |
 |---|---|---|---|
-| Gültige Wörter | nur eine **kindgerechte Liste** (ca. 3.000 bekannte Grundwörter und Mehrzahlformen, 3–5 Buchstaben) | alle | alle |
-| Vorschläge (Wort-Hilfe, Tipp, Scan …) | dieselbe Kinder-Liste | 10.000 häufige Wörter | 10.000 häufige Wörter |
+| Gültige Wörter | die **Kinder-Liste** plus die häufigsten kurzen Wörter in jeder Form (ICH, SIE, DER, UND, IST …), zusammen ca. 3.400, 3–5 Buchstaben | alle | alle |
+| Vorschläge (Wort-Hilfe, Tipp, Scan …) | die **Kinder-Liste** (ca. 3.000 bekannte Grundwörter und Mehrzahlformen) | 10.000 häufige Wörter | 10.000 häufige Wörter |
 | Zeilenlänge | höchstens 5 Blöcke | höchstens 6 Blöcke | bis 8 Blöcke |
 | Steigerung | langsam | mittel | wie in „Kurve“ oben |
 | Wort-Hilfe | immer stark | länger stark | wie in „Kurve“ oben |

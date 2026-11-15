@@ -30,13 +30,20 @@ func test_row_lengths_per_mode() -> void:
 
 func test_easy_mode_uses_kids_words_only() -> void:
 	var m := _mode("de_easy")
-	assert_eq(m.valid_words_path(), m.suggestion_words_path())
-	var kids := WordDictionary.from_file(m.valid_words_path())
+	var kids := WordDictionary.from_file(m.suggestion_words_path())
+	var valid := WordDictionary.from_file(m.valid_words_path())
 	assert_between(kids.size(), 2500, 3500)
+	assert_between(valid.size(), kids.size(), kids.size() + 1500)
 	for w in ["HAUS", "KATZE", "HUND", "BAUM", "BALL"]:
 		assert_true(kids.contains(w), w)
-	for w in ["THEE", "ABIRRTE", "HAUSES", "ANUS", "STERNE"]:
-		assert_false(kids.contains(w), w)
+		assert_true(valid.contains(w), w)
+	# Kleine Wörter zählen, werden aber nicht vorgeschlagen.
+	for w in ["ICH", "SIE", "DER", "UND", "MIT", "IST"]:
+		assert_true(valid.contains(w), w)
+	for w in ["ICH", "SIE", "DER", "WIR"]:
+		assert_false(kids.contains(w), "kein Vorschlag: " + w)
+	for w in ["THEE", "ABIRRTE", "ANUS", "STERNE"]:
+		assert_false(valid.contains(w), w)
 
 
 func test_medium_and_hard_accept_all_words() -> void:

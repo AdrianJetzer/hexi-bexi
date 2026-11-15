@@ -51,7 +51,7 @@ tools/dictionary/build.sh
 
 - Gleiches Skript wie die Vorschlags-Wörter (`build_common.py`) mit `--len=3-5 --kids`: nur Hauptwörter, Verben, Adjektive und Zahlwörter (Grundformen plus Mehrzahl), **ohne englische Lehnwörter** (laut Wiktionary-Herkunft), 3–5 Buchstaben, die 3.000 häufigsten.
 - Zusätzliche Sperrliste `blocklist-kids.txt` (für Kinder Unpassendes, Heikles, Abwertendes).
-- In diesem Modus sind das **die gültigen Wörter und die Vorschläge** zugleich.
+- In diesem Modus sind das **die Vorschläge**. **Gültig** sind zusätzlich die 1.200 häufigsten kurzen Wörter in jeder Form (ICH, SIE, DER, UND, IST, GEHT …) → `easy_valid.bin` (rund 3.400 Wörter), damit Kinder auch kleine Wörter legen können.
 - Zum Durchsehen: `kids-words-ranked.txt` (versioniert, nach Häufigkeit sortiert).
 
 ## Stand (13.11.2026)

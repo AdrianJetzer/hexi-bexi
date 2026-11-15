@@ -2,9 +2,11 @@
 
 Usage: python3 -I build_common.py <dewiktionary.jsonl.gz> <de-words.txt> <blocklist.txt>
                                   <out.txt> <count> <leipzig-words.txt> [<leipzig-words.txt> ...]
-                                  [--len=3-5] [--block=<extra-blocklist.txt> ...] [--kids]
+                                  [--len=3-5] [--block=<extra-blocklist.txt> ...] [--kids] [--extra-valid=1200]
 Also used for the kids' list (Deutsch einfach): --len=3-5, count 3000, extra blocklist, --kids
-(only nouns/verbs/adjectives/numbers with plurals, no English loanwords).
+(only nouns/verbs/adjectives/numbers with plurals, no English loanwords). With
+--extra-valid=N it also writes <out>-valid.txt: the suggestions plus the N most frequent short
+words in any form (pronouns, articles, verb forms …) – the valid words of that mode.
 
 Suggestion words are the words the game itself puts on the board or shows (hint, scan,
 solve, swap, magnet, refill). They should be nice, everyday words:
@@ -144,7 +146,7 @@ def read_blocklist(path):
 
 
 def main(wikt, valid_path, block_path, dst, count, corpora, min_len=MIN_LEN, max_len=MAX_LEN,
-         extra_blocks=(), kids=False):
+         extra_blocks=(), kids=False, extra_valid=0):
     with open(valid_path, encoding="utf-8") as f:
         valid = {line.strip() for line in f if line.strip()}
     candidates, function = read_wiktionary(wikt, kids)
@@ -162,6 +164,19 @@ def main(wikt, valid_path, block_path, dst, count, corpora, min_len=MIN_LEN, max
     with open(dst.replace(".txt", "-ranked.txt"), "w", encoding="utf-8") as out:
         for i, w in enumerate(chosen, 1):
             out.write(f"{i}\t{w}\n")
+    if kids and extra_valid > 0:
+        # Kinder-Modus: gültig sind zusätzlich die häufigsten kurzen Wörter in jeder Form
+        # (ICH, SIE, DER, UND, IST, GEHT …), damit Kinder auch kleine Wörter legen können.
+        blocked = read_blocklist(block_path) | mostly_caps
+        for extra in extra_blocks:
+            blocked |= read_blocklist(extra)
+        short = sorted((w for w in valid if min_len <= len(w) <= max_len and freq.get(w, 0) > 0
+                        and w not in blocked), key=lambda w: (-freq[w], w))
+        valid_out = set(chosen) | set(short[:extra_valid])
+        with open(dst.replace(".txt", "-valid.txt"), "w", encoding="utf-8") as out:
+            for w in sorted(valid_out):
+                out.write(w + "\n")
+        print(f"kids valid words: {len(valid_out)} (suggestions {len(chosen)} + frequent short words)")
     lengths = collections.Counter(len(w) for w in chosen)
     print(f"candidates={len(candidates)} valid_pool={len(pool)} with_freq={len(ranked)} chosen={len(chosen)}")
     print("by length:", ", ".join(f"{k}={lengths[k]}" for k in sorted(lengths)))
@@ -174,9 +189,12 @@ if __name__ == "__main__":
     lo, hi = MIN_LEN, MAX_LEN
     extra = []
     kids = "--kids" in opts
+    extra_valid = 0
     for o in opts:
+        if o.startswith("--extra-valid="):
+            extra_valid = int(o[14:])
         if o.startswith("--len="):
             lo, hi = (int(x) for x in o[6:].split("-"))
         elif o.startswith("--block="):
             extra.append(o[8:])
-    main(args[0], args[1], args[2], args[3], int(args[4]), args[5:], lo, hi, extra, kids)
+    main(args[0], args[1], args[2], args[3], int(args[4]), args[5:], lo, hi, extra, kids, extra_valid)
