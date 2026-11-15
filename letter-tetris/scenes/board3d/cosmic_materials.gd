@@ -97,6 +97,8 @@ static func sparkle() -> StandardMaterial3D:
 	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	m.vertex_color_use_as_albedo = true
 	m.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
+	# Immer sichtbar bis zum Ende des Ausblendens (nie von Steinen oder Kante verdeckt).
+	m.no_depth_test = true
 	return m
 
 

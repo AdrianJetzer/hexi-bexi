@@ -278,15 +278,18 @@ func _build_sparkles(contour: PackedVector2Array, y: float) -> void:
 		var b := contour[(i + 1) % n]
 		for k in 6:
 			var p := a.lerp(b, k / 6.0)
-			pts.append(Vector3(p.x, y + 0.05, p.y))
+			# Über den Steinen, damit kein Funke unter einem Stein verschwindet.
+			pts.append(Vector3(p.x, maxf(y, THICKNESS * 0.5) + 0.2, p.y))
 	var p := CPUParticles3D.new()
 	p.amount = 48
 	p.lifetime = 3.2
 	p.preprocess = 3.2
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_POINTS
 	p.emission_points = pts
-	p.direction = Vector3(0, 1, 0)
+	# Nur waagerecht treiben (nicht nach unten in die Steine hinein).
+	p.direction = Vector3(1, 0, 0)
 	p.spread = 180.0
+	p.flatness = 1.0
 	# Flug durchs All: die Funken treiben langsam nach unten (Bildschirm-unten = +Z).
 	p.gravity = Vector3(0, 0, SPACE_DRIFT)
 	p.initial_velocity_min = 0.03
