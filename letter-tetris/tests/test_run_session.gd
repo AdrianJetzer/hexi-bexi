@@ -11,13 +11,17 @@ func before_each() -> void:
 	# Eigene Kopie mit festen Test-Preisen: so brechen die Tests nicht, wenn die Spielwerte
 	# (Preise) in balance.tres zum Feintuning geändert werden.
 	balance = (load("res://data/balance.tres") as GameBalance).duplicate() as GameBalance
+	# Feste Rastergröße für die Tests (manche Tests legen Wörter mit 6 Buchstaben in eine Spalte).
+	balance.grid_rows = 6
+	# Ohne Roguelike-Draft: alle Hilfen von Anfang an (Draft-Tests schalten ihn selbst ein).
+	balance.draft_enabled = false
 	balance.refill_price = 100
 	balance.swap_price = 50
 	balance.clear_price = 100
 	balance.hint_price = 100
 	balance.replace_price = 100
 	balance.solve_price = 100
-	for p in ["joker_price", "shuffle_price", "magnet_price", "complete_price",
+	for p in ["joker_price", "shuffle_price", "magnet_price", "complete_price", "shorten_price", "strike_price",
 			"split_price", "scan_price"]:
 		balance.set(p, 50)
 	curve = load("res://data/quest_curve.tres") as QuestCurve
@@ -901,6 +905,59 @@ func test_magnet_impossible_is_free() -> void:
 
 # --- Teilen und Scan ---------------------------------------------------------------------------
 
+func test_strike_removes_longest_free_row() -> void:
+	run.start()
+	_use_rows([4, 7, 7])
+	run.coins = 50
+	assert_true(run.strike())
+	assert_eq(run.quest.rows, PackedInt32Array([4, 7]), "bei Gleichstand die oberste")
+	assert_eq(run.coins, 0)
+	assert_signal_emitted(run, "quest_reshaped")
+	assert_false(run.quest.is_done())
+
+
+func test_strike_needs_two_free_rows() -> void:
+	run.start()
+	var q := _use_rows([3, 5])
+	q.fill(1, "STERN")
+	run.coins = 50
+	assert_false(run.can_strike(), "nur noch eine Zeile frei")
+	assert_false(run.strike())
+	assert_eq(run.coins, 50, "kostet nichts")
+	assert_eq(run.quest.rows, PackedInt32Array([3, 5]))
+
+
+func test_strike_keeps_filled_rows() -> void:
+	run.start()
+	var q := _use_rows([8, 3, 5])
+	q.fill(0, "STERNEXX")
+	run.coins = 50
+	assert_true(run.strike())
+	assert_eq(run.quest.rows, PackedInt32Array([8, 3]), "gefüllte 8er bleibt, freie 5er fällt weg")
+	assert_eq(run.quest.filled[0], "STERNEXX")
+
+
+func test_shorten_takes_one_block_from_longest_free_row() -> void:
+	run.start()
+	_use_rows([4, 7, 7])
+	run.coins = 50
+	assert_true(run.shorten())
+	assert_eq(run.quest.rows, PackedInt32Array([4, 6, 7]), "bei Gleichstand die oberste")
+	assert_eq(run.coins, 0)
+	assert_signal_emitted(run, "quest_reshaped")
+
+
+func test_shorten_skips_filled_rows_and_stops_at_three() -> void:
+	run.start()
+	var q := _use_rows([3, 5])
+	q.fill(1, "STERN")
+	run.coins = 50
+	assert_false(run.can_shorten(), "nur noch eine 3er-Zeile frei")
+	assert_false(run.shorten())
+	assert_eq(run.coins, 50, "kostet nichts")
+	assert_eq(run.quest.rows, PackedInt32Array([3, 5]))
+
+
 func test_split_halves_longest_free_row() -> void:
 	run.start()
 	_use_rows([6, 8])
@@ -1055,3 +1112,129 @@ func test_scan_without_words_is_free() -> void:
 	run.coins = 50
 	assert_eq(run.scan().size(), 0)
 	assert_eq(run.coins, 50)
+
+
+# --- Roguelike-Draft: Power-ups und Upgrades ---------------------------------------------
+
+func _draft_run() -> RunSession:
+	balance.draft_enabled = true
+	run = RunSession.new(balance, curve, lang, dict, 42)
+	watch_signals(run)
+	run.start()
+	return run
+
+
+## Auftrag des laufenden Levels als gelöst werten (wie nach dem letzten Wort).
+func _finish_levels(n: int) -> void:
+	for i in n:
+		run._complete_quest()
+
+
+func test_draft_starts_with_refill_and_solve_only() -> void:
+	_draft_run()
+	assert_eq(run.owned.size(), 0)
+	assert_true(run.has_help("refill"))
+	assert_true(run.has_help("solve"))
+	run.coins = 1000
+	assert_false(run.can_hint(), "Tipp ist noch nicht freigeschaltet")
+	assert_false(run.can_swap())
+	assert_true(run.can_solve())
+
+
+func test_powerup_after_level_four() -> void:
+	_draft_run()
+	assert_eq(run.levels_until_offer(), 4)
+	assert_eq(run.next_offer_kind(), "powerup")
+	_finish_levels(3)
+	assert_true(run.offer.is_empty())
+	assert_eq(run.levels_until_offer(), 1)
+	_finish_levels(1)
+	assert_signal_emitted(run, "offer_made")
+	assert_eq(run.offer["kind"], "powerup")
+	var options: PackedStringArray = run.offer["options"]
+	assert_eq(options.size(), 2, "2 von 3 zur Wahl")
+	for id in options:
+		assert_true(["hint", "replace", "shuffle"].has(id), id)
+	assert_false(run.choose("swap"), "nicht im Angebot")
+	var pick := options[0]
+	assert_true(run.choose(pick))
+	assert_true(run.offer.is_empty())
+	assert_true(run.has_help(pick))
+	assert_false(run.has_help(options[1]), "die andere gibt es nicht")
+	assert_signal_emitted(run, "helps_changed")
+	assert_eq(run.levels_until_offer(), 4)
+
+
+func test_powerup_tiers_in_order() -> void:
+	_draft_run()
+	var expected := [["hint", "replace", "shuffle"], ["clear", "joker", "shorten"],
+			["swap", "split", "complete"], ["magnet", "scan", "strike"]]
+	for tier in expected:
+		_finish_levels(4)
+		assert_eq(run.offer["kind"], "powerup")
+		var options: PackedStringArray = run.offer["options"]
+		assert_eq(options.size(), 2)
+		for id in options:
+			assert_true(tier.has(id), id)
+		run.choose(options[0])
+	assert_eq(run.owned.size(), 4)
+	assert_eq(run.next_offer_kind(), "upgrade")
+
+
+func test_upgrade_lowers_price_by_quarter() -> void:
+	_draft_run()
+	for i in 4:
+		_finish_levels(4)
+		run.choose(run.offer["options"][0])
+	_finish_levels(4)
+	assert_eq(run.offer["kind"], "upgrade")
+	var options: PackedStringArray = run.offer["options"]
+	assert_eq(options.size(), 5, "alle 4 eigenen Hilfen und Lösen")
+	assert_true(options.has("solve"), "Lösen ist dabei")
+	var base := run.price("solve")
+	assert_true(run.choose("solve"))
+	assert_eq(run.price("solve"), int(round(base * 0.75 / 5.0)) * 5)
+
+
+func test_upgrade_rounding_and_minimum() -> void:
+	_draft_run()
+	balance.magnet_price = 200
+	run.owned.append("magnet")
+	var seen := []
+	for i in 12:
+		run.offer = {"kind": "upgrade", "options": PackedStringArray(["magnet"])}
+		run.choose("magnet")
+		seen.append(run.price("magnet"))
+	assert_eq(seen.slice(0, 4), [150, 115, 85, 65])
+	assert_eq(seen[-1], 25, "nie unter 25")
+
+
+func test_new_run_resets_draft() -> void:
+	_draft_run()
+	_finish_levels(4)
+	run.choose(run.offer["options"][0])
+	run.start()
+	assert_eq(run.owned.size(), 0)
+	assert_true(run.offer.is_empty())
+	assert_eq(run.price("solve"), balance.solve_price)
+
+
+func test_no_draft_means_all_helps() -> void:
+	run.start()
+	for id in RunSession.HELP_IDS:
+		assert_true(run.has_help(id), id)
+	assert_eq(run.levels_until_offer(), 0)
+	_finish_levels(4)
+	assert_true(run.offer.is_empty())
+
+
+func test_powerup_choices_vary_between_runs() -> void:
+	balance.draft_enabled = true
+	var seen := {}
+	for seed_value in range(1, 13):
+		run = RunSession.new(balance, curve, lang, dict, seed_value)
+		run.start()
+		_finish_levels(4)
+		seen[",".join(run.offer["options"])] = true
+	assert_gt(seen.size(), 1, "nicht immer dieselben zwei")
+

@@ -15,7 +15,7 @@ Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.m
 
 ```
 core/                  Reine Spiellogik (keine Grafik)
-  hex_grid.gd          Raster 5×6, Koordinaten, Nachbarn, freie Plätze, Löcher
+  hex_grid.gd          Raster 5×5, Koordinaten, Nachbarn, freie Plätze, Löcher
   board_layout.gd      Geometrie des Rasters (Mittelpunkte, Treffer-Test, Zickzack-Umriss)
   spawner.gd           Platzwahl, neue Hexagons setzen
   letter_picker.gd     Buchstabenwahl (Häufigkeit, Vokal-Ausgleich, Wort-Hilfe)

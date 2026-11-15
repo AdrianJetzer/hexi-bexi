@@ -73,6 +73,32 @@ static func frame_glow() -> StandardMaterial3D:
 	return m
 
 
+## Funkel-Teilchen: weicher Lichtpunkt mit feinem Kreuz, immer zur Kamera gedreht, additiv.
+static func sparkle() -> StandardMaterial3D:
+	var size := 64
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var c := (size - 1) / 2.0
+	for y in size:
+		for x in size:
+			var dx := (x - c) / c
+			var dy := (y - c) / c
+			var r := sqrt(dx * dx + dy * dy)
+			var dot := pow(clampf(1.0 - r, 0.0, 1.0), 3.0)
+			var cross := pow(clampf(1.0 - absf(dx) * 9.0, 0.0, 1.0), 2.0) * clampf(1.0 - absf(dy), 0.0, 1.0) \
+					+ pow(clampf(1.0 - absf(dy) * 9.0, 0.0, 1.0), 2.0) * clampf(1.0 - absf(dx), 0.0, 1.0)
+			var a := clampf(dot + cross * 0.7, 0.0, 1.0)
+			img.set_pixel(x, y, Color(1, 1, 1, a))
+	var m := StandardMaterial3D.new()
+	m.albedo_texture = ImageTexture.create_from_image(img)
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.vertex_color_use_as_albedo = true
+	m.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
+	return m
+
+
 ## Boden im Inneren des Spielfelds: dunkler Nebel.
 static func well_floor() -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -94,6 +120,41 @@ static func background() -> StandardMaterial3D:
 	m.albedo_texture = _nebula(Color(0.02, 0.01, 0.06), Color(0.12, 0.08, 0.35), Color(0.35, 0.1, 0.4))
 	m.uv1_triplanar = true
 	m.uv1_scale = Vector3(0.03, 0.03, 0.03)
+	return m
+
+
+const NEBULA_SHADER := preload("res://scenes/board3d/nebula_background.gdshader")
+
+## Animierter Hintergrund (Nebel, Sterne, Lichtschein, Vignette). Stile:
+## 1 = Tiefsee-Nebel, 2 = Galaxie, 3 = Dunkle Eleganz.
+static func nebula_background(style: int) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = NEBULA_SHADER
+	match style:
+		2:
+			m.set_shader_parameter("color_deep", Color(0.02, 0.01, 0.06))
+			m.set_shader_parameter("color_mid", Color(0.14, 0.06, 0.32))
+			m.set_shader_parameter("color_high", Color(0.55, 0.15, 0.55))
+			m.set_shader_parameter("color_accent", Color(0.1, 0.45, 0.7))
+			m.set_shader_parameter("cloud_strength", 1.0)
+			m.set_shader_parameter("star_density", 1.0)
+			m.set_shader_parameter("star_brightness", 1.6)
+			m.set_shader_parameter("glow_strength", 0.3)
+			m.set_shader_parameter("glow_color", Color(0.45, 0.3, 0.9))
+			m.set_shader_parameter("vignette", 0.6)
+		3:
+			m.set_shader_parameter("color_deep", Color(0.005, 0.008, 0.02))
+			m.set_shader_parameter("color_mid", Color(0.03, 0.05, 0.12))
+			m.set_shader_parameter("color_high", Color(0.08, 0.1, 0.22))
+			m.set_shader_parameter("color_accent", Color(0.02, 0.15, 0.2))
+			m.set_shader_parameter("cloud_strength", 0.6)
+			m.set_shader_parameter("star_density", 0.35)
+			m.set_shader_parameter("star_brightness", 0.9)
+			m.set_shader_parameter("glow_strength", 0.35)
+			m.set_shader_parameter("glow_color", Color(0.15, 0.4, 0.6))
+			m.set_shader_parameter("vignette", 0.9)
+		_:
+			pass  # Standardwerte im Shader: Tiefsee-Nebel
 	return m
 
 

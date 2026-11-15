@@ -5,7 +5,7 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), split(), scan(), complete(prefix).
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), shorten(), split(), strike(), scan(), complete(prefix).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -35,6 +35,11 @@ signal coins_changed(coins: int)
 signal level_changed(level: int)
 ## Lauf vorbei. reason: REASON_GAVE_UP.
 signal run_ended(level: int, reason: String)
+## Roguelike-Draft: Auswahl angeboten (nach Level 4, 8, …). offer: {"kind": "powerup"|"upgrade",
+## "options": PackedStringArray mit Hilfe-IDs}. Der Spieler antwortet mit choose(id).
+signal offer_made(offer: Dictionary)
+## Freigeschaltete Hilfen oder Preise haben sich geändert (nach choose()).
+signal helps_changed()
 
 const REASON_TOO_SHORT := "too_short"
 const REASON_INVALID_PATH := "invalid_path"
@@ -47,6 +52,9 @@ const REASON_RUN_OVER := "run_over"
 const NO_CELL := Vector2i(-1, -1)
 ## Buchstabe eines Joker-Steins im Raster (steht beim Wischen für jeden Buchstaben).
 const JOKER := "*"
+## Alle Hilfen mit Preis, die man im Lauf freischalten kann (Auffüllen und Lösen sind immer da).
+const HELP_IDS: PackedStringArray = ["hint", "replace", "shuffle", "clear", "joker", "shorten",
+		"swap", "split", "complete", "magnet", "scan", "strike"]
 
 const REASON_GAVE_UP := "gave_up"
 
@@ -75,6 +83,14 @@ var _hint_word: String = ""
 var _hint_count: int = 0
 var _spawner: Spawner
 var _level: int = 1
+## Freigeschaltete Hilfen (IDs aus HELP_IDS).
+var owned: PackedStringArray = PackedStringArray()
+## Laufende Auswahl (leer = keine), siehe offer_made.
+var offer: Dictionary = {}
+## Preise nach Upgrades (ID → Preis); sonst gilt der Grundpreis aus GameBalance.
+var _prices: Dictionary = {}
+## Zufall für die Power-up-Auswahl (welche Hilfen der Stufe angeboten werden).
+var _draft_rng: RandomNumberGenerator
 
 
 ## seed_value < 0: zufällig; sonst reproduzierbar (für Tests).
@@ -101,6 +117,11 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 	_generator = QuestGenerator.new(curve, rng_quests)
 	_hint_rng = rng_cells
 	_planter = WordPlanter.new(rng_quests)
+	_draft_rng = RandomNumberGenerator.new()
+	if seed_value >= 0:
+		_draft_rng.seed = seed_value + 31337
+	else:
+		_draft_rng.randomize()
 	_plant_words = common_words if common_words != null else dictionary
 	if common_words != null:
 		_hint_finders.append(WordFinder.new(common_words))
@@ -120,12 +141,116 @@ func start() -> void:
 	is_over = false
 	quest = null
 	_level = 1
+	owned = PackedStringArray() if _balance.draft_enabled else HELP_IDS.duplicate()
+	offer = {}
+	_prices = {}
 	_reset_hint()
 	_apply_help()
 	_spawn(_balance.run_start_tiles)
 	coins_changed.emit(coins)
 	level_changed.emit(_level)
 	_start_quest()
+
+
+# --- Roguelike-Draft: Power-ups und Upgrades --------------------------------------
+
+## Ist diese Hilfe in diesem Lauf verfügbar? Auffüllen und Lösen immer.
+func has_help(id: String) -> bool:
+	return id == "refill" or id == "solve" or owned.has(id)
+
+
+## Aktueller Preis einer Hilfe (nach Upgrades).
+func price(id: String) -> int:
+	return _prices.get(id, base_price(id))
+
+
+## Grundpreis laut GameBalance (z. B. "hint" → hint_price).
+func base_price(id: String) -> int:
+	return int(_balance.get(id + "_price"))
+
+
+## Wie viele Level noch bis zur nächsten Auswahl (das laufende mitgezählt)? 0 = keine mehr.
+func levels_until_offer() -> int:
+	if not _balance.draft_enabled or is_over:
+		return 0
+	var every := _balance.draft_every
+	var m := ceili(_level / float(every)) * every
+	if _options_after(m).is_empty():
+		return 0
+	return m - _level + 1
+
+
+## Art der nächsten Auswahl: "powerup" oder "upgrade" ("" = keine).
+func next_offer_kind() -> String:
+	if levels_until_offer() == 0:
+		return ""
+	var m := ceili(_level / float(_balance.draft_every)) * _balance.draft_every
+	return _kind_after(m)
+
+
+## Antwort auf die laufende Auswahl. Power-up: Hilfe kommt dazu. Upgrade: Preis −25 %.
+func choose(id: String) -> bool:
+	if offer.is_empty() or not (offer["options"] as PackedStringArray).has(id):
+		return false
+	if offer["kind"] == "powerup":
+		owned.append(id)
+	else:
+		_prices[id] = upgraded_price(id)
+	offer = {}
+	helps_changed.emit()
+	return true
+
+
+## Preis nach einem Upgrade: −upgrade_discount, auf 5 gerundet, nie unter upgrade_min_price.
+func upgraded_price(id: String) -> int:
+	var p := price(id) * (1.0 - _balance.upgrade_discount)
+	return maxi(_balance.upgrade_min_price, int(round(p / 5.0)) * 5)
+
+
+func _kind_after(completed: int) -> String:
+	return "powerup" if completed / _balance.draft_every <= _balance.draft_tiers.size() else "upgrade"
+
+
+## Auswahl nach Level `completed` (leer = keine).
+func _options_after(completed: int) -> PackedStringArray:
+	var out := PackedStringArray()
+	var every := _balance.draft_every
+	if completed <= 0 or completed % every != 0:
+		return out
+	var n := completed / every
+	if n <= _balance.draft_tiers.size():
+		for id in _balance.draft_tiers[n - 1]:
+			if not owned.has(id):
+				out.append(id)
+	else:
+		var ids := owned.duplicate()
+		ids.append("solve")
+		for id in ids:
+			if price(id) > _balance.upgrade_min_price:
+				out.append(id)
+	return out
+
+
+func _make_offer(completed: int) -> void:
+	if not _balance.draft_enabled or is_over:
+		return
+	var options := _options_after(completed)
+	if options.is_empty():
+		return
+	var kind := _kind_after(completed)
+	if kind == "powerup":
+		# Nur draft_choices zufällige Hilfen der Stufe (Reihenfolge der Stufe bleibt).
+		var pool := Array(options)
+		var picked := PackedStringArray()
+		while picked.size() < _balance.draft_choices and not pool.is_empty():
+			picked.append(pool.pop_at(_draft_rng.randi_range(0, pool.size() - 1)))
+		var ordered := PackedStringArray()
+		for id in options:
+			if picked.has(id):
+				ordered.append(id)
+		options = ordered
+	offer = {"kind": kind, "options": options}
+	offer_made.emit(offer)
 
 
 ## Knopf „Aufgeben“ → „Ja“.
@@ -141,7 +266,7 @@ func level() -> int:
 
 ## Preis fürs Auffüllen (fest).
 func refill_price() -> int:
-	return _balance.refill_price
+	return price("refill")
 
 
 ## Auffüllen möglich? (Münzen reichen, Platz frei)
@@ -161,7 +286,7 @@ func refill() -> int:
 
 ## Tauschen möglich? (Münzen reichen, Steine im Feld). Auch bei vollem Feld.
 func can_swap() -> bool:
-	return not is_over and coins >= _balance.swap_price and grid.free_count() < grid.size()
+	return not is_over and has_help("swap") and coins >= price("swap") and grid.free_count() < grid.size()
 
 
 ## Hilfe „Tauschen“: einige zufällige Steine bekommen neue Buchstaben (Wort-Hilfe).
@@ -196,7 +321,7 @@ func swap() -> Array[Vector2i]:
 	cells.resize(clampi(_balance.swap_count - changed.size(), 0, cells.size()))
 	for cell in cells:
 		tile_changed.emit(cell, _new_letter(cell))
-	_pay(_balance.swap_price)
+	_pay(price("swap"))
 	_check_hint()
 	return changed + cells
 
@@ -240,7 +365,7 @@ func refill_suggested() -> bool:
 
 ## Aufräumen möglich? (Auftrag aktiv, Münzen reichen)
 func can_clear() -> bool:
-	return not is_over and quest != null and coins >= _balance.clear_price
+	return not is_over and quest != null and has_help("clear") and coins >= price("clear")
 
 
 ## Das Wort, das Aufräumen stehen lässt: der Weg eines geläufigen Worts, das in eine freie
@@ -328,7 +453,7 @@ func clear_useless() -> Array[Vector2i]:
 		return cells
 	for cell in cells:
 		grid.clear(cell)
-	_pay(_balance.clear_price)
+	_pay(price("clear"))
 	tiles_removed.emit(cells)
 	_check_hint()
 	return cells
@@ -341,7 +466,7 @@ func _letter_weight(letter: String) -> float:
 
 ## Tipp möglich? (Auftrag aktiv, Münzen reichen, noch nicht alle Buchstaben gezeigt)
 func can_hint() -> bool:
-	if is_over or quest == null or coins < _balance.hint_price:
+	if is_over or quest == null or not has_help("hint") or coins < price("hint"):
 		return false
 	return not (_hint_valid() and _hint_count >= _hint_cells.size())
 
@@ -362,7 +487,7 @@ func hint() -> Vector2i:
 		_hint_word = word_for(path)
 		_hint_count = 0
 	_hint_count += 1
-	_pay(_balance.hint_price)
+	_pay(price("hint"))
 	hint_changed.emit(hinted_cells())
 	return _hint_cells[_hint_count - 1]
 
@@ -385,7 +510,7 @@ func solution() -> Array[Vector2i]:
 
 ## Lösen möglich? (Auftrag aktiv, Münzen reichen)
 func can_solve() -> bool:
-	return not is_over and quest != null and coins >= _balance.solve_price
+	return not is_over and quest != null and coins >= price("solve")
 
 
 ## Hilfe „Lösen“: den ganzen Auftrag lösen, ohne Belohnung. Für jede freie Zeile wird ein
@@ -395,7 +520,7 @@ func can_solve() -> bool:
 func solve() -> bool:
 	if not can_solve():
 		return false
-	_pay(_balance.solve_price)
+	_pay(price("solve"))
 	_reset_hint()
 	for row in quest.rows.size():
 		if quest.filled[row] != "":
@@ -440,7 +565,7 @@ func _random_word(n: int) -> String:
 
 ## Joker möglich? (Auftrag aktiv, Münzen reichen, ein normaler Stein liegt im Feld)
 func can_joker() -> bool:
-	if is_over or quest == null or coins < _balance.joker_price:
+	if is_over or quest == null or not has_help("joker") or coins < price("joker"):
 		return false
 	for cell in grid.all_cells():
 		if grid.is_occupied(cell) and grid.get_letter(cell) != JOKER:
@@ -458,7 +583,7 @@ func joker() -> Vector2i:
 			cells.append(cell)
 	var cell := cells[_hint_rng.randi_range(0, cells.size() - 1)]
 	grid.set_letter(cell, JOKER)
-	_pay(_balance.joker_price)
+	_pay(price("joker"))
 	tile_changed.emit(cell, JOKER)
 	_check_hint()
 	return cell
@@ -466,7 +591,7 @@ func joker() -> Vector2i:
 
 ## Mischen möglich? (Münzen reichen, mindestens zwei Steine)
 func can_shuffle() -> bool:
-	return not is_over and coins >= _balance.shuffle_price and grid.size() - grid.free_count() >= 2
+	return not is_over and has_help("shuffle") and coins >= price("shuffle") and grid.size() - grid.free_count() >= 2
 
 
 ## Hilfe „Mischen“: die Buchstaben aller Steine werden zufällig auf die belegten Plätze verteilt.
@@ -491,14 +616,14 @@ func shuffle() -> Array[Vector2i]:
 			grid.set_letter(cells[i], letters[i])
 			changed.append(cells[i])
 			tile_changed.emit(cells[i], letters[i])
-	_pay(_balance.shuffle_price)
+	_pay(price("shuffle"))
 	_check_hint()
 	return changed
 
 
 ## Magnet möglich? (Auftrag aktiv, Münzen reichen; mit Platz: dieser Stein liegt im Feld)
 func can_magnet(cell: Vector2i = NO_CELL) -> bool:
-	if is_over or quest == null or coins < _balance.magnet_price:
+	if is_over or quest == null or not has_help("magnet") or coins < price("magnet"):
 		return false
 	return cell == NO_CELL or grid.is_occupied(cell)
 
@@ -523,14 +648,14 @@ func magnet(cell: Vector2i) -> Array[Vector2i]:
 			grid.set_letter(path[i], word[i])
 			changed.append(path[i])
 			tile_changed.emit(path[i], word[i])
-	_pay(_balance.magnet_price)
+	_pay(price("magnet"))
 	_check_hint()
 	return changed
 
 
 ## Teilen möglich? (Münzen reichen, es gibt eine freie Zeile mit mindestens split_min_length Blöcken)
 func can_split() -> bool:
-	return not is_over and coins >= _balance.split_price and _split_row() >= 0
+	return not is_over and has_help("split") and coins >= price("split") and _split_row() >= 0
 
 
 ## Hilfe „Teilen“: die längste freie Zeile (ab split_min_length) wird halbiert.
@@ -539,7 +664,7 @@ func split() -> bool:
 	if not can_split():
 		return false
 	quest.split_row(_split_row())
-	_pay(_balance.split_price)
+	_pay(price("split"))
 	_aim_help()
 	_check_hint()
 	quest_reshaped.emit(quest)
@@ -557,9 +682,70 @@ func _split_row() -> int:
 	return best
 
 
+## Kürzen möglich? (Münzen reichen, es gibt eine freie Zeile, die länger als min_length ist)
+func can_shorten() -> bool:
+	return not is_over and has_help("shorten") and coins >= price("shorten") and _shorten_row() >= 0
+
+
+## Hilfe „Kürzen“: die längste freie Zeile (bei Gleichstand die oberste) verliert einen Block.
+## Gibt true zurück, wenn gekürzt wurde (sonst kostet es nichts).
+func shorten() -> bool:
+	if not can_shorten():
+		return false
+	quest.shorten_row(_shorten_row())
+	_pay(price("shorten"))
+	_aim_help()
+	_check_hint()
+	quest_reshaped.emit(quest)
+	return true
+
+
+func _shorten_row() -> int:
+	if quest == null:
+		return -1
+	var best := -1
+	for i in quest.rows.size():
+		if quest.filled[i] == "" and quest.rows[i] > _balance.min_length:
+			if best < 0 or quest.rows[i] > quest.rows[best]:
+				best = i
+	return best
+
+
+## Zeile streichen möglich? (Münzen reichen, mindestens 2 Zeilen frei)
+func can_strike() -> bool:
+	return not is_over and quest != null and has_help("strike") and coins >= price("strike") \
+			and _free_row_count() >= 2
+
+
+## Hilfe „Zeile streichen“: die freie Zeile mit den meisten Blöcken (bei Gleichstand die oberste)
+## fällt weg. Nur bei mindestens 2 freien Zeilen (sonst wäre es ein billiges Lösen).
+## Gibt true zurück, wenn gestrichen wurde (sonst kostet es nichts).
+func strike() -> bool:
+	if not can_strike():
+		return false
+	var best := -1
+	for i in quest.rows.size():
+		if quest.filled[i] == "" and (best < 0 or quest.rows[i] > quest.rows[best]):
+			best = i
+	quest.remove_row(best)
+	_pay(price("strike"))
+	_aim_help()
+	_check_hint()
+	quest_reshaped.emit(quest)
+	return true
+
+
+func _free_row_count() -> int:
+	var n := 0
+	for i in quest.rows.size():
+		if quest.filled[i] == "":
+			n += 1
+	return n
+
+
 ## Scan möglich? (Auftrag aktiv, Münzen reichen)
 func can_scan() -> bool:
-	return not is_over and quest != null and coins >= _balance.scan_price
+	return not is_over and quest != null and has_help("scan") and coins >= price("scan")
 
 
 ## Hilfe „Scan“: die Steine **eines** geläufigen Worts für die längste freie Zeile (gibt es dafür
@@ -585,14 +771,14 @@ func scan() -> Array[Vector2i]:
 	if cells.is_empty():
 		return cells
 	_adopt_hint(cells)
-	_pay(_balance.scan_price)
+	_pay(price("scan"))
 	scan_shown.emit(cells)
 	return cells
 
 
 ## Vervollständigen möglich? (Auftrag aktiv, Münzen reichen)
 func can_complete() -> bool:
-	return not is_over and quest != null and coins >= _balance.complete_price
+	return not is_over and quest != null and has_help("complete") and coins >= price("complete")
 
 
 ## Hilfe „Vervollständigen“: zum angewischten Wortanfang (mindestens complete_min_prefix Steine)
@@ -619,7 +805,7 @@ func complete(prefix: Array[Vector2i]) -> Array[Vector2i]:
 	if cells.is_empty():
 		return cells
 	_adopt_hint(cells)
-	_pay(_balance.complete_price)
+	_pay(price("complete"))
 	scan_shown.emit(cells)
 	return cells
 
@@ -636,7 +822,7 @@ func _adopt_hint(cells: Array[Vector2i]) -> void:
 
 ## Ersetzen möglich? (Münzen reichen; ohne Platz: allgemein, mit Platz: dieser Stein)
 func can_replace(cell: Vector2i = NO_CELL) -> bool:
-	if is_over or coins < _balance.replace_price:
+	if is_over or not has_help("replace") or coins < price("replace"):
 		return false
 	return cell == NO_CELL or grid.is_occupied(cell)
 
@@ -647,7 +833,7 @@ func replace(cell: Vector2i) -> String:
 	if not can_replace(cell):
 		return ""
 	var letter := _new_letter(cell)
-	_pay(_balance.replace_price)
+	_pay(price("replace"))
 	tile_changed.emit(cell, letter)
 	_check_hint()
 	return letter
@@ -827,6 +1013,7 @@ func _complete_quest(rewarded: bool = true) -> void:
 	_apply_help()
 	level_changed.emit(_level)
 	_start_quest()
+	_make_offer(_level - 1)
 
 
 ## Auftrag für das aktuelle Level erzeugen und starten.

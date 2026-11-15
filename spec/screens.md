@@ -38,7 +38,9 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** **Münzen**, **Level**, **Rekord**.
-- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis), **Tipp** (25 je Buchstabe), **Stein ersetzen** (25), **Tauschen** (5 Steine, 50), **Aufräumen** (100), **Joker** (100), **Magnet** (100, Stein antippen), **Teilen** (125), **Mischen** (150), **Vervollständigen** (150, Wortanfang anwischen), **Scan** (200, ein Wort für die längste Zeile), **Lösen** (ganzer Auftrag, 400). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
+- **Power-up-Auswahl** (nach Level 4, 8, 12, 16; danach Upgrades alle 4 Level): halbtransparenter Bildschirm über dem Spiel mit Titel („Power-up: Wähle eine Hilfe“ bzw. „Upgrade: Welche Hilfe wird günstiger?“) und Karten (Power-up: 2 zufällige der Stufe) (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)). Screenshots: [Start](images/draft-start-v1.png), [Power-up](images/draft-powerup-v1.png), [Upgrade](images/draft-upgrade-v1.png).
+- **Hinweis** links unter dem Spielfeld: „Noch n Level bis zum Power-up/Upgrade“.
+- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Tipp (je Buchstabe), Stein ersetzen, Mischen; **100:** Aufräumen, Joker, Kürzen; **150:** Tauschen (5 Steine), Teilen, Vervollständigen (Wortanfang anwischen); **200:** Magnet (Stein antippen), Scan, Zeile streichen; **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
@@ -83,3 +85,6 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.5:** Hilfe-Knöpfe Teilen und Scan.
 - **v4.6:** Säule und Schwerkraft entfallen; Hilfe-Knöpfe nach Preis sortiert (gratis bis teuer).
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
+- **v4.8:** Hilfe-Knopf Kürzen.
+- **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.10:** Auswahl-Bildschirm für Power-ups und Upgrades (Karten), Hinweis „Noch n Level bis zum Power-up“, Knöpfe nur für freigeschaltete Hilfen (2 × 3).

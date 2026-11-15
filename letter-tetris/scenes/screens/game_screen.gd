@@ -13,10 +13,58 @@ const TEXT_DIM := Color(0.6, 0.66, 0.85)
 const ACCENT := Color(1.0, 0.84, 0.6)
 const GLOW := Color(0.55, 0.95, 1.0)
 
-## Anteile der Bildschirmhöhe/-breite für die Bereiche.
+## Seitenrand (Anteil der Spaltenbreite).
 const SIDE_MARGIN := 0.03
-const TOP_AREA := 0.2
-const BOTTOM_AREA := 0.25
+## Das Spiel ist fürs Hochformat gebaut: Auf breiten Bildschirmen (PC, Tablet quer) liegt alles
+## in einer mittigen Spalte, höchstens so breit wie Höhe · MAX_COLUMN_ASPECT.
+const MAX_COLUMN_ASPECT := 0.6
+## Oben: Oberkante der Block-Zeilen (unter „Aufgeben“) und Abstand zum Spielfeld (Pixel).
+## Der Bereich hat immer Platz für QuestBlocks.MAX_ROWS Zeilen mit MAX_COLS Blöcken.
+const BLOCKS_TOP := 100.0
+const BLOCKS_GAP_BELOW := 24.0
+## Info-Zeile (über dem Spielfeld) und Hilfe-Knöpfe unten (Pixel).
+const INFO_HEIGHT := 64.0
+const BUTTON_HEIGHT := 155.0
+const BUTTON_STEP := 168.0
+## Mit Roguelike-Draft höchstens 6 Knöpfe: 2 Reihen zu 3. Ohne Draft (Test-Modus) alle in Reihen zu 5.
+const BUTTONS_PER_ROW := 3
+const BUTTON_ROWS := 2
+const BUTTONS_PER_ROW_ALL := 5
+## Hinweis „Noch n Level bis zum Power-up“ links unter dem Feld (Schrift wie die Info-Zeile).
+const OFFER_HINT_FONT := INFO_FONT
+## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
+const BUTTON_FONT := 33
+const BUTTON_FONT_SMALL := 23
+const BOTTOM_PAD := 24.0
+## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
+const INFO_FONT := 40
+## Abstand der Info-Zeile zur Oberkante des Felds (Pixel).
+const INFO_GAP := 24.0
+
+## Hilfen: Reihenfolge bei gleichem Preis, Namen auf Knöpfen und Karten, kurze Erklärung.
+const HELP_ORDER: PackedStringArray = ["refill", "hint", "replace", "shuffle", "clear", "joker",
+		"shorten", "swap", "split", "complete", "magnet", "scan", "strike", "solve"]
+const HELP_NAMES := {
+	"refill": "Auffüllen", "hint": "Tipp", "replace": "Ersetzen", "shuffle": "Mischen",
+	"clear": "Aufräumen", "joker": "Joker", "shorten": "Kürzen", "swap": "Tauschen",
+	"split": "Teilen", "complete": "Vervollständigen", "magnet": "Magnet", "scan": "Scan",
+	"strike": "Streichen", "solve": "Lösen",
+}
+const HELP_INFO := {
+	"hint": "Zeigt Buchstabe für Buchstabe ein passendes Wort.",
+	"replace": "Ein Stein deiner Wahl bekommt einen neuen Buchstaben.",
+	"shuffle": "Alle Buchstaben werden neu verteilt.",
+	"clear": "Entfernt bis zu 5 wenig hilfreiche Steine.",
+	"joker": "Ein Stein wird zum Joker für jeden Buchstaben.",
+	"shorten": "Die längste Zeile verliert einen Block.",
+	"swap": "5 Steine neu – legt ein Wort, wenn du feststeckst.",
+	"split": "Halbiert die längste Zeile (ab 6 Blöcken).",
+	"complete": "Wisch einen Wortanfang, das Spiel zeigt den Rest.",
+	"magnet": "Tipp einen Stein an: Um ihn herum entsteht ein Wort.",
+	"scan": "Zeigt die Steine eines Worts für die längste Zeile.",
+	"strike": "Die längste freie Zeile fällt weg.",
+	"solve": "Löst den ganzen Auftrag (ohne Belohnung).",
+}
 
 ## Flug eines Buchstabens vom Stein in den Block (Sekunden) und Abstand zwischen Buchstaben.
 const FLY_TIME := 0.5
@@ -25,8 +73,26 @@ const FLY_STAGGER := 0.07
 const DONE_PAUSE := 0.35
 ## Pulsieren des Auffüllen-Knopfs, wenn kein gültiges Wort passt: Dauer je halbem Puls, Größe, Helligkeit.
 const PULSE_HALF := 0.7
-const PULSE_SCALE := 1.06
 const PULSE_BRIGHT := Color(1.35, 1.3, 1.15)
+## Hilfe-Knöpfe (Stil „Kombi“): dunkles Glas, feiner Cyan-Rand, sanftes Leuchten, Glanz oben;
+## Lösen mit Goldrand. Name weiß, Preis gold mit Münze, „gratis“ grün, zu teuer rot.
+const BTN_BG := Color(0.06, 0.1, 0.24, 0.8)
+const BTN_BG_PRESSED := Color(0.12, 0.3, 0.52, 0.95)
+const BTN_EDGE := Color(0.55, 0.95, 1.0)
+const BTN_EDGE_SOLVE := Color(1.0, 0.82, 0.45)
+const BTN_RADIUS := 20
+const BTN_TEXT := Color(0.95, 0.98, 1.0)
+const BTN_GOLD := Color(1.0, 0.82, 0.45)
+const BTN_FREE := Color(0.7, 1.0, 0.85)
+const BTN_RED := Color(1.0, 0.45, 0.45)
+const BTN_DISABLED_ALPHA := 0.55
+const BTN_NAME_FONT := 36
+const BTN_NAME_FONT_LONG := 27
+const BTN_PRICE_FONT := 30
+## Auffüllen-Hinweis: Schrift blinkt dezent zwischen Weiß und dunklem Weiß (je halbe Sekunde).
+const BLINK_HALF := 0.5
+const BLINK_BRIGHT := Color(1.0, 1.0, 1.0)
+const BLINK_DIM := Color(0.5, 0.52, 0.6)
 
 var session: RunSession
 
@@ -48,8 +114,10 @@ var _joker_button: Button
 var _shuffle_button: Button
 var _magnet_button: Button
 var _split_button: Button
+var _shorten_button: Button
 var _scan_button: Button
 var _complete_button: Button
+var _strike_button: Button
 ## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
 var _tap_action: String = ""
 var _give_up_button: Button
@@ -66,6 +134,16 @@ var _last_flight: float = 0.0
 var _sequence: Tween
 var _refill_pulse: Tween
 var _pulse_check_queued: bool = false
+## Hilfe-ID → Knopf.
+var _buttons: Dictionary = {}
+## Hilfe-ID → {"name": Label, "price": Label, "coin": Panel} (Beschriftung der Knöpfe).
+var _button_parts: Dictionary = {}
+var _offer_hint: Label
+var _offer_hint_pulse: Tween
+## Auswahl-Bildschirm für Power-ups und Upgrades.
+var _choice: ColorRect
+var _choice_title: Label
+var _choice_cards: VBoxContainer
 
 
 func _ready() -> void:
@@ -103,15 +181,16 @@ func new_run(seed_value: int = -1) -> void:
 	session.tiles_removed.connect(func(_c: Array[Vector2i]) -> void: _queue_pulse_check())
 	session.quest_progress.connect(func(_q: Quest) -> void: _queue_pulse_check())
 	session.quest_reshaped.connect(func(_q: Quest) -> void: _queue_pulse_check())
+	session.helps_changed.connect(_relayout)
 	_summary.visible = false
 	_continue_button.visible = false
-	for b in _help_buttons():
-		b.visible = true
+	_choice.visible = false
+	_offer_hint.visible = true
 	_confirm.visible = false
 	_board.setup(session)
 	_relayout()
 	session.start()
-	_update_labels()
+	_relayout()
 
 
 # --- Aufbau ---------------------------------------------------------------------
@@ -125,65 +204,93 @@ func _build_ui() -> void:
 	_blocks = QuestBlocks.new()
 	add_child(_blocks)
 
-	_level_label = _label(36, TEXT_DIM)
-	_coins_label = _label(44, ACCENT)
+	_level_label = _label(INFO_FONT, TEXT_DIM)
+	_coins_label = _label(INFO_FONT, ACCENT)
 	_coins_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	for l in [_level_label, _coins_label]:
+		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
-	_refill_button = _button("", 26)
+	_refill_button = _button("", BUTTON_FONT)
 	_refill_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		session.refill())
-	_swap_button = _button("", 26)
+	_swap_button = _button("", BUTTON_FONT)
 	_swap_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		session.swap())
-	_clear_button = _button("", 26)
+	_clear_button = _button("", BUTTON_FONT)
 	_clear_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.clear_useless().is_empty():
 			# Keine Steine im Feld: Knopf wackelt (kostet nichts).
 			_shake(_clear_button))
-	_hint_button = _button("", 26)
+	_hint_button = _button("", BUTTON_FONT)
 	_hint_button.pressed.connect(_on_hint_pressed)
-	_replace_button = _button("", 26)
+	_replace_button = _button("", BUTTON_FONT)
 	_replace_button.toggle_mode = true
 	_replace_button.toggled.connect(func(on: bool) -> void: _set_tap_action("replace" if on else ""))
-	_magnet_button = _button("", 26)
+	_magnet_button = _button("", BUTTON_FONT)
 	_magnet_button.toggle_mode = true
 	_magnet_button.toggled.connect(func(on: bool) -> void: _set_tap_action("magnet" if on else ""))
-	_joker_button = _button("", 26)
+	_joker_button = _button("", BUTTON_FONT)
 	_joker_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.joker() == RunSession.NO_CELL:
 			_shake(_joker_button))
-	_shuffle_button = _button("", 26)
+	_shuffle_button = _button("", BUTTON_FONT)
 	_shuffle_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.shuffle().is_empty():
 			_shake(_shuffle_button))
-	_split_button = _button("", 26)
+	_shorten_button = _button("", BUTTON_FONT)
+	_shorten_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if not session.shorten():
+			_shake(_shorten_button))
+	_split_button = _button("", BUTTON_FONT)
 	_split_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if not session.split():
 			_shake(_split_button))
-	_scan_button = _button("", 26)
+	_scan_button = _button("", BUTTON_FONT)
 	_scan_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.scan().is_empty():
 			_shake(_scan_button))
-	_complete_button = _button("", 21)
+	_complete_button = _button("", BUTTON_FONT_SMALL)
 	_complete_button.toggle_mode = true
 	_complete_button.toggled.connect(func(on: bool) -> void: _set_tap_action("complete" if on else ""))
-	_solve_button = _button("", 26)
+	_strike_button = _button("", BUTTON_FONT)
+	_strike_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if not session.strike():
+			_shake(_strike_button))
+	_solve_button = _button("", BUTTON_FONT)
 	_solve_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if not session.solve():
 			_shake(_solve_button))
 
-	_give_up_button = _button("Aufgeben", 34)
+	_buttons = {"refill": _refill_button, "hint": _hint_button, "replace": _replace_button,
+		"shuffle": _shuffle_button, "clear": _clear_button, "joker": _joker_button,
+		"shorten": _shorten_button, "swap": _swap_button, "split": _split_button,
+		"complete": _complete_button, "magnet": _magnet_button, "scan": _scan_button,
+		"strike": _strike_button, "solve": _solve_button}
+	for id in _buttons:
+		_style_help_button(_buttons[id], id)
+	_offer_hint = _label(OFFER_HINT_FONT, TEXT_DIM)
+	_offer_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_offer_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	# „Aufgeben“: schlichter Text wie die Info-Zeile (gleiche Schrift, linksbündig, ohne Rahmen).
+	_give_up_button = _button("Aufgeben", INFO_FONT)
 	_give_up_button.flat = true
 	_give_up_button.add_theme_color_override("font_color", TEXT_DIM)
-	_give_up_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_give_up_button.add_theme_color_override("font_hover_color", TEXT)
+	_give_up_button.add_theme_color_override("font_pressed_color", TEXT)
+	_give_up_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
+		_give_up_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
 	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
 
 	_continue_button = _button("Weiter", 56)
@@ -210,6 +317,17 @@ func _build_ui() -> void:
 	var no := _button("Nein", 56, row)
 	no.custom_minimum_size = Vector2(260, 130)
 	no.pressed.connect(func() -> void: _confirm.visible = false)
+
+	# Auswahl: Power-up oder Upgrade
+	var ch := _overlay("")
+	_choice = ch[0]
+	_choice_title = ch[2]
+	_choice_title.add_theme_font_size_override("font_size", 52)
+	_choice_title.add_theme_color_override("font_color", ACCENT)
+	(ch[1] as VBoxContainer).add_theme_constant_override("separation", 40)
+	_choice_cards = VBoxContainer.new()
+	_choice_cards.add_theme_constant_override("separation", 24)
+	(ch[1] as VBoxContainer).add_child(_choice_cards)
 
 	# Bilanz
 	var s := _overlay("")
@@ -260,62 +378,107 @@ func _button(text: String, size: int, parent: Node = self) -> Button:
 	return b
 
 
-## Hilfe-Knöpfe in Anzeige-Reihenfolge: von gratis bis teuer (gleicher Preis: Reihenfolge dieser Liste).
+## Sichtbare Hilfe-Knöpfe (freigeschaltete) in Anzeige-Reihenfolge: von gratis bis teuer
+## (aktueller Preis; gleicher Preis: Reihenfolge von HELP_ORDER).
 func _help_buttons() -> Array[Button]:
-	var list := [
-		[_refill_button, BALANCE.refill_price], [_hint_button, BALANCE.hint_price],
-		[_replace_button, BALANCE.replace_price],
-		[_swap_button, BALANCE.swap_price], [_clear_button, BALANCE.clear_price],
-		[_joker_button, BALANCE.joker_price], [_magnet_button, BALANCE.magnet_price],
-		[_split_button, BALANCE.split_price], [_shuffle_button, BALANCE.shuffle_price],
-		[_complete_button, BALANCE.complete_price],
-		[_scan_button, BALANCE.scan_price], [_solve_button, BALANCE.solve_price]]
-	for i in list.size():
-		list[i].append(i)
-	list.sort_custom(func(a: Array, b: Array) -> bool:
-		return a[1] < b[1] or (a[1] == b[1] and a[2] < b[2]))
+	var ids: Array = []
+	for id in HELP_ORDER:
+		if session == null or session.has_help(id):
+			ids.append(id)
+	ids.sort_custom(func(a: String, b: String) -> bool:
+		var pa := _help_price(a)
+		var pb := _help_price(b)
+		return pa < pb or (pa == pb and HELP_ORDER.find(a) < HELP_ORDER.find(b)))
 	var result: Array[Button] = []
-	for e in list:
-		result.append(e[0])
+	for id in ids:
+		result.append(_buttons[id])
 	return result
 
 
-## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
+func _help_price(id: String) -> int:
+	return session.price(id) if session != null else int(BALANCE.get(id + "_price"))
+
+
+func _per_row() -> int:
+	return BUTTONS_PER_ROW if BALANCE.draft_enabled else BUTTONS_PER_ROW_ALL
+
+
+## Spalte (x, Breite) für alle Inhalte: im Hochformat der ganze Bildschirm, sonst mittig.
+func _column(s: Vector2) -> Vector2:
+	var w := minf(s.x, s.y * MAX_COLUMN_ASPECT)
+	return Vector2((s.x - w) / 2.0, w)
+
+
+## Höhe des oberen Bereichs: „Aufgeben“, Platz für 3 Block-Zeilen in voller Blockgröße und die Info-Zeile.
+func _top_height(s: Vector2) -> float:
+	var inner := _column(s).y * (1.0 - 2.0 * SIDE_MARGIN)
+	var b := inner / (QuestBlocks.MAX_COLS + (QuestBlocks.MAX_COLS - 1) * QuestBlocks.GAP)
+	var rows := QuestBlocks.MAX_ROWS
+	return BLOCKS_TOP + b * (rows + (rows - 1) * QuestBlocks.GAP) + BLOCKS_GAP_BELOW + INFO_HEIGHT
+
+
+## Höhe des unteren Bereichs: Hinweis und alle Reihen Hilfe-Knöpfe.
+func _bottom_height() -> float:
+	var rows := BUTTON_ROWS
+	if not BALANCE.draft_enabled:
+		rows = ceili((RunSession.HELP_IDS.size() + 2) / float(BUTTONS_PER_ROW_ALL))
+	return rows * BUTTON_STEP + BOTTOM_PAD + 12.0
+
+
+## Bildschirmbereich (Pixel) für das Spielfeld samt Rand.
 func _board_area() -> Rect2:
 	var s := get_viewport_rect().size
-	var side := s.x * SIDE_MARGIN
-	var top := s.y * TOP_AREA
-	var bottom := s.y * BOTTOM_AREA
-	return Rect2(side, top, s.x - 2.0 * side, s.y - top - bottom)
+	var col := _column(s)
+	var side := col.x + col.y * SIDE_MARGIN
+	var top := _top_height(s)
+	return Rect2(side, top, col.y * (1.0 - 2.0 * SIDE_MARGIN), s.y - top - _bottom_height())
 
 
 func _relayout() -> void:
 	var s := get_viewport_rect().size
 	if _board.session != null:
 		_board.fit_to_screen(_board_area(), s)
-	var side := s.x * SIDE_MARGIN
-	var inner := s.x - 2.0 * side
-	_give_up_button.position = Vector2(s.x - side * 0.5 - s.x * 0.3, s.y * 0.012)
-	_give_up_button.size = Vector2(s.x * 0.3, 70)
-	# Blöcke zwischen „Aufgeben“ und Spielfeld.
-	var blocks_top := s.y * 0.05
-	_blocks.layout(Rect2(side, blocks_top, inner, s.y * TOP_AREA - blocks_top - s.y * 0.01))
+	var col := _column(s)
+	var margin := col.y * SIDE_MARGIN
+	var side := col.x + margin
+	var inner := col.y - 2.0 * margin
+	_give_up_button.position = Vector2(side, s.y * 0.012)
+	_give_up_button.size = Vector2(inner * 0.4, INFO_HEIGHT)
+	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
+	var info_y := _top_height(s) - INFO_HEIGHT
+	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
+	# Info-Zeile dicht über die Oberkante des Felds (das Feld sitzt mittig in seinem Bereich).
+	if _board.session != null:
+		info_y = maxf(info_y, _board.screen_top() - INFO_HEIGHT - INFO_GAP)
 
-	var info_top := s.y * (1.0 - BOTTOM_AREA) + s.y * 0.01
-	_level_label.position = Vector2(side, info_top + 10)
-	_level_label.size = Vector2(inner * 0.55, 60)
-	_coins_label.position = Vector2(side + inner * 0.55, info_top + 5)
-	_coins_label.size = Vector2(inner * 0.45, 60)
+	# Info-Zeile direkt über dem Spielfeld: Level · Rekord links, Münzen rechts.
+	_level_label.position = Vector2(side, info_y)
+	_level_label.size = Vector2(inner * 0.6, INFO_HEIGHT)
+	_coins_label.position = Vector2(side + inner * 0.6, info_y)
+	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
+	# Unten: die Knöpfe. Der Hinweis „Noch n Level …“ steht links unter dem Feld,
+	# im gleichen Abstand wie die Info-Zeile darüber.
+	var info_top := s.y - _bottom_height() + 12.0
+	var buttons_top := info_top
+	var hint_y := info_top - INFO_HEIGHT
+	if _board.session != null:
+		hint_y = minf(_board.screen_bottom() + INFO_GAP, buttons_top - INFO_HEIGHT)
+	_offer_hint.position = Vector2(side, hint_y)
+	_offer_hint.size = Vector2(inner, INFO_HEIGHT)
 	var gap := 12.0
 	var buttons := _help_buttons()
-	# Vorläufig (zum Testen): Knöpfe in Reihen zu je 5.
-	var per_row := 5
+	var per_row := _per_row()
 	var bw := (inner - (per_row - 1) * gap) / per_row
-	_continue_button.position = Vector2(side + inner * 0.25, info_top + 80)
+	_continue_button.position = Vector2(side + inner * 0.25, info_top + 10)
 	_continue_button.size = Vector2(inner * 0.5, 120)
+	for b in _buttons.values():
+		b.visible = false
 	for i in buttons.size():
-		buttons[i].position = Vector2(side + (i % per_row) * (bw + gap), info_top + 70 + (i / per_row) * 100)
-		buttons[i].size = Vector2(bw, 90)
+		buttons[i].visible = not _continue_button.visible and not _summary.visible
+		buttons[i].position = Vector2(side + (i % per_row) * (bw + gap),
+				buttons_top + (i / per_row) * BUTTON_STEP)
+		buttons[i].size = Vector2(bw, BUTTON_HEIGHT)
+		buttons[i].pivot_offset = buttons[i].size / 2.0
 	_update_labels()
 
 
@@ -324,34 +487,115 @@ func _update_labels() -> void:
 		return
 	_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
 	_coins_label.text = "Münzen %d" % session.coins
-	var price := session.refill_price()
-	_refill_button.text = "Auffüllen\n%s" % ("gratis" if price == 0 else "−%d" % price)
+	for id in _buttons:
+		var p := session.price(id)
+		var parts: Dictionary = _button_parts[id]
+		var affordable := p <= session.coins
+		(parts["price"] as Label).text = "gratis" if p == 0 else str(p)
+		(parts["price"] as Label).add_theme_color_override("font_color",
+				BTN_FREE if p == 0 else (BTN_GOLD if affordable else BTN_RED))
+		(parts["coin"] as Panel).visible = p > 0
+		(parts["coin"] as Panel).modulate.a = 1.0 if affordable else 0.4
 	_refill_button.disabled = not session.can_refill()
-	_swap_button.text = "Tauschen\n−%d" % BALANCE.swap_price
 	_swap_button.disabled = not session.can_swap()
-	_clear_button.text = "Aufräumen\n−%d" % BALANCE.clear_price
 	_clear_button.disabled = not session.can_clear()
-	_hint_button.text = "Tipp\n−%d" % BALANCE.hint_price
 	_hint_button.disabled = not session.can_hint()
-	_replace_button.text = "Ersetzen\n−%d" % BALANCE.replace_price
 	_replace_button.disabled = not session.can_replace() and not _replace_button.button_pressed
-	_joker_button.text = "Joker\n−%d" % BALANCE.joker_price
 	_joker_button.disabled = not session.can_joker()
-	_shuffle_button.text = "Mischen\n−%d" % BALANCE.shuffle_price
 	_shuffle_button.disabled = not session.can_shuffle()
-	_magnet_button.text = "Magnet\n−%d" % BALANCE.magnet_price
 	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
-	_split_button.text = "Teilen\n−%d" % BALANCE.split_price
-	_split_button.disabled = session.is_over or session.coins < BALANCE.split_price
-	_complete_button.text = "Vervollständigen\n−%d" % BALANCE.complete_price
+	# Kürzen, Teilen, Streichen: nur Geld prüfen; passt die Lage nicht, wackelt der Knopf.
+	for id in ["shorten", "split", "strike"]:
+		_buttons[id].disabled = session.is_over or session.coins < session.price(id)
 	_complete_button.disabled = not session.can_complete() and not _complete_button.button_pressed
-	_scan_button.text = "Scan\n−%d" % BALANCE.scan_price
 	_scan_button.disabled = not session.can_scan()
-	_solve_button.text = "Lösen\n−%d" % BALANCE.solve_price
 	_solve_button.disabled = not session.can_solve()
+	for b: Button in _buttons.values():
+		b.modulate.a = BTN_DISABLED_ALPHA if b.disabled else 1.0
+	_update_offer_hint()
 	if session.is_over:
 		_set_replace_mode(false)
 	_queue_pulse_check()
+
+
+# --- Hilfe-Knöpfe gestalten ------------------------------------------------------------
+
+func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow: int) -> StyleBoxFlat:
+	var b := StyleBoxFlat.new()
+	b.bg_color = bg
+	b.border_color = Color(edge, edge_alpha)
+	b.set_border_width_all(2)
+	b.set_corner_radius_all(BTN_RADIUS)
+	b.corner_detail = 12
+	b.shadow_color = Color(edge, glow_alpha)
+	b.shadow_size = glow
+	return b
+
+
+## Stil „Kombi“ und Beschriftung (Name, Münze, Preis) für einen Hilfe-Knopf.
+func _style_help_button(b: Button, id: String) -> void:
+	var edge := BTN_EDGE_SOLVE if id == "solve" else BTN_EDGE
+	var normal := _btn_box(BTN_BG, edge, 0.8, 0.3, 12)
+	var pressed := _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.6, 20)
+	for st in ["normal", "hover", "focus", "disabled"]:
+		b.add_theme_stylebox_override(st, normal)
+	for st in ["pressed", "hover_pressed"]:
+		b.add_theme_stylebox_override(st, pressed)
+	b.text = ""
+	# Glanz: heller Verlauf in der oberen Hälfte
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 0.16))
+	g.set_color(1, Color(1, 1, 1, 0.0))
+	var tex := GradientTexture2D.new()
+	tex.gradient = g
+	tex.fill_to = Vector2(0, 1)
+	tex.width = 8
+	tex.height = 64
+	var shine_style := StyleBoxTexture.new()
+	shine_style.texture = tex
+	var shine := Panel.new()
+	shine.add_theme_stylebox_override("panel", shine_style)
+	shine.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shine.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shine.anchor_bottom = 0.5
+	shine.offset_left = 4
+	shine.offset_right = -4
+	shine.offset_top = 3
+	b.add_child(shine)
+	# Name und Preis
+	var box := VBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 2)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(box)
+	var name := Label.new()
+	name.text = HELP_NAMES[id]
+	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name.add_theme_font_size_override("font_size",
+			BTN_NAME_FONT_LONG if name.text.length() > 12 else BTN_NAME_FONT)
+	name.add_theme_color_override("font_color", BTN_TEXT)
+	box.add_child(name)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(row)
+	var coin := Panel.new()
+	coin.custom_minimum_size = Vector2(22, 22)
+	coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = BTN_GOLD
+	cs.border_color = Color(1, 0.95, 0.7, 0.9)
+	cs.set_border_width_all(2)
+	cs.set_corner_radius_all(11)
+	coin.add_theme_stylebox_override("panel", cs)
+	row.add_child(coin)
+	var price := Label.new()
+	price.add_theme_font_size_override("font_size", BTN_PRICE_FONT)
+	row.add_child(price)
+	_button_parts[id] = {"name": name, "price": price, "coin": coin}
 
 
 # --- Pulsierender Auffüllen-Knopf ----------------------------------------------------
@@ -368,18 +612,68 @@ func _update_refill_pulse() -> void:
 	_pulse_check_queued = false
 	var want := session != null and not _completing and session.refill_suggested()
 	if want and _refill_pulse == null:
-		_refill_button.pivot_offset = _refill_button.size / 2.0
+		var name_label: Label = _button_parts["refill"]["name"]
+		var set_color := func(c: Color) -> void:
+			name_label.add_theme_color_override("font_color", c)
 		_refill_pulse = create_tween().set_loops()
 		_refill_pulse.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		_refill_pulse.tween_property(_refill_button, "scale", Vector2.ONE * PULSE_SCALE, PULSE_HALF)
-		_refill_pulse.parallel().tween_property(_refill_button, "modulate", PULSE_BRIGHT, PULSE_HALF)
-		_refill_pulse.tween_property(_refill_button, "scale", Vector2.ONE, PULSE_HALF)
-		_refill_pulse.parallel().tween_property(_refill_button, "modulate", Color.WHITE, PULSE_HALF)
+		_refill_pulse.tween_method(set_color, BLINK_BRIGHT, BLINK_DIM, BLINK_HALF)
+		_refill_pulse.tween_method(set_color, BLINK_DIM, BLINK_BRIGHT, BLINK_HALF)
 	elif not want and _refill_pulse != null:
 		_refill_pulse.kill()
 		_refill_pulse = null
-		_refill_button.scale = Vector2.ONE
-		_refill_button.modulate = Color.WHITE
+		(_button_parts["refill"]["name"] as Label).add_theme_color_override("font_color", BTN_TEXT)
+
+
+# --- Power-ups und Upgrades -----------------------------------------------------------
+
+## „Noch n Level bis zum Power-up/Upgrade“; bei 1 Level leuchtet der Hinweis.
+func _update_offer_hint() -> void:
+	var n := session.levels_until_offer() if BALANCE.draft_enabled else 0
+	var kind := session.next_offer_kind()
+	if n <= 0:
+		_offer_hint.text = ""
+	else:
+		var what := "Power-up" if kind == "powerup" else "Upgrade"
+		_offer_hint.text = ("Noch 1 Level bis zum %s" % what) if n == 1 else ("Noch %d Level bis zum %s" % [n, what])
+	var glow := n == 1
+	if glow and _offer_hint_pulse == null:
+		_offer_hint.add_theme_color_override("font_color", ACCENT)
+		_offer_hint_pulse = create_tween().set_loops()
+		_offer_hint_pulse.tween_property(_offer_hint, "modulate", PULSE_BRIGHT, PULSE_HALF)
+		_offer_hint_pulse.tween_property(_offer_hint, "modulate", Color.WHITE, PULSE_HALF)
+	elif not glow and _offer_hint_pulse != null:
+		_offer_hint_pulse.kill()
+		_offer_hint_pulse = null
+		_offer_hint.modulate = Color.WHITE
+		_offer_hint.add_theme_color_override("font_color", TEXT_DIM)
+
+
+## Liegt eine Auswahl an, Karten zeigen (nach der Abschluss-Animation des Auftrags).
+func _show_choice() -> void:
+	if session == null or session.offer.is_empty() or session.is_over:
+		return
+	_set_tap_action("")
+	for c in _choice_cards.get_children():
+		c.queue_free()
+	var upgrade: bool = session.offer["kind"] == "upgrade"
+	_choice_title.text = "Upgrade\nWelche Hilfe wird günstiger?" if upgrade else "Power-up\nWähle eine Hilfe"
+	var w := _column(get_viewport_rect().size).y * 0.86
+	for id in session.offer["options"]:
+		var card := Button.new()
+		card.custom_minimum_size = Vector2(w, 190)
+		card.add_theme_font_size_override("font_size", 34)
+		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var p := session.price(id)
+		var price_text := ("%d → %d" % [p, session.upgraded_price(id)]) if upgrade else str(p)
+		card.text = "%s  ·  %s\n%s" % [HELP_NAMES[id], price_text, HELP_INFO[id]]
+		var chosen: String = id
+		card.pressed.connect(func() -> void:
+			session.choose(chosen)
+			_choice.visible = false
+			_relayout())
+		_choice_cards.add_child(card)
+	_choice.visible = true
 
 
 # --- Fliegende Buchstaben ----------------------------------------------------------
@@ -516,7 +810,8 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
 			_pending_quest = null
-			_queue_pulse_check()))
+			_queue_pulse_check()
+			_show_choice()))
 
 
 ## Lösen ohne Wort aus dem Feld: Buchstaben ploppen nacheinander direkt in der Zeile auf.
@@ -542,6 +837,7 @@ func _on_run_ended(level: int, _reason: String) -> void:
 	_update_labels()
 	for b in _help_buttons():
 		b.visible = false
+	_offer_hint.visible = false
 	_continue_button.visible = true
 	# Lösung zeigen: Steine blinken, Buchstaben fliegen in die passende Zeile.
 	var solution := session.solution()

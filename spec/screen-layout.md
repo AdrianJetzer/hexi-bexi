@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v7**, Rastergröße 5 × 6 und Auftrags-Zeilen oben abgestimmt; Optik und Details offen.
+Status: **Entwurf v13**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -24,25 +24,31 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 | [v4](images/ingame-mock-v4.png) | 7 × 11 | 77 | verworfen |
 | [v5](images/ingame-mock-v5.png) | 6 × 9 | 54 | verworfen: asymmetrischer Rahmen |
 | [Screenshot 5 × 9](images/ingame-shot-5x9-v1.png) | 5 × 9 | 45 | verworfen: Hexagons auf dem Handy zu klein |
-| **[Screenshot 5 × 6](images/ingame-shot-5x6-v1.png)** | **5 × 6** | **30** | **gewählt** (Test auf Pixel 10 Pro) |
+| [Screenshot 5 × 6](images/ingame-shot-5x6-v1.png) | 5 × 6 | 30 | verworfen: unten zu wenig Platz für die Hilfe-Knöpfe |
+| **[Screenshot 5 × 5](images/ingame-shot-5x5-v1.png)** | **5 × 5** | **25** | **gewählt**: größere Hilfe-Knöpfe |
 | [v3](images/ingame-mock-v3.png) | 5 × 8 | 40 | verworfen: zu wenige Buchstaben |
 
 ## Festgelegt
 
-- **Ausrichtung:** Hochformat.
-- **Hintergrund:** ein wunderschönes, bildschirmfüllendes Hintergrundbild.
+- **Ausrichtung:** Hochformat. Auf breiten Bildschirmen (PC-Fenster, Tablet quer) liegt alles in einer **mittigen Spalte** (höchstens 0,6 × Bildschirmhöhe breit); der Hintergrund füllt das ganze Fenster.
+- **Hintergrund „Dunkle Eleganz“:** fast schwarzes Tiefblau mit einem Hauch Nebel, der langsam zieht, wenigen funkelnden Sternen, sanftem Lichtschein hinter dem Feld und Vignette zum Rand (Shader, animiert). Siehe [Screenshot](images/look-dark-sparkles-v1.png).
+- **Kamera:** senkrecht von oben (keine Neigung; geneigte Varianten wurden verworfen).
 - **Spielfeld:**
-  - Außen ein **Rechteck**, **ringsum geschlossen** (oben nicht mehr offen, da nichts hineinfällt).
-  - Die **Innenkante folgt dem Hexagon-Raster im Zickzack** (Variante A): Boden und Seitenwände haben Nischen, in die die Hexagons passgenau sitzen. So entstehen keine Lücken an Wand und Boden.
-  - Liegt **über** dem Hintergrund und wirkt schwebend (Tiefe, Schatten, Licht), **nicht flach**.
+  - **Ringsum geschlossen** (oben nicht mehr offen, da nichts hineinfällt).
+  - Die **Kante folgt dem Hexagon-Raster im Zickzack** (Variante A): Boden und Seitenwände haben Nischen, in die die Hexagons passgenau sitzen. So entstehen keine Lücken an Wand und Boden.
+  - **Kein dunkler Rahmen** mehr ums Feld: Es wird nur von der **leuchtenden blauen Zickzack-Kante** umschlossen; außen herum sieht man den Hintergrund.
+  - **Funkeln:** kleine Lichtpunkte mit feinem Kreuz blitzen entlang der leuchtenden Kante auf, schweben langsam weg und verblassen. (Verworfen: Glasrahmen, Leuchten um die Kante, Schlagschatten, hellerer Glasboden.)
   - Füllt **nicht** den ganzen Screen: Links, rechts und oben bleibt ein Rand frei, durch den der Hintergrund sichtbar ist.
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
-  - **Größe: 5 Spalten × 6 Reihen = 30 Plätze** (siehe [Screenshot](images/ingame-shot-5x6-v1.png)).
-  - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 6 Reihen. 7 Reihen wären möglich, wenn der Knopf-Bereich unten kleiner wird.
+  - **Größe: 5 Spalten × 5 Reihen = 25 Plätze** (siehe [Screenshot](images/ingame-shot-5x5-v1.png)).
+  - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 5 Reihen. Der gewonnene Platz geht an die Hilfe-Knöpfe (155 statt 90 Pixel hoch, größere Schrift).
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
-- **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
-- **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
-- **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
+- **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Der Bereich hat **immer Platz für 3 Zeilen mit 8 Blöcken** in voller Blockgröße (Blöcke so groß, wie die Breite für 8 Blöcke erlaubt); nur bei 4 Zeilen (nach „Teilen“) werden sie kleiner. Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
+- **Direkt über dem Spielfeld** (dicht an der leuchtenden Kante): eine **Info-Zeile**: links **Level · Rekord**, rechts **Münzen** (in Gold).
+- **Direkt unter dem Spielfeld:** der Hinweis „Noch n Level bis zum Power-up“, linksbündig, gleiche Schrift und gleicher Abstand zum Feld wie die Info-Zeile darüber.
+- **Ganz unten:** die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
+- **Hilfe-Knöpfe (Stil „Kombi“):** dunkles, halbtransparentes Glas mit runden Ecken, feiner Cyan-Rand mit sanftem Leuchten, heller Glanz in der oberen Hälfte. Name groß in Weiß, darunter der Preis in Gold mit kleiner Münze („gratis“ in Grün). **Lösen** mit Goldrand. Gedrückt (z. B. Antipp-Modus): hellerer Grund, stärkeres Leuchten. Gesperrt: gedimmt; reicht das Geld nicht, ist der Preis rot. Siehe [Screenshot](images/buttons-kombi-v1.png).
+- **Knopf „Aufgeben“:** oben links, schlichter Text in der Schrift der Info-Zeile, linksbündig wie „Level …“ (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
 
@@ -68,3 +74,9 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
 - **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.
+- **v13:** Hintergrund „Dunkle Eleganz“ (animierter Shader), Funkeln an der Feld-Kante, Kamera ohne Neigung.
+- **v12:** Hilfe-Knöpfe im Stil „Kombi“ (Glas, Cyan-Leuchten, Goldpreis mit Münze; Lösen mit Goldrand).
+- **v11:** „Aufgeben“ oben links in der Schrift der Info-Zeile; Hinweis „Noch n Level …“ links direkt unter dem Feld.
+- **v10:** Info-Zeile (Level · Rekord, Münzen) über das Spielfeld; unten nur Hinweis und Knöpfe (2 × 3).
+- **v9:** Raster 5 × 5 statt 5 × 6; dafür größere Hilfe-Knöpfe.
+- **v8:** Oben fester Platz für 3 Block-Zeilen (größere Blöcke), dunkler Rahmen ums Feld entfällt (nur leuchtende Kante), Info-Zeile unten in einer Schrift (Münzen in Gold). Unterer Bereich nur so hoch wie nötig. Breite Fenster: mittige Spalte.

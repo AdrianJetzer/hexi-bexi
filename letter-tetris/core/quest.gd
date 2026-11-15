@@ -78,6 +78,25 @@ func split_row(row: int) -> bool:
 	return true
 
 
+## Freie Zeile um einen Block kürzen (Hilfe „Kürzen“). false, wenn gefüllt oder ungültig.
+func shorten_row(row: int) -> bool:
+	_ensure_filled()
+	if row < 0 or row >= rows.size() or filled[row] != "" or rows[row] <= 1:
+		return false
+	rows[row] -= 1
+	return true
+
+
+## Freie Zeile ganz entfernen (Hilfe „Zeile streichen“). false, wenn gefüllt oder ungültig.
+func remove_row(row: int) -> bool:
+	_ensure_filled()
+	if row < 0 or row >= rows.size() or filled[row] != "":
+		return false
+	rows.remove_at(row)
+	filled.remove_at(row)
+	return true
+
+
 ## Anzahl aller Blöcke.
 func block_count() -> int:
 	var n := 0

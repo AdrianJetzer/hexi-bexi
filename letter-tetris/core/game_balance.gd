@@ -4,7 +4,7 @@ extends Resource
 
 @export_group("Raster")
 @export var grid_cols: int = 5
-@export var grid_rows: int = 6
+@export var grid_rows: int = 5
 
 @export_group("Lauf")
 ## Hexagons zu Beginn eines Laufs.
@@ -32,10 +32,14 @@ extends Resource
 @export var shuffle_price: int = 50
 ## Hilfe „Magnet“.
 @export var magnet_price: int = 50
+## Hilfe „Kürzen“: längste freie Zeile verliert einen Block.
+@export var shorten_price: int = 50
 ## Hilfen „Teilen“ (ab dieser Zeilenlänge) und „Scan“.
 @export var split_price: int = 50
 @export var split_min_length: int = 6
 @export var scan_price: int = 50
+## Hilfe „Zeile streichen“: freie Zeile mit den meisten Blöcken fällt weg.
+@export var strike_price: int = 50
 ## Hilfe „Vervollständigen“: so viele Buchstaben muss man mindestens anwischen.
 @export var complete_price: int = 50
 @export var complete_min_prefix: int = 2
@@ -58,3 +62,20 @@ func difficulty(level: int) -> DifficultyLevel:
 		return null
 	return difficulty_levels[clampi(level, 1, difficulty_levels.size()) - 1]
 
+
+## Roguelike-Draft (spec/run-mode.md, „Power-ups und Upgrades“): aus = alle Hilfen von Anfang an.
+@export var draft_enabled: bool = true
+## Alle so viele Level eine Auswahl (Power-up, danach Upgrade).
+@export var draft_every: int = 4
+## Power-up-Stufen in Reihenfolge, je drei Hilfe-IDs (siehe RunSession.HELP_IDS).
+@export var draft_tiers: Array[PackedStringArray] = [
+	PackedStringArray(["hint", "replace", "shuffle"]),
+	PackedStringArray(["clear", "joker", "shorten"]),
+	PackedStringArray(["swap", "split", "complete"]),
+	PackedStringArray(["magnet", "scan", "strike"]),
+]
+## So viele zufällige Hilfen der Stufe stehen beim Power-up zur Wahl.
+@export var draft_choices: int = 2
+## Upgrade: Preis sinkt um diesen Anteil (gerundet auf 5), nie unter upgrade_min_price.
+@export var upgrade_discount: float = 0.25
+@export var upgrade_min_price: int = 25
