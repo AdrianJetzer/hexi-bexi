@@ -73,6 +73,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−100** |
 | **Joker: ein Stein wird zum Joker** | **−100** |
 | **Magnet: Wort um einen Stein bilden** | **−100** |
+| **Kürzen: längste Zeile um einen Block kürzen** | **−100** |
 | **Teilen: lange Zeile halbieren** | **−125** |
 | **Mischen: Buchstaben neu verteilen** | **−150** |
 | **Vervollständigen: angewischtes Wort zu Ende zeigen** | **−150** |
@@ -99,6 +100,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 - **Joker (100):** Ein zufälliger Stein wird zum **Joker** (zeigt ★). Beim Wischen steht er für **jeden Buchstaben**, mit dem ein gültiges Wort entsteht, das in eine freie Zeile passt; in die Blöcke fliegt der passende echte Buchstabe. Tipp, Lösen, Aufräumen und die Feststeck-Erkennung beziehen Joker vorerst nicht ein.
 - **Mischen (150):** Die Buchstaben aller Steine werden zufällig auf die belegten Plätze neu verteilt; das Feld bleibt gleich voll. Die Steine drehen sich dabei um.
 - **Magnet (100):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
+- **Kürzen (100):** Die **längste freie Zeile** verliert **einen Block** (z. B. 7 → 6, 4 → 3); bei mehreren gleich langen die oberste. Zeilen mit 3 Blöcken werden nicht kürzer (Mindestlänge eines Worts). Gibt es keine Zeile mit mindestens 4 Blöcken, wackelt der Knopf, es kostet nichts.
 - **Teilen (125):** Die **längste freie Zeile** mit mindestens 6 Blöcken wird halbiert: 6 → 3 + 3, 7 → 4 + 3, 8 → 4 + 4. Dadurch können 4 Zeilen entstehen (die Blöcke werden dann etwas kleiner). Gibt es keine solche Zeile, wackelt der Knopf, es kostet nichts.
 - **Scan (200):** Die Steine **eines** geläufigen Worts leuchten, und zwar für die **längste freie Zeile** (gibt es dafür keines, für die nächstkürzere) (nur ihr **Rand** leuchtet, damit die Buchstaben lesbar bleiben) – bis ein Wort angenommen wird oder sich das Feld ändert. Anders als der Tipp zeigt Scan alle Steine des Worts auf einmal, aber nicht ihre Reihenfolge. Gibt es kein passendes Wort, wackelt der Knopf, es kostet nichts.
 - **Vervollständigen (150):** Knopf drücken (bleibt gedrückt wie bei Ersetzen und Magnet), dann **mindestens 2 Buchstaben anwischen** und loslassen. Das Spiel sucht ein Wort, das **mit genau diesen Steinen beginnt**, vom letzten Stein aus weitergeht, **länger** ist als das Angewischte und **genau in eine freie Zeile passt** – zuerst unter den Vorschlags-Wörtern, sonst unter allen gültigen Wörtern (bei mehreren zufällig eins).
@@ -198,3 +200,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.22:** Schwerkraft entfällt.
 - **v3.23:** Nach Scan tippt Tipp dasselbe Wort; Scan übernimmt ein laufendes Tipp-Wort gleicher Länge.
 - **v3.24:** Neue Hilfe Vervollständigen (150): 2+ Buchstaben anwischen, das Spiel zeigt den Rest des Worts.
+- **v3.25:** Neue Hilfe Kürzen (100): längste freie Zeile verliert einen Block.
