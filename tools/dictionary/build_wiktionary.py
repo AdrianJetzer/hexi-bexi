@@ -3,7 +3,8 @@
 Usage: python3 -I build_wiktionary.py <dewiktionary.jsonl.gz> <out.txt> [<excluded.txt>]
 Takes headwords of German entries (lang_code == "de") plus single-word inflected forms.
 Proper names and abbreviations are left out: a word is excluded if it only occurs in
-entries with pos "name" or "abbrev" (with their forms) and in no other entry.
+entries with pos "name" or "abbrev", or with capitals inside the headword (e.g. "UGs", "NASA",
+"iPod"), with their forms, and in no other entry.
 The excluded words are written to <excluded.txt> (to filter other word lists).
 """
 import collections
@@ -44,6 +45,15 @@ def _bases(e):
     return result
 
 
+def _mixed_case(e):
+    """Stichwort mit Großbuchstaben mitten im Wort (z. B. „UGs“, „CEOs“, „NASA“, „iPod“):
+    Abkürzungen, Akronyme und Markennamen. Gelten nicht als Spielwörter, außer es gibt sie
+    auch normal geschrieben (z. B. „Ufo“ neben „UFO“)."""
+    w = e.get("word") or ""
+    # Nur einteilige Wörter aus Buchstaben: „Armee-Einheit“ oder „Corned Beef“ sind normale Wörter.
+    return w.isalpha() and any(c.isupper() for c in w[1:])
+
+
 ABBREV_HINTS = ("abkürzung", "akronym", "kurzwort", "initialwort", "zeichen für", "symbol")
 
 
@@ -81,7 +91,7 @@ def main(src, dst, excluded_dst=None):
                 continue
             entries += 1
             pos = e.get("pos", "?")
-            is_name = pos in EXCLUDED_POS and not _is_contraction(e)
+            is_name = (pos in EXCLUDED_POS and not _is_contraction(e)) or _mixed_case(e)
             own = set()
             n = normalize(e.get("word"))
             if n:

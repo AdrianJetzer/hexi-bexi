@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v7.9**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v7.10**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -82,6 +82,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
   - Ausnahme: Ist ein Name **auch ein normales Wort** (z. B. ROSE, WOLF, BACH, ERNST, WINTER), gilt er.
   - Entfernt wird ein Wort, wenn Wiktionary es **nur** als Eigenname oder Abkürzung kennt (samt Formen), oder wenn die Trennmuster-Liste es im Kommentar als **Name** vermerkt (z. B. „engl. Name“, „geogr. Name“), außer Wiktionary kennt es als normales Wort (z. B. Newton, Dobermann). Seltene Namen, die Wiktionary nicht kennt, können durchrutschen; dafür später ggf. eine eigene Sperrliste.
 - **Akronyme** wie DEA, CIA, CPU, AfD gelten ebenfalls nicht (in der Trennmuster-Liste als „Abk.“ markiert oder ganz großgeschrieben), außer Wiktionary kennt sie als normal geschriebenes Wort (z. B. Aids, Ufo, Abc).
+- Ebenso Wörter, deren Wiktionary-Eintrag **Großbuchstaben mitten im Wort** hat (z. B. „UGs“ als Mehrzahl von UG = Untergeschoss, „CEOs“, „NASA“, „iPod“), außer es gibt sie auch normal geschrieben. Wörter mit Bindestrich oder Leerzeichen (z. B. „Armee-Einheit“) sind davon nicht betroffen.
 - **Römische Zahlen** (z. B. LIII, XII) gelten nicht, außer sie sind auch ein normales Wort (z. B. MIX).
 - Weiterhin: nur A–Z, Wörter mit Umlauten vorerst nicht (siehe „Sprache“).
 
@@ -158,3 +159,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.7:** Vorschlags-Wörter: eigene Liste für alles, was das Spiel selbst anbietet (Grundformen plus Mehrzahl, ohne Artikel und Pronomen, ca. 15.000 häufigste, Häufigkeit aus Leipzig Corpora). Gültig bleiben alle Wörter.
 - **v7.8:** Vorschlags-Wörter umgesetzt: 10.000 häufigste, nur 3 bis 8 Buchstaben, Sperrliste, ohne Akronyme.
 - **v7.9:** Raster 5 × 5 (25 Plätze), damit unten mehr Platz für die Hilfe-Knöpfe ist.
+- **v7.10:** Wörter mit Großbuchstaben mitten im Wiktionary-Stichwort (UGS, CEOS, NASA, IPOD …) gelten nicht (160 Wörter).
