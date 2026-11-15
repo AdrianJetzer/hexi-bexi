@@ -21,6 +21,12 @@ extends Resource
 ## Hilfe-Stufe nach der festen Kurve.
 @export var endless_help_level: int = 5
 
+@export_group("Atempausen")
+## Ab diesem Level ist jedes break_every-te Level leicht: nur eine Zeile (Länge zufällig aus break_rows).
+@export var break_from: int = 11
+@export var break_every: int = 5
+@export var break_rows: PackedInt32Array = PackedInt32Array([3, 4])
+
 @export_group("Belohnung")
 ## Münzen = reward_base + reward_per_level × Level.
 @export var reward_base: int = 100
@@ -47,13 +53,18 @@ func help_level(level: int) -> int:
 
 
 ## Block-Budget nach der festen Kurve (0 innerhalb der festen Kurve).
-## Beispiel mit Kurve bis 10: Level 11–15 → 12, 16–20 → 13 …
+## Beispiel mit Kurve bis 20 und budget_every 10: Level 21–30 → 12, 31–40 → 13 …
 func budget(level: int) -> int:
 	var beyond := level - last_level()
 	if beyond <= 0:
 		return 0
 	var steps := (beyond - 1) / maxi(budget_every, 1)
 	return mini(budget_start + steps, mini(budget_max, rows_max * row_max))
+
+
+## Ist dieses Level eine Atempause (leichter Auftrag)?
+func is_break(level: int) -> bool:
+	return break_every > 0 and level >= break_from and level % break_every == 0 and not break_rows.is_empty()
 
 
 func reward(level: int) -> int:

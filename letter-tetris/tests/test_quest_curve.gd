@@ -15,27 +15,40 @@ func _gen(seed_value: int = 1) -> QuestGenerator:
 
 func test_curve_from_spec() -> void:
 	assert_not_null(curve)
-	assert_eq(curve.last_level(), 10)
+	assert_eq(curve.last_level(), 20)
+	# Jeder feste Auftrag zweimal; Level 15 und 20 sind Atempausen (eigener Test).
 	var expected := {
-		1: [3], 2: [4], 3: [3, 3], 4: [3, 4], 5: [5],
-		6: [4, 4], 7: [3, 3, 4], 8: [4, 5], 9: [6], 10: [3, 4, 5]}
+		1: [3], 2: [3], 3: [4], 4: [4], 5: [3, 3], 6: [3, 3], 7: [3, 4], 8: [3, 4],
+		9: [5], 10: [5], 11: [4, 4], 12: [4, 4], 13: [3, 3, 4], 14: [3, 3, 4],
+		16: [4, 5], 17: [6], 18: [6], 19: [3, 4, 5]}
 	for level in expected:
 		assert_eq(_gen().quest_for(level).rows, PackedInt32Array(expected[level]), "Level %d" % level)
 
 
-func test_reward_grows_with_level() -> void:
-	for level in [1, 10, 20]:
-		assert_eq(_gen().quest_for(level).reward, 100, "fest 100 je Level")
+func test_breaks_every_fifth_level_from_eleven() -> void:
+	var g := _gen(3)
+	for level in [15, 20, 25, 30, 100]:
+		assert_true(curve.is_break(level), "Level %d" % level)
+		var rows := g.quest_for(level).rows
+		assert_eq(rows.size(), 1, "eine Zeile in Level %d" % level)
+		assert_between(rows[0], 3, 4)
+	for level in [5, 10, 11, 21, 24]:
+		assert_false(curve.is_break(level), "Level %d" % level)
+
+
+func test_reward_fixed() -> void:
+	for level in [1, 10, 20, 50]:
+		assert_eq(_gen().quest_for(level).reward, 50, "fest 50 je Level")
 
 
 func test_help_level_follows_curve() -> void:
-	var expected := {1: 1, 2: 1, 3: 2, 4: 2, 5: 3, 7: 3, 8: 4, 10: 4, 11: 5, 40: 5}
+	var expected := {1: 1, 4: 1, 5: 2, 8: 2, 9: 3, 14: 3, 15: 4, 20: 4, 21: 5, 80: 5}
 	for level in expected:
 		assert_eq(curve.help_level(level), expected[level], "Level %d" % level)
 
 
 func test_budget_after_curve() -> void:
-	var expected := {10: 0, 11: 12, 15: 12, 16: 13, 21: 14, 200: 24}
+	var expected := {20: 0, 21: 12, 30: 12, 31: 13, 41: 14, 500: 24}
 	for level in expected:
 		assert_eq(curve.budget(level), expected[level], "Level %d" % level)
 
@@ -60,11 +73,11 @@ func test_endless_quests_vary() -> void:
 	var g := _gen(7)
 	var seen := {}
 	for i in 30:
-		seen[str(g.quest_for(11).rows)] = true
+		seen[str(g.quest_for(21).rows)] = true
 	assert_gt(seen.size(), 5, "abwechslungsreich")
 
 
 func test_quest_for_returns_fresh_copies() -> void:
-	var q := _gen().quest_for(3)
+	var q := _gen().quest_for(5)
 	q.rows[0] = 9
-	assert_eq(_gen().quest_for(3).rows[0], 3, "Kurve unverändert")
+	assert_eq(_gen().quest_for(5).rows[0], 3, "Kurve unverändert")

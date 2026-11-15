@@ -87,4 +87,5 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.11:** Münzen oben rechts mit goldener Münze statt Wort „Münzen“.
 - **v4.10:** Auswahl-Bildschirm für Power-ups und Upgrades (Karten), Hinweis „Noch n Level bis zum Power-up“, Knöpfe nur für freigeschaltete Hilfen (2 × 3).

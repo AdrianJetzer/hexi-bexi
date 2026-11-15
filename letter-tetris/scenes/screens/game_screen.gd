@@ -104,6 +104,8 @@ var _blocks: QuestBlocks
 var _fly_layer: Control
 var _level_label: Label
 var _coins_label: Label
+## Goldene Münze vor der Münzzahl (wie auf den Knöpfen).
+var _coins_icon: Panel
 var _refill_button: Button
 var _swap_button: Button
 var _clear_button: Button
@@ -207,6 +209,8 @@ func _build_ui() -> void:
 	_level_label = _label(INFO_FONT, TEXT_DIM)
 	_coins_label = _label(INFO_FONT, ACCENT)
 	_coins_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_coins_icon = _coin(30)
+	add_child(_coins_icon)
 	for l in [_level_label, _coins_label]:
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
@@ -486,7 +490,8 @@ func _update_labels() -> void:
 	if session == null:
 		return
 	_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
-	_coins_label.text = "Münzen %d" % session.coins
+	_coins_label.text = str(session.coins)
+	_place_coin_icon()
 	for id in _buttons:
 		var p := session.price(id)
 		var parts: Dictionary = _button_parts[id]
@@ -519,6 +524,31 @@ func _update_labels() -> void:
 
 
 # --- Hilfe-Knöpfe gestalten ------------------------------------------------------------
+
+## Goldene Münze (Kreis mit hellem Rand).
+func _coin(size: float) -> Panel:
+	var coin := Panel.new()
+	coin.custom_minimum_size = Vector2(size, size)
+	coin.size = Vector2(size, size)
+	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = BTN_GOLD
+	cs.border_color = Color(1, 0.95, 0.7, 0.9)
+	cs.set_border_width_all(2)
+	cs.set_corner_radius_all(int(size / 2.0))
+	coin.add_theme_stylebox_override("panel", cs)
+	return coin
+
+
+## Münze links neben die (rechtsbündige) Münzzahl setzen.
+func _place_coin_icon() -> void:
+	var font := _coins_label.get_theme_font("font")
+	var fs := _coins_label.get_theme_font_size("font_size")
+	var w := font.get_string_size(_coins_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var right := _coins_label.position.x + _coins_label.size.x
+	_coins_icon.position = Vector2(right - w - _coins_icon.size.x - 12.0,
+			_coins_label.position.y + (_coins_label.size.y - _coins_icon.size.y) / 2.0)
+
 
 func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow: int) -> StyleBoxFlat:
 	var b := StyleBoxFlat.new()

@@ -96,7 +96,7 @@ func test_word_completes_quest_and_next_comes_automatically() -> void:
 	assert_eq(run.coins, 100)
 	assert_eq(run.level(), 2)
 	assert_not_null(run.quest, "nächster Auftrag sofort da")
-	assert_eq(run.quest.rows, PackedInt32Array([4]), "Level 2 laut Kurve")
+	assert_eq(run.quest.rows, PackedInt32Array([3]), "Level 2 laut Kurve")
 	assert_signal_emitted(run, "quest_completed")
 	assert_signal_emit_count(run, "quest_started", 2)
 
@@ -105,7 +105,7 @@ func test_reward_from_curve() -> void:
 	run.start()
 	_column(0, "AST")
 	run.submit_path(_column(0, "AST", false))
-	assert_eq(run.coins, 100, "fest 100")
+	assert_eq(run.coins, curve.reward(1), "fest laut Kurve")
 
 
 func test_word_fills_row_and_reports_it() -> void:
@@ -1141,11 +1141,11 @@ func test_draft_starts_with_refill_and_solve_only() -> void:
 	assert_true(run.can_solve())
 
 
-func test_powerup_after_level_four() -> void:
+func test_powerup_after_level_five() -> void:
 	_draft_run()
-	assert_eq(run.levels_until_offer(), 4)
+	assert_eq(run.levels_until_offer(), balance.draft_every)
 	assert_eq(run.next_offer_kind(), "powerup")
-	_finish_levels(3)
+	_finish_levels(balance.draft_every - 1)
 	assert_true(run.offer.is_empty())
 	assert_eq(run.levels_until_offer(), 1)
 	_finish_levels(1)
@@ -1162,7 +1162,7 @@ func test_powerup_after_level_four() -> void:
 	assert_true(run.has_help(pick))
 	assert_false(run.has_help(options[1]), "die andere gibt es nicht")
 	assert_signal_emitted(run, "helps_changed")
-	assert_eq(run.levels_until_offer(), 4)
+	assert_eq(run.levels_until_offer(), balance.draft_every)
 
 
 func test_powerup_tiers_in_order() -> void:
@@ -1170,7 +1170,7 @@ func test_powerup_tiers_in_order() -> void:
 	var expected := [["hint", "replace", "shuffle"], ["clear", "joker", "shorten"],
 			["swap", "split", "complete"], ["magnet", "scan", "strike"]]
 	for tier in expected:
-		_finish_levels(4)
+		_finish_levels(balance.draft_every)
 		assert_eq(run.offer["kind"], "powerup")
 		var options: PackedStringArray = run.offer["options"]
 		assert_eq(options.size(), 2)
@@ -1184,9 +1184,9 @@ func test_powerup_tiers_in_order() -> void:
 func test_upgrade_lowers_price_by_quarter() -> void:
 	_draft_run()
 	for i in 4:
-		_finish_levels(4)
+		_finish_levels(balance.draft_every)
 		run.choose(run.offer["options"][0])
-	_finish_levels(4)
+	_finish_levels(balance.draft_every)
 	assert_eq(run.offer["kind"], "upgrade")
 	var options: PackedStringArray = run.offer["options"]
 	assert_eq(options.size(), 5, "alle 4 eigenen Hilfen und Lösen")
@@ -1211,7 +1211,7 @@ func test_upgrade_rounding_and_minimum() -> void:
 
 func test_new_run_resets_draft() -> void:
 	_draft_run()
-	_finish_levels(4)
+	_finish_levels(balance.draft_every)
 	run.choose(run.offer["options"][0])
 	run.start()
 	assert_eq(run.owned.size(), 0)
@@ -1224,7 +1224,7 @@ func test_no_draft_means_all_helps() -> void:
 	for id in RunSession.HELP_IDS:
 		assert_true(run.has_help(id), id)
 	assert_eq(run.levels_until_offer(), 0)
-	_finish_levels(4)
+	_finish_levels(balance.draft_every)
 	assert_true(run.offer.is_empty())
 
 
@@ -1234,7 +1234,7 @@ func test_powerup_choices_vary_between_runs() -> void:
 	for seed_value in range(1, 13):
 		run = RunSession.new(balance, curve, lang, dict, seed_value)
 		run.start()
-		_finish_levels(4)
+		_finish_levels(balance.draft_every)
 		seen[",".join(run.offer["options"])] = true
 	assert_gt(seen.size(), 1, "nicht immer dieselben zwei")
 
