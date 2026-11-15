@@ -17,8 +17,8 @@ const GAP := 0.07
 const THICKNESS := 0.42
 const CORNER := 0.16
 const BEVEL := 0.13
-## Breite des Metallrahmens rund um das Raster.
-const FRAME_MARGIN := 0.45
+## Rand rund um das Raster (Platz für die Leuchtkante, kein sichtbarer Rahmen mehr).
+const FRAME_MARGIN := 0.15
 ## Öffnungswinkel der Kamera (Grad).
 const CAMERA_FOV := 32.0
 ## Treffer-Toleranz beim Wischen (Anteil des Innenradius).
@@ -172,24 +172,9 @@ func _build_static() -> void:
 	add_child(_static)
 
 	var inner := layout.inner_contour()
-	var rect := layout.grid_rect().grow(FRAME_MARGIN)
-	var outer := PackedVector2Array([rect.position, Vector2(rect.end.x, rect.position.y), rect.end,
-		Vector2(rect.position.x, rect.end.y)])
 	var floor_y := -THICKNESS * 0.5
 	var frame_top := THICKNESS * 0.1
-
-	# Metallrahmen = Rechteck minus Zickzack-Innenkante
-	var frame := CSGCombiner3D.new()
-	_static.add_child(frame)
-	var body := _csg_polygon(outer, frame_top - (floor_y - 0.3), CosmicMaterials.frame_metal())
-	body.position.y = floor_y - 0.3
-	frame.add_child(body)
-	# Kind-Koordinaten sind gedreht: lokales +Z = Welt −Y. Das Loch ragt oben und unten über.
-	var hole := _csg_polygon(inner, 2.0, null)
-	hole.operation = CSGShape3D.OPERATION_SUBTRACTION
-	hole.rotation_degrees = Vector3.ZERO
-	hole.position = Vector3(0, 0, 0.5)
-	body.add_child(hole)
+	# Kein dunkler Rahmen mehr: das Feld wird nur von der leuchtenden Zickzack-Kante umschlossen.
 
 	# Boden im Feld
 	var well := _csg_polygon(inner, 0.05, CosmicMaterials.well_floor())

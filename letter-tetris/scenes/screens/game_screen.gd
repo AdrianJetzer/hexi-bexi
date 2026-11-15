@@ -13,10 +13,20 @@ const TEXT_DIM := Color(0.6, 0.66, 0.85)
 const ACCENT := Color(1.0, 0.84, 0.6)
 const GLOW := Color(0.55, 0.95, 1.0)
 
-## Anteile der Bildschirmhöhe/-breite für die Bereiche.
+## Seitenrand (Anteil der Bildschirmbreite).
 const SIDE_MARGIN := 0.03
-const TOP_AREA := 0.2
-const BOTTOM_AREA := 0.25
+## Oben: Oberkante der Block-Zeilen (unter „Aufgeben“) und Abstand zum Spielfeld (Pixel).
+## Der Bereich hat immer Platz für QuestBlocks.MAX_ROWS Zeilen mit MAX_COLS Blöcken.
+const BLOCKS_TOP := 100.0
+const BLOCKS_GAP_BELOW := 24.0
+## Unten: Info-Zeile und Hilfe-Knöpfe (Pixel); Knöpfe in Reihen zu BUTTONS_PER_ROW.
+const INFO_HEIGHT := 64.0
+const BUTTON_HEIGHT := 90.0
+const BUTTON_STEP := 100.0
+const BUTTONS_PER_ROW := 5
+const BOTTOM_PAD := 24.0
+## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
+const INFO_FONT := 40
 
 ## Flug eines Buchstabens vom Stein in den Block (Sekunden) und Abstand zwischen Buchstaben.
 const FLY_TIME := 0.5
@@ -126,9 +136,11 @@ func _build_ui() -> void:
 	_blocks = QuestBlocks.new()
 	add_child(_blocks)
 
-	_level_label = _label(36, TEXT_DIM)
-	_coins_label = _label(44, ACCENT)
+	_level_label = _label(INFO_FONT, TEXT_DIM)
+	_coins_label = _label(INFO_FONT, ACCENT)
 	_coins_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	for l in [_level_label, _coins_label]:
+		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 	_refill_button = _button("", 26)
 	_refill_button.pressed.connect(func() -> void:
@@ -286,13 +298,26 @@ func _help_buttons() -> Array[Button]:
 	return result
 
 
-## Bildschirmbereich (Pixel) für das Spielfeld samt Rahmen.
+## Höhe des oberen Bereichs: „Aufgeben“ und Platz für 3 Block-Zeilen in voller Blockgröße.
+func _top_height(s: Vector2) -> float:
+	var inner := s.x * (1.0 - 2.0 * SIDE_MARGIN)
+	var b := inner / (QuestBlocks.MAX_COLS + (QuestBlocks.MAX_COLS - 1) * QuestBlocks.GAP)
+	var rows := QuestBlocks.MAX_ROWS
+	return BLOCKS_TOP + b * (rows + (rows - 1) * QuestBlocks.GAP) + BLOCKS_GAP_BELOW
+
+
+## Höhe des unteren Bereichs: Info-Zeile und alle Reihen Hilfe-Knöpfe.
+func _bottom_height() -> float:
+	var rows := ceili(_help_buttons().size() / float(BUTTONS_PER_ROW))
+	return INFO_HEIGHT + rows * BUTTON_STEP + BOTTOM_PAD
+
+
+## Bildschirmbereich (Pixel) für das Spielfeld samt Rand.
 func _board_area() -> Rect2:
 	var s := get_viewport_rect().size
 	var side := s.x * SIDE_MARGIN
-	var top := s.y * TOP_AREA
-	var bottom := s.y * BOTTOM_AREA
-	return Rect2(side, top, s.x - 2.0 * side, s.y - top - bottom)
+	var top := _top_height(s)
+	return Rect2(side, top, s.x - 2.0 * side, s.y - top - _bottom_height())
 
 
 func _relayout() -> void:
@@ -303,25 +328,25 @@ func _relayout() -> void:
 	var inner := s.x - 2.0 * side
 	_give_up_button.position = Vector2(s.x - side * 0.5 - s.x * 0.3, s.y * 0.012)
 	_give_up_button.size = Vector2(s.x * 0.3, 70)
-	# Blöcke zwischen „Aufgeben“ und Spielfeld.
-	var blocks_top := s.y * 0.05
-	_blocks.layout(Rect2(side, blocks_top, inner, s.y * TOP_AREA - blocks_top - s.y * 0.01))
+	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
+	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, _top_height(s) - BLOCKS_TOP - BLOCKS_GAP_BELOW))
 
-	var info_top := s.y * (1.0 - BOTTOM_AREA) + s.y * 0.01
-	_level_label.position = Vector2(side, info_top + 10)
-	_level_label.size = Vector2(inner * 0.55, 60)
-	_coins_label.position = Vector2(side + inner * 0.55, info_top + 5)
-	_coins_label.size = Vector2(inner * 0.45, 60)
+	# Info-Zeile: Level · Rekord links, Münzen rechts, gleiche Schrift.
+	var info_top := s.y - _bottom_height()
+	_level_label.position = Vector2(side, info_top)
+	_level_label.size = Vector2(inner * 0.6, INFO_HEIGHT)
+	_coins_label.position = Vector2(side + inner * 0.6, info_top)
+	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
 	var gap := 12.0
 	var buttons := _help_buttons()
-	# Vorläufig (zum Testen): Knöpfe in Reihen zu je 5.
-	var per_row := 5
+	var per_row := BUTTONS_PER_ROW
 	var bw := (inner - (per_row - 1) * gap) / per_row
-	_continue_button.position = Vector2(side + inner * 0.25, info_top + 80)
+	_continue_button.position = Vector2(side + inner * 0.25, info_top + INFO_HEIGHT + 10)
 	_continue_button.size = Vector2(inner * 0.5, 120)
 	for i in buttons.size():
-		buttons[i].position = Vector2(side + (i % per_row) * (bw + gap), info_top + 70 + (i / per_row) * 100)
-		buttons[i].size = Vector2(bw, 90)
+		buttons[i].position = Vector2(side + (i % per_row) * (bw + gap),
+				info_top + INFO_HEIGHT + (i / per_row) * BUTTON_STEP)
+		buttons[i].size = Vector2(bw, BUTTON_HEIGHT)
 	_update_labels()
 
 

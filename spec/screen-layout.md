@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v7**, Rastergröße 5 × 6 und Auftrags-Zeilen oben abgestimmt; Optik und Details offen.
+Status: **Entwurf v8**, Rastergröße 5 × 6, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot v8](images/ingame-shot-layout-v8.png).
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -32,16 +32,17 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **Ausrichtung:** Hochformat.
 - **Hintergrund:** ein wunderschönes, bildschirmfüllendes Hintergrundbild.
 - **Spielfeld:**
-  - Außen ein **Rechteck**, **ringsum geschlossen** (oben nicht mehr offen, da nichts hineinfällt).
-  - Die **Innenkante folgt dem Hexagon-Raster im Zickzack** (Variante A): Boden und Seitenwände haben Nischen, in die die Hexagons passgenau sitzen. So entstehen keine Lücken an Wand und Boden.
+  - **Ringsum geschlossen** (oben nicht mehr offen, da nichts hineinfällt).
+  - Die **Kante folgt dem Hexagon-Raster im Zickzack** (Variante A): Boden und Seitenwände haben Nischen, in die die Hexagons passgenau sitzen. So entstehen keine Lücken an Wand und Boden.
+  - **Kein dunkler Rahmen** mehr ums Feld: Es wird nur von der **leuchtenden blauen Zickzack-Kante** umschlossen; außen herum sieht man den Hintergrund.
   - Liegt **über** dem Hintergrund und wirkt schwebend (Tiefe, Schatten, Licht), **nicht flach**.
   - Füllt **nicht** den ganzen Screen: Links, rechts und oben bleibt ein Rand frei, durch den der Hintergrund sichtbar ist.
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
   - **Größe: 5 Spalten × 6 Reihen = 30 Plätze** (siehe [Screenshot](images/ingame-shot-5x6-v1.png)).
   - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 6 Reihen. 7 Reihen wären möglich, wenn der Knopf-Bereich unten kleiner wird.
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
-- **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
-- **Unter dem Spielfeld:** **Münzen**, **Level** und **Rekord**, darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
+- **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Der Bereich hat **immer Platz für 3 Zeilen mit 8 Blöcken** in voller Blockgröße (Blöcke so groß, wie die Breite für 8 Blöcke erlaubt); nur bei 4 Zeilen (nach „Teilen“) werden sie kleiner. Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
+- **Unter dem Spielfeld:** eine **Info-Zeile** in einheitlicher Schrift: links **Level · Rekord**, rechts **Münzen** (in Gold), darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
 - **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
@@ -68,3 +69,4 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
 - **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.
+- **v8:** Oben fester Platz für 3 Block-Zeilen (größere Blöcke), dunkler Rahmen ums Feld entfällt (nur leuchtende Kante), Info-Zeile unten in einer Schrift (Münzen in Gold). Unterer Bereich nur so hoch wie nötig.
