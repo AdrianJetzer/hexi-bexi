@@ -66,11 +66,26 @@ Ruhig ansteigend: Jeder der zehn festen Aufträge kommt **zweimal** hintereinand
 ### Bosse [später]
 Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
+## Modi
+
+Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfen, Preise, Power-ups, Atempausen und Münzen sind in allen gleich; jeder Modus hat einen **eigenen Rekord**.
+
+| | **Deutsch einfach** (Kinder) | **Deutsch mittel** | **Deutsch schwierig** |
+|---|---|---|---|
+| Gültige Wörter | nur eine **kindgerechte Liste** (ca. 3.000 bekannte Grundwörter und Mehrzahlformen, 3–5 Buchstaben) | alle | alle |
+| Vorschläge (Wort-Hilfe, Tipp, Scan …) | dieselbe Kinder-Liste | 10.000 häufige Wörter | 10.000 häufige Wörter |
+| Zeilenlänge | höchstens 5 Blöcke | höchstens 6 Blöcke | bis 8 Blöcke |
+| Steigerung | langsam | mittel | wie in „Kurve“ oben |
+| Wort-Hilfe | immer stark | länger stark | wie in „Kurve“ oben |
+
+- **Schwierig** ist das bisherige Spiel (Kurve oben). Einfach und mittel haben eigene, sanftere Kurven (Daten in `data/`).
+- Die Kinder-Liste entsteht aus den häufigsten Grundwörtern (Leipzig-Häufigkeit, wie die Vorschlags-Wörter) mit 3–5 Buchstaben, ohne Wörter der Sperrliste.
+
 ## Münzen
 
 | Ereignis | Münzen |
 |---|---|
-| Auftrag gelöst | **+50** (fest, unabhängig vom Level) |
+| Auftrag gelöst | **+100** (fest, unabhängig vom Level und Modus) |
 | Langes Wort nebenbei [später] | Bonus |
 | **Auffüllen: 5 neue Steine** | **gratis** |
 | **Tipp: nächsten Buchstaben zeigen** | **−50** je Buchstabe |
@@ -234,3 +249,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.29:** Power-up: 2 zufällige von 3 Hilfen der Stufe zur Wahl. Auffüllen-Hinweis: Schrift blinkt dezent statt Pulsieren.
 - **v3.30:** Kurve doppelt so lang (jeder feste Auftrag zweimal, Budget ab Level 21, +1 alle 10 Level, Hilfe-Stufe gestreckt); Atempausen ab Level 11 jedes 5. Level (eine Zeile mit 3–4 Blöcken); Power-ups nach Level 5/10/15/20, Upgrades alle 5 Level; Belohnung 50 statt 100.
 - **v3.31:** Steckt man fest: Feld abgedunkelt und großer Auffüllen-Knopf auf dem Feld.
+- **v3.32:** Modi Deutsch einfach (Kinder-Wortliste, Zeilen bis 5) / mittel (Zeilen bis 6, sanfter) / schwierig (bisheriges Spiel); Rekord je Modus; Belohnung wieder 100 in allen Modi.

@@ -53,6 +53,10 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
   - **Menü:** zurück zum Startbildschirm.
 
 ### Einstellungen
+- **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links).
+- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**. Der aktuelle ist markiert. Neu installiert: **mittel**.
+  - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
+  - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
 - **Rekord zurücksetzen** (mit Nachfrage).
@@ -60,7 +64,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 
 ## Rekord
 
-- **Ein Rekord:** das **höchste erreichte Level**. Startbildschirm, Spiel und Bilanz zeigen ihn.
+- **Ein Rekord je Modus:** das **höchste erreichte Level** im jeweiligen Modus. Startbildschirm, Spiel und Bilanz zeigen den Rekord des aktuellen Modus.
 - Der Rekord zählt beim **Aufgeben**.
 - Wird **lokal auf dem Gerät** gespeichert.
 - Architektur so anlegen, dass **später Online-Ranglisten** möglich sind (Google Play Games, Game Center).
@@ -87,5 +91,6 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.12:** Knopf „Einstellungen“ oben rechts; Modus einfach / mittel / schwierig mit Neustart-Nachfrage; Rekord je Modus.
 - **v4.11:** Münzen oben rechts mit goldener Münze statt Wort „Münzen“.
 - **v4.10:** Auswahl-Bildschirm für Power-ups und Upgrades (Karten), Hinweis „Noch n Level bis zum Power-up“, Knöpfe nur für freigeschaltete Hilfen (2 × 3).
