@@ -564,13 +564,19 @@ func can_scan() -> bool:
 
 ## Hilfe „Scan“: die Steine **eines** geläufigen Worts für die längste freie Zeile (gibt es dafür
 ## keines, für die nächstkürzere). Gibt sie zurück (leer = keines im Feld, kostet nichts).
+## Danach tippt „Tipp“ dasselbe Wort. Läuft schon ein Tipp mit einem Wort dieser Länge,
+## zeigt Scan dieses Wort.
 func scan() -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	if not can_scan():
 		return cells
+	_check_hint()
 	var lengths := quest.free_lengths()
 	for k in range(lengths.size() - 1, -1, -1):
 		var n := lengths[k]
+		if _hint_valid() and _hint_word.length() == n:
+			cells = _hint_cells.duplicate()
+			break
 		var found := (_hint_finders[0] as WordFinder).find_paths(grid, n, n,
 				func(w: String) -> bool: return w.length() == n)
 		if not found.is_empty():
@@ -578,6 +584,11 @@ func scan() -> Array[Vector2i]:
 			break
 	if cells.is_empty():
 		return cells
+	if cells != _hint_cells:
+		_reset_hint()
+		_hint_cells = cells.duplicate()
+		_hint_word = word_for(cells)
+		_hint_count = 0
 	_pay(_balance.scan_price)
 	scan_shown.emit(cells)
 	return cells

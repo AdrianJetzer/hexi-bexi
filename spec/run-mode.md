@@ -100,6 +100,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 - **Magnet (100):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
 - **Teilen (125):** Die **längste freie Zeile** mit mindestens 6 Blöcken wird halbiert: 6 → 3 + 3, 7 → 4 + 3, 8 → 4 + 4. Dadurch können 4 Zeilen entstehen (die Blöcke werden dann etwas kleiner). Gibt es keine solche Zeile, wackelt der Knopf, es kostet nichts.
 - **Scan (200):** Die Steine **eines** geläufigen Worts leuchten, und zwar für die **längste freie Zeile** (gibt es dafür keines, für die nächstkürzere) (nur ihr **Rand** leuchtet, damit die Buchstaben lesbar bleiben) – bis ein Wort angenommen wird oder sich das Feld ändert. Anders als der Tipp zeigt Scan alle Steine des Worts auf einmal, aber nicht ihre Reihenfolge. Gibt es kein passendes Wort, wackelt der Knopf, es kostet nichts.
+  - **Tipp folgt dem Scan:** Nach einem Scan zeigt **Tipp** Buchstabe für Buchstabe **dasselbe Wort**. Läuft schon ein Tipp mit einem Wort für dieselbe Zeilenlänge, zeigt Scan genau dieses Wort (bereits gezeigte Tipp-Buchstaben bleiben). Sonst ersetzt das Scan-Wort den bisherigen Tipp.
 - **Stein ersetzen (25):** Stein antippen, er bekommt einen neuen Buchstaben. Den wählt die **Wort-Hilfe**. Kein Wunschbuchstabe.
 - **Lösung am Ende:** Beim Aufgeben blinken die Steine eines Worts, das in eine freie Zeile passt, und seine **Buchstaben fliegen in die Zeile**. Gibt es keines, bleiben die Zeilen leer. Mit **„Weiter“** geht es zur Bilanz.
 
@@ -190,3 +191,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.20:** Auffüllen-Knopf pulsiert, wenn kein gültiges Wort in eine freie Zeile passt.
 - **v3.21:** Neue Preise: Tauschen 50, Aufräumen 100, Magnet 100, Mischen 150, Scan 200. Säule entfällt. Hilfe-Knöpfe nach Preis sortiert (gratis bis teuer).
 - **v3.22:** Schwerkraft entfällt.
+- **v3.23:** Nach Scan tippt Tipp dasselbe Wort; Scan übernimmt ein laufendes Tipp-Wort gleicher Länge.

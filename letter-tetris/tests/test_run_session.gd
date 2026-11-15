@@ -971,6 +971,31 @@ func test_scan_falls_back_to_shorter_row() -> void:
 	assert_eq(run.scan(), ast, "kein 5er-Wort, also das 3er-Wort")
 
 
+func test_hint_after_scan_reveals_scanned_word() -> void:
+	run.start()
+	_use_rows([4])
+	_column(0, "HAUS")
+	_column(2, "MAUS", false)
+	run.coins = 1000
+	var scanned := run.scan()
+	assert_eq(scanned.size(), 4)
+	for i in 4:
+		assert_eq(run.hint(), scanned[i], "Tipp zeigt das Scan-Wort, Buchstabe %d" % (i + 1))
+
+
+func test_scan_after_hint_shows_hinted_word() -> void:
+	run.start()
+	_use_rows([4])
+	_column(0, "HAUS")
+	_column(2, "MAUS", false)
+	run.coins = 1000
+	var first := run.hint()
+	var scanned := run.scan()
+	assert_eq(scanned[0], first, "Scan zeigt das schon getippte Wort")
+	assert_eq(run.hinted_cells().size(), 1, "gezeigte Tipp-Buchstaben bleiben")
+	assert_eq(run.hint(), scanned[1])
+
+
 func test_scan_without_words_is_free() -> void:
 	run.start()
 	_use_rows([4])
