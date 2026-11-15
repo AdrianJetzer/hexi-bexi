@@ -137,6 +137,13 @@ func screen_top() -> float:
 	return camera.unproject_position(edge).y
 
 
+## Unterkante des Felds (leuchtende Kante) in Bildschirm-Pixeln (nach fit_to_screen).
+func screen_bottom() -> float:
+	var r := layout.grid_rect()
+	var edge := Vector3(r.get_center().x, THICKNESS * 0.1, r.end.y + 0.1)
+	return camera.unproject_position(edge).y
+
+
 ## Welt-Position der Mitte eines Platzes (Hexagon-Mitte).
 func cell_position(cell: Vector2i) -> Vector3:
 	var c := layout.center(cell)

@@ -30,8 +30,7 @@ const BUTTON_STEP := 168.0
 const BUTTONS_PER_ROW := 3
 const BUTTON_ROWS := 2
 const BUTTONS_PER_ROW_ALL := 5
-## Hinweis „Noch n Level bis zum Power-up“ über den Knöpfen.
-const OFFER_HINT_HEIGHT := 60.0
+## Hinweis „Noch n Level bis zum Power-up“ links unter dem Feld (Schrift wie die Info-Zeile).
 const OFFER_HINT_FONT := INFO_FONT
 ## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
 const BUTTON_FONT := 33
@@ -261,13 +260,18 @@ func _build_ui() -> void:
 		"complete": _complete_button, "magnet": _magnet_button, "scan": _scan_button,
 		"strike": _strike_button, "solve": _solve_button}
 	_offer_hint = _label(OFFER_HINT_FONT, TEXT_DIM)
-	_offer_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_offer_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_offer_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
-	_give_up_button = _button("Aufgeben", 34)
+	# „Aufgeben“: schlichter Text wie die Info-Zeile (gleiche Schrift, linksbündig, ohne Rahmen).
+	_give_up_button = _button("Aufgeben", INFO_FONT)
 	_give_up_button.flat = true
 	_give_up_button.add_theme_color_override("font_color", TEXT_DIM)
-	_give_up_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_give_up_button.add_theme_color_override("font_hover_color", TEXT)
+	_give_up_button.add_theme_color_override("font_pressed_color", TEXT)
+	_give_up_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
+		_give_up_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
 	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
 
 	_continue_button = _button("Weiter", 56)
@@ -397,11 +401,9 @@ func _top_height(s: Vector2) -> float:
 ## Höhe des unteren Bereichs: Hinweis und alle Reihen Hilfe-Knöpfe.
 func _bottom_height() -> float:
 	var rows := BUTTON_ROWS
-	var hint := OFFER_HINT_HEIGHT
 	if not BALANCE.draft_enabled:
 		rows = ceili((RunSession.HELP_IDS.size() + 2) / float(BUTTONS_PER_ROW_ALL))
-		hint = 0.0
-	return hint + rows * BUTTON_STEP + BOTTOM_PAD + 12.0
+	return rows * BUTTON_STEP + BOTTOM_PAD + 12.0
 
 
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rand.
@@ -421,8 +423,8 @@ func _relayout() -> void:
 	var margin := col.y * SIDE_MARGIN
 	var side := col.x + margin
 	var inner := col.y - 2.0 * margin
-	_give_up_button.position = Vector2(col.x + col.y - margin * 0.5 - col.y * 0.3, s.y * 0.012)
-	_give_up_button.size = Vector2(col.y * 0.3, 70)
+	_give_up_button.position = Vector2(side, s.y * 0.012)
+	_give_up_button.size = Vector2(inner * 0.4, INFO_HEIGHT)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
@@ -435,12 +437,15 @@ func _relayout() -> void:
 	_level_label.size = Vector2(inner * 0.6, INFO_HEIGHT)
 	_coins_label.position = Vector2(side + inner * 0.6, info_y)
 	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
-	var hint_h := OFFER_HINT_HEIGHT if BALANCE.draft_enabled else 0.0
-	# Unten: nur der Hinweis „Noch n Level …“ und die Knöpfe.
+	# Unten: die Knöpfe. Der Hinweis „Noch n Level …“ steht links unter dem Feld,
+	# im gleichen Abstand wie die Info-Zeile darüber.
 	var info_top := s.y - _bottom_height() + 12.0
-	_offer_hint.position = Vector2(side, info_top)
-	_offer_hint.size = Vector2(inner, hint_h)
-	var buttons_top := info_top + hint_h
+	var buttons_top := info_top
+	var hint_y := info_top - INFO_HEIGHT
+	if _board.session != null:
+		hint_y = minf(_board.screen_bottom() + INFO_GAP, buttons_top - INFO_HEIGHT)
+	_offer_hint.position = Vector2(side, hint_y)
+	_offer_hint.size = Vector2(inner, INFO_HEIGHT)
 	var gap := 12.0
 	var buttons := _help_buttons()
 	var per_row := _per_row()
