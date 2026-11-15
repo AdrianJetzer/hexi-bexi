@@ -48,6 +48,7 @@ var _joker_button: Button
 var _shuffle_button: Button
 var _magnet_button: Button
 var _split_button: Button
+var _shorten_button: Button
 var _scan_button: Button
 var _complete_button: Button
 ## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
@@ -161,6 +162,11 @@ func _build_ui() -> void:
 		_set_replace_mode(false)
 		if session.shuffle().is_empty():
 			_shake(_shuffle_button))
+	_shorten_button = _button("", 26)
+	_shorten_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if not session.shorten():
+			_shake(_shorten_button))
 	_split_button = _button("", 26)
 	_split_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -267,7 +273,7 @@ func _help_buttons() -> Array[Button]:
 		[_replace_button, BALANCE.replace_price],
 		[_swap_button, BALANCE.swap_price], [_clear_button, BALANCE.clear_price],
 		[_joker_button, BALANCE.joker_price], [_magnet_button, BALANCE.magnet_price],
-		[_split_button, BALANCE.split_price], [_shuffle_button, BALANCE.shuffle_price],
+		[_shorten_button, BALANCE.shorten_price], [_split_button, BALANCE.split_price], [_shuffle_button, BALANCE.shuffle_price],
 		[_complete_button, BALANCE.complete_price],
 		[_scan_button, BALANCE.scan_price], [_solve_button, BALANCE.solve_price]]
 	for i in list.size():
@@ -341,6 +347,8 @@ func _update_labels() -> void:
 	_shuffle_button.disabled = not session.can_shuffle()
 	_magnet_button.text = "Magnet\n−%d" % BALANCE.magnet_price
 	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
+	_shorten_button.text = "Kürzen\n−%d" % BALANCE.shorten_price
+	_shorten_button.disabled = session.is_over or session.coins < BALANCE.shorten_price
 	_split_button.text = "Teilen\n−%d" % BALANCE.split_price
 	_split_button.disabled = session.is_over or session.coins < BALANCE.split_price
 	_complete_button.text = "Vervollständigen\n−%d" % BALANCE.complete_price

@@ -5,7 +5,7 @@ extends RefCounted
 ## Ablauf: start() → Auftrag für Level 1 (quest_started) → Wörter mit submit_path(cells) →
 ## jedes passende Wort füllt eine Block-Zeile → alle gefüllt: Münzen, Level +1, nächster
 ## Auftrag automatisch … bis give_up().
-## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), split(), scan(), complete(prefix).
+## Hilfen: refill(), swap(), clear_useless(), hint(), replace(cell), solve(), joker(), shuffle(), magnet(cell), shorten(), split(), scan(), complete(prefix).
 
 ## Ein neues Hexagon ist erschienen.
 signal tile_spawned(cell: Vector2i, letter: String)
@@ -552,6 +552,35 @@ func _split_row() -> int:
 	var best := -1
 	for i in quest.rows.size():
 		if quest.filled[i] == "" and quest.rows[i] >= _balance.split_min_length:
+			if best < 0 or quest.rows[i] > quest.rows[best]:
+				best = i
+	return best
+
+
+## Kürzen möglich? (Münzen reichen, es gibt eine freie Zeile, die länger als min_length ist)
+func can_shorten() -> bool:
+	return not is_over and coins >= _balance.shorten_price and _shorten_row() >= 0
+
+
+## Hilfe „Kürzen“: die längste freie Zeile (bei Gleichstand die oberste) verliert einen Block.
+## Gibt true zurück, wenn gekürzt wurde (sonst kostet es nichts).
+func shorten() -> bool:
+	if not can_shorten():
+		return false
+	quest.shorten_row(_shorten_row())
+	_pay(_balance.shorten_price)
+	_aim_help()
+	_check_hint()
+	quest_reshaped.emit(quest)
+	return true
+
+
+func _shorten_row() -> int:
+	if quest == null:
+		return -1
+	var best := -1
+	for i in quest.rows.size():
+		if quest.filled[i] == "" and quest.rows[i] > _balance.min_length:
 			if best < 0 or quest.rows[i] > quest.rows[best]:
 				best = i
 	return best

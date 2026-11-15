@@ -17,7 +17,7 @@ func before_each() -> void:
 	balance.hint_price = 100
 	balance.replace_price = 100
 	balance.solve_price = 100
-	for p in ["joker_price", "shuffle_price", "magnet_price", "complete_price",
+	for p in ["joker_price", "shuffle_price", "magnet_price", "complete_price", "shorten_price",
 			"split_price", "scan_price"]:
 		balance.set(p, 50)
 	curve = load("res://data/quest_curve.tres") as QuestCurve
@@ -900,6 +900,27 @@ func test_magnet_impossible_is_free() -> void:
 
 
 # --- Teilen und Scan ---------------------------------------------------------------------------
+
+func test_shorten_takes_one_block_from_longest_free_row() -> void:
+	run.start()
+	_use_rows([4, 7, 7])
+	run.coins = 50
+	assert_true(run.shorten())
+	assert_eq(run.quest.rows, PackedInt32Array([4, 6, 7]), "bei Gleichstand die oberste")
+	assert_eq(run.coins, 0)
+	assert_signal_emitted(run, "quest_reshaped")
+
+
+func test_shorten_skips_filled_rows_and_stops_at_three() -> void:
+	run.start()
+	var q := _use_rows([3, 5])
+	q.fill(1, "STERN")
+	run.coins = 50
+	assert_false(run.can_shorten(), "nur noch eine 3er-Zeile frei")
+	assert_false(run.shorten())
+	assert_eq(run.coins, 50, "kostet nichts")
+	assert_eq(run.quest.rows, PackedInt32Array([3, 5]))
+
 
 func test_split_halves_longest_free_row() -> void:
 	run.start()

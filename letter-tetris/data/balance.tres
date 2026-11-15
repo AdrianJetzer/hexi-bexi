@@ -53,6 +53,7 @@ solve_price = 400
 joker_price = 100
 shuffle_price = 150
 magnet_price = 100
+shorten_price = 100
 split_price = 125
 split_min_length = 6
 scan_price = 200

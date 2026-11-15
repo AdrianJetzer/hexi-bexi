@@ -32,6 +32,8 @@ extends Resource
 @export var shuffle_price: int = 50
 ## Hilfe „Magnet“.
 @export var magnet_price: int = 50
+## Hilfe „Kürzen“: längste freie Zeile verliert einen Block.
+@export var shorten_price: int = 50
 ## Hilfen „Teilen“ (ab dieser Zeilenlänge) und „Scan“.
 @export var split_price: int = 50
 @export var split_min_length: int = 6
