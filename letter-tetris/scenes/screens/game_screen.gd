@@ -40,7 +40,7 @@ const BOTTOM_PAD := 24.0
 ## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
 const INFO_FONT := 40
 ## Abstand der Info-Zeile zur Oberkante des Felds (Pixel).
-const INFO_GAP := 4.0
+const INFO_GAP := 24.0
 
 ## Hilfen: Reihenfolge bei gleichem Preis, Namen auf Knöpfen und Karten, kurze Erklärung.
 const HELP_ORDER: PackedStringArray = ["refill", "hint", "replace", "shuffle", "clear", "joker",
