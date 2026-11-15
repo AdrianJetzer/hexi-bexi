@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v11**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
+Status: **Entwurf v12**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -46,6 +46,7 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **Direkt über dem Spielfeld** (dicht an der leuchtenden Kante): eine **Info-Zeile**: links **Level · Rekord**, rechts **Münzen** (in Gold).
 - **Direkt unter dem Spielfeld:** der Hinweis „Noch n Level bis zum Power-up“, linksbündig, gleiche Schrift und gleicher Abstand zum Feld wie die Info-Zeile darüber.
 - **Ganz unten:** die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
+- **Hilfe-Knöpfe (Stil „Kombi“):** dunkles, halbtransparentes Glas mit runden Ecken, feiner Cyan-Rand mit sanftem Leuchten, heller Glanz in der oberen Hälfte. Name groß in Weiß, darunter der Preis in Gold mit kleiner Münze („gratis“ in Grün). **Lösen** mit Goldrand. Gedrückt (z. B. Antipp-Modus): hellerer Grund, stärkeres Leuchten. Gesperrt: gedimmt; reicht das Geld nicht, ist der Preis rot. Siehe [Screenshot](images/buttons-kombi-v1.png).
 - **Knopf „Aufgeben“:** oben links, schlichter Text in der Schrift der Info-Zeile, linksbündig wie „Level …“ (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)
@@ -72,6 +73,7 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
 - **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.
+- **v12:** Hilfe-Knöpfe im Stil „Kombi“ (Glas, Cyan-Leuchten, Goldpreis mit Münze; Lösen mit Goldrand).
 - **v11:** „Aufgeben“ oben links in der Schrift der Info-Zeile; Hinweis „Noch n Level …“ links direkt unter dem Feld.
 - **v10:** Info-Zeile (Level · Rekord, Münzen) über das Spielfeld; unten nur Hinweis und Knöpfe (2 × 3).
 - **v9:** Raster 5 × 5 statt 5 × 6; dafür größere Hilfe-Knöpfe.

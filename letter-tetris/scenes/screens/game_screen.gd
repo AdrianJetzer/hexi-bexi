@@ -74,6 +74,21 @@ const DONE_PAUSE := 0.35
 ## Pulsieren des Auffüllen-Knopfs, wenn kein gültiges Wort passt: Dauer je halbem Puls, Größe, Helligkeit.
 const PULSE_HALF := 0.7
 const PULSE_BRIGHT := Color(1.35, 1.3, 1.15)
+## Hilfe-Knöpfe (Stil „Kombi“): dunkles Glas, feiner Cyan-Rand, sanftes Leuchten, Glanz oben;
+## Lösen mit Goldrand. Name weiß, Preis gold mit Münze, „gratis“ grün, zu teuer rot.
+const BTN_BG := Color(0.06, 0.1, 0.24, 0.8)
+const BTN_BG_PRESSED := Color(0.12, 0.3, 0.52, 0.95)
+const BTN_EDGE := Color(0.55, 0.95, 1.0)
+const BTN_EDGE_SOLVE := Color(1.0, 0.82, 0.45)
+const BTN_RADIUS := 20
+const BTN_TEXT := Color(0.95, 0.98, 1.0)
+const BTN_GOLD := Color(1.0, 0.82, 0.45)
+const BTN_FREE := Color(0.7, 1.0, 0.85)
+const BTN_RED := Color(1.0, 0.45, 0.45)
+const BTN_DISABLED_ALPHA := 0.55
+const BTN_NAME_FONT := 36
+const BTN_NAME_FONT_LONG := 27
+const BTN_PRICE_FONT := 30
 ## Auffüllen-Hinweis: Schrift blinkt dezent zwischen Weiß und dunklem Weiß (je halbe Sekunde).
 const BLINK_HALF := 0.5
 const BLINK_BRIGHT := Color(1.0, 1.0, 1.0)
@@ -121,6 +136,8 @@ var _refill_pulse: Tween
 var _pulse_check_queued: bool = false
 ## Hilfe-ID → Knopf.
 var _buttons: Dictionary = {}
+## Hilfe-ID → {"name": Label, "price": Label, "coin": Panel} (Beschriftung der Knöpfe).
+var _button_parts: Dictionary = {}
 var _offer_hint: Label
 var _offer_hint_pulse: Tween
 ## Auswahl-Bildschirm für Power-ups und Upgrades.
@@ -259,6 +276,8 @@ func _build_ui() -> void:
 		"shorten": _shorten_button, "swap": _swap_button, "split": _split_button,
 		"complete": _complete_button, "magnet": _magnet_button, "scan": _scan_button,
 		"strike": _strike_button, "solve": _solve_button}
+	for id in _buttons:
+		_style_help_button(_buttons[id], id)
 	_offer_hint = _label(OFFER_HINT_FONT, TEXT_DIM)
 	_offer_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_offer_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -469,9 +488,14 @@ func _update_labels() -> void:
 	_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
 	_coins_label.text = "Münzen %d" % session.coins
 	for id in _buttons:
-		var b: Button = _buttons[id]
 		var p := session.price(id)
-		b.text = "%s\n%s" % [HELP_NAMES[id], "gratis" if p == 0 else "−%d" % p]
+		var parts: Dictionary = _button_parts[id]
+		var affordable := p <= session.coins
+		(parts["price"] as Label).text = "gratis" if p == 0 else str(p)
+		(parts["price"] as Label).add_theme_color_override("font_color",
+				BTN_FREE if p == 0 else (BTN_GOLD if affordable else BTN_RED))
+		(parts["coin"] as Panel).visible = p > 0
+		(parts["coin"] as Panel).modulate.a = 1.0 if affordable else 0.4
 	_refill_button.disabled = not session.can_refill()
 	_swap_button.disabled = not session.can_swap()
 	_clear_button.disabled = not session.can_clear()
@@ -486,10 +510,92 @@ func _update_labels() -> void:
 	_complete_button.disabled = not session.can_complete() and not _complete_button.button_pressed
 	_scan_button.disabled = not session.can_scan()
 	_solve_button.disabled = not session.can_solve()
+	for b: Button in _buttons.values():
+		b.modulate.a = BTN_DISABLED_ALPHA if b.disabled else 1.0
 	_update_offer_hint()
 	if session.is_over:
 		_set_replace_mode(false)
 	_queue_pulse_check()
+
+
+# --- Hilfe-Knöpfe gestalten ------------------------------------------------------------
+
+func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow: int) -> StyleBoxFlat:
+	var b := StyleBoxFlat.new()
+	b.bg_color = bg
+	b.border_color = Color(edge, edge_alpha)
+	b.set_border_width_all(2)
+	b.set_corner_radius_all(BTN_RADIUS)
+	b.corner_detail = 12
+	b.shadow_color = Color(edge, glow_alpha)
+	b.shadow_size = glow
+	return b
+
+
+## Stil „Kombi“ und Beschriftung (Name, Münze, Preis) für einen Hilfe-Knopf.
+func _style_help_button(b: Button, id: String) -> void:
+	var edge := BTN_EDGE_SOLVE if id == "solve" else BTN_EDGE
+	var normal := _btn_box(BTN_BG, edge, 0.8, 0.3, 12)
+	var pressed := _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.6, 20)
+	for st in ["normal", "hover", "focus", "disabled"]:
+		b.add_theme_stylebox_override(st, normal)
+	for st in ["pressed", "hover_pressed"]:
+		b.add_theme_stylebox_override(st, pressed)
+	b.text = ""
+	# Glanz: heller Verlauf in der oberen Hälfte
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 0.16))
+	g.set_color(1, Color(1, 1, 1, 0.0))
+	var tex := GradientTexture2D.new()
+	tex.gradient = g
+	tex.fill_to = Vector2(0, 1)
+	tex.width = 8
+	tex.height = 64
+	var shine_style := StyleBoxTexture.new()
+	shine_style.texture = tex
+	var shine := Panel.new()
+	shine.add_theme_stylebox_override("panel", shine_style)
+	shine.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shine.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shine.anchor_bottom = 0.5
+	shine.offset_left = 4
+	shine.offset_right = -4
+	shine.offset_top = 3
+	b.add_child(shine)
+	# Name und Preis
+	var box := VBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 2)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(box)
+	var name := Label.new()
+	name.text = HELP_NAMES[id]
+	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name.add_theme_font_size_override("font_size",
+			BTN_NAME_FONT_LONG if name.text.length() > 12 else BTN_NAME_FONT)
+	name.add_theme_color_override("font_color", BTN_TEXT)
+	box.add_child(name)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(row)
+	var coin := Panel.new()
+	coin.custom_minimum_size = Vector2(22, 22)
+	coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = BTN_GOLD
+	cs.border_color = Color(1, 0.95, 0.7, 0.9)
+	cs.set_border_width_all(2)
+	cs.set_corner_radius_all(11)
+	coin.add_theme_stylebox_override("panel", cs)
+	row.add_child(coin)
+	var price := Label.new()
+	price.add_theme_font_size_override("font_size", BTN_PRICE_FONT)
+	row.add_child(price)
+	_button_parts[id] = {"name": name, "price": price, "coin": coin}
 
 
 # --- Pulsierender Auffüllen-Knopf ----------------------------------------------------
@@ -506,9 +612,9 @@ func _update_refill_pulse() -> void:
 	_pulse_check_queued = false
 	var want := session != null and not _completing and session.refill_suggested()
 	if want and _refill_pulse == null:
+		var name_label: Label = _button_parts["refill"]["name"]
 		var set_color := func(c: Color) -> void:
-			_refill_button.add_theme_color_override("font_color", c)
-			_refill_button.add_theme_color_override("font_hover_color", c)
+			name_label.add_theme_color_override("font_color", c)
 		_refill_pulse = create_tween().set_loops()
 		_refill_pulse.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		_refill_pulse.tween_method(set_color, BLINK_BRIGHT, BLINK_DIM, BLINK_HALF)
@@ -516,8 +622,7 @@ func _update_refill_pulse() -> void:
 	elif not want and _refill_pulse != null:
 		_refill_pulse.kill()
 		_refill_pulse = null
-		_refill_button.remove_theme_color_override("font_color")
-		_refill_button.remove_theme_color_override("font_hover_color")
+		(_button_parts["refill"]["name"] as Label).add_theme_color_override("font_color", BTN_TEXT)
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------
