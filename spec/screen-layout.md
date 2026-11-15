@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v8**, Rastergröße 5 × 6, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot v8](images/ingame-shot-layout-v8.png).
+Status: **Entwurf v9**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -24,7 +24,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 | [v4](images/ingame-mock-v4.png) | 7 × 11 | 77 | verworfen |
 | [v5](images/ingame-mock-v5.png) | 6 × 9 | 54 | verworfen: asymmetrischer Rahmen |
 | [Screenshot 5 × 9](images/ingame-shot-5x9-v1.png) | 5 × 9 | 45 | verworfen: Hexagons auf dem Handy zu klein |
-| **[Screenshot 5 × 6](images/ingame-shot-5x6-v1.png)** | **5 × 6** | **30** | **gewählt** (Test auf Pixel 10 Pro) |
+| [Screenshot 5 × 6](images/ingame-shot-5x6-v1.png) | 5 × 6 | 30 | verworfen: unten zu wenig Platz für die Hilfe-Knöpfe |
+| **[Screenshot 5 × 5](images/ingame-shot-5x5-v1.png)** | **5 × 5** | **25** | **gewählt**: größere Hilfe-Knöpfe |
 | [v3](images/ingame-mock-v3.png) | 5 × 8 | 40 | verworfen: zu wenige Buchstaben |
 
 ## Festgelegt
@@ -38,8 +39,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - Liegt **über** dem Hintergrund und wirkt schwebend (Tiefe, Schatten, Licht), **nicht flach**.
   - Füllt **nicht** den ganzen Screen: Links, rechts und oben bleibt ein Rand frei, durch den der Hintergrund sichtbar ist.
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
-  - **Größe: 5 Spalten × 6 Reihen = 30 Plätze** (siehe [Screenshot](images/ingame-shot-5x6-v1.png)).
-  - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 6 Reihen. 7 Reihen wären möglich, wenn der Knopf-Bereich unten kleiner wird.
+  - **Größe: 5 Spalten × 5 Reihen = 25 Plätze** (siehe [Screenshot](images/ingame-shot-5x5-v1.png)).
+  - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 5 Reihen. Der gewonnene Platz geht an die Hilfe-Knöpfe (155 statt 90 Pixel hoch, größere Schrift).
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
 - **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Der Bereich hat **immer Platz für 3 Zeilen mit 8 Blöcken** in voller Blockgröße (Blöcke so groß, wie die Breite für 8 Blöcke erlaubt); nur bei 4 Zeilen (nach „Teilen“) werden sie kleiner. Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
 - **Unter dem Spielfeld:** eine **Info-Zeile** in einheitlicher Schrift: links **Level · Rekord**, rechts **Münzen** (in Gold), darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
@@ -69,4 +70,5 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
 - **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.
+- **v9:** Raster 5 × 5 statt 5 × 6; dafür größere Hilfe-Knöpfe.
 - **v8:** Oben fester Platz für 3 Block-Zeilen (größere Blöcke), dunkler Rahmen ums Feld entfällt (nur leuchtende Kante), Info-Zeile unten in einer Schrift (Münzen in Gold). Unterer Bereich nur so hoch wie nötig. Breite Fenster: mittige Spalte.

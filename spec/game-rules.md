@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v7.8**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v7.9**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -11,7 +11,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 ### Hexagons und Raster
 - Jeder Buchstabe sitzt in einem **Hexagon**, **unten flach** (flache Unter- und Oberseite).
 - Das Raster hat senkrechte Spalten; jede zweite Spalte ist um ein halbes Feld versetzt.
-- Größe: **5 Spalten × 6 Reihen = 30 Plätze** (siehe [screen-layout.md](screen-layout.md)).
+- Größe: **5 Spalten × 5 Reihen = 25 Plätze** (siehe [screen-layout.md](screen-layout.md)).
 - Das Spielfeld ist **geschlossen**; seine Innenkante folgt dem Raster im Zickzack (siehe [screen-layout.md](screen-layout.md)).
 
 ### Spielstart
@@ -157,3 +157,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.6:** Raster 5 × 6 (größere Hexagons, Feld fast so breit wie das Handy).
 - **v7.7:** Vorschlags-Wörter: eigene Liste für alles, was das Spiel selbst anbietet (Grundformen plus Mehrzahl, ohne Artikel und Pronomen, ca. 15.000 häufigste, Häufigkeit aus Leipzig Corpora). Gültig bleiben alle Wörter.
 - **v7.8:** Vorschlags-Wörter umgesetzt: 10.000 häufigste, nur 3 bis 8 Buchstaben, Sperrliste, ohne Akronyme.
+- **v7.9:** Raster 5 × 5 (25 Plätze), damit unten mehr Platz für die Hilfe-Knöpfe ist.

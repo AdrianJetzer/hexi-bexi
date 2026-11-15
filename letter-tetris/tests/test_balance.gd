@@ -7,7 +7,7 @@ func test_balance_file_loads_with_spec_values() -> void:
 	var b := load("res://data/balance.tres") as GameBalance
 	assert_not_null(b)
 	assert_eq(b.grid_cols, 5)
-	assert_eq(b.grid_rows, 6)
+	assert_eq(b.grid_rows, 5)
 
 
 func test_balance_run_values_from_spec() -> void:

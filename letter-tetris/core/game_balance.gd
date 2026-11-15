@@ -4,7 +4,7 @@ extends Resource
 
 @export_group("Raster")
 @export var grid_cols: int = 5
-@export var grid_rows: int = 6
+@export var grid_rows: int = 5
 
 @export_group("Lauf")
 ## Hexagons zu Beginn eines Laufs.

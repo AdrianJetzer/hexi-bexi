@@ -11,6 +11,8 @@ func before_each() -> void:
 	# Eigene Kopie mit festen Test-Preisen: so brechen die Tests nicht, wenn die Spielwerte
 	# (Preise) in balance.tres zum Feintuning geändert werden.
 	balance = (load("res://data/balance.tres") as GameBalance).duplicate() as GameBalance
+	# Feste Rastergröße für die Tests (manche Tests legen Wörter mit 6 Buchstaben in eine Spalte).
+	balance.grid_rows = 6
 	balance.refill_price = 100
 	balance.swap_price = 50
 	balance.clear_price = 100

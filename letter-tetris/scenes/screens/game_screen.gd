@@ -24,9 +24,12 @@ const BLOCKS_TOP := 100.0
 const BLOCKS_GAP_BELOW := 24.0
 ## Unten: Info-Zeile und Hilfe-Knöpfe (Pixel); Knöpfe in Reihen zu BUTTONS_PER_ROW.
 const INFO_HEIGHT := 64.0
-const BUTTON_HEIGHT := 90.0
-const BUTTON_STEP := 100.0
+const BUTTON_HEIGHT := 155.0
+const BUTTON_STEP := 168.0
 const BUTTONS_PER_ROW := 5
+## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
+const BUTTON_FONT := 33
+const BUTTON_FONT_SMALL := 23
 const BOTTOM_PAD := 24.0
 ## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
 const INFO_FONT := 40
@@ -145,57 +148,57 @@ func _build_ui() -> void:
 	for l in [_level_label, _coins_label]:
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
-	_refill_button = _button("", 26)
+	_refill_button = _button("", BUTTON_FONT)
 	_refill_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		session.refill())
-	_swap_button = _button("", 26)
+	_swap_button = _button("", BUTTON_FONT)
 	_swap_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		session.swap())
-	_clear_button = _button("", 26)
+	_clear_button = _button("", BUTTON_FONT)
 	_clear_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.clear_useless().is_empty():
 			# Keine Steine im Feld: Knopf wackelt (kostet nichts).
 			_shake(_clear_button))
-	_hint_button = _button("", 26)
+	_hint_button = _button("", BUTTON_FONT)
 	_hint_button.pressed.connect(_on_hint_pressed)
-	_replace_button = _button("", 26)
+	_replace_button = _button("", BUTTON_FONT)
 	_replace_button.toggle_mode = true
 	_replace_button.toggled.connect(func(on: bool) -> void: _set_tap_action("replace" if on else ""))
-	_magnet_button = _button("", 26)
+	_magnet_button = _button("", BUTTON_FONT)
 	_magnet_button.toggle_mode = true
 	_magnet_button.toggled.connect(func(on: bool) -> void: _set_tap_action("magnet" if on else ""))
-	_joker_button = _button("", 26)
+	_joker_button = _button("", BUTTON_FONT)
 	_joker_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.joker() == RunSession.NO_CELL:
 			_shake(_joker_button))
-	_shuffle_button = _button("", 26)
+	_shuffle_button = _button("", BUTTON_FONT)
 	_shuffle_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.shuffle().is_empty():
 			_shake(_shuffle_button))
-	_shorten_button = _button("", 26)
+	_shorten_button = _button("", BUTTON_FONT)
 	_shorten_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if not session.shorten():
 			_shake(_shorten_button))
-	_split_button = _button("", 26)
+	_split_button = _button("", BUTTON_FONT)
 	_split_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if not session.split():
 			_shake(_split_button))
-	_scan_button = _button("", 26)
+	_scan_button = _button("", BUTTON_FONT)
 	_scan_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if session.scan().is_empty():
 			_shake(_scan_button))
-	_complete_button = _button("", 21)
+	_complete_button = _button("", BUTTON_FONT_SMALL)
 	_complete_button.toggle_mode = true
 	_complete_button.toggled.connect(func(on: bool) -> void: _set_tap_action("complete" if on else ""))
-	_solve_button = _button("", 26)
+	_solve_button = _button("", BUTTON_FONT)
 	_solve_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
 		if not session.solve():
