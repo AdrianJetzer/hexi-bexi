@@ -198,7 +198,7 @@ func _build_static() -> void:
 	# Hintergrund (Platzhalter für den animierten Nebel)
 	var bg := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(80, 80)
+	plane.size = Vector2(400, 400)  # groß genug auch für breite Fenster (Nebel ist triplanar)
 	bg.mesh = plane
 	bg.material_override = CosmicMaterials.background()
 	bg.position.y = -3.0

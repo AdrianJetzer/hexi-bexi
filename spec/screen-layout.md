@@ -29,7 +29,7 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 
 ## Festgelegt
 
-- **Ausrichtung:** Hochformat.
+- **Ausrichtung:** Hochformat. Auf breiten Bildschirmen (PC-Fenster, Tablet quer) liegt alles in einer **mittigen Spalte** (höchstens 0,6 × Bildschirmhöhe breit); der Hintergrund füllt das ganze Fenster.
 - **Hintergrund:** ein wunderschönes, bildschirmfüllendes Hintergrundbild.
 - **Spielfeld:**
   - **Ringsum geschlossen** (oben nicht mehr offen, da nichts hineinfällt).
@@ -69,4 +69,4 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
 - **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.
-- **v8:** Oben fester Platz für 3 Block-Zeilen (größere Blöcke), dunkler Rahmen ums Feld entfällt (nur leuchtende Kante), Info-Zeile unten in einer Schrift (Münzen in Gold). Unterer Bereich nur so hoch wie nötig.
+- **v8:** Oben fester Platz für 3 Block-Zeilen (größere Blöcke), dunkler Rahmen ums Feld entfällt (nur leuchtende Kante), Info-Zeile unten in einer Schrift (Münzen in Gold). Unterer Bereich nur so hoch wie nötig. Breite Fenster: mittige Spalte.

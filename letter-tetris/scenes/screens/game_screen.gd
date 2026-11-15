@@ -13,8 +13,11 @@ const TEXT_DIM := Color(0.6, 0.66, 0.85)
 const ACCENT := Color(1.0, 0.84, 0.6)
 const GLOW := Color(0.55, 0.95, 1.0)
 
-## Seitenrand (Anteil der Bildschirmbreite).
+## Seitenrand (Anteil der Spaltenbreite).
 const SIDE_MARGIN := 0.03
+## Das Spiel ist fürs Hochformat gebaut: Auf breiten Bildschirmen (PC, Tablet quer) liegt alles
+## in einer mittigen Spalte, höchstens so breit wie Höhe · MAX_COLUMN_ASPECT.
+const MAX_COLUMN_ASPECT := 0.6
 ## Oben: Oberkante der Block-Zeilen (unter „Aufgeben“) und Abstand zum Spielfeld (Pixel).
 ## Der Bereich hat immer Platz für QuestBlocks.MAX_ROWS Zeilen mit MAX_COLS Blöcken.
 const BLOCKS_TOP := 100.0
@@ -298,9 +301,15 @@ func _help_buttons() -> Array[Button]:
 	return result
 
 
+## Spalte (x, Breite) für alle Inhalte: im Hochformat der ganze Bildschirm, sonst mittig.
+func _column(s: Vector2) -> Vector2:
+	var w := minf(s.x, s.y * MAX_COLUMN_ASPECT)
+	return Vector2((s.x - w) / 2.0, w)
+
+
 ## Höhe des oberen Bereichs: „Aufgeben“ und Platz für 3 Block-Zeilen in voller Blockgröße.
 func _top_height(s: Vector2) -> float:
-	var inner := s.x * (1.0 - 2.0 * SIDE_MARGIN)
+	var inner := _column(s).y * (1.0 - 2.0 * SIDE_MARGIN)
 	var b := inner / (QuestBlocks.MAX_COLS + (QuestBlocks.MAX_COLS - 1) * QuestBlocks.GAP)
 	var rows := QuestBlocks.MAX_ROWS
 	return BLOCKS_TOP + b * (rows + (rows - 1) * QuestBlocks.GAP) + BLOCKS_GAP_BELOW
@@ -315,19 +324,22 @@ func _bottom_height() -> float:
 ## Bildschirmbereich (Pixel) für das Spielfeld samt Rand.
 func _board_area() -> Rect2:
 	var s := get_viewport_rect().size
-	var side := s.x * SIDE_MARGIN
+	var col := _column(s)
+	var side := col.x + col.y * SIDE_MARGIN
 	var top := _top_height(s)
-	return Rect2(side, top, s.x - 2.0 * side, s.y - top - _bottom_height())
+	return Rect2(side, top, col.y * (1.0 - 2.0 * SIDE_MARGIN), s.y - top - _bottom_height())
 
 
 func _relayout() -> void:
 	var s := get_viewport_rect().size
 	if _board.session != null:
 		_board.fit_to_screen(_board_area(), s)
-	var side := s.x * SIDE_MARGIN
-	var inner := s.x - 2.0 * side
-	_give_up_button.position = Vector2(s.x - side * 0.5 - s.x * 0.3, s.y * 0.012)
-	_give_up_button.size = Vector2(s.x * 0.3, 70)
+	var col := _column(s)
+	var margin := col.y * SIDE_MARGIN
+	var side := col.x + margin
+	var inner := col.y - 2.0 * margin
+	_give_up_button.position = Vector2(col.x + col.y - margin * 0.5 - col.y * 0.3, s.y * 0.012)
+	_give_up_button.size = Vector2(col.y * 0.3, 70)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, _top_height(s) - BLOCKS_TOP - BLOCKS_GAP_BELOW))
 
