@@ -317,6 +317,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Gewischt wird nur, solange ein Auftrag läuft (nicht während der Auftragswahl).
 	if session == null or layout == null or session.is_over or session.quest == null:
 		return
+	# Während der Power-up-/Upgrade-Auswahl wird nicht gewischt.
+	if not session.offer.is_empty():
+		return
 	if tap_mode:
 		if event is InputEventScreenTouch and event.pressed:
 			var p := screen_to_board(event.position)
