@@ -69,7 +69,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 | **Auffüllen: 5 neue Steine** | **gratis** |
 | **Tipp: nächsten Buchstaben zeigen** | **−25** je Buchstabe |
 | **Stein ersetzen** | **−25** |
-| **Tauschen: 5 Steine neu** | **−50** |
+| **Tauschen: 5 Steine neu** | **−100** |
 | **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−100** |
 | **Joker: ein Stein wird zum Joker** | **−100** |
 | **Magnet: Wort um einen Stein bilden** | **−100** |
@@ -92,7 +92,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 - **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). **Gratis.** Das balanciert sich selbst: Zu wenige Steine – kein Wort möglich; zu viele Steine – unübersichtlich, schwerer zu finden. Der Spieler entscheidet, wann er nachlegt. Ist das Feld voll, ist Auffüllen gesperrt.
   - **Pulsiert als Hinweis:** Liegt im Feld **kein gültiges Wort** (ganzes Wörterbuch), das genau in eine freie Zeile passt, pulsiert der Knopf sanft (leicht größer und heller, etwa 1,4 s pro Puls). Sobald wieder ein passendes Wort liegt, hört er auf. Kein Pulsieren bei vollem Feld (Auffüllen gesperrt), während ein Auftrag abschließt, und solange ein Joker im Feld liegt (dann ist vielleicht ein Wort möglich).
-- **Tauschen (50):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
+- **Tauschen (100):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
 - **Aufräumen (100):** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 50. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
 - **Tipp, Buchstabe für Buchstabe:** Der erste Tipp legt ein Wort fest, das in eine freie Zeile passt, und lässt seinen ersten Stein **blinken**; jeder weitere Tipp (je 25) lässt den nächsten Stein desselben Worts blinken. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Liegt kein passendes Wort im Feld, kostet der Tipp nichts. Kein Text, nur Blinken.
@@ -201,3 +201,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.23:** Nach Scan tippt Tipp dasselbe Wort; Scan übernimmt ein laufendes Tipp-Wort gleicher Länge.
 - **v3.24:** Neue Hilfe Vervollständigen (150): 2+ Buchstaben anwischen, das Spiel zeigt den Rest des Worts.
 - **v3.25:** Neue Hilfe Kürzen (100): längste freie Zeile verliert einen Block.
+- **v3.26:** Tauschen kostet 100 statt 50 (Bot-Simulation: bei 50 hält man sich mit Tauschen fast endlos über Wasser, Ø Level 137 statt 58).
