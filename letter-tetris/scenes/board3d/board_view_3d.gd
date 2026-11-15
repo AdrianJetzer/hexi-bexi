@@ -60,6 +60,8 @@ var _scan_cells: Array[Vector2i] = []
 
 ## Verzögerung zwischen Hexagons, die gleichzeitig erscheinen (Sekunden).
 const BURST_DELAY := 0.09
+## Flug durchs All: so schnell treiben Funken nach unten (Welt-Einheiten pro Sekunde²).
+const SPACE_DRIFT := 0.06
 
 
 func _ready() -> void:
@@ -278,30 +280,33 @@ func _build_sparkles(contour: PackedVector2Array, y: float) -> void:
 			var p := a.lerp(b, k / 6.0)
 			pts.append(Vector3(p.x, y + 0.05, p.y))
 	var p := CPUParticles3D.new()
-	p.amount = 42
-	p.lifetime = 2.4
-	p.preprocess = 2.4
+	p.amount = 48
+	p.lifetime = 3.2
+	p.preprocess = 3.2
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_POINTS
 	p.emission_points = pts
 	p.direction = Vector3(0, 1, 0)
 	p.spread = 180.0
-	p.gravity = Vector3.ZERO
-	p.initial_velocity_min = 0.05
-	p.initial_velocity_max = 0.25
-	p.scale_amount_min = 0.6
-	p.scale_amount_max = 1.3
+	# Flug durchs All: die Funken treiben langsam nach unten (Bildschirm-unten = +Z).
+	p.gravity = Vector3(0, 0, SPACE_DRIFT)
+	p.initial_velocity_min = 0.03
+	p.initial_velocity_max = 0.15
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.0
+	# Sanft auf- und wieder abblenden (über Größe und Helligkeit; additiv: Schwarz = unsichtbar).
 	var curve := Curve.new()
-	curve.add_point(Vector2(0, 0))
-	curve.add_point(Vector2(0.3, 1))
-	curve.add_point(Vector2(1, 0))
+	curve.add_point(Vector2(0, 0.2))
+	curve.add_point(Vector2(0.35, 1))
+	curve.add_point(Vector2(1, 0.3))
 	p.scale_amount_curve = curve
 	var ramp := Gradient.new()
-	ramp.set_color(0, Color(0.7, 1.6, 2.0, 0.0))
-	ramp.add_point(0.3, Color(1.4, 1.9, 2.2, 1.0))
-	ramp.set_color(1, Color(0.6, 1.2, 1.8, 0.0))
+	ramp.set_color(0, Color(0, 0, 0))
+	ramp.add_point(0.3, Color(0.9, 1.3, 1.5))
+	ramp.add_point(0.55, Color(0.6, 0.95, 1.2))
+	ramp.set_color(1, Color(0, 0, 0))
 	p.color_ramp = ramp
 	var quad := QuadMesh.new()
-	quad.size = Vector2(0.32, 0.32)
+	quad.size = Vector2(0.17, 0.17)
 	quad.material = CosmicMaterials.sparkle()
 	p.mesh = quad
 	_static.add_child(p)

@@ -1,6 +1,6 @@
 # Screen-Layout (Hauptspiel-Screen)
 
-Status: **Entwurf v13**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
+Status: **Entwurf v14**, Rastergröße 5 × 5, Auftrags-Zeilen oben, Rand ohne dunklen Rahmen und Info-Zeile abgestimmt; Optik und Details offen. Aktueller Stand: [Screenshot 5 × 5](images/ingame-shot-5x5-v1.png).
 
 ![Layout-Skizze v1](images/screen-layout-v1.svg)
 
@@ -31,13 +31,13 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 ## Festgelegt
 
 - **Ausrichtung:** Hochformat. Auf breiten Bildschirmen (PC-Fenster, Tablet quer) liegt alles in einer **mittigen Spalte** (höchstens 0,6 × Bildschirmhöhe breit); der Hintergrund füllt das ganze Fenster.
-- **Hintergrund „Dunkle Eleganz“:** fast schwarzes Tiefblau mit einem Hauch Nebel, der langsam zieht, wenigen funkelnden Sternen, sanftem Lichtschein hinter dem Feld und Vignette zum Rand (Shader, animiert). Siehe [Screenshot](images/look-dark-sparkles-v1.png).
+- **Hintergrund „Dunkle Eleganz“:** fast schwarzes Tiefblau mit einem Hauch Nebel, der langsam zieht, wenigen funkelnden Sternen, sanftem Lichtschein hinter dem Feld und Vignette zum Rand (Shader, animiert). **Flug durchs All:** Nebel und Sterne ziehen langsam nach unten, die Sterne schneller als der Nebel (Tiefe). Siehe [Screenshot](images/look-dark-sparkles-v1.png).
 - **Kamera:** senkrecht von oben (keine Neigung; geneigte Varianten wurden verworfen).
 - **Spielfeld:**
   - **Ringsum geschlossen** (oben nicht mehr offen, da nichts hineinfällt).
   - Die **Kante folgt dem Hexagon-Raster im Zickzack** (Variante A): Boden und Seitenwände haben Nischen, in die die Hexagons passgenau sitzen. So entstehen keine Lücken an Wand und Boden.
   - **Kein dunkler Rahmen** mehr ums Feld: Es wird nur von der **leuchtenden blauen Zickzack-Kante** umschlossen; außen herum sieht man den Hintergrund.
-  - **Funkeln:** kleine Lichtpunkte mit feinem Kreuz blitzen entlang der leuchtenden Kante auf, schweben langsam weg und verblassen. (Verworfen: Glasrahmen, Leuchten um die Kante, Schlagschatten, hellerer Glasboden.)
+  - **Funkeln:** feine Lichtpunkte mit zartem Kreuz blenden entlang der leuchtenden Kante weich auf, treiben langsam nach unten (wie der Hintergrund) und blenden weich wieder aus. (Verworfen: Glasrahmen, Leuchten um die Kante, Schlagschatten, hellerer Glasboden.)
   - Füllt **nicht** den ganzen Screen: Links, rechts und oben bleibt ein Rand frei, durch den der Hintergrund sichtbar ist.
 - **Raster:** Hexagons, unten flach; senkrechte Spalten, jede zweite um ein halbes Feld versetzt (siehe [game-rules.md](game-rules.md)).
   - **Größe: 5 Spalten × 5 Reihen = 25 Plätze** (siehe [Screenshot](images/ingame-shot-5x5-v1.png)).
@@ -74,6 +74,7 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
 - **v5:** Raster **5 × 9** (45 Plätze) statt 6 × 9: symmetrischer Rahmen. Echter Screenshot aus dem Spiel als Referenz.
 - **v6:** Auftrag als Block-Zeilen über dem Spielfeld; gewischtes Wort entfällt; Münzen, Level, Rekord und Hilfen unten.
 - **v7:** Raster 5 × 6 statt 5 × 9: auf dem Handy (Pixel 10 Pro) waren die Hexagons zu klein; jetzt füllt das Feld fast die ganze Breite.
+- **v14:** Funkeln feiner und mit weichem Ein- und Ausblenden; Hintergrund und Funkeln ziehen langsam nach unten (Flug durchs All).
 - **v13:** Hintergrund „Dunkle Eleganz“ (animierter Shader), Funkeln an der Feld-Kante, Kamera ohne Neigung.
 - **v12:** Hilfe-Knöpfe im Stil „Kombi“ (Glas, Cyan-Leuchten, Goldpreis mit Münze; Lösen mit Goldrand).
 - **v11:** „Aufgeben“ oben links in der Schrift der Info-Zeile; Hinweis „Noch n Level …“ links direkt unter dem Feld.
