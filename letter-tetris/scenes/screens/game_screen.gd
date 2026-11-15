@@ -49,6 +49,7 @@ var _shuffle_button: Button
 var _magnet_button: Button
 var _split_button: Button
 var _scan_button: Button
+var _complete_button: Button
 ## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
 var _tap_action: String = ""
 var _give_up_button: Button
@@ -119,6 +120,7 @@ func _build_ui() -> void:
 	_board = BoardView3D.new()
 	add_child(_board)
 	_board.cell_tapped.connect(_on_cell_tapped)
+	_board.prefix_swiped.connect(_on_prefix_swiped)
 
 	_blocks = QuestBlocks.new()
 	add_child(_blocks)
@@ -169,6 +171,9 @@ func _build_ui() -> void:
 		_set_replace_mode(false)
 		if session.scan().is_empty():
 			_shake(_scan_button))
+	_complete_button = _button("", 21)
+	_complete_button.toggle_mode = true
+	_complete_button.toggled.connect(func(on: bool) -> void: _set_tap_action("complete" if on else ""))
 	_solve_button = _button("", 26)
 	_solve_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -263,6 +268,7 @@ func _help_buttons() -> Array[Button]:
 		[_swap_button, BALANCE.swap_price], [_clear_button, BALANCE.clear_price],
 		[_joker_button, BALANCE.joker_price], [_magnet_button, BALANCE.magnet_price],
 		[_split_button, BALANCE.split_price], [_shuffle_button, BALANCE.shuffle_price],
+		[_complete_button, BALANCE.complete_price],
 		[_scan_button, BALANCE.scan_price], [_solve_button, BALANCE.solve_price]]
 	for i in list.size():
 		list[i].append(i)
@@ -337,6 +343,8 @@ func _update_labels() -> void:
 	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
 	_split_button.text = "Teilen\n−%d" % BALANCE.split_price
 	_split_button.disabled = session.is_over or session.coins < BALANCE.split_price
+	_complete_button.text = "Vervollständigen\n−%d" % BALANCE.complete_price
+	_complete_button.disabled = not session.can_complete() and not _complete_button.button_pressed
 	_scan_button.text = "Scan\n−%d" % BALANCE.scan_price
 	_scan_button.disabled = not session.can_scan()
 	_solve_button.text = "Lösen\n−%d" % BALANCE.solve_price
@@ -437,10 +445,13 @@ func _set_replace_mode(on: bool) -> void:
 	_set_tap_action("replace" if on else "")
 
 
-## Antipp-Modus für Ersetzen oder Magnet ("" = aus). Der gedrückte Knopf zeigt ihn an.
+## Modus für Ersetzen oder Magnet (Antippen) oder Vervollständigen (Wortanfang wischen);
+## "" = aus. Der gedrückte Knopf zeigt ihn an.
 func _set_tap_action(action: String) -> void:
 	_tap_action = action
-	_board.tap_mode = action != ""
+	_board.tap_mode = action == "replace" or action == "magnet"
+	_board.prefix_mode = action == "complete"
+	_complete_button.set_pressed_no_signal(action == "complete")
 	_replace_button.set_pressed_no_signal(action == "replace")
 	_magnet_button.set_pressed_no_signal(action == "magnet")
 
@@ -454,6 +465,14 @@ func _on_cell_tapped(cell: Vector2i) -> void:
 		"magnet":
 			if session.magnet(cell).is_empty():
 				_shake(_magnet_button)
+
+
+## Vervollständigen: Wortanfang gewischt. Treffer: Weg leuchtet, Modus aus. Sonst wackeln, Modus bleibt.
+func _on_prefix_swiped(path: Array[Vector2i]) -> void:
+	if session.complete(path).is_empty():
+		_board.shake_cells(path)
+	else:
+		_set_tap_action("")
 
 
 func _on_hint_pressed() -> void:

@@ -36,6 +36,9 @@ extends Resource
 @export var split_price: int = 50
 @export var split_min_length: int = 6
 @export var scan_price: int = 50
+## Hilfe „Vervollständigen“: so viele Buchstaben muss man mindestens anwischen.
+@export var complete_price: int = 50
+@export var complete_min_prefix: int = 2
 ## Hilfe „Lösen“: ganzen Auftrag lösen (ohne Belohnung).
 @export var solve_price: int = 100
 ## Hilfe „Stein ersetzen“.

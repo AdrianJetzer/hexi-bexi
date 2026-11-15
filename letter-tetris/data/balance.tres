@@ -56,5 +56,7 @@ magnet_price = 100
 split_price = 125
 split_min_length = 6
 scan_price = 200
+complete_price = 150
+complete_min_prefix = 2
 difficulty_levels = Array[ExtResource("2")]([SubResource("level_1"), SubResource("level_2"), SubResource("level_3"), SubResource("level_4"), SubResource("level_5")])
 help_max_word_length = 8

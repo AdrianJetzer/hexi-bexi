@@ -7,6 +7,8 @@ extends Node3D
 signal path_changed(word: String)
 ## Antipp-Modus: ein Stein wurde angetippt (z. B. für „Stein ersetzen“).
 signal cell_tapped(cell: Vector2i)
+## Wortanfang-Modus („Vervollständigen“): ein Weg wurde gewischt (wird nicht eingelöst).
+signal prefix_swiped(path: Array[Vector2i])
 
 ## Außenradius eines Hexagon-Platzes in Welt-Einheiten.
 const HEX_RADIUS := 1.0
@@ -41,6 +43,8 @@ var _burst_frame: int = -1
 var _burst_index: int = 0
 ## Antipp-Modus statt Wischen (z. B. „Stein ersetzen“).
 var tap_mode: bool = false
+## Wortanfang-Modus: Gewischtes wird nicht eingelöst, sondern als prefix_swiped gemeldet.
+var prefix_mode: bool = false
 ## Steine, die gerade als Tipp oder Lösung pulsieren.
 var _hint_cells: Array[Vector2i] = []
 ## Steine, die gerade als Scan-Ergebnis leuchten.
@@ -92,6 +96,7 @@ func setup(p_session: RunSession) -> void:
 	session.tile_changed.connect(_on_tile_changed)
 	session.tiles_removed.connect(_on_tiles_removed)
 	tap_mode = false
+	prefix_mode = false
 	_hint_cells.clear()
 
 	var g := session.grid
@@ -367,8 +372,19 @@ func _try_add(screen_point: Vector2) -> void:
 func _finish_swipe() -> void:
 	var path: Array[Vector2i] = _path.duplicate()
 	_cancel_swipe()
-	if path.size() > 0:
+	if path.is_empty():
+		return
+	if prefix_mode:
+		prefix_swiped.emit(path)
+	else:
 		session.submit_path(path)
+
+
+## Diese Steine wackeln (z. B. Wortanfang ohne Fortsetzung).
+func shake_cells(cells: Array[Vector2i]) -> void:
+	for cell in cells:
+		if _tiles.has(cell):
+			_tiles[cell].shake()
 
 
 func _cancel_swipe() -> void:

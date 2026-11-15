@@ -74,6 +74,24 @@ func find_paths(grid: HexGrid, p_min: int, p_max: int, accept: Callable, limit: 
 	return out
 
 
+## Wie find_paths, aber nur Wege, die mit dem Weg `prefix` beginnen (und dort weitergehen).
+func find_paths_from(grid: HexGrid, prefix: Array[Vector2i], p_min: int, p_max: int, accept: Callable,
+		limit: int = 50) -> Array:
+	var out: Array = []
+	if prefix.is_empty():
+		return out
+	var path: Array[Vector2i] = prefix.duplicate()
+	var used := {}
+	var word := ""
+	for cell in prefix:
+		if grid.is_free(cell) or used.has(cell):
+			return out
+		used[cell] = true
+		word += grid.get_letter(cell)
+	_collect(grid, path, used, word, p_min, p_max, accept, limit, out)
+	return out
+
+
 func _collect(grid: HexGrid, path: Array[Vector2i], used: Dictionary, word: String, p_min: int,
 		p_max: int, accept: Callable, limit: int, out: Array) -> void:
 	if out.size() >= limit or not _has_prefix(word):
