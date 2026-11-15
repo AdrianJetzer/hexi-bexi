@@ -62,6 +62,9 @@ var _scan_cells: Array[Vector2i] = []
 const BURST_DELAY := 0.09
 ## Flug durchs All: so schnell treiben Funken nach unten (Welt-Einheiten pro Sekunde²).
 const SPACE_DRIFT := 0.06
+## Funkeln: Anzahl gleichzeitig und Lebensdauer (Sekunden; je länger, desto ruhiger).
+const SPARKLE_COUNT := 22
+const SPARKLE_LIFETIME := 4.5
 
 
 func _ready() -> void:
@@ -278,31 +281,37 @@ func _build_sparkles(contour: PackedVector2Array, y: float) -> void:
 		var b := contour[(i + 1) % n]
 		for k in 6:
 			var p := a.lerp(b, k / 6.0)
-			pts.append(Vector3(p.x, y + 0.05, p.y))
+			# Über den Steinen, damit kein Funke unter einem Stein verschwindet.
+			pts.append(Vector3(p.x, maxf(y, THICKNESS * 0.5) + 0.2, p.y))
 	var p := CPUParticles3D.new()
-	p.amount = 48
-	p.lifetime = 3.2
-	p.preprocess = 3.2
+	p.amount = SPARKLE_COUNT
+	p.lifetime = SPARKLE_LIFETIME
+	p.preprocess = SPARKLE_LIFETIME
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_POINTS
 	p.emission_points = pts
-	p.direction = Vector3(0, 1, 0)
+	# Nur waagerecht treiben (nicht nach unten in die Steine hinein).
+	p.direction = Vector3(1, 0, 0)
 	p.spread = 180.0
+	p.flatness = 1.0
 	# Flug durchs All: die Funken treiben langsam nach unten (Bildschirm-unten = +Z).
 	p.gravity = Vector3(0, 0, SPACE_DRIFT)
 	p.initial_velocity_min = 0.03
 	p.initial_velocity_max = 0.15
 	p.scale_amount_min = 0.5
 	p.scale_amount_max = 1.0
-	# Sanft auf- und wieder abblenden (über Größe und Helligkeit; additiv: Schwarz = unsichtbar).
+	# Sanft auf- und lange wieder abblenden: Größe UND Helligkeit gehen am Ende ganz auf 0
+	# (additiv: Schwarz = unsichtbar), damit nichts plötzlich verschwindet.
 	var curve := Curve.new()
-	curve.add_point(Vector2(0, 0.2))
-	curve.add_point(Vector2(0.35, 1))
-	curve.add_point(Vector2(1, 0.3))
+	curve.add_point(Vector2(0, 0))
+	curve.add_point(Vector2(0.25, 1))
+	curve.add_point(Vector2(0.6, 0.7))
+	curve.add_point(Vector2(1, 0))
 	p.scale_amount_curve = curve
 	var ramp := Gradient.new()
 	ramp.set_color(0, Color(0, 0, 0))
-	ramp.add_point(0.3, Color(0.9, 1.3, 1.5))
-	ramp.add_point(0.55, Color(0.6, 0.95, 1.2))
+	ramp.add_point(0.25, Color(0.85, 1.15, 1.35))
+	ramp.add_point(0.5, Color(0.55, 0.8, 1.0))
+	ramp.add_point(0.75, Color(0.2, 0.32, 0.42))
 	ramp.set_color(1, Color(0, 0, 0))
 	p.color_ramp = ramp
 	var quad := QuadMesh.new()
