@@ -31,14 +31,16 @@ const BUTTONS_PER_ROW := 3
 const BUTTON_ROWS := 2
 const BUTTONS_PER_ROW_ALL := 5
 ## Hinweis „Noch n Level bis zum Power-up“ über den Knöpfen.
-const OFFER_HINT_HEIGHT := 52.0
-const OFFER_HINT_FONT := 32
+const OFFER_HINT_HEIGHT := 60.0
+const OFFER_HINT_FONT := INFO_FONT
 ## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
 const BUTTON_FONT := 33
 const BUTTON_FONT_SMALL := 23
 const BOTTOM_PAD := 24.0
 ## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
 const INFO_FONT := 40
+## Abstand der Info-Zeile zur Oberkante des Felds (Pixel).
+const INFO_GAP := 4.0
 
 ## Hilfen: Reihenfolge bei gleichem Preis, Namen auf Knöpfen und Karten, kurze Erklärung.
 const HELP_ORDER: PackedStringArray = ["refill", "hint", "replace", "shuffle", "clear", "joker",
@@ -424,6 +426,9 @@ func _relayout() -> void:
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
+	# Info-Zeile dicht über die Oberkante des Felds (das Feld sitzt mittig in seinem Bereich).
+	if _board.session != null:
+		info_y = maxf(info_y, _board.screen_top() - INFO_HEIGHT - INFO_GAP)
 
 	# Info-Zeile direkt über dem Spielfeld: Level · Rekord links, Münzen rechts.
 	_level_label.position = Vector2(side, info_y)

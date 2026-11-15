@@ -43,8 +43,8 @@ Zeigt das Spiel mitten in einer Runde: geschlossenes Spielfeld mit Zickzack-Inne
   - Das Feld füllt die Breite fast ganz aus (Seitenrand etwa 3 %); die Höhe ergibt sich aus 5 Reihen. Der gewonnene Platz geht an die Hilfe-Knöpfe (155 statt 90 Pixel hoch, größere Schrift).
   - Durch die ungerade Spaltenzahl ist das Feld **symmetrisch**: Beide Außenspalten stehen gleich hoch.
 - **Über dem Spielfeld:** die **Block-Zeilen des Auftrags** (1–3 Zeilen, je 3–8 Blöcke, zentriert). Der Bereich hat **immer Platz für 3 Zeilen mit 8 Blöcken** in voller Blockgröße (Blöcke so groß, wie die Breite für 8 Blöcke erlaubt); nur bei 4 Zeilen (nach „Teilen“) werden sie kleiner. Gefundene Wörter fliegen aus dem Feld hinein. Das gewischte Wort wird nicht angezeigt.
-- **Direkt über dem Spielfeld:** eine **Info-Zeile** in einheitlicher Schrift: links **Level · Rekord**, rechts **Münzen** (in Gold).
-- **Unter dem Spielfeld:** der Hinweis „Noch n Level bis zum Power-up“, darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
+- **Direkt über dem Spielfeld** (dicht an der leuchtenden Kante): eine **Info-Zeile**: links **Level · Rekord**, rechts **Münzen** (in Gold).
+- **Unter dem Spielfeld:** der Hinweis „Noch n Level bis zum Power-up“ (gleiche Schriftgröße wie die Info-Zeile), darunter die **Hilfe-Knöpfe** mit Preis, sortiert von gratis (Auffüllen) bis teuer (Lösen) (siehe [run-mode.md](run-mode.md), „Münzen“).
 - **Knopf „Aufgeben“:** klein und dezent (siehe [screens.md](screens.md)). **Kein Pause-Knopf.**
 
 ## Platzhalter (noch nicht entschieden)

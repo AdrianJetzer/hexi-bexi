@@ -130,6 +130,13 @@ func fit_to_screen(area: Rect2, viewport_size: Vector2) -> void:
 	camera.position = Vector3(-(cx - 0.5) * visible_w, top + d, -(cy - 0.5) * visible_h)
 
 
+## Oberkante des Felds (leuchtende Kante) in Bildschirm-Pixeln (nach fit_to_screen).
+func screen_top() -> float:
+	var r := layout.grid_rect()
+	var edge := Vector3(r.get_center().x, THICKNESS * 0.1, r.position.y - 0.1)
+	return camera.unproject_position(edge).y
+
+
 ## Welt-Position der Mitte eines Platzes (Hexagon-Mitte).
 func cell_position(cell: Vector2i) -> Vector3:
 	var c := layout.center(cell)
