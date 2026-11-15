@@ -36,22 +36,28 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 
 ### Kurve (Startwerte)
 
+Ruhig ansteigend: Jeder der zehn festen Aufträge kommt **zweimal** hintereinander.
+
 | Level | Zeilen | Bild |
 |---|---|---|
-| 1 | 3 | ▢▢▢ |
-| 2 | 4 | ▢▢▢▢ |
-| 3 | 3 + 3 | ▢▢▢ / ▢▢▢ |
-| 4 | 3 + 4 | ▢▢▢ / ▢▢▢▢ |
-| 5 | 5 | ▢▢▢▢▢ |
-| 6 | 4 + 4 | ▢▢▢▢ / ▢▢▢▢ |
-| 7 | 3 + 3 + 4 | ▢▢▢ / ▢▢▢ / ▢▢▢▢ |
-| 8 | 4 + 5 | ▢▢▢▢ / ▢▢▢▢▢ |
-| 9 | 6 | ▢▢▢▢▢▢ |
-| 10 | 3 + 4 + 5 | ▢▢▢ / ▢▢▢▢ / ▢▢▢▢▢ |
+| 1–2 | 3 | ▢▢▢ |
+| 3–4 | 4 | ▢▢▢▢ |
+| 5–6 | 3 + 3 | ▢▢▢ / ▢▢▢ |
+| 7–8 | 3 + 4 | ▢▢▢ / ▢▢▢▢ |
+| 9–10 | 5 | ▢▢▢▢▢ |
+| 11–12 | 4 + 4 | ▢▢▢▢ / ▢▢▢▢ |
+| 13–14 | 3 + 3 + 4 | ▢▢▢ / ▢▢▢ / ▢▢▢▢ |
+| 15–16 | 4 + 5 | ▢▢▢▢ / ▢▢▢▢▢ |
+| 17–18 | 6 | ▢▢▢▢▢▢ |
+| 19–20 | 3 + 4 + 5 | ▢▢▢ / ▢▢▢▢ / ▢▢▢▢▢ |
 
-**Ab Level 11 (Block-Budget):**
-- Ein Auftrag hat ein **Budget** an Blöcken: **12** in Level 11–15, alle 5 Levels **+1** (Level 16–20: 13 …), höchstens 24.
+**Ab Level 21 (Block-Budget):**
+- Ein Auftrag hat ein **Budget** an Blöcken: **12** in Level 21–30, alle **10** Levels **+1** (Level 31–40: 13 …), höchstens 24.
 - Das Spiel verteilt das Budget **zufällig** auf **1 bis 3 Zeilen** mit je **3 bis 8** Blöcken (z. B. 4 + 4 + 4, 6 + 6, 3 + 4 + 5).
+
+**Atempausen:** Ab Level 11 ist **jedes 5. Level** leicht (Level 15, 20, 25 …): nur **eine Zeile mit 3 oder 4 Blöcken** (zufällig). Das gilt auch innerhalb der festen Kurve (Level 15 und 20).
+
+- Die Hilfe-Stufe (Wort-Hilfe) ist genauso gestreckt: 1, 1, 1, 1, 2, 2, 2, 2, 3 … (je Stufe doppelt so viele Level wie vorher).
 - Die Kurve liegt als Daten vor (tunebar); alle Zahlen sind Startwerte für das Feintuning.
 
 ### Wort-Hilfe
@@ -64,7 +70,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 | Ereignis | Münzen |
 |---|---|
-| Auftrag gelöst | **+100** (fest, unabhängig vom Level) |
+| Auftrag gelöst | **+50** (fest, unabhängig vom Level) |
 | Langes Wort nebenbei [später] | Bonus |
 | **Auffüllen: 5 neue Steine** | **gratis** |
 | **Tipp: nächsten Buchstaben zeigen** | **−50** je Buchstabe |
@@ -93,17 +99,17 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ### Power-ups und Upgrades (Roguelike) [v1]
 - **Start eines Laufs:** Unten sind nur **Auffüllen** (gratis) und **Lösen** (500) sichtbar.
-- **Power-up nach Level 4, 8, 12 und 16:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** der drei Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
+- **Power-up nach Level 5, 10, 15 und 20:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** der drei Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
 
   | nach Level | Stufe | Hilfen der Stufe (2 davon zur Wahl) |
   |---|---|---|
-  | 4 | 50 | Tipp, Ersetzen, Mischen |
-  | 8 | 100 | Aufräumen, Joker, Kürzen |
-  | 12 | 150 | Tauschen, Teilen, Vervollständigen |
-  | 16 | 200 | Magnet, Scan, Zeile streichen |
+  | 5 | 50 | Tipp, Ersetzen, Mischen |
+  | 10 | 100 | Aufräumen, Joker, Kürzen |
+  | 15 | 150 | Tauschen, Teilen, Vervollständigen |
+  | 20 | 200 | Magnet, Scan, Zeile streichen |
 
   Man tippt eine Karte an, ihr Knopf kommt unten dazu, dann beginnt das nächste Level. Die anderen Hilfen der Stufe gibt es in diesem Lauf **nicht**.
-- **Upgrade nach Level 20, 24, 28 …:** Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
+- **Upgrade nach Level 25, 30, 35 …:** Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
 - **Hinweis über den Knöpfen** (nur diese Zeile; Level, Rekord und Münzen stehen über dem Spielfeld): „Noch 3 Level bis zum Power-up“ bzw. „… bis zum Upgrade“; bei „Noch 1 Level“ leuchtet er.
 - **Knöpfe:** höchstens 6 (Auffüllen, 4 Hilfen, Lösen), in **2 Reihen zu je 3**, sortiert von gratis bis teuer – deutlich größer als vorher.
 - **Neuer Lauf:** wieder nur Auffüllen und Lösen, alle Preise wie in der Tabelle.
@@ -225,3 +231,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.27:** Preisstufen: je drei Hilfen für 50 (Tipp, Ersetzen, Mischen), 100 (Aufräumen, Joker, Kürzen), 150 (Tauschen, Teilen, Vervollständigen), 200 (Magnet, Scan, Zeile streichen). Neue Hilfe Zeile streichen. Lösen als Sonderknopf für 500.
 - **v3.28:** Roguelike-Draft: Start nur mit Auffüllen und Lösen; nach Level 4/8/12/16 eine von drei Hilfen der Stufe 50/100/150/200 wählen; ab Level 20 alle 4 Level ein Upgrade (−25 %, auch für Lösen). Hinweis „Noch n Level bis zum Power-up“. Knöpfe in 2 × 3.
 - **v3.29:** Power-up: 2 zufällige von 3 Hilfen der Stufe zur Wahl. Auffüllen-Hinweis: Schrift blinkt dezent statt Pulsieren.
+- **v3.30:** Kurve doppelt so lang (jeder feste Auftrag zweimal, Budget ab Level 21, +1 alle 10 Level, Hilfe-Stufe gestreckt); Atempausen ab Level 11 jedes 5. Level (eine Zeile mit 3–4 Blöcken); Power-ups nach Level 5/10/15/20, Upgrades alle 5 Level; Belohnung 50 statt 100.
