@@ -2,7 +2,8 @@
 
 Usage: python3 -I build_wiktionary.py <dewiktionary.jsonl.gz> <out.txt> [<excluded.txt>]
 Takes headwords of German entries (lang_code == "de") plus single-word inflected forms.
-Proper names and abbreviations are left out: a word is excluded if it only occurs in
+Obsolete spellings (forms tagged "obsolete", e.g. "Thee" for Tee) are left out unless the word
+also exists as a normal entry or form. Proper names and abbreviations are left out: a word is excluded if it only occurs in
 entries with pos "name" or "abbrev", or with capitals inside the headword (e.g. "UGs", "NASA",
 "iPod"), with their forms, and in no other entry.
 The excluded words are written to <excluded.txt> (to filter other word lists).
@@ -79,6 +80,8 @@ def main(src, dst, excluded_dst=None):
     head_name = set()      # Stichwörter mit Wortart Name/Abkürzung
     normalcase = set()     # normale Wörter, deren Stichwort nicht ganz großgeschrieben ist (z. B. Aids)
     form_of = []           # (Wörter des Eintrags, Grundwörter) für reine Formen-Einträge
+    obsolete = set()       # veraltete Schreibweisen (Formen mit Tag „obsolete“, z. B. „Thee“ zu Tee)
+    real = set()           # Stichwörter echter Einträge und ihre nicht veralteten Formen
     pos_count = collections.Counter()
     entries = 0
     with gzip.open(src, "rt", encoding="utf-8") as f:
@@ -94,6 +97,9 @@ def main(src, dst, excluded_dst=None):
             is_name = (pos in EXCLUDED_POS and not _is_contraction(e)) or _mixed_case(e)
             own = set()
             n = normalize(e.get("word"))
+            is_real = pos != "unknown" and not _is_form_of(e)
+            if n and is_real:
+                real.add(n)
             if n:
                 own.add(n)
                 pos_count[pos] += 1
@@ -101,6 +107,16 @@ def main(src, dst, excluded_dst=None):
                 fn = normalize(fm.get("form"))
                 if not fn:
                     continue
+                # Veraltete Schreibweise (z. B. „Thee“, „Citat“, „Telephon“). Formen mit ß nicht:
+                # „hinuntergoß“ wird zu HINUNTERGOSS und ist in neuer Schreibung ein gültiges Wort.
+                raw = fm.get("form") or ""
+                if "obsolete" in (fm.get("tags") or []) and "ß" not in raw:
+                    obsolete.add(fn)
+                    if is_name:
+                        names.add(fn)  # alte Schreibweise eines Namens bleibt ein Name
+                    continue
+                if is_real:
+                    real.add(fn)
                 # Als Form angegebene Abkürzungen (z. B. „Kfz“ bei Kraftfahrzeug) sind keine Spielwörter.
                 # Längere kleingeschriebene Kurzformen wie „rausreißen“ (zu herausreißen) bleiben
                 # Wörter; kurze (z. B. Sprachcodes wie „tmh“) und solche mit Großbuchstaben nicht.
@@ -131,6 +147,9 @@ def main(src, dst, excluded_dst=None):
             names |= own
         else:
             words |= own
+    # Veraltete Schreibweisen: raus, wenn es sie nicht auch als echtes Wort gibt.
+    old_only = obsolete - real
+    words -= old_only
     # Römische Zahlen: nur behalten, wenn sie auch ein normales Stichwort sind.
     roman_keep = {w for w in head_normal if ROMAN.match(w)}
     for w in [w for w in words if ROMAN.match(w) and w not in roman_keep]:
@@ -150,7 +169,8 @@ def main(src, dst, excluded_dst=None):
         with open(excluded_dst, "w", encoding="utf-8") as out:
             for w in sorted(excluded):
                 out.write(w + "\n")
-    print(f"german_entries={entries} words={len(words)} excluded_names_abbrevs={len(excluded)}")
+    print(f"german_entries={entries} words={len(words)} excluded_names_abbrevs={len(excluded)} "
+          f"obsolete_spellings={len(old_only)}")
     print("headwords by pos:", ", ".join(f"{k}={v}" for k, v in pos_count.most_common(15)))
 
 

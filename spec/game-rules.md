@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v7.10**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v7.11**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -83,6 +83,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
   - Entfernt wird ein Wort, wenn Wiktionary es **nur** als Eigenname oder Abkürzung kennt (samt Formen), oder wenn die Trennmuster-Liste es im Kommentar als **Name** vermerkt (z. B. „engl. Name“, „geogr. Name“), außer Wiktionary kennt es als normales Wort (z. B. Newton, Dobermann). Seltene Namen, die Wiktionary nicht kennt, können durchrutschen; dafür später ggf. eine eigene Sperrliste.
 - **Akronyme** wie DEA, CIA, CPU, AfD gelten ebenfalls nicht (in der Trennmuster-Liste als „Abk.“ markiert oder ganz großgeschrieben), außer Wiktionary kennt sie als normal geschriebenes Wort (z. B. Aids, Ufo, Abc).
 - Ebenso Wörter, deren Wiktionary-Eintrag **Großbuchstaben mitten im Wort** hat (z. B. „UGs“ als Mehrzahl von UG = Untergeschoss, „CEOs“, „NASA“, „iPod“), außer es gibt sie auch normal geschrieben. Wörter mit Bindestrich oder Leerzeichen (z. B. „Armee-Einheit“) sind davon nicht betroffen.
+- **Veraltete Schreibweisen** gelten nicht (im Wiktionary als veraltet markierte Formen, z. B. THEE für Tee, CITAT, CONCERT, TELEPHON), außer es gibt das Wort auch in heutiger Schreibung. Alte Formen mit ß bleiben unberührt (aus „hinuntergoß“ wird HINUNTERGOSS, und das ist heute richtig).
 - **Römische Zahlen** (z. B. LIII, XII) gelten nicht, außer sie sind auch ein normales Wort (z. B. MIX).
 - Weiterhin: nur A–Z, Wörter mit Umlauten vorerst nicht (siehe „Sprache“).
 
@@ -160,3 +161,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.8:** Vorschlags-Wörter umgesetzt: 10.000 häufigste, nur 3 bis 8 Buchstaben, Sperrliste, ohne Akronyme.
 - **v7.9:** Raster 5 × 5 (25 Plätze), damit unten mehr Platz für die Hilfe-Knöpfe ist.
 - **v7.10:** Wörter mit Großbuchstaben mitten im Wiktionary-Stichwort (UGS, CEOS, NASA, IPOD …) gelten nicht (160 Wörter).
+- **v7.11:** Veraltete Schreibweisen (THEE, CITAT, CONCERT …) gelten nicht (rund 1.670 Wörter).

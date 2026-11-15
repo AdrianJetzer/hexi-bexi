@@ -35,6 +35,7 @@ tools/dictionary/build.sh
 - **Eigennamen und Abkürzungen entfallen** (siehe spec/game-rules.md): Ein Wort fliegt raus, wenn Wiktionary es nur als Eigenname (`name`) oder Abkürzung (`abbrev`, inkl. als Abkürzung markierter Formen und der Formen solcher Wörter) kennt. Ausnahmen: Zusammenziehungen wie „zum“, „beim“, „sowas“ (bei Wiktionary auch `abbrev`) und längere kleingeschriebene Kurzformen wie „rausreißen“. Die entfernten Wörter stehen in `out/excluded.txt` und werden auch aus der Trennmuster-Liste gefiltert (`filter_words.py`).
 - **Akronyme und markierte Namen entfallen:** Trennmuster-Einträge mit Vermerk „# Abk.“ oder „Name“ im Kommentar (z. B. „engl. Name“, „geogr. Name“) oder ganz in Großbuchstaben (z. B. DEA, CPU) werden aus beiden Listen entfernt (`out/trennmuster-abbrevs.txt`, zusammengeführt mit `combine_exclusions.py` zu `out/excluded-all.txt`). Ausnahme: Wiktionary kennt das Wort in normaler Schreibweise (ganz klein oder nur erster Buchstabe groß) und es enthält einen Vokal, z. B. Aids, Ufo, Abc (`out/excluded-normalcase.txt`).
 - **Großbuchstaben mitten im Wort entfallen:** Wiktionary-Stichwörter aus einem Stück mit Großbuchstaben nach dem ersten Buchstaben (z. B. „UGs“, „CEOs“, „NASA“, „iPod“) gelten samt Formen als Abkürzung/Marke, außer es gibt sie auch normal geschrieben (z. B. „Ufo“ neben „UFO“). Wörter mit Bindestrich oder Leerzeichen sind nicht betroffen.
+- **Veraltete Schreibweisen entfallen:** Wiktionary-Formen mit Tag „obsolete“ (z. B. „Thee“ bei Tee, „Citat“, „Concert“) kommen nicht ins Wörterbuch, außer das Wort gibt es auch als normalen Eintrag oder normale Form. Formen mit ß bleiben unberührt (ß → SS ergibt oft die heutige Schreibung). Alte Schreibweisen von Namen zählen weiter als Namen.
 - **Römische Zahlen entfallen** (z. B. LIII, XII; die Trennmuster-Liste enthält rund 2.400 davon), außer sie sind auch ein normales Wiktionary-Stichwort (z. B. MIX; Liste in `out/excluded-roman-keep.txt`).
 
 ## Vorschlags-Wörter (`build_common.py`)
@@ -53,7 +54,7 @@ tools/dictionary/build.sh
 | Trennmuster (ohne Namen/Abkürzungen/Akronyme/römische Zahlen) | 381.852 (vorher 390.374) |
 | Wiktionary (ohne Namen/Abkürzungen/Akronyme/römische Zahlen) | 652.750 |
 | Entfernt (Namen/Abkürzungen) | 42.599 |
-| Kombiniert | 804.207 (vorher 804.367; 160 Wörter mit Großbuchstaben im Wort entfernt) |
+| Kombiniert | 802.530 (vorher 804.207; 1.677 veraltete Schreibweisen und Namen entfernt) |
 
 ## Offen
 
