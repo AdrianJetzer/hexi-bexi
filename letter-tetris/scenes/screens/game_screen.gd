@@ -5,8 +5,6 @@ extends Control
 ## Grundsatz: Symbole statt Text.
 
 const BALANCE: GameBalance = preload("res://data/balance.tres")
-const CURVE: QuestCurve = preload("res://data/quest_curve.tres")
-const LANG: LanguageData = preload("res://data/languages/de/language.tres")
 
 const TEXT := Color(0.85, 0.92, 1.0)
 const TEXT_DIM := Color(0.6, 0.66, 0.85)
@@ -127,6 +125,15 @@ var _strike_button: Button
 ## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
 var _tap_action: String = ""
 var _give_up_button: Button
+## Spielmodus (Wortlisten, Kurve) und geladene Wortlisten (Pfad → WordDictionary, bleiben im Speicher).
+var _mode: GameMode
+var _word_lists: Dictionary = {}
+## Einstellungen: Knopf oben rechts, Ebene mit den Modi, Nachfrage beim Wechsel mitten im Lauf.
+var _settings_button: Button
+var _settings: ColorRect
+var _settings_modes: VBoxContainer
+var _mode_confirm: ColorRect
+var _pending_mode: String = ""
 var _confirm: ColorRect
 var _summary: ColorRect
 var _summary_label: Label
@@ -160,8 +167,7 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	# Berührungen nicht hier abfangen, sondern ans Spielfeld (_unhandled_input) durchlassen.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_dictionary = WordDictionary.from_file(LANG.words_path)
-	_common = WordDictionary.from_file(LANG.common_words_path)
+	_load_mode()
 	_build_ui()
 	get_viewport().size_changed.connect(_relayout)
 	new_run()
@@ -175,7 +181,7 @@ func new_run(seed_value: int = -1) -> void:
 	_pending_quest = null
 	for c in _fly_layer.get_children():
 		c.queue_free()
-	session = RunSession.new(BALANCE, CURVE, LANG, _dictionary, seed_value, _common)
+	session = RunSession.new(BALANCE, _mode.curve, _mode.language, _dictionary, seed_value, _common)
 	session.quest_started.connect(_on_quest_started)
 	session.quest_completed.connect(_on_quest_completed)
 	session.coins_changed.connect(func(_c: int) -> void: _update_labels())
@@ -306,6 +312,16 @@ func _build_ui() -> void:
 		_give_up_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
 	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
 
+	_settings_button = _button("Einstellungen", INFO_FONT)
+	_settings_button.flat = true
+	_settings_button.add_theme_color_override("font_color", TEXT_DIM)
+	_settings_button.add_theme_color_override("font_hover_color", TEXT)
+	_settings_button.add_theme_color_override("font_pressed_color", TEXT)
+	_settings_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
+		_settings_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	_settings_button.pressed.connect(_open_settings)
+
 	_continue_button = _button("Weiter", 56)
 	_continue_button.visible = false
 	_continue_button.pressed.connect(func() -> void:
@@ -347,6 +363,39 @@ func _build_ui() -> void:
 	var no := _button("Nein", 56, row)
 	no.custom_minimum_size = Vector2(260, 130)
 	no.pressed.connect(func() -> void: _confirm.visible = false)
+
+	# Einstellungen: Modus wählen
+	var st := _overlay("Einstellungen")
+	_settings = st[0]
+	(st[1] as VBoxContainer).add_theme_constant_override("separation", 36)
+	var sub := Label.new()
+	sub.text = "Modus"
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 40)
+	sub.add_theme_color_override("font_color", TEXT_DIM)
+	(st[1] as VBoxContainer).add_child(sub)
+	_settings_modes = VBoxContainer.new()
+	_settings_modes.add_theme_constant_override("separation", 22)
+	(st[1] as VBoxContainer).add_child(_settings_modes)
+	var close := _button("Schließen", 48, st[1])
+	close.custom_minimum_size = Vector2(420, 120)
+	close.pressed.connect(func() -> void: _settings.visible = false)
+
+	# Nachfrage: Modus mitten im Lauf wechseln
+	var mc := _overlay("Modus wechseln und\nneu starten?")
+	_mode_confirm = mc[0]
+	var mrow := HBoxContainer.new()
+	mrow.alignment = BoxContainer.ALIGNMENT_CENTER
+	mrow.add_theme_constant_override("separation", 40)
+	(mc[1] as VBoxContainer).add_child(mrow)
+	var myes := _button("Ja", 56, mrow)
+	myes.custom_minimum_size = Vector2(260, 130)
+	myes.pressed.connect(func() -> void: _apply_mode(_pending_mode))
+	var mno := _button("Nein", 56, mrow)
+	mno.custom_minimum_size = Vector2(260, 130)
+	mno.pressed.connect(func() -> void:
+		_mode_confirm.visible = false
+		_pending_mode = "")
 
 	# Auswahl: Power-up oder Upgrade
 	var ch := _overlay("")
@@ -474,6 +523,8 @@ func _relayout() -> void:
 	var inner := col.y - 2.0 * margin
 	_give_up_button.position = Vector2(side, s.y * 0.012)
 	_give_up_button.size = Vector2(inner * 0.4, INFO_HEIGHT)
+	_settings_button.size = Vector2(inner * 0.5, INFO_HEIGHT)
+	_settings_button.position = Vector2(side + inner - _settings_button.size.x, s.y * 0.012)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
@@ -716,6 +767,69 @@ func _place_stuck_veil() -> void:
 	_stuck_veil.size = Vector2(area.size.x, bottom - top)
 	_stuck_button.size = STUCK_BUTTON_SIZE
 	_stuck_button.position = (_stuck_veil.size - STUCK_BUTTON_SIZE) / 2.0
+
+
+# --- Modi und Einstellungen ------------------------------------------------------------
+
+## Aktuellen Modus aus den Einstellungen laden (Wortlisten bleiben zwischengespeichert).
+func _load_mode() -> void:
+	_mode = Settings.game_mode()
+	_dictionary = _word_list(_mode.valid_words_path())
+	_common = _word_list(_mode.suggestion_words_path())
+
+
+func _word_list(path: String) -> WordDictionary:
+	if not _word_lists.has(path):
+		_word_lists[path] = WordDictionary.from_file(path)
+	return _word_lists[path]
+
+
+## Einstellungen öffnen: Modi als Karten, der aktuelle mit Goldrand.
+func _open_settings() -> void:
+	_set_tap_action("")
+	for c in _settings_modes.get_children():
+		c.queue_free()
+	var w := _column(get_viewport_rect().size).y * 0.86
+	for id in Settings.MODES:
+		var m := Settings.load_mode(id)
+		var card := Button.new()
+		card.custom_minimum_size = Vector2(w, 170)
+		card.add_theme_font_size_override("font_size", 34)
+		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		card.text = "%s\n%s" % [m.display_name, m.description]
+		var current: bool = id == Settings.mode
+		var edge := BTN_EDGE_SOLVE if current else BTN_EDGE
+		card.add_theme_stylebox_override("normal", _btn_box(BTN_BG, edge, 0.9 if current else 0.6, 0.35 if current else 0.2, 12))
+		card.add_theme_stylebox_override("hover", _btn_box(BTN_BG, edge, 1.0, 0.4, 14))
+		card.add_theme_stylebox_override("pressed", _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.6, 20))
+		card.add_theme_color_override("font_color", BTN_GOLD if current else BTN_TEXT)
+		var chosen: String = id
+		card.pressed.connect(func() -> void: _on_mode_picked(chosen))
+		_settings_modes.add_child(card)
+	_settings.visible = true
+
+
+func _on_mode_picked(id: String) -> void:
+	if id == Settings.mode:
+		_settings.visible = false
+		return
+	if session != null and not session.is_over:
+		_pending_mode = id
+		_mode_confirm.visible = true
+	else:
+		_apply_mode(id)
+
+
+## Modus wechseln und neu starten.
+func _apply_mode(id: String) -> void:
+	_mode_confirm.visible = false
+	_settings.visible = false
+	_pending_mode = ""
+	if id == "":
+		return
+	Settings.mode = id
+	_load_mode()
+	new_run()
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------

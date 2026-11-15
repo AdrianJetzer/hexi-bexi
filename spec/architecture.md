@@ -32,7 +32,7 @@ core/                  Reine Spiellogik (keine Grafik)
 data/
   balance.tres         Spielwerte (Start-Hexagons, Startmünzen, Preise, Hilfe-Stufen)
   quest_curve.tres     Auftrags-Kurve (Zeilen je Level, Block-Budget, Belohnung, Hilfe-Stufe je Level)
-  languages/de/        Alphabet, Gewichte, Vokale, Wortlisten (words.bin, common.bin)
+  languages/de/        Alphabet, Gewichte, Vokale, Wortlisten (words.bin, common.bin, easy.bin)
   themes/cosmic/       Texturen, Farben, Shader-Parameter, Sounds, Musik
 
 scenes/

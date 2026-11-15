@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="GameMode" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://core/game_mode.gd" id="1"]
+[ext_resource type="Resource" path="res://data/languages/de/language.tres" id="2"]
+[ext_resource type="Resource" path="res://data/quest_curve_easy.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = "de_easy"
+display_name = "Deutsch einfach"
+description = "Für Kinder: bekannte, kurze Wörter, Zeilen bis 5 Blöcke, immer viel Hilfe."
+language = ExtResource("2")
+words_path = "res://data/languages/de/easy.bin"
+common_words_path = "res://data/languages/de/easy.bin"
+curve = ExtResource("3")

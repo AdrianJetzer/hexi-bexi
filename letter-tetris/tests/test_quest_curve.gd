@@ -38,7 +38,7 @@ func test_breaks_every_fifth_level_from_eleven() -> void:
 
 func test_reward_fixed() -> void:
 	for level in [1, 10, 20, 50]:
-		assert_eq(_gen().quest_for(level).reward, 50, "fest 50 je Level")
+		assert_eq(_gen().quest_for(level).reward, 100, "fest 100 je Level")
 
 
 func test_help_level_follows_curve() -> void:

@@ -53,7 +53,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
   - **Menü:** zurück zum Startbildschirm.
 
 ### Einstellungen
-- **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links).
+- **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links). Siehe [Screenshot](images/settings-modes-v1.png).
 - **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**. Der aktuelle ist markiert. Neu installiert: **mittel**.
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - Der Modus wird gespeichert und gilt beim nächsten Start.

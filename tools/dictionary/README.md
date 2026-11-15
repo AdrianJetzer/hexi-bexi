@@ -47,6 +47,13 @@ tools/dictionary/build.sh
 - Ohne Wörter der **Sperrliste** `blocklist-suggestions.txt` (versioniert) und ohne Wörter, die in den Korpora meist ganz großgeschrieben stehen (Akronyme).
 - Rangfolge nach Häufigkeit in beiden Leipzig-Korpora (je relativ, gemittelt); die häufigsten kommen in die Liste. Rangliste zum Ansehen: `out/common-ranked.txt`.
 
+## Kinder-Wortliste (`easy.bin`, Modus „Deutsch einfach“)
+
+- Gleiches Skript wie die Vorschlags-Wörter (`build_common.py`) mit `--len=3-5 --kids`: nur Hauptwörter, Verben, Adjektive und Zahlwörter (Grundformen plus Mehrzahl), **ohne englische Lehnwörter** (laut Wiktionary-Herkunft), 3–5 Buchstaben, die 3.000 häufigsten.
+- Zusätzliche Sperrliste `blocklist-kids.txt` (für Kinder Unpassendes, Heikles, Abwertendes).
+- In diesem Modus sind das **die gültigen Wörter und die Vorschläge** zugleich.
+- Zum Durchsehen: `kids-words-ranked.txt` (versioniert, nach Häufigkeit sortiert).
+
 ## Stand (13.11.2026)
 
 | Liste | Wörter |
@@ -69,4 +76,6 @@ tools/dictionary/build.sh
 - `filter_words.py`: entfernt Wörter einer Liste (z. B. Namen/Abkürzungen) aus einer Wortliste.
 - `build_common.py`: Vorschlags-Wörter (siehe oben).
 - `blocklist-suggestions.txt`: Sperrliste für Vorschlags-Wörter.
+- `blocklist-kids.txt`: zusätzliche Sperrliste für die Kinder-Wortliste.
+- `kids-words-ranked.txt`: Kinder-Wortliste zum Durchsehen.
 - `pack_words.py`: Textliste → kompaktes Spielformat LTW1 (Formatbeschreibung im Skript).

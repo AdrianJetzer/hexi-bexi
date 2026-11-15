@@ -2,6 +2,9 @@
 
 Usage: python3 -I build_common.py <dewiktionary.jsonl.gz> <de-words.txt> <blocklist.txt>
                                   <out.txt> <count> <leipzig-words.txt> [<leipzig-words.txt> ...]
+                                  [--len=3-5] [--block=<extra-blocklist.txt> ...] [--kids]
+Also used for the kids' list (Deutsch einfach): --len=3-5, count 3000, extra blocklist, --kids
+(only nouns/verbs/adjectives/numbers with plurals, no English loanwords).
 
 Suggestion words are the words the game itself puts on the board or shows (hint, scan,
 solve, swap, magnet, refill). They should be nice, everyday words:
@@ -48,10 +51,25 @@ def _is_form_of(e):
     return bool(senses) and all("form-of" in (s.get("tags") or []) for s in senses)
 
 
-def read_wiktionary(src):
+# Kinder-Liste: nur Inhaltswörter, keine englischen Lehnwörter.
+KIDS_POS = {"noun", "verb", "adj", "num"}
+ENGLISH_LOAN = ("englisch", "engl.", "→ en)")
+
+
+def _english_loan(e):
+    et = e.get("etymology_text") or ""
+    if isinstance(et, list):
+        et = " ".join(et)
+    et = et.lower()
+    return ("entlehn" in et or "von englisch" in et or "aus dem englischen" in et) and \
+        any(k in et for k in ENGLISH_LOAN)
+
+
+def read_wiktionary(src, kids=False):
     """Return (candidates, function_words)."""
     candidates = set()
     function = set()
+    loans = set()
     with gzip.open(src, "rt", encoding="utf-8") as f:
         for line in f:
             try:
@@ -77,6 +95,10 @@ def read_wiktionary(src):
                 continue
             if pos not in KEEP_POS or not n:
                 continue
+            if kids and _english_loan(e):
+                loans.add(n)
+            if kids and pos not in KIDS_POS:
+                continue
             candidates.add(n)
             if pos == "noun":
                 for fm in e.get("forms") or []:
@@ -85,6 +107,8 @@ def read_wiktionary(src):
                         fn = normalize(fm.get("form"))
                         if fn:
                             candidates.add(fn)
+    if kids:
+        candidates -= loans
     return candidates, function
 
 
@@ -119,14 +143,17 @@ def read_blocklist(path):
         return {line.strip() for line in f if line.strip() and not line.startswith("#")}
 
 
-def main(wikt, valid_path, block_path, dst, count, corpora):
+def main(wikt, valid_path, block_path, dst, count, corpora, min_len=MIN_LEN, max_len=MAX_LEN,
+         extra_blocks=(), kids=False):
     with open(valid_path, encoding="utf-8") as f:
         valid = {line.strip() for line in f if line.strip()}
-    candidates, function = read_wiktionary(wikt)
+    candidates, function = read_wiktionary(wikt, kids)
     drop = function - KEEP_ANYWAY
-    pool = {w for w in (candidates & valid) - drop if MIN_LEN <= len(w) <= MAX_LEN}
+    pool = {w for w in (candidates & valid) - drop if min_len <= len(w) <= max_len}
     freq, mostly_caps = read_frequencies(corpora)
     pool -= read_blocklist(block_path) | mostly_caps
+    for extra in extra_blocks:
+        pool -= read_blocklist(extra)
     ranked = sorted((w for w in pool if freq.get(w, 0) > 0), key=lambda w: (-freq[w], w))
     chosen = ranked[:count]
     with open(dst, "w", encoding="utf-8") as out:
@@ -141,4 +168,15 @@ def main(wikt, valid_path, block_path, dst, count, corpora):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], int(sys.argv[5]), sys.argv[6:])
+    # Optionen: --len=3-5 (Wortlängen), --block=<datei> (weitere Sperrliste, mehrfach möglich)
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    opts = [a for a in sys.argv[1:] if a.startswith("--")]
+    lo, hi = MIN_LEN, MAX_LEN
+    extra = []
+    kids = "--kids" in opts
+    for o in opts:
+        if o.startswith("--len="):
+            lo, hi = (int(x) for x in o[6:].split("-"))
+        elif o.startswith("--block="):
+            extra.append(o[8:])
+    main(args[0], args[1], args[2], args[3], int(args[4]), args[5:], lo, hi, extra, kids)

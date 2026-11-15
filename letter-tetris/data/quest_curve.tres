@@ -16,5 +16,5 @@ endless_help_level = 5
 break_from = 11
 break_every = 5
 break_rows = PackedInt32Array(3, 4)
-reward_base = 50
+reward_base = 100
 reward_per_level = 0
