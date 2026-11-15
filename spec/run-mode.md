@@ -91,6 +91,26 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ## Hilfen
 
+### Power-ups und Upgrades (Roguelike) [v1]
+- **Start eines Laufs:** Unten sind nur **Auffüllen** (gratis) und **Lösen** (500) sichtbar.
+- **Power-up nach Level 4, 8, 12 und 16:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **3 Karten** (Name, Preis, kurze Erklärung) – den drei Hilfen der nächsten Preisstufe:
+
+  | nach Level | Stufe | Auswahl |
+  |---|---|---|
+  | 4 | 50 | Tipp, Ersetzen, Mischen |
+  | 8 | 100 | Aufräumen, Joker, Kürzen |
+  | 12 | 150 | Tauschen, Teilen, Vervollständigen |
+  | 16 | 200 | Magnet, Scan, Zeile streichen |
+
+  Man tippt eine Karte an, ihr Knopf kommt unten dazu, dann beginnt das nächste Level. Die anderen beiden gibt es in diesem Lauf **nicht**.
+- **Upgrade nach Level 20, 24, 28 …:** Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
+- **Hinweis über den Knöpfen:** „Noch 3 Level bis zum Power-up“ bzw. „… bis zum Upgrade“; bei „Noch 1 Level“ leuchtet er.
+- **Knöpfe:** höchstens 6 (Auffüllen, 4 Hilfen, Lösen), in **2 Reihen zu je 3**, sortiert von gratis bis teuer – deutlich größer als vorher.
+- **Neuer Lauf:** wieder nur Auffüllen und Lösen, alle Preise wie in der Tabelle.
+- **Test-Modus:** Ein Spielwert (`draft_enabled` in `data/balance.tres`) schaltet den Draft ab; dann sind alle Hilfen von Anfang an da (zum Testen).
+
+### Die Hilfen im Einzelnen
+
 - **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). **Gratis.** Das balanciert sich selbst: Zu wenige Steine – kein Wort möglich; zu viele Steine – unübersichtlich, schwerer zu finden. Der Spieler entscheidet, wann er nachlegt. Ist das Feld voll, ist Auffüllen gesperrt.
   - **Pulsiert als Hinweis:** Liegt im Feld **kein gültiges Wort** (ganzes Wörterbuch), das genau in eine freie Zeile passt, pulsiert der Knopf sanft (leicht größer und heller, etwa 1,4 s pro Puls). Sobald wieder ein passendes Wort liegt, hört er auf. Kein Pulsieren bei vollem Feld (Auffüllen gesperrt), während ein Auftrag abschließt, und solange ein Joker im Feld liegt (dann ist vielleicht ein Wort möglich).
 - **Tauschen (150):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
@@ -131,10 +151,8 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 - **[offen]** Wo man kauft: direkt am Hilfe-Knopf (z. B. „+“-Symbol, jederzeit, ohne Unterbrechung), in einem Laden zwischen den Levels, oder in einem Laden auf Wunsch. Wichtig: den Spielfluss nicht stören (deshalb sind die Auftragskarten entfallen).
 - **[offen]** Mit welchen Hilfen ein Lauf beginnt, Preise der Freischaltungen.
 
-### Draft-Plan (Hilfen sammeln)
-- Ein Lauf beginnt mit **nur einer Hilfe: Auffüllen**.
-- Etwa **alle 5 Levels** werden **zwei zufällige Hilfen** angeboten; man wählt **eine** davon und sie kommt als Knopf dazu (Roguelike-Draft).
-- **[offen]** Was passiert, wenn alle Knopf-Plätze belegt sind (ersetzen oder verbessern), genauer Rhythmus, Platzierung der Knöpfe.
+### Draft-Plan
+- **Umgesetzt (v3.28)**, siehe „Power-ups und Upgrades“ unter „Hilfen“.
 
 ### Weitere Vorteile
 Dauerhafte Vorteile für den laufenden Lauf, bezahlt mit Münzen. Beispiele:
@@ -205,3 +223,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.25:** Neue Hilfe Kürzen (100): längste freie Zeile verliert einen Block.
 - **v3.26:** Tauschen kostet 100 statt 50 (Bot-Simulation: bei 50 hält man sich mit Tauschen fast endlos über Wasser, Ø Level 137 statt 58).
 - **v3.27:** Preisstufen: je drei Hilfen für 50 (Tipp, Ersetzen, Mischen), 100 (Aufräumen, Joker, Kürzen), 150 (Tauschen, Teilen, Vervollständigen), 200 (Magnet, Scan, Zeile streichen). Neue Hilfe Zeile streichen. Lösen als Sonderknopf für 500.
+- **v3.28:** Roguelike-Draft: Start nur mit Auffüllen und Lösen; nach Level 4/8/12/16 eine von drei Hilfen der Stufe 50/100/150/200 wählen; ab Level 20 alle 4 Level ein Upgrade (−25 %, auch für Lösen). Hinweis „Noch n Level bis zum Power-up“. Knöpfe in 2 × 3.

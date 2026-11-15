@@ -38,6 +38,8 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** **Münzen**, **Level**, **Rekord**.
+- **Power-up-Auswahl** (nach Level 4, 8, 12, 16; danach Upgrades alle 4 Level): halbtransparenter Bildschirm über dem Spiel mit Titel („Power-up: Wähle eine Hilfe“ bzw. „Upgrade: Welche Hilfe wird günstiger?“) und Karten (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)).
+- **Hinweis** über den Knöpfen: „Noch n Level bis zum Power-up/Upgrade“.
 - **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Tipp (je Buchstabe), Stein ersetzen, Mischen; **100:** Aufräumen, Joker, Kürzen; **150:** Tauschen (5 Steine), Teilen, Vervollständigen (Wortanfang anwischen); **200:** Magnet (Stein antippen), Scan, Zeile streichen; **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
@@ -85,3 +87,4 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.10:** Auswahl-Bildschirm für Power-ups und Upgrades (Karten), Hinweis „Noch n Level bis zum Power-up“, Knöpfe nur für freigeschaltete Hilfen (2 × 3).
