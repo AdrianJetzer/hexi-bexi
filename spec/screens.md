@@ -54,7 +54,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 
 ### Einstellungen
 - **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links). Siehe [Screenshot](images/settings-modes-v1.png).
-- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**. Der aktuelle ist markiert. Neu installiert: **mittel**.
+- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**, **Story** (siehe [story-mode.md](story-mode.md)). Der aktuelle ist markiert. Neu installiert: **mittel**.
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Soundeffekte** an/aus.
@@ -91,6 +91,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.14:** Modus „Story“ in den Einstellungen, Pfad durchs All, Rätsel-Anzeige, Kapitel-Abschluss.
 - **v4.13:** Auswahl-Bildschirm überarbeitet: ohne Zeile „Power-up“/„Upgrade“, Titel hervorgehoben, Karten als Glas-Knöpfe mit Münze und größerer Erklärung.
 - **v4.12:** Knopf „Einstellungen“ oben rechts; Modus einfach / mittel / schwierig mit Neustart-Nachfrage; Rekord je Modus.
 - **v4.11:** Münzen oben rechts mit goldener Münze statt Wort „Münzen“.
