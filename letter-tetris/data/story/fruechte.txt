@@ -1,0 +1,55 @@
+# Kapitel „Früchte“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+APFEL;Rund, rot oder grün, fiel Newton auf den Kopf
+BIRNE;Unten dick, oben schmal – wie eine Glühlampe
+KIWI;Braun und haarig außen, grün innen
+KAKI;Orange Frucht, die aussieht wie eine Tomate
+YUZU;Japanische Zitrusfrucht, sehr aromatisch
+GOJI;Kleine rote Beere, die man meist getrocknet isst
+NONI;Tropische Frucht, eher als Saft bekannt
+MANGO;Süße, saftige Frucht mit großem flachem Kern
+FEIGE;Weich und süß, voller winziger Kerne
+GUAVE;Tropische Frucht mit rosa oder weißem Fleisch
+OLIVE;Klein, grün oder schwarz, gibt wertvolles Öl
+BEERE;Kleine, runde Frucht, oft am Strauch
+NASHI;Asiatische Birne, rund wie ein Apfel
+SALAK;Schlangenfrucht mit schuppiger brauner Schale
+BANANE;Gelb, krumm und bei Affen beliebt
+MELONE;Groß und rund, besonders saftig im Sommer
+ANANAS;Stachelige Schale und grüner Schopf obendrauf
+ORANGE;Runde Zitrusfrucht, gleich wie ihre Farbe
+TRAUBE;Wächst in Rispen am Weinstock
+DATTEL;Süße Frucht der Palme, oft getrocknet
+PAPAYA;Tropisch, orange innen, mit schwarzen Kernen
+QUITTE;Hart und gelb, wird zu Gelee gekocht
+LIMONE;Anderes Wort für Zitrone
+POMELO;Die größte aller Zitrusfrüchte
+MISPEL;Alte Frucht, wird erst nach Frost weich
+DURIAN;Stinkt stark, schmeckt aber süß
+LONGAN;Drachenauge – kleine Frucht mit glasigem Fleisch
+PITAYA;Drachenfrucht mit pinker Schale
+ROSINE;Getrocknete Weintraube
+KIWANO;Horngurke mit Stacheln, innen grün
+LOQUAT;Japanische Wollmispel, gelb-orange
+PEPINO;Birnenmelone aus Südamerika
+KIRSCHE;Rot, rund, oft zu zweit am Stiel
+PFLAUME;Blau-lila mit Stein, gut im Kuchen
+ZITRONE;Gelb und richtig sauer
+LIMETTE;Kleine grüne Schwester der Zitrone
+LITSCHI;Raue rote Schale, weißes, süßes Fruchtfleisch
+SCHLEHE;Blaue Wildfrucht vom Schwarzdorn
+KUMQUAT;Zwergorange, man isst sie mit Schale
+AVOCADO;Grün, cremig, Hauptsache in der Guacamole
+SATSUMA;Kernlose Mandarinenart
+ACEROLA;Kleine Kirsche mit sehr viel Vitamin C
+ERDBEERE;Rot mit Pünktchen außen, wächst am Boden
+HIMBEERE;Rot und weich, innen hohl
+PFIRSICH;Samtige Haut, saftig, mit Stein
+APRIKOSE;Orange, samtig, mit Stein – auch Marille
+HOLUNDER;Schwarze Beeren und weiße Blüten für Sirup
+MARACUJA;Passionsfrucht mit knackigen Kernen
+ZWETSCHE;Längliche Pflaume für den Kuchen
+SANDDORN;Orange Beere von der Küste, sehr sauer
+RAMBUTAN;Rote, haarige Frucht aus Asien
+PHYSALIS;Kapstachelbeere im Papierlampion
+ELSBEERE;Seltene Wildfrucht, wird zu Schnaps gebrannt
+KORINTHE;Kleine, dunkle getrocknete Traube

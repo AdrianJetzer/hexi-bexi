@@ -1,0 +1,53 @@
+# Kapitel „Gemüse“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+MAIS;Gelbe Körner am Kolben, auch als Popcorn
+KOHL;Großer Kopf aus Blättern
+OKRA;Grüne Schoten, Ladyfingers genannt
+YAMS;Tropische Knolle, ähnlich wie Kartoffel
+SOJA;Bohne für Tofu und Sauce
+TARO;Stärkereiche Knolle aus den Tropen
+RÜBE;Wächst in der Erde, oft rot oder weiß
+DILL;Kraut zur Gurke und zum Lachs
+PILZ;Wächst im Wald und hat einen Hut
+LAUCH;Langer Stängel, weiß und grün
+GURKE;Grün und lang, kommt oft in den Salat
+ERBSE;Klein, grün, rund, steckt in einer Schote
+BOHNE;Wächst in einer Hülse, z. B. grün oder weiß
+LINSE;Klein und flach, für Eintopf
+SALAT;Grüne Blätter in der Schüssel
+KRESSE;Wächst schnell auf Watte
+CHILI;Klein und richtig scharf
+RANDE;Rote Rübe auf Schweizerdeutsch
+KAPER;Eingelegte Blütenknospe, salzig
+MÖHRE;Orange, lang, Hasen lieben sie
+TOMATE;Rot, rund, wird zu Ketchup
+SPINAT;Grüne Blätter, machen Popeye stark
+KÜRBIS;Groß, orange, an Halloween geschnitzt
+RUCOLA;Würziger Salat, auch Rauke genannt
+INGWER;Scharfe Wurzel für Tee
+PORREE;Anderes Wort für Lauch
+BATATE;Süßkartoffel
+MANIOK;Tropische Wurzel, auch Cassava
+SCHOTE;Hülle von Erbsen und Bohnen
+KERBEL;Zartes Kraut für die Suppe
+PAPRIKA;Rot, gelb oder grün, innen hohl
+ZWIEBEL;Bringt beim Schneiden zum Weinen
+SPARGEL;Weiße oder grüne Stangen im Frühling
+RETTICH;Weiße, scharfe Wurzel
+FENCHEL;Knolle mit Geschmack nach Anis
+WIRSING;Kohl mit gekrausten Blättern
+ENDIVIE;Bitterer Salat mit krausen Blättern
+MANGOLD;Große Blätter mit bunten Stielen
+KAROTTE;Anderes Wort für Möhre
+SPROSSE;Junger Keimling, z. B. von der Sojabohne
+LATTICH;Altes Wort für Kopfsalat
+MORCHEL;Edler Pilz mit wabenförmigem Hut
+TRÜFFEL;Teurer Pilz, den Schweine finden
+ZUCCHINI;Lange grüne Frucht wie eine Gurke
+SELLERIE;Knolle oder Stange mit kräftigem Duft
+BROKKOLI;Sieht aus wie ein kleiner grüner Baum
+CHICOREE;Bittere weiße Blätterknospe
+KOHLRABI;Hellgrüne Knolle mit Blättern
+PEPERONI;Längliche, scharfe Paprika
+BÄRLAUCH;Wildes Kraut im Frühling, riecht nach Knoblauch
+RAPUNZEL;Feldsalat – wie das Märchen
+PORTULAK;Fleischige Blätter, wächst als Unkraut

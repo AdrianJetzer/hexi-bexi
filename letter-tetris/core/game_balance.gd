@@ -79,3 +79,8 @@ func difficulty(level: int) -> DifficultyLevel:
 ## Upgrade: Preis sinkt um diesen Anteil (gerundet auf 5), nie unter upgrade_min_price.
 @export var upgrade_discount: float = 0.25
 @export var upgrade_min_price: int = 25
+
+## Story-Modus (spec/story-mode.md): Rätsel-Tipp, Ziel-Level, Grenze für 2 Sterne.
+@export var riddle_price: int = 50
+@export var story_goal: int = 20
+@export var story_two_star_spend: int = 500
