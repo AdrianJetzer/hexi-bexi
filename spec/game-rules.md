@@ -123,6 +123,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ### Sprache
 - **Zuerst Deutsch.**
+- **Geplant:** Umlaute **Ä, Ö, Ü** als eigene Steine im ganzen Spiel (Voraussetzung für den Story-Modus, siehe [story-mode.md](story-mode.md)); **ß bleibt SS**.
 - Erste Version: **ohne Umlaute und Sonderzeichen**, nur die Buchstaben A–Z. **ß wird als SS** geschrieben. **Wörter mit Umlauten** (z. B. „Bär“) werden vorerst **weggelassen**.
 - Von Anfang an so bauen, dass **weitere Sprachen** möglich sind: Wörterbuch, Alphabet und Buchstabenverteilung austauschbar, keine fest verdrahtete Sprache im Spielcode.
 
