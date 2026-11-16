@@ -40,15 +40,16 @@ const INFO_FONT := 40
 const INFO_GAP := 24.0
 
 ## Hilfen: Reihenfolge bei gleichem Preis, Namen auf Knöpfen und Karten, kurze Erklärung.
-const HELP_ORDER: PackedStringArray = ["refill", "hint", "replace", "shuffle", "clear", "joker",
+const HELP_ORDER: PackedStringArray = ["refill", "riddle", "hint", "replace", "shuffle", "clear", "joker",
 		"shorten", "swap", "split", "complete", "magnet", "scan", "strike", "solve"]
 const HELP_NAMES := {
-	"refill": "Auffüllen", "hint": "Tipp", "replace": "Ersetzen", "shuffle": "Mischen",
+	"refill": "Auffüllen", "riddle": "Rätsel", "hint": "Tipp", "replace": "Ersetzen", "shuffle": "Mischen",
 	"clear": "Aufräumen", "joker": "Joker", "shorten": "Kürzen", "swap": "Tauschen",
 	"split": "Teilen", "complete": "Vervollständigen", "magnet": "Magnet", "scan": "Scan",
 	"strike": "Streichen", "solve": "Lösen",
 }
 const HELP_INFO := {
+	"riddle": "Zeigt einen kurzen Hinweis zum gesuchten Wort.",
 	"hint": "Zeigt Buchstabe für Buchstabe ein passendes Wort.",
 	"replace": "Ein Stein deiner Wahl bekommt einen neuen Buchstaben.",
 	"shuffle": "Alle Buchstaben werden neu verteilt.",
@@ -88,6 +89,13 @@ const BTN_NAME_FONT := 36
 const BTN_NAME_FONT_LONG := 27
 const BTN_PRICE_FONT := 30
 ## Auswahl-Bildschirm (Power-up / Upgrade): Titel, Karten.
+## Story: Rätselsatz über der Info-Zeile.
+const RIDDLE_FONT := 38
+const RIDDLE_HEIGHT := 110.0
+## Story: Pfad durchs All (Stationen).
+const STATION_SIZE := 210.0
+const STATION_COLORS := {"fruechte": Color(0.95, 0.45, 0.3), "tiere": Color(0.75, 0.55, 0.3),
+		"gemuese": Color(0.35, 0.75, 0.35)}
 const CHOICE_TITLE_FONT := 64
 const CHOICE_NAME_FONT := 46
 const CHOICE_INFO_FONT := 38
@@ -119,6 +127,14 @@ var _clear_button: Button
 var _hint_button: Button
 var _replace_button: Button
 var _solve_button: Button
+var _riddle_button: Button
+## Story-Modus: aktuelles Kapitel, Themen-Name oben, Rätselsatz über dem Feld, Pfad durchs All.
+var _chapter: StoryChapter
+var _theme_label: Label
+var _riddle_label: Label
+var _path: ColorRect
+var _path_layer: Control
+var _again_button: Button
 var _joker_button: Button
 var _shuffle_button: Button
 var _magnet_button: Button
@@ -176,6 +192,8 @@ func _ready() -> void:
 	_build_ui()
 	get_viewport().size_changed.connect(_relayout)
 	new_run()
+	if _is_story():
+		_open_path.call_deferred()
 
 
 ## Neuen Lauf starten (Level 1).
@@ -187,6 +205,15 @@ func new_run(seed_value: int = -1) -> void:
 	for c in _fly_layer.get_children():
 		c.queue_free()
 	session = RunSession.new(BALANCE, _mode.curve, _mode.language, _dictionary, seed_value, _common)
+	if _is_story():
+		if _chapter == null:
+			_chapter = _default_chapter()
+		session.set_story(_chapter)
+		session.riddle_shown.connect(_on_riddle_shown)
+		session.story_completed.connect(_on_story_completed)
+	_theme_label.text = _chapter.display_name if _is_story() and _chapter != null else ""
+	_riddle_label.text = ""
+	_again_button.text = "Zur Karte" if _is_story() else "Nochmal"
 	session.quest_started.connect(_on_quest_started)
 	session.quest_completed.connect(_on_quest_completed)
 	session.coins_changed.connect(func(_c: int) -> void: _update_labels())
@@ -295,13 +322,26 @@ func _build_ui() -> void:
 		if not session.solve():
 			_shake(_solve_button))
 
-	_buttons = {"refill": _refill_button, "hint": _hint_button, "replace": _replace_button,
+	_riddle_button = _button("", BUTTON_FONT)
+	_riddle_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		if session.riddle() == "":
+			_shake(_riddle_button))
+
+	_buttons = {"refill": _refill_button, "riddle": _riddle_button, "hint": _hint_button, "replace": _replace_button,
 		"shuffle": _shuffle_button, "clear": _clear_button, "joker": _joker_button,
 		"shorten": _shorten_button, "swap": _swap_button, "split": _split_button,
 		"complete": _complete_button, "magnet": _magnet_button, "scan": _scan_button,
 		"strike": _strike_button, "solve": _solve_button}
 	for id in _buttons:
 		_style_help_button(_buttons[id], id)
+	_theme_label = _label(INFO_FONT, BTN_GOLD)
+	_theme_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_theme_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_riddle_label = _label(RIDDLE_FONT, Color(1.0, 0.9, 0.7))
+	_riddle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_riddle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_riddle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_offer_hint = _label(OFFER_HINT_FONT, TEXT_DIM)
 	_offer_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_offer_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -369,6 +409,17 @@ func _build_ui() -> void:
 	no.custom_minimum_size = Vector2(260, 130)
 	no.pressed.connect(func() -> void: _confirm.visible = false)
 
+	# Story: Pfad durchs All (Kapitel-Auswahl)
+	_path = ColorRect.new()
+	_path.color = Color(0.0, 0.01, 0.04, 0.94)
+	_path.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_path.visible = false
+	add_child(_path)
+	_path_layer = Control.new()
+	_path_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_path_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_path.add_child(_path_layer)
+
 	# Einstellungen: Modus wählen
 	var st := _overlay("Einstellungen")
 	_settings = st[0]
@@ -420,9 +471,14 @@ func _build_ui() -> void:
 	var s := _overlay("")
 	_summary = s[0]
 	_summary_label = s[2]
-	var again := _button("Nochmal", 64, s[1])
-	again.custom_minimum_size = Vector2(520, 140)
-	again.pressed.connect(func() -> void: new_run())
+	_again_button = _button("Nochmal", 64, s[1])
+	_again_button.custom_minimum_size = Vector2(520, 140)
+	_again_button.pressed.connect(func() -> void:
+		if _is_story():
+			_summary.visible = false
+			_open_path()
+		else:
+			new_run())
 
 
 ## Halbtransparente Ebene mit zentrierter Spalte. Gibt [Ebene, Spalte, Titel] zurück.
@@ -540,6 +596,10 @@ func _relayout() -> void:
 	if _board.session != null:
 		info_y = maxf(info_y, _board.screen_top() - INFO_HEIGHT - INFO_GAP)
 
+	_theme_label.position = Vector2(side + inner * 0.3, s.y * 0.012)
+	_theme_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
+	_riddle_label.position = Vector2(side, info_y - RIDDLE_HEIGHT - 8.0)
+	_riddle_label.size = Vector2(inner, RIDDLE_HEIGHT)
 	# Info-Zeile direkt über dem Spielfeld: Level · Rekord links, Münzen rechts.
 	_level_label.position = Vector2(side, info_y)
 	_level_label.size = Vector2(inner * 0.6, INFO_HEIGHT)
@@ -576,7 +636,10 @@ func _relayout() -> void:
 func _update_labels() -> void:
 	if session == null:
 		return
-	_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
+	if session.story != null:
+		_level_label.text = "Level %d von %d" % [mini(session.level(), BALANCE.story_goal), BALANCE.story_goal]
+	else:
+		_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
 	_coins_label.text = str(session.coins)
 	_place_coin_icon()
 	for id in _buttons:
@@ -602,6 +665,7 @@ func _update_labels() -> void:
 	_complete_button.disabled = not session.can_complete() and not _complete_button.button_pressed
 	_scan_button.disabled = not session.can_scan()
 	_solve_button.disabled = not session.can_solve()
+	_riddle_button.disabled = not session.can_riddle()
 	for b: Button in _buttons.values():
 		b.modulate.a = BTN_DISABLED_ALPHA if b.disabled else 1.0
 	_update_offer_hint()
@@ -777,6 +841,134 @@ func _place_stuck_veil() -> void:
 	_stuck_button.position = (_stuck_veil.size - STUCK_BUTTON_SIZE) / 2.0
 
 
+# --- Story-Modus ------------------------------------------------------------------------
+
+func _is_story() -> bool:
+	return _mode != null and _mode.id == Settings.STORY_MODE
+
+
+## Erstes noch nicht geschafftes, freigeschaltetes Kapitel (sonst das erste).
+func _default_chapter() -> StoryChapter:
+	var chapters := StoryChapter.all()
+	for ch in chapters:
+		if SaveData.story_stars(ch.id) == 0:
+			return ch
+	return chapters[0]
+
+
+## Kapitel i ist frei, wenn es das erste ist oder das vorherige geschafft wurde.
+func _chapter_unlocked(index: int, chapters: Array[StoryChapter]) -> bool:
+	return index == 0 or SaveData.story_stars(chapters[index - 1].id) > 0
+
+
+func _on_riddle_shown(text: String) -> void:
+	_riddle_label.text = ("„%s“" % text) if text != "" else ""
+
+
+func _on_story_completed(stars: int) -> void:
+	SaveData.submit_story(session.story.id, stars)
+	_summary_label.text = "Kapitel geschafft!\n\n%s\n%s" % [session.story.display_name, _stars_text(stars)]
+	# Erst die letzten Buchstaben ankommen lassen, dann die Bilanz zeigen.
+	var t := create_tween()
+	t.tween_interval(_last_flight + 1.0)
+	t.tween_callback(func() -> void:
+		_summary.visible = true
+		_relayout())
+
+
+func _stars_text(stars: int) -> String:
+	return "★".repeat(stars) + "☆".repeat(3 - stars)
+
+
+func _start_chapter(chapter: StoryChapter) -> void:
+	_chapter = chapter
+	_path.visible = false
+	new_run()
+
+
+## Pfad durchs All: Kapitel als Stationen von unten (erstes) nach oben, verbunden durch eine Linie.
+func _open_path() -> void:
+	_set_tap_action("")
+	for c in _path_layer.get_children():
+		c.queue_free()
+	var s := get_viewport_rect().size
+	var col := _column(s)
+	var chapters := StoryChapter.all()
+	var title := Label.new()
+	title.text = "Story"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", CHOICE_TITLE_FONT)
+	title.add_theme_color_override("font_color", BTN_GOLD)
+	title.add_theme_color_override("font_outline_color", Color(BTN_GOLD, 0.35))
+	title.add_theme_constant_override("outline_size", 10)
+	title.position = Vector2(col.x, s.y * 0.08)
+	title.size = Vector2(col.y, 90)
+	_path_layer.add_child(title)
+	var centers: Array[Vector2] = []
+	var top := s.y * 0.26
+	var bottom := s.y * 0.78
+	for i in chapters.size():
+		var f := i / float(maxi(chapters.size() - 1, 1))
+		var x := col.x + col.y * (0.3 if i % 2 == 0 else 0.7)
+		centers.append(Vector2(x, lerpf(bottom, top, f)))
+	var line := Line2D.new()
+	line.width = 6.0
+	line.default_color = Color(BTN_EDGE, 0.35)
+	for c in centers:
+		line.add_point(c)
+	_path_layer.add_child(line)
+	for i in chapters.size():
+		_path_layer.add_child(_station(chapters[i], centers[i], _chapter_unlocked(i, chapters)))
+	var change := _button("Modus wechseln", 40, _path_layer)
+	change.flat = true
+	change.add_theme_color_override("font_color", TEXT_DIM)
+	change.size = Vector2(col.y * 0.6, 90)
+	change.position = Vector2(col.x + col.y * 0.2, s.y * 0.9)
+	change.pressed.connect(_open_settings)
+	_path.visible = true
+
+
+## Eine Station: runder, leuchtender Planet mit Name und Sternen.
+func _station(ch: StoryChapter, center: Vector2, unlocked: bool) -> Control:
+	var root := Control.new()
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var color: Color = STATION_COLORS.get(ch.id, BTN_EDGE)
+	var planet := Button.new()
+	planet.size = Vector2.ONE * STATION_SIZE
+	planet.position = center - planet.size / 2.0
+	var st := StyleBoxFlat.new()
+	st.bg_color = color.darkened(0.35)
+	st.border_color = color.lightened(0.35)
+	st.set_border_width_all(4)
+	st.set_corner_radius_all(int(STATION_SIZE / 2.0))
+	st.corner_detail = 24
+	st.shadow_color = Color(color, 0.55)
+	st.shadow_size = 26
+	for k in ["normal", "hover", "focus", "disabled"]:
+		planet.add_theme_stylebox_override(k, st)
+	planet.add_theme_color_override("font_disabled_color", Color(1, 1, 1, 0.8))
+	var pressed := st.duplicate()
+	pressed.bg_color = color.darkened(0.1)
+	planet.add_theme_stylebox_override("pressed", pressed)
+	planet.text = ch.display_name.substr(0, 1)
+	planet.add_theme_font_size_override("font_size", 92)
+	planet.disabled = not unlocked
+	planet.pressed.connect(func() -> void: _start_chapter(ch))
+	root.add_child(planet)
+	var label := Label.new()
+	var stars := SaveData.story_stars(ch.id)
+	label.text = "%s\n%s" % [ch.display_name, _stars_text(stars) if unlocked else "gesperrt"]
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 40)
+	label.add_theme_color_override("font_color", BTN_GOLD if stars > 0 else TEXT)
+	label.size = Vector2(STATION_SIZE * 2.0, 110)
+	label.position = Vector2(center.x - STATION_SIZE, center.y + STATION_SIZE / 2.0 + 10.0)
+	root.add_child(label)
+	if not unlocked:
+		root.modulate = Color(1, 1, 1, 0.4)
+	return root
+
+
 # --- Modi und Einstellungen ------------------------------------------------------------
 
 ## Aktuellen Modus aus den Einstellungen laden (Wortlisten bleiben zwischengespeichert).
@@ -837,7 +1029,12 @@ func _apply_mode(id: String) -> void:
 		return
 	Settings.mode = id
 	_load_mode()
+	_chapter = null
 	new_run()
+	if _is_story():
+		_open_path()
+	else:
+		_path.visible = false
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------
@@ -846,7 +1043,11 @@ func _apply_mode(id: String) -> void:
 func _update_offer_hint() -> void:
 	var n := session.levels_until_offer() if BALANCE.draft_enabled else 0
 	var kind := session.next_offer_kind()
-	if n <= 0:
+	if n <= 0 and session.story != null and not session.is_over:
+		# Story: nach dem letzten Power-up zählt der Hinweis bis zum Ziel.
+		var g := session.levels_until_goal()
+		_offer_hint.text = "Noch 1 Level bis zum Ziel" if g == 1 else "Noch %d Level bis zum Ziel" % g
+	elif n <= 0:
 		_offer_hint.text = ""
 	else:
 		var what := "Power-up" if kind == "powerup" else "Upgrade"
@@ -1090,9 +1291,13 @@ func _on_confirm_give_up() -> void:
 
 
 func _on_run_ended(level: int, _reason: String) -> void:
-	var new_record := SaveData.submit_level(level)
-	_summary_label.text = "Lauf beendet\n\nLevel %d erreicht\n\nRekord: Level %d%s" % [
-		level, SaveData.best_level(), "\nNeuer Rekord!" if new_record else ""]
+	if session.story != null:
+		_summary_label.text = "Kapitel nicht geschafft\n\n%s\nLevel %d von %d" % [
+			session.story.display_name, level, BALANCE.story_goal]
+	else:
+		var new_record := SaveData.submit_level(level)
+		_summary_label.text = "Lauf beendet\n\nLevel %d erreicht\n\nRekord: Level %d%s" % [
+			level, SaveData.best_level(), "\nNeuer Rekord!" if new_record else ""]
 	_update_labels()
 	for b in _help_buttons():
 		b.visible = false

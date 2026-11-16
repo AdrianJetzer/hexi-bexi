@@ -59,6 +59,10 @@ const JOKER := "*"
 ## Story-Modus: Wortlängen je Stufe (Level 1–5, 6–10, 11–15, 16–20) und Füllgrad des Felds.
 const STORY_LENGTHS: Array[Vector2i] = [Vector2i(3, 5), Vector2i(4, 6), Vector2i(5, 7), Vector2i(6, 8)]
 const STORY_FILL: Array[float] = [0.5, 0.65, 0.75, 0.88]
+## Anteil der (nach Häufigkeit sortierten) Themenliste, aus dem je Stufe gewählt wird.
+const STORY_FAMILIAR: Array[float] = [0.4, 0.6, 0.85, 1.0]
+## Hilfen, die im Story-Modus nicht angeboten werden (nur eine Zeile pro Level).
+const STORY_SKIP_HELPS: PackedStringArray = ["split", "strike"]
 ## Alle Hilfen mit Preis, die man im Lauf freischalten kann (Auffüllen und Lösen sind immer da).
 const HELP_IDS: PackedStringArray = ["hint", "replace", "shuffle", "clear", "joker", "shorten",
 		"swap", "split", "complete", "magnet", "scan", "strike"]
@@ -238,10 +242,18 @@ func _story_quest(level: int) -> Quest:
 func _pick_story_target(level: int) -> String:
 	var stage := clampi((level - 1) / 5, 0, STORY_LENGTHS.size() - 1)
 	var r: Vector2i = STORY_LENGTHS[stage]
+	# Bekannte Wörter zuerst: die Liste ist nach Häufigkeit sortiert, frühe Stufen nehmen nur
+	# den vorderen Teil (STORY_FAMILIAR), spätere auch seltenere Wörter.
+	var familiar := ceili(story.words.size() * STORY_FAMILIAR[stage])
 	var pool := PackedStringArray()
-	for w in story.words_between(r.x, r.y):
-		if not _used_targets.has(w):
+	for i in mini(familiar, story.words.size()):
+		var w := story.words[i]
+		if w.length() >= r.x and w.length() <= r.y and not _used_targets.has(w):
 			pool.append(w)
+	if pool.is_empty():
+		for w in story.words_between(r.x, r.y):
+			if not _used_targets.has(w):
+				pool.append(w)
 	if pool.is_empty():
 		for w in story.words:
 			if not _used_targets.has(w):
@@ -351,7 +363,8 @@ func _options_after(completed: int) -> PackedStringArray:
 	var n := completed / every
 	if n <= _balance.draft_tiers.size():
 		for id in _balance.draft_tiers[n - 1]:
-			if not owned.has(id):
+			# Story: nur eine Zeile pro Level, Teilen und Streichen ergeben dort keinen Sinn.
+			if not owned.has(id) and not (story != null and id in STORY_SKIP_HELPS):
 				out.append(id)
 	else:
 		var ids := owned.duplicate()

@@ -118,3 +118,14 @@ func test_words_get_longer() -> void:
 		early += lengths[i]
 		late += lengths[lengths.size() - 1 - i]
 	assert_gt(late, early, "späte Wörter sind länger")
+
+
+func test_no_split_or_strike_offered() -> void:
+	for i in 15:
+		run._complete_quest()
+		if not run.offer.is_empty():
+			var options: PackedStringArray = run.offer["options"]
+			assert_false(options.has("split"))
+			assert_false(options.has("strike"))
+			run.choose(options[0])
+

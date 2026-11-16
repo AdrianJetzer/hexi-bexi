@@ -1,89 +1,90 @@
 # Kapitel „Tiere“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
-KUH;Gibt Milch und sagt Muh
-BÄR;Groß, stark und liebt Honig
-REH;Scheues Tier im Wald, das Bambi
-WAL;Das größte Tier im Meer
-HAI;Raubfisch mit spitzen Zähnen
-GNU;Afrikanische Antilope mit Bart
-UHU;Große Eule mit Federohren
-AAL;Langer Fisch, glitschig wie eine Schlange
-YAK;Zottiges Rind aus dem Himalaja
-EMU;Großer Laufvogel aus Australien
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
 HUND;Bester Freund des Menschen
-MAUS;Klein, grau, mag Käse
-ESEL;Grau, lange Ohren, sagt Iah
-HASE;Lange Ohren, versteckt Ostereier
 WOLF;Heult den Mond an
-LÖWE;König der Tiere
-AFFE;Klettert gern und isst Bananen
-LAMA;Spuckt, wenn es sich ärgert
-ELCH;Großer Hirsch aus dem Norden
-IGEL;Hat Stacheln und rollt sich ein
-ENTE;Schwimmt und sagt Quak
-GANS;Großer weißer Vogel, schnattert
-HUHN;Legt Eier
-HAHN;Kräht am Morgen
-PUMA;Große Wildkatze aus Amerika
-ORCA;Schwarz-weißer Schwertwal
-OTTER;Spielt im Wasser und schwimmt auf dem Rücken
 KATZE;Schnurrt und miaut
 PFERD;Man kann darauf reiten
-SCHAF;Gibt Wolle
-ZIEGE;Meckert und klettert auf Felsen
-FUCHS;Rot, schlau und listig
-TIGER;Gestreifte Raubkatze
-ZEBRA;Pferd mit Streifen
-KAMEL;Hat Höcker und lebt in der Wüste
-BIBER;Baut Dämme mit seinen Zähnen
-DACHS;Schwarz-weißes Gesicht, gräbt Baue
-ADLER;Großer Greifvogel
-EULE;Sieht nachts gut und gilt als weise
-RABE;Großer schwarzer Vogel
-TAUBE;Gurrt auf dem Stadtplatz
-ROBBE;Liegt am Strand und hat Flossen
-KRAKE;Hat acht Arme
 KREBS;Läuft seitwärts und hat Scheren
-BIENE;Macht Honig
-SPATZ;Kleiner, frecher Vogel
-AMSEL;Schwarzer Singvogel mit gelbem Schnabel
-FALKE;Schneller Greifvogel
-GEIER;Kreist über der Savanne
-PANDA;Schwarz-weißer Bär, frisst Bambus
-KOALA;Schläft viel auf Eukalyptusbäumen
-LUCHS;Wildkatze mit Pinselohren
-HYÄNE;Lacht in der Savanne
-FASAN;Bunter Vogel mit langem Schwanz
-ECHSE;Schuppiges Kriechtier, liebt die Sonne
-QUALLE;Durchsichtig, schwimmt im Meer und nesselt
-AMEISE;Klein, fleißig, lebt im Haufen
-SPINNE;Hat acht Beine und spinnt Netze
-FLIEGE;Summt um den Kopf
-KÄFER;Hat einen Panzer und sechs Beine
-MÜCKE;Sticht nachts
-RAUPE;Wird später zum Schmetterling
-FROSCH;Quakt am Teich
-KRÖTE;Warziger Verwandter des Froschs
-HIRSCH;Hat ein großes Geweih
-STORCH;Bringt angeblich die Babys
-MARDER;Beißt gern Autokabel durch
-GEPARD;Das schnellste Landtier
-JAGUAR;Gefleckte Raubkatze aus Südamerika
-HUMMER;Großer Krebs mit kräftigen Scheren
-DELFIN;Klug, verspielt, springt aus dem Wasser
-LEGUAN;Große Echse mit Kamm
-SCHWEIN;Grunzt und wälzt sich im Schlamm
-GIRAFFE;Hat den längsten Hals
-PINGUIN;Vogel, der nicht fliegt, aber schwimmt
-NASHORN;Hat ein Horn auf der Nase
-LEOPARD;Gefleckte Raubkatze, klettert auf Bäume
-PANTHER;Schwarze Raubkatze
-GORILLA;Der größte Menschenaffe
-SCHAKAL;Wildhund aus Afrika und Asien
-PAPAGEI;Bunter Vogel, der sprechen kann
-KÄNGURU;Springt und trägt sein Junges im Beutel
-ELEFANT;Hat einen Rüssel
+MAUS;Klein, grau, mag Käse
+FUCHS;Rot, schlau und listig
+ADLER;Großer Greifvogel
 SCHLANGE;Hat keine Beine und zischt
-SCHNECKE;Trägt ihr Haus auf dem Rücken
-NILPFERD;Dicker Riese, der im Fluss badet
-FLAMINGO;Rosa Vogel, steht auf einem Bein
+HAHN;Kräht am Morgen
+BÄR;Groß, stark und liebt Honig
+LEOPARD;Gefleckte Raubkatze, klettert auf Bäume
+KUH;Gibt Milch und sagt Muh
+PANTHER;Schwarze Raubkatze
+TIGER;Gestreifte Raubkatze
+KÄFER;Hat einen Panzer und sechs Beine
+HIRSCH;Hat ein großes Geweih
+IGEL;Hat Stacheln und rollt sich ein
+SCHWEIN;Grunzt und wälzt sich im Schlamm
+ENTE;Schwimmt und sagt Quak
+PUMA;Große Wildkatze aus Amerika
+LÖWE;König der Tiere
+HASE;Lange Ohren, versteckt Ostereier
+REH;Scheues Tier im Wald, das Bambi
+ESEL;Grau, lange Ohren, sagt Iah
+SCHAF;Gibt Wolle
+FLIEGE;Summt um den Kopf
+TAUBE;Gurrt auf dem Stadtplatz
+BIBER;Baut Dämme mit seinen Zähnen
+STORCH;Bringt angeblich die Babys
+SPINNE;Hat acht Beine und spinnt Netze
+BIENE;Macht Honig
+FROSCH;Quakt am Teich
+MARDER;Beißt gern Autokabel durch
+JAGUAR;Gefleckte Raubkatze aus Südamerika
+ZIEGE;Meckert und klettert auf Felsen
 KROKODIL;Großes Reptil mit vielen Zähnen
+HAI;Raubfisch mit spitzen Zähnen
+HUHN;Legt Eier
+GANS;Großer weißer Vogel, schnattert
+RABE;Großer schwarzer Vogel
+ELEFANT;Hat einen Rüssel
+AFFE;Klettert gern und isst Bananen
+GEIER;Kreist über der Savanne
+SCHNECKE;Trägt ihr Haus auf dem Rücken
+WAL;Das größte Tier im Meer
+ELCH;Großer Hirsch aus dem Norden
+HUMMER;Großer Krebs mit kräftigen Scheren
+PAPAGEI;Bunter Vogel, der sprechen kann
+FALKE;Schneller Greifvogel
+PINGUIN;Vogel, der nicht fliegt, aber schwimmt
+MÜCKE;Sticht nachts
+DACHS;Schwarz-weißes Gesicht, gräbt Baue
+KRÖTE;Warziger Verwandter des Froschs
+EULE;Sieht nachts gut und gilt als weise
+RAUPE;Wird später zum Schmetterling
+LUCHS;Wildkatze mit Pinselohren
+KÄNGURU;Springt und trägt sein Junges im Beutel
+PANDA;Schwarz-weißer Bär, frisst Bambus
+ZEBRA;Pferd mit Streifen
+SPATZ;Kleiner, frecher Vogel
+GIRAFFE;Hat den längsten Hals
+NASHORN;Hat ein Horn auf der Nase
+LAMA;Spuckt, wenn es sich ärgert
+KAMEL;Hat Höcker und lebt in der Wüste
+AMEISE;Klein, fleißig, lebt im Haufen
+AAL;Langer Fisch, glitschig wie eine Schlange
+ROBBE;Liegt am Strand und hat Flossen
+OTTER;Spielt im Wasser und schwimmt auf dem Rücken
+DELFIN;Klug, verspielt, springt aus dem Wasser
+UHU;Große Eule mit Federohren
+GEPARD;Das schnellste Landtier
+KRAKE;Hat acht Arme
+NILPFERD;Dicker Riese, der im Fluss badet
+KOALA;Schläft viel auf Eukalyptusbäumen
+EMU;Großer Laufvogel aus Australien
+GORILLA;Der größte Menschenaffe
+FASAN;Bunter Vogel mit langem Schwanz
+ORCA;Schwarz-weißer Schwertwal
+FLAMINGO;Rosa Vogel, steht auf einem Bein
+QUALLE;Durchsichtig, schwimmt im Meer und nesselt
+ECHSE;Schuppiges Kriechtier, liebt die Sonne
+AMSEL;Schwarzer Singvogel mit gelbem Schnabel
+SCHAKAL;Wildhund aus Afrika und Asien
+LEGUAN;Große Echse mit Kamm
+YAK;Zottiges Rind aus dem Himalaja
+GNU;Afrikanische Antilope mit Bart
+HYÄNE;Lacht in der Savanne

@@ -9,6 +9,8 @@ const LEGACY_MODE := "de_hard"
 
 ## Modus-Kennung → höchstes erreichtes Level.
 var _best: Dictionary = {}
+## Story-Modus: Kapitel-Kennung → beste Sterne (0 = noch nicht geschafft).
+var _stars: Dictionary = {}
 
 
 func _ready() -> void:
@@ -17,6 +19,8 @@ func _ready() -> void:
 		for key in cfg.get_section_keys("run") if cfg.has_section("run") else []:
 			if key == "best_level":
 				_best[LEGACY_MODE] = maxi(int(_best.get(LEGACY_MODE, 0)), int(cfg.get_value("run", key)))
+			elif key.begins_with("stars_"):
+				_stars[key.substr(6)] = int(cfg.get_value("run", key))
 			elif key.begins_with("best_"):
 				var id: String = key.substr(5)
 				_best[id] = maxi(int(_best.get(id, 0)), int(cfg.get_value("run", key)))
@@ -37,10 +41,25 @@ func submit_level(level: int, mode: String = "") -> bool:
 	return true
 
 
-## Rekord löschen (alle Modi).
+## Rekord löschen (alle Modi und Kapitel).
 func reset_record() -> void:
 	_best.clear()
+	_stars.clear()
 	_save()
+
+
+## Story-Modus: beste Sterne eines Kapitels (0 = noch nicht geschafft).
+func story_stars(chapter_id: String) -> int:
+	return int(_stars.get(chapter_id, 0))
+
+
+## Story-Modus: geschafftes Kapitel melden (behält die beste Wertung). true = verbessert.
+func submit_story(chapter_id: String, stars: int) -> bool:
+	if stars <= story_stars(chapter_id):
+		return false
+	_stars[chapter_id] = stars
+	_save()
+	return true
 
 
 func _mode(mode: String) -> String:
@@ -51,4 +70,6 @@ func _save() -> void:
 	var cfg := ConfigFile.new()
 	for id in _best:
 		cfg.set_value("run", "best_" + id, _best[id])
+	for id in _stars:
+		cfg.set_value("run", "stars_" + id, _stars[id])
 	cfg.save(PATH)

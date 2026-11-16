@@ -19,7 +19,8 @@ var music_on: bool = true:
 
 ## Spielmodus (Kennung, siehe GameMode / data/modes/). Neu installiert: mittel.
 const DEFAULT_MODE := "de_medium"
-const MODES: PackedStringArray = ["de_easy", "de_medium", "de_hard"]
+const MODES: PackedStringArray = ["de_easy", "de_medium", "de_hard", "story"]
+const STORY_MODE := "story"
 var mode: String = DEFAULT_MODE:
 	set(value):
 		mode = value if MODES.has(value) else DEFAULT_MODE
