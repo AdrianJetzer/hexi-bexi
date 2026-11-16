@@ -1,6 +1,8 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **Konzept v1**, noch nicht umgesetzt. Ergebnis eines Brainstormings; Details werden vor dem Bau abgestimmt.
+Status: **Konzept v2**, noch nicht umgesetzt. Offene Fragen aus v1 sind geklärt; Details (Bildschirm-Gestaltung, Themenlisten) werden vor dem Bau abgestimmt.
+
+**Grundsatz:** Die Spielregeln sind in allen Modi gleich (Münzen, Preise, Draft).
 
 ## Warum
 
@@ -17,6 +19,11 @@ Status: **Konzept v1**, noch nicht umgesetzt. Ergebnis eines Brainstormings; Det
   - Knapp (nachzählen): Automarken, Flüsse, Körperteile, Werkzeuge.
   - Zu klein: Farben, Planeten, Wochentage.
 - Themenlisten sind kleine Textdateien je Kategorie, **von Hand kuratiert**.
+- **Nur Wörter aus einem Stück** (fürs Erste): Themenwörter mit Leerzeichen oder Bindestrich (BUENOS AIRES, NEU-DELHI, COSTA RICA) werden weggelassen.
+
+## Kapitel-Auswahl
+
+- **Pfad durchs All:** Die Kapitel sind Stationen (wie Planeten) auf einem Weg; man fliegt von Station zu Station. Jede Station zeigt Symbol, Name und Sterne; gesperrte Stationen sind gedimmt mit Schloss.
 
 ## Wörter und Steine
 
@@ -25,8 +32,15 @@ Status: **Konzept v1**, noch nicht umgesetzt. Ergebnis eines Brainstormings; Det
 - **Andere Wörter zählen nicht** in Themen-Zeilen (ein beliebiges Wort gleicher Länge wird abgelehnt und wackelt).
 - **Steigerung über 20 Level:**
   1. Wortlänge: von kurzen (KIWI, MANGO) zu langen (PFLAUME, ERDBEERE).
-  2. Ablenkung: mehr Füllbuchstaben, verwinkelterer Weg.
+  2. Ablenkung (Füllbuchstaben und Weg des Wortes):
+
+     | Level | Füllbuchstaben | Weg des Wortes |
+     |---|---|---|
+     | 1–5 | wenige (Feld etwa halb voll) | eher gerade |
+     | 6–15 | mehr (Feld etwa ¾ voll) | mit Knicken |
+     | 16–20 | Feld fast voll | verwinkelt; Buchstaben des Wortes kommen auch als Ablenkung vor |
   3. Später evtl. mehrere Themenwörter pro Level.
+- **Kein Auffüllen:** Das Spiel sorgt selbst dafür, dass die richtigen Buchstaben für ein Themenwort liegen.
 - Die Block-Zeilen zeigen weiter die Länge; dazu ein **Themen-Symbol** (z. B. 🍎), damit klar ist, was gesucht wird.
 
 ## Scheitern und Sterne
@@ -36,7 +50,9 @@ Status: **Konzept v1**, noch nicht umgesetzt. Ergebnis eines Brainstormings; Det
 
 ## Hilfen
 
-- Die bekannten Hilfen behalten ihren Sinn (Tipp, Scan, Vervollständigen zeigen ein **Themenwort**; Auffüllen legt Buchstaben nach).
+- **Münzen und Preise wie im Lauf** (100 Münzen pro Level, gleiche Preise).
+- **Draft wie im Lauf:** Start mit **Rätsel-Tipp** und **Lösen** (immer dabei; **kein Auffüllen**, siehe oben). Power-ups nach Level 5, 10 und 15 (je 2 zufällige Hilfen einer Stufe). Nach Level 20 ist das Kapitel geschafft.
+- Die bekannten Hilfen behalten ihren Sinn (Tipp, Scan, Vervollständigen zeigen ein **Themenwort**).
 - **Neu: Rätsel-Tipp** (nur im Story-Modus, z. B. 50 Münzen): zeigt über den Blöcken einen kurzen Rätselsatz zum versteckten Wort, z. B. „Rote Frucht aus dem Süden“, „Hauptstadt von Italien“.
   - **Zweite Stufe:** ein weiterer Kauf zeigt den **Anfangsbuchstaben** („Beginnt mit G“).
   - Jedes Themenwort braucht dafür einen Rätselsatz (Claude schreibt sie, Adrian prüft).
@@ -48,12 +64,11 @@ Status: **Konzept v1**, noch nicht umgesetzt. Ergebnis eines Brainstormings; Det
 
 ## Offen
 
-- Münzen und Preise im Story-Modus (wie im Lauf, oder eigene Werte?).
-- Welche Power-ups/Hilfen man im Kapitel hat (Draft wie im Lauf oder feste Auswahl?).
-- Kapitel-Auswahl als Bildschirm (Optik, Fortschritt, Sterne).
-- Leerzeichen und Bindestriche in Themenwörtern (BUENOS AIRES, NEU-DELHI): weglassen oder zusammenschreiben?
-- Wie stark „versteckt“ wird (Anzahl Füllbuchstaben je Level).
+- Gestaltung des Pfads durchs All (Stationen, Flug-Animation).
+- Rätselsätze je Themenwort (Claude schreibt, Adrian prüft).
+- Genaue Zahl der Füllbuchstaben je Level (Feintuning beim Bau).
 
 ## Verlauf
 
 - **v1:** Konzept aus dem Brainstorming: Kapitel mit Kategorien (≥ 50 Wörter), Ziel Level 20, versteckte Themenwörter, jedes Themenwort passender Länge zählt, Scheitern nur durch Aufgeben, Sterne, Rätsel-Tipp, Umlaute (ß = SS) als Voraussetzung.
+- **v2:** Geklärt: Münzen/Preise und Draft wie im Lauf (Grundsatz: Regeln überall gleich); Start mit Rätsel-Tipp und Lösen, kein Auffüllen; Kapitel-Auswahl als Pfad durchs All; nur Wörter aus einem Stück; Versteck-Stärke steigt über die 20 Level.

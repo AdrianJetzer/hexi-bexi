@@ -10,7 +10,7 @@ Grundidee: Buchstaben in Hexagons erscheinen im Spielfeld und füllen es von unt
 |---|---|---|
 | [v1-scope.md](v1-scope.md) | **Umfang Version 1:** was drin ist, was nicht, was noch zu klären ist | v3, Entwurf |
 | [run-mode.md](run-mode.md) | **Lauf-Modus (Roguelike):** Aufträge als Block-Zeilen, Münzen, Hilfen, Aufgeben, Kurve | Entwurf v3 |
-| [story-mode.md](story-mode.md) | **Story-Modus (Konzept):** Kapitel nach Kategorien (Früchte, Tiere …), Ziel Level 20, versteckte Themenwörter, Rätsel-Tipp | Konzept v1 |
+| [story-mode.md](story-mode.md) | **Story-Modus (Konzept):** Kapitel nach Kategorien (Früchte, Tiere …), Ziel Level 20, versteckte Themenwörter, Rätsel-Tipp | Konzept v2 |
 | [game-rules.md](game-rules.md) | Spielregeln des Grundspiels: Raster, Nachschub, Wörter wischen, Wort-Hilfe, Hilfe-Stufen, Wörterbuch | Entwurf v7.11 |
 | [screens.md](screens.md) | Screens und Ablauf: Start, Spiel, Bilanz, Einstellungen | Entwurf v4 |
 | [look-and-sound.md](look-and-sound.md) | Optik und Ton: Theme-System, Theme „Kosmisch“ (Version 1), 3D-Hexagons aus Rauchglas, Effekte | Entwurf v2 |
