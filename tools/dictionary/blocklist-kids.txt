@@ -1,0 +1,21 @@
+# Zusätzliche Sperrliste für die Kinder-Wortliste („Deutsch einfach“).
+# Wörter, die für Kinder ungeeignet, zu politisch/nachrichtenlastig oder zu abstrakt sind.
+# Ein Wort pro Zeile, Großbuchstaben A–Z (ß als SS). Kommentare mit #.
+
+# Körper / unpassend für Kinder
+ANUS
+URIN
+POPO
+# Gewalt, Politik, Religion (heikel für Kinder)
+GULAG
+SEKTE
+SLUMS
+BANDA
+COPS
+KORAN
+THORA
+SHIVA
+KIPPA
+ZION
+# Abwertend
+MOHR

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="QuestCurve" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/quest_curve.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+level_rows = Array[PackedInt32Array]([PackedInt32Array(3), PackedInt32Array(3), PackedInt32Array(4), PackedInt32Array(4), PackedInt32Array(3, 3), PackedInt32Array(3, 3), PackedInt32Array(3, 4), PackedInt32Array(3, 4), PackedInt32Array(5), PackedInt32Array(5), PackedInt32Array(4, 4), PackedInt32Array(4, 4), PackedInt32Array(3, 3, 4), PackedInt32Array(3, 3, 4), PackedInt32Array(4, 5), PackedInt32Array(4, 5), PackedInt32Array(5), PackedInt32Array(5), PackedInt32Array(3, 4, 5), PackedInt32Array(3, 4, 5)])
+level_help = PackedInt32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+budget_start = 10
+budget_every = 15
+budget_max = 15
+row_min = 3
+row_max = 5
+rows_max = 3
+endless_help_level = 1
+break_from = 11
+break_every = 5
+break_rows = PackedInt32Array(3, 4)
+reward_base = 100
+reward_per_level = 0

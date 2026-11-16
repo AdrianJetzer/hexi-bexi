@@ -17,6 +17,15 @@ var music_on: bool = true:
 		_save()
 		changed.emit()
 
+## Spielmodus (Kennung, siehe GameMode / data/modes/). Neu installiert: mittel.
+const DEFAULT_MODE := "de_medium"
+const MODES: PackedStringArray = ["de_easy", "de_medium", "de_hard"]
+var mode: String = DEFAULT_MODE:
+	set(value):
+		mode = value if MODES.has(value) else DEFAULT_MODE
+		_save()
+		changed.emit()
+
 var _loading: bool = false
 
 
@@ -30,6 +39,7 @@ func _load() -> void:
 	if cfg.load(PATH) == OK:
 		sound_on = cfg.get_value("audio", "sound_on", true)
 		music_on = cfg.get_value("audio", "music_on", true)
+		mode = cfg.get_value("game", "mode", DEFAULT_MODE)
 	_loading = false
 
 
@@ -39,4 +49,14 @@ func _save() -> void:
 	var cfg := ConfigFile.new()
 	cfg.set_value("audio", "sound_on", sound_on)
 	cfg.set_value("audio", "music_on", music_on)
+	cfg.set_value("game", "mode", mode)
 	cfg.save(PATH)
+
+
+## Der aktuelle Spielmodus als Daten.
+func game_mode() -> GameMode:
+	return load_mode(mode)
+
+
+static func load_mode(id: String) -> GameMode:
+	return load("res://data/modes/%s.tres" % id) as GameMode

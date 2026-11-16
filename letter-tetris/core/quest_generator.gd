@@ -1,7 +1,8 @@
 class_name QuestGenerator
 extends RefCounted
 ## Erzeugt den Auftrag für ein Level (siehe spec/run-mode.md): aus der festen Kurve,
-## danach durch zufälliges Aufteilen des Block-Budgets auf 1 bis 3 Zeilen.
+## danach durch zufälliges Aufteilen des Block-Budgets auf 1 bis 3 Zeilen; Atempausen
+## (jedes 5. Level ab 11) haben nur eine kurze Zeile.
 ## Der Lauf startet den Auftrag mit Quest.start().
 
 var curve: QuestCurve
@@ -15,8 +16,12 @@ func _init(p_curve: QuestCurve, rng: RandomNumberGenerator = null) -> void:
 
 func quest_for(level: int) -> Quest:
 	var q := Quest.new()
-	var fixed := curve.rows_for(level)
-	q.rows = fixed.duplicate() if not fixed.is_empty() else split_budget(curve.budget(level))
+	if curve.is_break(level):
+		# Atempause: eine kurze Zeile
+		q.rows = PackedInt32Array([curve.break_rows[_rng.randi_range(0, curve.break_rows.size() - 1)]])
+	else:
+		var fixed := curve.rows_for(level)
+		q.rows = fixed.duplicate() if not fixed.is_empty() else split_budget(curve.budget(level))
 	q.reward = curve.reward(level)
 	return q
 

@@ -58,3 +58,12 @@ done
 python3 -I "$HERE/build_common.py" "$SRC/dewiktionary.jsonl.gz" "$OUT/de-words.txt" \
   "$HERE/blocklist-suggestions.txt" "$OUT/common.txt" "${COMMON_COUNT:-10000}" "$LEIPZIG"/*/*-words.txt
 python3 -I "$HERE/pack_words.py" "$OUT/common.txt" "$HERE/../../letter-tetris/data/languages/de/common.bin"
+
+# 6) Kinder-Wortliste für „Deutsch einfach“ (gültige Wörter UND Vorschläge in diesem Modus):
+#    3000 häufigste Inhaltswörter mit 3–5 Buchstaben, ohne englische Lehnwörter, mit Kinder-Sperrliste.
+python3 -I "$HERE/build_common.py" "$SRC/dewiktionary.jsonl.gz" "$OUT/de-words.txt" \
+  "$HERE/blocklist-suggestions.txt" "$OUT/easy.txt" "${EASY_COUNT:-3000}" "$LEIPZIG"/*/*-words.txt \
+  --len=3-5 --kids --block="$HERE/blocklist-kids.txt" --extra-valid="${EASY_EXTRA_VALID:-1200}"
+cut -f2 "$OUT/easy-ranked.txt" > "$HERE/kids-words-ranked.txt"
+python3 -I "$HERE/pack_words.py" "$OUT/easy.txt" "$HERE/../../letter-tetris/data/languages/de/easy.bin"
+python3 -I "$HERE/pack_words.py" "$OUT/easy-valid.txt" "$HERE/../../letter-tetris/data/languages/de/easy_valid.bin"

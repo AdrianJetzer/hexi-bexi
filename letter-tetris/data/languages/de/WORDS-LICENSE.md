@@ -25,3 +25,7 @@ aus der **Leipzig Corpora Collection** (Deutscher Wortschatz, Universität Leipz
 Korpora deu_news_2023_1M und deu_mixed-typical_2011_1M), Lizenz CC BY.
 Quelle: https://wortschatz.uni-leipzig.de. Als Auswahl aus Wiktionary-Daten steht auch
 `common.bin` unter **CC BY-SA 3.0**.
+
+`easy.bin` (Kinder-Wortliste für „Deutsch einfach“) ist ebenso eine Auswahl aus `words.bin`
+(Wiktionary-Grundformen, Häufigkeit aus der Leipzig Corpora Collection) und steht ebenfalls
+unter **CC BY-SA 3.0**.

@@ -36,22 +36,28 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 
 ### Kurve (Startwerte)
 
+Ruhig ansteigend: Jeder der zehn festen Aufträge kommt **zweimal** hintereinander.
+
 | Level | Zeilen | Bild |
 |---|---|---|
-| 1 | 3 | ▢▢▢ |
-| 2 | 4 | ▢▢▢▢ |
-| 3 | 3 + 3 | ▢▢▢ / ▢▢▢ |
-| 4 | 3 + 4 | ▢▢▢ / ▢▢▢▢ |
-| 5 | 5 | ▢▢▢▢▢ |
-| 6 | 4 + 4 | ▢▢▢▢ / ▢▢▢▢ |
-| 7 | 3 + 3 + 4 | ▢▢▢ / ▢▢▢ / ▢▢▢▢ |
-| 8 | 4 + 5 | ▢▢▢▢ / ▢▢▢▢▢ |
-| 9 | 6 | ▢▢▢▢▢▢ |
-| 10 | 3 + 4 + 5 | ▢▢▢ / ▢▢▢▢ / ▢▢▢▢▢ |
+| 1–2 | 3 | ▢▢▢ |
+| 3–4 | 4 | ▢▢▢▢ |
+| 5–6 | 3 + 3 | ▢▢▢ / ▢▢▢ |
+| 7–8 | 3 + 4 | ▢▢▢ / ▢▢▢▢ |
+| 9–10 | 5 | ▢▢▢▢▢ |
+| 11–12 | 4 + 4 | ▢▢▢▢ / ▢▢▢▢ |
+| 13–14 | 3 + 3 + 4 | ▢▢▢ / ▢▢▢ / ▢▢▢▢ |
+| 15–16 | 4 + 5 | ▢▢▢▢ / ▢▢▢▢▢ |
+| 17–18 | 6 | ▢▢▢▢▢▢ |
+| 19–20 | 3 + 4 + 5 | ▢▢▢ / ▢▢▢▢ / ▢▢▢▢▢ |
 
-**Ab Level 11 (Block-Budget):**
-- Ein Auftrag hat ein **Budget** an Blöcken: **12** in Level 11–15, alle 5 Levels **+1** (Level 16–20: 13 …), höchstens 24.
+**Ab Level 21 (Block-Budget):**
+- Ein Auftrag hat ein **Budget** an Blöcken: **12** in Level 21–30, alle **10** Levels **+1** (Level 31–40: 13 …), höchstens 24.
 - Das Spiel verteilt das Budget **zufällig** auf **1 bis 3 Zeilen** mit je **3 bis 8** Blöcken (z. B. 4 + 4 + 4, 6 + 6, 3 + 4 + 5).
+
+**Atempausen:** Ab Level 11 ist **jedes 5. Level** leicht (Level 15, 20, 25 …): nur **eine Zeile mit 3 oder 4 Blöcken** (zufällig). Das gilt auch innerhalb der festen Kurve (Level 15 und 20).
+
+- Die Hilfe-Stufe (Wort-Hilfe) ist genauso gestreckt: 1, 1, 1, 1, 2, 2, 2, 2, 3 … (je Stufe doppelt so viele Level wie vorher).
 - Die Kurve liegt als Daten vor (tunebar); alle Zahlen sind Startwerte für das Feintuning.
 
 ### Wort-Hilfe
@@ -60,11 +66,26 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 ### Bosse [später]
 Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
+## Modi
+
+Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfen, Preise, Power-ups, Atempausen und Münzen sind in allen gleich; jeder Modus hat einen **eigenen Rekord**.
+
+| | **Deutsch einfach** (Kinder) | **Deutsch mittel** | **Deutsch schwierig** |
+|---|---|---|---|
+| Gültige Wörter | die **Kinder-Liste** plus die häufigsten kurzen Wörter in jeder Form (ICH, SIE, DER, UND, IST …), zusammen ca. 3.400, 3–5 Buchstaben | alle | alle |
+| Vorschläge (Wort-Hilfe, Tipp, Scan …) | die **Kinder-Liste** (ca. 3.000 bekannte Grundwörter und Mehrzahlformen) | 10.000 häufige Wörter | 10.000 häufige Wörter |
+| Zeilenlänge | höchstens 5 Blöcke | höchstens 6 Blöcke | bis 8 Blöcke |
+| Steigerung | langsam | mittel | wie in „Kurve“ oben |
+| Wort-Hilfe | immer stark | länger stark | wie in „Kurve“ oben |
+
+- **Schwierig** ist das bisherige Spiel (Kurve oben). Einfach und mittel haben eigene, sanftere Kurven (Daten in `data/`).
+- Die Kinder-Liste entsteht aus den häufigsten Grundwörtern (Leipzig-Häufigkeit, wie die Vorschlags-Wörter) mit 3–5 Buchstaben, ohne Wörter der Sperrliste.
+
 ## Münzen
 
 | Ereignis | Münzen |
 |---|---|
-| Auftrag gelöst | **+100** (fest, unabhängig vom Level) |
+| Auftrag gelöst | **+100** (fest, unabhängig vom Level und Modus) |
 | Langes Wort nebenbei [später] | Bonus |
 | **Auffüllen: 5 neue Steine** | **gratis** |
 | **Tipp: nächsten Buchstaben zeigen** | **−50** je Buchstabe |
@@ -93,17 +114,17 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ### Power-ups und Upgrades (Roguelike) [v1]
 - **Start eines Laufs:** Unten sind nur **Auffüllen** (gratis) und **Lösen** (500) sichtbar.
-- **Power-up nach Level 4, 8, 12 und 16:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** der drei Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
+- **Power-up nach Level 5, 10, 15 und 20:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** der drei Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
 
   | nach Level | Stufe | Hilfen der Stufe (2 davon zur Wahl) |
   |---|---|---|
-  | 4 | 50 | Tipp, Ersetzen, Mischen |
-  | 8 | 100 | Aufräumen, Joker, Kürzen |
-  | 12 | 150 | Tauschen, Teilen, Vervollständigen |
-  | 16 | 200 | Magnet, Scan, Zeile streichen |
+  | 5 | 50 | Tipp, Ersetzen, Mischen |
+  | 10 | 100 | Aufräumen, Joker, Kürzen |
+  | 15 | 150 | Tauschen, Teilen, Vervollständigen |
+  | 20 | 200 | Magnet, Scan, Zeile streichen |
 
   Man tippt eine Karte an, ihr Knopf kommt unten dazu, dann beginnt das nächste Level. Die anderen Hilfen der Stufe gibt es in diesem Lauf **nicht**.
-- **Upgrade nach Level 20, 24, 28 …:** Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
+- **Upgrade nach Level 25, 30, 35 …:** Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
 - **Hinweis über den Knöpfen** (nur diese Zeile; Level, Rekord und Münzen stehen über dem Spielfeld): „Noch 3 Level bis zum Power-up“ bzw. „… bis zum Upgrade“; bei „Noch 1 Level“ leuchtet er.
 - **Knöpfe:** höchstens 6 (Auffüllen, 4 Hilfen, Lösen), in **2 Reihen zu je 3**, sortiert von gratis bis teuer – deutlich größer als vorher.
 - **Neuer Lauf:** wieder nur Auffüllen und Lösen, alle Preise wie in der Tabelle.
@@ -113,6 +134,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 - **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). **Gratis.** Das balanciert sich selbst: Zu wenige Steine – kein Wort möglich; zu viele Steine – unübersichtlich, schwerer zu finden. Der Spieler entscheidet, wann er nachlegt. Ist das Feld voll, ist Auffüllen gesperrt.
   - **Blinkt als Hinweis:** Liegt im Feld **kein gültiges Wort** (ganzes Wörterbuch), das genau in eine freie Zeile passt, blinkt die **Schrift** des Knopfs dezent zwischen Weiß und dunklem Weiß (je eine halbe Sekunde). Sobald wieder ein passendes Wort liegt, hört er auf. Kein Pulsieren bei vollem Feld (Auffüllen gesperrt), während ein Auftrag abschließt, und solange ein Joker im Feld liegt (dann ist vielleicht ein Wort möglich).
+  - **Feld abgedunkelt:** Gleichzeitig wird das Spielfeld abgedunkelt (die Steine wirken gesperrt), und mitten darauf erscheint ein großer Knopf **„Auffüllen – gratis“**, damit sonnenklar ist, was zu tun ist. Antippen füllt auf; sobald wieder ein passendes Wort liegt, blendet beides aus. Die Hilfe-Knöpfe unten bleiben benutzbar (z. B. Tauschen, Mischen). Siehe [Screenshot](images/stuck-refill-v1.png).
 - **Tauschen (150):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
 - **Aufräumen (100):** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 50. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
@@ -225,3 +247,6 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.27:** Preisstufen: je drei Hilfen für 50 (Tipp, Ersetzen, Mischen), 100 (Aufräumen, Joker, Kürzen), 150 (Tauschen, Teilen, Vervollständigen), 200 (Magnet, Scan, Zeile streichen). Neue Hilfe Zeile streichen. Lösen als Sonderknopf für 500.
 - **v3.28:** Roguelike-Draft: Start nur mit Auffüllen und Lösen; nach Level 4/8/12/16 eine von drei Hilfen der Stufe 50/100/150/200 wählen; ab Level 20 alle 4 Level ein Upgrade (−25 %, auch für Lösen). Hinweis „Noch n Level bis zum Power-up“. Knöpfe in 2 × 3.
 - **v3.29:** Power-up: 2 zufällige von 3 Hilfen der Stufe zur Wahl. Auffüllen-Hinweis: Schrift blinkt dezent statt Pulsieren.
+- **v3.30:** Kurve doppelt so lang (jeder feste Auftrag zweimal, Budget ab Level 21, +1 alle 10 Level, Hilfe-Stufe gestreckt); Atempausen ab Level 11 jedes 5. Level (eine Zeile mit 3–4 Blöcken); Power-ups nach Level 5/10/15/20, Upgrades alle 5 Level; Belohnung 50 statt 100.
+- **v3.31:** Steckt man fest: Feld abgedunkelt und großer Auffüllen-Knopf auf dem Feld.
+- **v3.32:** Modi Deutsch einfach (Kinder-Wortliste, Zeilen bis 5) / mittel (Zeilen bis 6, sanfter) / schwierig (bisheriges Spiel); Rekord je Modus; Belohnung wieder 100 in allen Modi.

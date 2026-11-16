@@ -5,8 +5,6 @@ extends Control
 ## Grundsatz: Symbole statt Text.
 
 const BALANCE: GameBalance = preload("res://data/balance.tres")
-const CURVE: QuestCurve = preload("res://data/quest_curve.tres")
-const LANG: LanguageData = preload("res://data/languages/de/language.tres")
 
 const TEXT := Color(0.85, 0.92, 1.0)
 const TEXT_DIM := Color(0.6, 0.66, 0.85)
@@ -89,10 +87,19 @@ const BTN_DISABLED_ALPHA := 0.55
 const BTN_NAME_FONT := 36
 const BTN_NAME_FONT_LONG := 27
 const BTN_PRICE_FONT := 30
+## Auswahl-Bildschirm (Power-up / Upgrade): Titel, Karten.
+const CHOICE_TITLE_FONT := 64
+const CHOICE_NAME_FONT := 46
+const CHOICE_INFO_FONT := 38
+const CHOICE_CARD_HEIGHT := 230.0
 ## Auffüllen-Hinweis: Schrift blinkt dezent zwischen Weiß und dunklem Weiß (je halbe Sekunde).
 const BLINK_HALF := 0.5
 const BLINK_BRIGHT := Color(1.0, 1.0, 1.0)
 const BLINK_DIM := Color(0.5, 0.52, 0.6)
+## Feststecken: Abdunkeln des Felds und Größe des Auffüllen-Knopfs darauf (Pixel).
+const STUCK_VEIL := Color(0.0, 0.01, 0.04, 0.62)
+const STUCK_BUTTON_SIZE := Vector2(460, 200)
+const STUCK_FADE := 0.3
 
 var session: RunSession
 
@@ -104,6 +111,8 @@ var _blocks: QuestBlocks
 var _fly_layer: Control
 var _level_label: Label
 var _coins_label: Label
+## Goldene Münze vor der Münzzahl (wie auf den Knöpfen).
+var _coins_icon: Panel
 var _refill_button: Button
 var _swap_button: Button
 var _clear_button: Button
@@ -121,6 +130,15 @@ var _strike_button: Button
 ## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
 var _tap_action: String = ""
 var _give_up_button: Button
+## Spielmodus (Wortlisten, Kurve) und geladene Wortlisten (Pfad → WordDictionary, bleiben im Speicher).
+var _mode: GameMode
+var _word_lists: Dictionary = {}
+## Einstellungen: Knopf oben rechts, Ebene mit den Modi, Nachfrage beim Wechsel mitten im Lauf.
+var _settings_button: Button
+var _settings: ColorRect
+var _settings_modes: VBoxContainer
+var _mode_confirm: ColorRect
+var _pending_mode: String = ""
 var _confirm: ColorRect
 var _summary: ColorRect
 var _summary_label: Label
@@ -139,6 +157,10 @@ var _buttons: Dictionary = {}
 ## Hilfe-ID → {"name": Label, "price": Label, "coin": Panel} (Beschriftung der Knöpfe).
 var _button_parts: Dictionary = {}
 var _offer_hint: Label
+## Steckt man fest (kein gültiges Wort passt): Feld abdunkeln und großer Auffüllen-Knopf darauf.
+var _stuck_veil: ColorRect
+var _stuck_button: Button
+var _stuck_tween: Tween
 var _offer_hint_pulse: Tween
 ## Auswahl-Bildschirm für Power-ups und Upgrades.
 var _choice: ColorRect
@@ -150,8 +172,7 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	# Berührungen nicht hier abfangen, sondern ans Spielfeld (_unhandled_input) durchlassen.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_dictionary = WordDictionary.from_file(LANG.words_path)
-	_common = WordDictionary.from_file(LANG.common_words_path)
+	_load_mode()
 	_build_ui()
 	get_viewport().size_changed.connect(_relayout)
 	new_run()
@@ -165,7 +186,7 @@ func new_run(seed_value: int = -1) -> void:
 	_pending_quest = null
 	for c in _fly_layer.get_children():
 		c.queue_free()
-	session = RunSession.new(BALANCE, CURVE, LANG, _dictionary, seed_value, _common)
+	session = RunSession.new(BALANCE, _mode.curve, _mode.language, _dictionary, seed_value, _common)
 	session.quest_started.connect(_on_quest_started)
 	session.quest_completed.connect(_on_quest_completed)
 	session.coins_changed.connect(func(_c: int) -> void: _update_labels())
@@ -186,6 +207,7 @@ func new_run(seed_value: int = -1) -> void:
 	_continue_button.visible = false
 	_choice.visible = false
 	_offer_hint.visible = true
+	_stuck_veil.visible = false
 	_confirm.visible = false
 	_board.setup(session)
 	_relayout()
@@ -207,6 +229,8 @@ func _build_ui() -> void:
 	_level_label = _label(INFO_FONT, TEXT_DIM)
 	_coins_label = _label(INFO_FONT, ACCENT)
 	_coins_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_coins_icon = _coin(30)
+	add_child(_coins_icon)
 	for l in [_level_label, _coins_label]:
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
@@ -293,11 +317,38 @@ func _build_ui() -> void:
 		_give_up_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
 	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
 
+	_settings_button = _button("Einstellungen", INFO_FONT)
+	_settings_button.flat = true
+	_settings_button.add_theme_color_override("font_color", TEXT_DIM)
+	_settings_button.add_theme_color_override("font_hover_color", TEXT)
+	_settings_button.add_theme_color_override("font_pressed_color", TEXT)
+	_settings_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
+		_settings_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	_settings_button.pressed.connect(_open_settings)
+
 	_continue_button = _button("Weiter", 56)
 	_continue_button.visible = false
 	_continue_button.pressed.connect(func() -> void:
 		_continue_button.visible = false
 		_summary.visible = true)
+
+	# Abdunkeln des Felds + großer Auffüllen-Knopf, wenn man feststeckt
+	_stuck_veil = ColorRect.new()
+	_stuck_veil.color = STUCK_VEIL
+	_stuck_veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	_stuck_veil.visible = false
+	add_child(_stuck_veil)
+	_stuck_button = Button.new()
+	_style_help_button(_stuck_button, "refill", false)
+	for c in _stuck_button.get_children():
+		for l in c.get_children():
+			if l is Label:
+				l.add_theme_font_size_override("font_size", 52)
+	_stuck_button.pressed.connect(func() -> void:
+		_set_replace_mode(false)
+		session.refill())
+	_stuck_veil.add_child(_stuck_button)
 
 	_fly_layer = Control.new()
 	_fly_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -318,12 +369,48 @@ func _build_ui() -> void:
 	no.custom_minimum_size = Vector2(260, 130)
 	no.pressed.connect(func() -> void: _confirm.visible = false)
 
+	# Einstellungen: Modus wählen
+	var st := _overlay("Einstellungen")
+	_settings = st[0]
+	(st[1] as VBoxContainer).add_theme_constant_override("separation", 36)
+	var sub := Label.new()
+	sub.text = "Modus"
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 40)
+	sub.add_theme_color_override("font_color", TEXT_DIM)
+	(st[1] as VBoxContainer).add_child(sub)
+	_settings_modes = VBoxContainer.new()
+	_settings_modes.add_theme_constant_override("separation", 22)
+	(st[1] as VBoxContainer).add_child(_settings_modes)
+	var close := _button("Schließen", 48, st[1])
+	close.custom_minimum_size = Vector2(420, 120)
+	close.pressed.connect(func() -> void: _settings.visible = false)
+
+	# Nachfrage: Modus mitten im Lauf wechseln
+	var mc := _overlay("Modus wechseln und\nneu starten?")
+	_mode_confirm = mc[0]
+	var mrow := HBoxContainer.new()
+	mrow.alignment = BoxContainer.ALIGNMENT_CENTER
+	mrow.add_theme_constant_override("separation", 40)
+	(mc[1] as VBoxContainer).add_child(mrow)
+	var myes := _button("Ja", 56, mrow)
+	myes.custom_minimum_size = Vector2(260, 130)
+	myes.pressed.connect(func() -> void: _apply_mode(_pending_mode))
+	var mno := _button("Nein", 56, mrow)
+	mno.custom_minimum_size = Vector2(260, 130)
+	mno.pressed.connect(func() -> void:
+		_mode_confirm.visible = false
+		_pending_mode = "")
+
 	# Auswahl: Power-up oder Upgrade
 	var ch := _overlay("")
 	_choice = ch[0]
 	_choice_title = ch[2]
-	_choice_title.add_theme_font_size_override("font_size", 52)
-	_choice_title.add_theme_color_override("font_color", ACCENT)
+	_choice_title.add_theme_font_size_override("font_size", CHOICE_TITLE_FONT)
+	_choice_title.add_theme_color_override("font_color", BTN_GOLD)
+	_choice_title.add_theme_color_override("font_outline_color", Color(BTN_GOLD, 0.35))
+	_choice_title.add_theme_constant_override("outline_size", 10)
+	_choice_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	(ch[1] as VBoxContainer).add_theme_constant_override("separation", 40)
 	_choice_cards = VBoxContainer.new()
 	_choice_cards.add_theme_constant_override("separation", 24)
@@ -444,6 +531,8 @@ func _relayout() -> void:
 	var inner := col.y - 2.0 * margin
 	_give_up_button.position = Vector2(side, s.y * 0.012)
 	_give_up_button.size = Vector2(inner * 0.4, INFO_HEIGHT)
+	_settings_button.size = Vector2(inner * 0.5, INFO_HEIGHT)
+	_settings_button.position = Vector2(side + inner - _settings_button.size.x, s.y * 0.012)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
@@ -464,6 +553,8 @@ func _relayout() -> void:
 	if _board.session != null:
 		hint_y = minf(_board.screen_bottom() + INFO_GAP, buttons_top - INFO_HEIGHT)
 	_offer_hint.position = Vector2(side, hint_y)
+	if _stuck_veil.visible:
+		_place_stuck_veil()
 	_offer_hint.size = Vector2(inner, INFO_HEIGHT)
 	var gap := 12.0
 	var buttons := _help_buttons()
@@ -486,7 +577,8 @@ func _update_labels() -> void:
 	if session == null:
 		return
 	_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
-	_coins_label.text = "Münzen %d" % session.coins
+	_coins_label.text = str(session.coins)
+	_place_coin_icon()
 	for id in _buttons:
 		var p := session.price(id)
 		var parts: Dictionary = _button_parts[id]
@@ -520,6 +612,31 @@ func _update_labels() -> void:
 
 # --- Hilfe-Knöpfe gestalten ------------------------------------------------------------
 
+## Goldene Münze (Kreis mit hellem Rand).
+func _coin(size: float) -> Panel:
+	var coin := Panel.new()
+	coin.custom_minimum_size = Vector2(size, size)
+	coin.size = Vector2(size, size)
+	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = BTN_GOLD
+	cs.border_color = Color(1, 0.95, 0.7, 0.9)
+	cs.set_border_width_all(2)
+	cs.set_corner_radius_all(int(size / 2.0))
+	coin.add_theme_stylebox_override("panel", cs)
+	return coin
+
+
+## Münze links neben die (rechtsbündige) Münzzahl setzen.
+func _place_coin_icon() -> void:
+	var font := _coins_label.get_theme_font("font")
+	var fs := _coins_label.get_theme_font_size("font_size")
+	var w := font.get_string_size(_coins_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var right := _coins_label.position.x + _coins_label.size.x
+	_coins_icon.position = Vector2(right - w - _coins_icon.size.x - 12.0,
+			_coins_label.position.y + (_coins_label.size.y - _coins_icon.size.y) / 2.0)
+
+
 func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow: int) -> StyleBoxFlat:
 	var b := StyleBoxFlat.new()
 	b.bg_color = bg
@@ -533,7 +650,7 @@ func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow
 
 
 ## Stil „Kombi“ und Beschriftung (Name, Münze, Preis) für einen Hilfe-Knopf.
-func _style_help_button(b: Button, id: String) -> void:
+func _style_help_button(b: Button, id: String, register: bool = true) -> void:
 	var edge := BTN_EDGE_SOLVE if id == "solve" else BTN_EDGE
 	var normal := _btn_box(BTN_BG, edge, 0.8, 0.3, 12)
 	var pressed := _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.6, 20)
@@ -595,7 +712,12 @@ func _style_help_button(b: Button, id: String) -> void:
 	var price := Label.new()
 	price.add_theme_font_size_override("font_size", BTN_PRICE_FONT)
 	row.add_child(price)
-	_button_parts[id] = {"name": name, "price": price, "coin": coin}
+	if register:
+		_button_parts[id] = {"name": name, "price": price, "coin": coin}
+	else:
+		price.text = "gratis"
+		price.add_theme_color_override("font_color", BTN_FREE)
+		coin.visible = false
 
 
 # --- Pulsierender Auffüllen-Knopf ----------------------------------------------------
@@ -623,6 +745,99 @@ func _update_refill_pulse() -> void:
 		_refill_pulse.kill()
 		_refill_pulse = null
 		(_button_parts["refill"]["name"] as Label).add_theme_color_override("font_color", BTN_TEXT)
+	_show_stuck(want)
+
+
+## Feld abdunkeln und den großen Auffüllen-Knopf zeigen (oder wieder ausblenden).
+func _show_stuck(on: bool) -> void:
+	if on == (_stuck_veil.visible and _stuck_veil.modulate.a > 0.5):
+		return
+	if _stuck_tween:
+		_stuck_tween.kill()
+	if on:
+		_place_stuck_veil()
+		_stuck_veil.visible = true
+		_stuck_veil.modulate.a = 0.0
+	_stuck_tween = create_tween()
+	_stuck_tween.tween_property(_stuck_veil, "modulate:a", 1.0 if on else 0.0, STUCK_FADE)
+	if not on:
+		_stuck_tween.tween_callback(func() -> void: _stuck_veil.visible = false)
+
+
+## Abdunkeln genau über dem Feld (Oberkante bis Unterkante), Knopf in der Mitte.
+func _place_stuck_veil() -> void:
+	if _board.session == null:
+		return
+	var area := _board_area()
+	var top := _board.screen_top()
+	var bottom := _board.screen_bottom()
+	_stuck_veil.position = Vector2(area.position.x, top)
+	_stuck_veil.size = Vector2(area.size.x, bottom - top)
+	_stuck_button.size = STUCK_BUTTON_SIZE
+	_stuck_button.position = (_stuck_veil.size - STUCK_BUTTON_SIZE) / 2.0
+
+
+# --- Modi und Einstellungen ------------------------------------------------------------
+
+## Aktuellen Modus aus den Einstellungen laden (Wortlisten bleiben zwischengespeichert).
+func _load_mode() -> void:
+	_mode = Settings.game_mode()
+	_dictionary = _word_list(_mode.valid_words_path())
+	_common = _word_list(_mode.suggestion_words_path())
+
+
+func _word_list(path: String) -> WordDictionary:
+	if not _word_lists.has(path):
+		_word_lists[path] = WordDictionary.from_file(path)
+	return _word_lists[path]
+
+
+## Einstellungen öffnen: Modi als Karten, der aktuelle mit Goldrand.
+func _open_settings() -> void:
+	_set_tap_action("")
+	for c in _settings_modes.get_children():
+		c.queue_free()
+	var w := _column(get_viewport_rect().size).y * 0.86
+	for id in Settings.MODES:
+		var m := Settings.load_mode(id)
+		var card := Button.new()
+		card.custom_minimum_size = Vector2(w, 170)
+		card.add_theme_font_size_override("font_size", 34)
+		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		card.text = "%s\n%s" % [m.display_name, m.description]
+		var current: bool = id == Settings.mode
+		var edge := BTN_EDGE_SOLVE if current else BTN_EDGE
+		card.add_theme_stylebox_override("normal", _btn_box(BTN_BG, edge, 0.9 if current else 0.6, 0.35 if current else 0.2, 12))
+		card.add_theme_stylebox_override("hover", _btn_box(BTN_BG, edge, 1.0, 0.4, 14))
+		card.add_theme_stylebox_override("pressed", _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.6, 20))
+		card.add_theme_color_override("font_color", BTN_GOLD if current else BTN_TEXT)
+		var chosen: String = id
+		card.pressed.connect(func() -> void: _on_mode_picked(chosen))
+		_settings_modes.add_child(card)
+	_settings.visible = true
+
+
+func _on_mode_picked(id: String) -> void:
+	if id == Settings.mode:
+		_settings.visible = false
+		return
+	if session != null and not session.is_over:
+		_pending_mode = id
+		_mode_confirm.visible = true
+	else:
+		_apply_mode(id)
+
+
+## Modus wechseln und neu starten.
+func _apply_mode(id: String) -> void:
+	_mode_confirm.visible = false
+	_settings.visible = false
+	_pending_mode = ""
+	if id == "":
+		return
+	Settings.mode = id
+	_load_mode()
+	new_run()
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------
@@ -657,23 +872,65 @@ func _show_choice() -> void:
 	for c in _choice_cards.get_children():
 		c.queue_free()
 	var upgrade: bool = session.offer["kind"] == "upgrade"
-	_choice_title.text = "Upgrade\nWelche Hilfe wird günstiger?" if upgrade else "Power-up\nWähle eine Hilfe"
+	_choice_title.text = "Welche Hilfe wird günstiger?" if upgrade else "Wähle eine Hilfe"
 	var w := _column(get_viewport_rect().size).y * 0.86
+	_choice_title.custom_minimum_size = Vector2(w, 0)
 	for id in session.offer["options"]:
-		var card := Button.new()
-		card.custom_minimum_size = Vector2(w, 190)
-		card.add_theme_font_size_override("font_size", 34)
-		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var p := session.price(id)
 		var price_text := ("%d → %d" % [p, session.upgraded_price(id)]) if upgrade else str(p)
-		card.text = "%s  ·  %s\n%s" % [HELP_NAMES[id], price_text, HELP_INFO[id]]
 		var chosen: String = id
+		var card := _choice_card(id, price_text, w)
 		card.pressed.connect(func() -> void:
 			session.choose(chosen)
 			_choice.visible = false
 			_relayout())
 		_choice_cards.add_child(card)
 	_choice.visible = true
+
+
+## Karte für die Auswahl im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis, darunter die Erklärung.
+func _choice_card(id: String, price_text: String, width: float) -> Button:
+	var edge := BTN_EDGE_SOLVE if id == "solve" else BTN_EDGE
+	var card := Button.new()
+	card.custom_minimum_size = Vector2(width, CHOICE_CARD_HEIGHT)
+	card.add_theme_stylebox_override("normal", _btn_box(BTN_BG, edge, 0.85, 0.35, 14))
+	card.add_theme_stylebox_override("hover", _btn_box(BTN_BG, edge, 1.0, 0.45, 16))
+	card.add_theme_stylebox_override("pressed", _btn_box(BTN_BG_PRESSED, edge, 1.0, 0.65, 22))
+	card.add_theme_stylebox_override("focus", _btn_box(BTN_BG, edge, 0.85, 0.35, 14))
+	var box := VBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	box.offset_left = 28
+	box.offset_right = -28
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 10)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(box)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 16)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(row)
+	var name := Label.new()
+	name.text = HELP_NAMES[id]
+	name.add_theme_font_size_override("font_size", CHOICE_NAME_FONT)
+	name.add_theme_color_override("font_color", BTN_TEXT)
+	row.add_child(name)
+	var coin := _coin(30)
+	coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(coin)
+	var price := Label.new()
+	price.text = price_text
+	price.add_theme_font_size_override("font_size", CHOICE_NAME_FONT)
+	price.add_theme_color_override("font_color", BTN_GOLD)
+	row.add_child(price)
+	var info := Label.new()
+	info.text = HELP_INFO[id]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.add_theme_font_size_override("font_size", CHOICE_INFO_FONT)
+	info.add_theme_color_override("font_color", Color(BTN_TEXT, 0.85))
+	box.add_child(info)
+	return card
 
 
 # --- Fliegende Buchstaben ----------------------------------------------------------
@@ -721,6 +978,8 @@ func _fly_word(word: String, cells: Array[Vector2i], row: int) -> float:
 ## Münz-Gewinn kurz neben der Münzanzeige aufsteigen lassen.
 func _show_reward(amount: int) -> void:
 	var l := _label(48, ACCENT)
+	# Unter Auswahl- und Einstellungs-Ebenen (Flug-Ebene liegt darunter).
+	l.reparent(_fly_layer)
 	l.text = "+%d" % amount
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	l.size = _coins_label.size
