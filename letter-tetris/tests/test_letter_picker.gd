@@ -16,10 +16,10 @@ func _picker(seed_value: int) -> LetterPicker:
 func test_german_language_data_is_valid() -> void:
 	assert_not_null(lang)
 	assert_true(lang.is_valid())
-	assert_eq(lang.alphabet.size(), 26)
+	assert_eq(lang.alphabet.size(), 29, "A–Z und Ä Ö Ü")
 	assert_eq(lang.code, "de")
 	for l in lang.alphabet:
-		assert_true(l.length() == 1 and l >= "A" and l <= "Z", "nur A–Z: %s" % l)
+		assert_true(l.length() == 1 and ((l >= "A" and l <= "Z") or l in ["Ä", "Ö", "Ü"]), "A–Z, Ä, Ö, Ü: %s" % l)
 
 
 func test_picks_only_alphabet_letters() -> void:

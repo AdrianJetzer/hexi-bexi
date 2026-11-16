@@ -148,3 +148,23 @@ func test_dictionary_words_by_length() -> void:
 	assert_eq(d.word_at(4, 0), "BAUM")
 	assert_eq(d.word_at(4, 1), "HAUS")
 	assert_eq(d.word_at(4, 2), "")
+
+
+func test_umlauts() -> void:
+	var lang := load("res://data/languages/de/language.tres") as LanguageData
+	var d := WordDictionary.from_file(lang.words_path)
+	for w in ["SCHÖN", "GRÜN", "MÖHRE", "KÄSE", "ÄPFEL", "LÖWE", "BÄR", "STRASSE"]:
+		assert_true(d.contains(w), w)
+	assert_true(d.has_prefix("MÖH"))
+	# Kleine Liste mit Umlauten: Suche, Präfix und Rückgabe stimmen.
+	var small := WordDictionary.from_words(PackedStringArray(["BÄR", "BAR", "BUS", "BÜSTE", "ÖL"]))
+	assert_true(small.contains("BÄR"))
+	assert_true(small.contains("bär"))
+	assert_true(small.contains("ÖL"))
+	assert_false(small.contains("BÖR"))
+	assert_true(small.has_prefix("BÜ"))
+	var three := []
+	for i in small.count_of_length(3):
+		three.append(small.word_at(3, i))
+	assert_true(three.has("BÄR") and three.has("BAR") and three.has("BUS"))
+

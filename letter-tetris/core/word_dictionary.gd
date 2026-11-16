@@ -7,8 +7,20 @@ extends RefCounted
 ##   gruppiert, je Gruppe sortiert, ASCII ohne Trennzeichen.
 ## Suche: binäre Suche innerhalb der Gruppe mit passender Länge.
 ## Erzeugt wird die Datei von tools/dictionary/pack_words.py.
+## Umlaute stehen als je ein Byte direkt hinter Z: Ä → "[", Ö → "\\", Ü → "]". Nach außen
+## arbeitet die Klasse mit echten Umlauten (übersetzt in _encode / _decode).
 
 const MAGIC := "LTW1"
+
+
+## Wort → gespeicherte Form (Umlaute als Ein-Byte-Ersatz).
+static func _encode(word: String) -> String:
+	return word.replace("Ä", "[").replace("Ö", "\\").replace("Ü", "]")
+
+
+## Gespeicherte Form → Wort.
+static func _decode(stored: String) -> String:
+	return stored.replace("[", "Ä").replace("\\", "Ö").replace("]", "Ü")
 
 var _data: PackedByteArray = PackedByteArray()
 var _counts: PackedInt32Array = PackedInt32Array()   # Index = Länge
@@ -20,7 +32,7 @@ var _size: int = 0
 static func from_words(words: PackedStringArray) -> WordDictionary:
 	var by_len := {}
 	for w in words:
-		var u := w.strip_edges().to_upper()
+		var u := _encode(w.strip_edges().to_upper())
 		if u.is_empty():
 			continue
 		if not by_len.has(u.length()):
@@ -75,7 +87,7 @@ static func from_bytes(bytes: PackedByteArray) -> WordDictionary:
 
 
 func contains(word: String) -> bool:
-	var w := word.to_upper()
+	var w := _encode(word.to_upper())
 	var n := w.length()
 	if n == 0 or n >= _counts.size() or _counts[n] == 0:
 		return false
@@ -97,7 +109,7 @@ func contains(word: String) -> bool:
 
 ## Gibt es mindestens ein Wort, das mit prefix beginnt (das Wort selbst eingeschlossen)?
 func has_prefix(prefix: String) -> bool:
-	var p := prefix.to_upper()
+	var p := _encode(prefix.to_upper())
 	var n := p.length()
 	if n == 0:
 		return _size > 0
@@ -124,7 +136,7 @@ func word_at(length: int, index: int) -> String:
 	if index < 0 or index >= count_of_length(length):
 		return ""
 	var start := _offsets[length] + index * length
-	return _data.slice(start, start + length).get_string_from_ascii()
+	return _decode(_data.slice(start, start + length).get_string_from_ascii())
 
 
 ## Längste gespeicherte Wortlänge.

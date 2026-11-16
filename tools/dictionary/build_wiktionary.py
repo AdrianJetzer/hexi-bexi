@@ -14,7 +14,7 @@ import json
 import re
 import sys
 
-ALLOWED = re.compile(r"^[A-Z]{3,}$")
+ALLOWED = re.compile(r"^[A-ZÄÖÜ]{3,}$")
 # Gültige römische Zahlen (z. B. LIII); gelten nicht als Spielwörter, außer sie sind auch ein
 # normales Stichwort (z. B. MIX).
 ROMAN = re.compile(r"^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")

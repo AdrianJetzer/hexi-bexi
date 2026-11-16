@@ -27,7 +27,7 @@ import json
 import re
 import sys
 
-ALLOWED = re.compile(r"^[A-Z]{3,}$")
+ALLOWED = re.compile(r"^[A-ZÄÖÜ]{3,}$")
 
 # Wortarten, deren Grundformen vorgeschlagen werden dürfen.
 KEEP_POS = {"noun", "verb", "adj", "adv", "prep", "conj", "num", "intj", "particle", "postp"}

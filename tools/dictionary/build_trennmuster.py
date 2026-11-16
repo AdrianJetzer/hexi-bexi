@@ -7,7 +7,7 @@ or marked as a name in the comment ("# Name", "# geogr. Name", "# engl. Name" �
 import re
 import sys
 
-ALLOWED = re.compile(r"^[A-Z]{3,}$")
+ALLOWED = re.compile(r"^[A-ZÄÖÜ]{3,}$")
 
 
 def normalize(word: str):
