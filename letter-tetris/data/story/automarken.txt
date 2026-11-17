@@ -1,6 +1,7 @@
 # Kapitel „Automarken“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
 # Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
 AUDI;Vier Ringe im Logo
+MERCEDES;Deutsche Marke mit dem Stern im Logo
 BMW;Bayerische Motorenwerke, kurz
 OPEL;Deutsche Marke mit einem Blitz im Logo
 FORD;Amerikanische Marke, baute das Modell T
@@ -57,3 +58,54 @@ BYD;Chinesische Elektroauto-Marke, drei Buchstaben
 NIO;Chinesische Elektromarke, drei Buchstaben
 DAEWOO;Frühere Marke aus Südkorea
 TATRA;Tschechische Marke für Lastwagen
+ABARTH;Sportliche Fiat-Marke mit Skorpion im Logo
+DAF;Holländische Lastwagen-Marke, drei Buchstaben
+MAN;Lastwagen aus München, drei Buchstaben
+IVECO;Italienische Marke für Lastwagen und Busse
+SCANIA;Schwedische Lastwagen mit Greif im Logo
+UNIMOG;Geländegängiger Alleskönner von Mercedes
+PAGANI;Italienische Supersportwagen, handgebaut
+RIMAC;Elektro-Supersportwagen aus Kroatien
+MORGAN;Britische Sportwagen mit Holzrahmen
+CATERHAM;Britischer Leichtbau-Flitzer, sehr offen
+AUSTIN;Alte britische Marke, baute den ersten Mini
+TRIUMPH;Britische Marke, heute vor allem Motorräder
+VAUXHALL;Britische Schwestermarke von Opel
+HOLDEN;Australische Automarke
+PONTIAC;Amerikanische Marke mit dem Firebird
+PLYMOUTH;Amerikanische Marke, wie eine englische Hafenstadt
+DELOREAN;Zeitmaschine aus „Zurück in die Zukunft“
+RIVIAN;Amerikanische Elektro-Pick-ups
+LUCID;Amerikanische Elektro-Luxuslimousinen
+GMC;Amerikanische Pick-ups, drei Buchstaben
+RAM;Amerikanische Pick-ups, wie ein Schafbock
+DAIHATSU;Japanische Marke für Kleinwagen
+SCION;Junge Marke von Toyota in Amerika
+TATA;Größter Autobauer Indiens
+MAHINDRA;Indische Marke für Geländewagen und Traktoren
+PROTON;Automarke aus Malaysia
+GEELY;Chinesischer Konzern, dem Volvo gehört
+CHERY;Chinesische Marke, klingt wie eine Frucht
+XPENG;Chinesische Elektromarke mit X
+ZEEKR;Chinesische Elektro-Premiummarke
+HAVAL;Chinesische Marke für SUVs
+HONGQI;Chinesische Staatslimousinen, „Rote Fahne“
+VINFAST;Elektroautos aus Vietnam
+TOGG;Elektroauto aus der Türkei
+YUGO;Kleinwagen aus Jugoslawien
+ZASTAVA;Serbische Marke, baute den Yugo
+UAZ;Russische Geländewagen, drei Buchstaben
+GAZ;Russische Marke, baute die Wolga-Limousine
+SIMCA;Frühere französische Marke
+TALBOT;Alte französisch-britische Marke
+PANHARD;Französische Marke, baut Militärfahrzeuge
+VENTURI;Elektro-Sportwagen aus Monaco
+AIXAM;Französische Leichtfahrzeuge ohne Führerschein
+HORCH;Deutsche Luxusmarke, Vorgänger von Audi
+WANDERER;Alte Marke aus Sachsen, ein Ring der Auto Union
+NSU;Alte Marke aus Neckarsulm, baute den Ro 80
+DKW;Alte Marke der Auto Union, drei Buchstaben
+BORGWARD;Bremer Marke, baute die Isabella
+HANOMAG;Hannoversche Marke für Traktoren und Laster
+MAGIRUS;Feuerwehrfahrzeuge aus Ulm
+SPYKER;Holländische Sportwagen mit Propeller im Logo

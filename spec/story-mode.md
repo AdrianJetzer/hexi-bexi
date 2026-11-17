@@ -18,7 +18,7 @@ Status: **v5 umgesetzt** (Kapitel-Brett mit 8 Kapiteln in 2 Reihen, Dreh-Animati
   - Genug: Tiere, Früchte (mit Exoten), Gemüse, Berufe, Länder, Hauptstädte der Welt, Sportarten, Blumen/Pflanzen, Kleidung, Musikinstrumente.
   - Knapp (nachzählen): Automarken, Flüsse, Körperteile, Werkzeuge.
   - Zu klein: Farben, Planeten, Wochentage.
-- Themenlisten sind kleine Textdateien je Kategorie (`data/story/<kapitel>.txt`, Zeilen „WORT;Rätselsatz“), **von Hand kuratiert** und **nach Häufigkeit sortiert** (bekannte Wörter zuerst). Erste Kapitel: Tiere (88 Wörter), Gemüse (52), Früchte (54), Kleidung (63); Flüsse (61), Automarken (57), Länder (68), Berufe (64).
+- Themenlisten sind kleine Textdateien je Kategorie (`data/story/<kapitel>.txt`, Zeilen „WORT;Rätselsatz“), **von Hand kuratiert** und **nach Häufigkeit sortiert** (bekannte Wörter zuerst). Erste Kapitel: Tiere (88 Wörter), Gemüse (52), Früchte (54), Kleidung (63); Flüsse (61), Automarken (109), Länder (68), Berufe (64).
 - **Nur Wörter aus einem Stück** (fürs Erste): Themenwörter mit Leerzeichen oder Bindestrich (BUENOS AIRES, NEU-DELHI, COSTA RICA) werden weggelassen.
 
 ## Einstieg
