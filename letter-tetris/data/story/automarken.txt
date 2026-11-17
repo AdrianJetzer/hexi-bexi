@@ -1,0 +1,59 @@
+# Kapitel „Automarken“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+AUDI;Vier Ringe im Logo
+BMW;Bayerische Motorenwerke, kurz
+OPEL;Deutsche Marke mit einem Blitz im Logo
+FORD;Amerikanische Marke, baute das Modell T
+FIAT;Italienische Marke, bekannt für den kleinen 500
+TESLA;Elektroautos von Elon Musk
+PORSCHE;Sportwagen aus Stuttgart, Modell 911
+FERRARI;Rotes Auto mit springendem Pferd
+TOYOTA;Größter Autobauer Japans
+VOLVO;Schwedische Marke, bekannt für Sicherheit
+SKODA;Tschechische Marke aus Mladá Boleslav
+SEAT;Spanische Marke aus Barcelona
+RENAULT;Französische Marke mit Rauten-Logo
+PEUGEOT;Französische Marke mit einem Löwen
+CITROEN;Französische Marke mit zwei Winkeln im Logo
+HONDA;Japanische Marke, baut auch Motorräder
+MAZDA;Japanische Marke aus Hiroshima
+NISSAN;Japanische Marke, baut den Leaf
+HYUNDAI;Größte Marke Südkoreas
+KIA;Südkoreanische Marke mit kurzem Namen
+SUZUKI;Japanische Marke, baut den Swift
+SUBARU;Japanische Marke mit Sternbild im Logo
+DACIA;Günstige Marke aus Rumänien
+MINI;Kleines britisches Kultauto
+SMART;Winziger Zweisitzer für die Stadt
+JEEP;Amerikanischer Geländewagen
+JAGUAR;Britische Marke mit einer Raubkatze
+BENTLEY;Britische Luxusmarke mit geflügeltem B
+BUGATTI;Superschnelle Sportwagen aus dem Elsass
+MASERATI;Italienische Marke mit Dreizack
+LANCIA;Italienische Marke, bekannt aus dem Rallyesport
+ALPINE;Französische Sportwagen-Marke
+CUPRA;Sportliche Marke aus Spanien
+LADA;Russische Marke, baut den Niva
+LEXUS;Japanische Luxusmarke von Toyota
+LOTUS;Britischer Leichtbau-Sportwagen
+MCLAREN;Britische Formel-1- und Sportwagen-Marke
+CADILLAC;Amerikanische Luxuslimousine
+CHRYSLER;Amerikanische Marke aus Detroit
+DODGE;Amerikanische Muscle-Cars
+BUICK;Amerikanische Marke von General Motors
+LINCOLN;Amerikanische Luxusmarke, wie ein Präsident
+HUMMER;Riesiger amerikanischer Geländewagen
+ROVER;Britische Marke, mit „Land“ davor ein Geländewagen
+SAAB;Schwedische Marke, auch Flugzeuge
+MAYBACH;Deutsche Luxusmarke für Limousinen
+TRABANT;Kleines Auto aus der DDR
+WARTBURG;Auto aus Eisenach, wie eine Burg
+GENESIS;Luxusmarke von Hyundai
+POLESTAR;Schwedische Elektromarke
+INFINITI;Japanische Luxusmarke von Nissan
+ACURA;Japanische Luxusmarke von Honda
+ISUZU;Japanische Marke für Pick-ups
+BYD;Chinesische Elektroauto-Marke, drei Buchstaben
+NIO;Chinesische Elektromarke, drei Buchstaben
+DAEWOO;Frühere Marke aus Südkorea
+TATRA;Tschechische Marke für Lastwagen

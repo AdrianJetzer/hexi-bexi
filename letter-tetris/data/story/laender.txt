@@ -1,0 +1,70 @@
+# Kapitel „Länder“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+ITALIEN;Hat die Form eines Stiefels
+SPANIEN;Land von Paella und Flamenco
+SCHWEIZ;Berge, Käse und Schokolade
+CHINA;Hat die längste Mauer der Welt
+JAPAN;Land des Sushi und der Kirschblüte
+INDIEN;Hat den Taj Mahal und den Ganges
+KANADA;Hat ein Ahornblatt auf der Flagge
+MEXIKO;Heimat von Tacos und Sombrero
+POLEN;Nachbar im Osten, Hauptstadt Warschau
+TÜRKEI;Liegt auf zwei Kontinenten, mit Istanbul
+ÄGYPTEN;Land der Pyramiden am Nil
+ENGLAND;Heimat von Big Ben und Fish and Chips
+IRLAND;Grüne Insel mit Kleeblatt
+RUSSLAND;Größtes Land der Erde
+SCHWEDEN;Heimat von Elch und Möbelhaus
+NORWEGEN;Land der Fjorde
+FINNLAND;Land der tausend Seen und der Sauna
+DÄNEMARK;Heimat der Bausteine aus Billund
+ISLAND;Insel aus Feuer und Eis, mit Geysiren
+PORTUGAL;Liegt ganz im Westen Europas, Hauptstadt Lissabon
+BELGIEN;Bekannt für Pommes, Waffeln und Pralinen
+UNGARN;Hauptstadt Budapest an der Donau
+KROATIEN;Adriaküste mit vielen Inseln
+PERU;Heimat von Machu Picchu und Lamas
+CHILE;Sehr langes, schmales Land in Südamerika
+KUBA;Karibikinsel mit Zigarren und Oldtimern
+MAROKKO;Nordafrika, mit Marrakesch
+KENIA;Safari-Land mit dem Kilimandscharo-Blick
+THAILAND;Land des Lächelns, Hauptstadt Bangkok
+VIETNAM;Langes Land in Südostasien mit Reisfeldern
+UKRAINE;Hat eine blau-gelbe Flagge
+RUMÄNIEN;Heimat von Graf Dracula
+SERBIEN;Balkanland, Hauptstadt Belgrad
+ALBANIEN;Hat einen schwarzen Doppeladler auf der Flagge
+MALTA;Kleiner Inselstaat im Mittelmeer
+ZYPERN;Geteilte Insel im östlichen Mittelmeer
+MONACO;Zwergstaat mit Formel-1-Rennen und Casino
+NEPAL;Hier steht der Mount Everest
+IRAN;Früher Persien genannt
+IRAK;Zwischen Euphrat und Tigris
+ISRAEL;Hat Jerusalem und das Tote Meer
+TUNESIEN;Kleinstes Land Nordafrikas am Mittelmeer
+NIGERIA;Bevölkerungsreichstes Land Afrikas
+GHANA;Westafrika, früher Goldküste genannt
+BOLIVIEN;Hat den Salzsee Uyuni
+ECUADOR;Liegt auf dem Äquator, mit Galapagos
+URUGUAY;Kleines Land am Río de la Plata
+PANAMA;Hat einen berühmten Kanal
+JAMAIKA;Heimat des Reggae
+ESTLAND;Nördlichstes Baltikum-Land
+LETTLAND;Mittleres Baltikum-Land, Hauptstadt Riga
+LITAUEN;Südlichstes Baltikum-Land
+GEORGIEN;Kaukasus-Land, Hauptstadt Tiflis
+MONGOLEI;Steppe, Jurten und Dschingis Khan
+PAKISTAN;Nachbar Indiens mit dem K2
+LIBANON;Hat eine Zeder auf der Flagge
+KUWAIT;Kleines Ölland am Persischen Golf
+OMAN;Sultanat auf der Arabischen Halbinsel
+KATAR;Golfstaat mit der Fußball-WM 2022
+SENEGAL;Westafrika, Hauptstadt Dakar
+ANGOLA;Südwestafrika, Hauptstadt Luanda
+NAMIBIA;Hat die Wüste Namib
+UGANDA;Hier entspringt der Weiße Nil
+SOMALIA;Liegt am Horn von Afrika
+LIBYEN;Wüstenland zwischen Ägypten und Tunesien
+LAOS;Binnenland in Südostasien am Mekong
+FIDSCHI;Inselstaat in der Südsee
+SAMOA;Inselstaat im Pazifik

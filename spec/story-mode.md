@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v5, Schritt 2 umgesetzt** (Kapitel-Brett mit Tiere, Gemüse, Früchte; Dreh-Animation, Bronze / Silber / Gold). Screenshots: [Brett v1](images/chapter-board-v1.png), [Brett mit Wertungen](images/chapter-board-v2.png). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v5 umgesetzt** (Kapitel-Brett mit 8 Kapiteln in 2 Reihen, Dreh-Animation, Bronze / Silber / Gold). Screenshots: [Brett v1](images/chapter-board-v1.png), [Brett mit Wertungen](images/chapter-board-v2.png). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Münzen, Preise und Sterne sind in allen Modi gleich. Ausnahme: Die Story hat feste Hilfen statt Draft (v4.3).
 
@@ -18,7 +18,7 @@ Status: **v5, Schritt 2 umgesetzt** (Kapitel-Brett mit Tiere, Gemüse, Früchte;
   - Genug: Tiere, Früchte (mit Exoten), Gemüse, Berufe, Länder, Hauptstädte der Welt, Sportarten, Blumen/Pflanzen, Kleidung, Musikinstrumente.
   - Knapp (nachzählen): Automarken, Flüsse, Körperteile, Werkzeuge.
   - Zu klein: Farben, Planeten, Wochentage.
-- Themenlisten sind kleine Textdateien je Kategorie (`data/story/<kapitel>.txt`, Zeilen „WORT;Rätselsatz“), **von Hand kuratiert** und **nach Häufigkeit sortiert** (bekannte Wörter zuerst). Erste Kapitel: Tiere (88 Wörter), Gemüse (52), Früchte (54).
+- Themenlisten sind kleine Textdateien je Kategorie (`data/story/<kapitel>.txt`, Zeilen „WORT;Rätselsatz“), **von Hand kuratiert** und **nach Häufigkeit sortiert** (bekannte Wörter zuerst). Erste Kapitel: Tiere (88 Wörter), Gemüse (52), Früchte (54), Kleidung (63); Flüsse (61), Automarken (57), Länder (68), Berufe (64).
 - **Nur Wörter aus einem Stück** (fürs Erste): Themenwörter mit Leerzeichen oder Bindestrich (BUENOS AIRES, NEU-DELHI, COSTA RICA) werden weggelassen.
 
 ## Einstieg
@@ -48,11 +48,11 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 - **Nächste Reihe:** Sobald **mindestens ein Kapitel einer Reihe** geschafft ist, drehen sich **alle 4 Hexagons der nächsten Reihe** um und sind spielbar. Wer an einem Thema hängt, nimmt ein anderes derselben Reihe (Umgehung statt Sackgasse).
 - **Erste Version: 2 Reihen, 8 Kapitel.**
   - Reihe 1 (einfach): **Tiere, Gemüse, Früchte, Kleidung**.
-  - Reihe 2 (mittel): **Flüsse, Automarken, Länder, Berufe**. Flüsse und Automarken vorher nachzählen (≥ ca. 50 Wörter aus einem Stück); sonst Ersatz z. B. Musikinstrumente oder Sportarten.
+  - Reihe 2 (mittel): **Flüsse, Automarken, Länder, Berufe**. Flüsse und Automarken haben genug Wörter (je ≥ 57, nur 3–8 Buchstaben). Länder ohne lange Namen (DEUTSCHLAND, FRANKREICH usw. passen nicht in 8 Blöcke).
   - Reihen 3–6 bleiben verdeckt mit Hinweis „bald“; sie werden Stück für Stück gefüllt.
 - **Neue Wortlisten** (Kleidung, Flüsse, Automarken, Länder, Berufe) mit Rätselsätzen schreibt Claude, Adrian prüft.
 - Der bisherige Pfad durchs All entfällt.
-- **Bauplan:** (1) Brett mit Freischalt-Regel ✔, (2) Dreh-Animation und Bronze / Silber / Gold ✔, (3) neue Wortlisten.
+- **Bauplan:** (1) Brett mit Freischalt-Regel ✔, (2) Dreh-Animation und Bronze / Silber / Gold ✔, (3) neue Wortlisten ✔.
 
 ## Wörter und Steine
 
@@ -117,3 +117,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 - **v4.3:** Kein Draft in der Story: Rätsel, Tipp, Aufräumen, Scan und Lösen sind von Anfang an fest da; Mischen, Joker usw. entfallen (zerstören das versteckte Wort). Hinweis nur noch „bis zum Ziel“.
 - **v4.4:** Nach Testspiel: Reihenfolge Tiere → Gemüse → Früchte (Früchte am schwierigsten). Rätsel MARACUJA verrät die Lösung nicht mehr; ELSBEERE (kaum bekannt) ans Ende der Liste.
 - **v5 (Entwurf):** Kapitel-Brett statt Pfad: 4 × 6 große Hexagons, Reihe 1 offen, nächste Reihe dreht sich, sobald ein Kapitel der Reihe geschafft ist; Wertung Bronze / Silber / Gold. Erste Version 2 Reihen: Tiere, Gemüse, Früchte, Kleidung; Flüsse, Automarken, Länder, Berufe.
+- **v5:** Kapitel-Brett umgesetzt (Schritte 1–3): 3D-Hexagons, Freischalten je Reihe, Bronze / Silber / Gold mit Dreh-Animation; neue Kapitel Kleidung, Flüsse, Automarken, Länder, Berufe (Wortlisten von Claude, Prüfung durch Adrian offen).

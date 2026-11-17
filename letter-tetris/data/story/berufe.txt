@@ -1,0 +1,66 @@
+# Kapitel „Berufe“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+ARZT;Hilft, wenn man krank ist
+LEHRER;Steht vorne in der Schulklasse
+PILOT;Fliegt das Flugzeug
+BÄCKER;Steht früh auf und backt Brot
+KOCH;Arbeitet in der Restaurantküche
+MALER;Streicht Wände oder malt Bilder
+BAUER;Hat Kühe, Felder und einen Traktor
+POLIZIST;Sorgt für Ordnung und fängt Diebe
+FISCHER;Fährt mit Boot und Netz aufs Meer
+JÄGER;Geht mit dem Gewehr in den Wald
+MAURER;Baut Wände aus Steinen
+RICHTER;Fällt im Gericht das Urteil
+FRISEUR;Schneidet Haare
+GÄRTNER;Pflegt Blumen, Bäume und Rasen
+METZGER;Verkauft Wurst und Fleisch
+KELLNER;Bringt das Essen an den Tisch
+ANWALT;Verteidigt seinen Mandanten vor Gericht
+KAPITÄN;Hat das Kommando auf dem Schiff
+SOLDAT;Dient in der Armee
+MÜLLER;Mahlt Korn zu Mehl
+FÖRSTER;Kümmert sich um den Wald
+SÄNGER;Verdient sein Geld mit der Stimme
+TÄNZER;Bewegt sich beruflich zur Musik
+MUSIKER;Spielt ein Instrument auf der Bühne
+AUTOR;Schreibt Bücher
+FAHRER;Lenkt Bus, Taxi oder Lastwagen
+TIERARZT;Behandelt Hunde, Katzen und Kühe
+ZAHNARZT;Bohrt und füllt Löcher im Gebiss
+FOTOGRAF;Hält Momente mit der Kamera fest
+PFLEGER;Kümmert sich im Spital um Kranke
+TISCHLER;Baut Möbel aus Holz
+SCHMIED;Formt glühendes Eisen am Amboss
+MATROSE;Einfacher Seemann an Deck
+POSTBOTE;Bringt Briefe und Pakete
+DICHTER;Schreibt Gedichte
+PFARRER;Hält in der Kirche die Predigt
+HEBAMME;Hilft bei der Geburt von Babys
+IMKER;Hält Bienen und erntet Honig
+WINZER;Baut Reben an und macht Wein
+SCHÄFER;Hütet mit dem Hund die Herde
+DETEKTIV;Löst Kriminalfälle mit der Lupe
+REPORTER;Berichtet für Zeitung oder Fernsehen
+FORSCHER;Sucht im Labor nach neuen Erkenntnissen
+TRAINER;Stellt die Mannschaft auf
+ZAUBERER;Zieht ein Kaninchen aus dem Hut
+CLOWN;Bringt im Zirkus alle zum Lachen
+KLEMPNER;Repariert Rohre und tropfende Wasserhähne
+SCHUSTER;Repariert kaputte Schuhe
+TÖPFER;Formt Gefäße aus Ton
+DESIGNER;Entwirft Mode oder Möbel
+CHEMIKER;Mischt Stoffe im Labor
+BIOLOGE;Erforscht Pflanzen und Tiere
+PHYSIKER;Erforscht Kräfte, Licht und Atome
+PRIESTER;Geistlicher, der die Messe liest
+MÖNCH;Lebt im Kloster, mit Kutte
+NONNE;Lebt im Kloster, mit Schleier
+NOTAR;Beglaubigt Verträge und Urkunden
+MAKLER;Vermittelt Wohnungen gegen Provision
+BANKER;Arbeitet mit Geld und Krediten
+HÄNDLER;Kauft und verkauft Waren
+BUTLER;Diener im vornehmen Haushalt
+HIRTE;Wacht über Schafe und Ziegen
+ZÖLLNER;Kontrolliert an der Grenze
+SPORTLER;Treibt beruflich Sport

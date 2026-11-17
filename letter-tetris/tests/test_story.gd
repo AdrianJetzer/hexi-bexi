@@ -154,4 +154,7 @@ func test_board_slots() -> void:
 	assert_eq(StoryChapter.slot(3, 1)[0], "berufe")
 	assert_eq(StoryChapter.slot(0, 4), [], "obere Reihen noch leer")
 	assert_true(StoryChapter.playable("tiere"))
-	assert_false(StoryChapter.playable("kleidung"), "Wortliste kommt in Schritt 3")
+	for row in StoryChapter.BOARD:
+		for c in row:
+			assert_true(StoryChapter.playable(c[0]), "Wortliste für %s" % c[0])
+	assert_eq(StoryChapter.all().size(), 8, "erste Version: 2 Reihen à 4 Kapitel")
