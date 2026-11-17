@@ -40,7 +40,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Anzeige:** über dem Spielfeld links die **Leiter** (20 Quadrate, eins je Level, liegend wie eine Leiter; jedes Quadrat hat seine feste Farbe im Verlauf grün → orange → rot; geschaffte Level leuchten, das laufende ist farbig umrandet, offene sind dunkel), rechts die **Münzen**. Kein Text „Level · Rekord“ mehr. Screenshot: [Leiter](images/ladder-v1.png).
 - **Power-up-Auswahl** (nach Level 4, 8, 12, 16; Upgrades nur im endlosen Test-Betrieb): halbtransparenter Bildschirm über dem Spiel mit großem, goldenem Titel („Wähle eine Hilfe“ bzw. „Welche Hilfe wird günstiger?“) und Karten im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis (beim Upgrade „alt → neu“), darunter die Erklärung (Power-up: 2 zufällige der Stufe) (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)). Screenshots: [Start](images/draft-start-v1.png), [Power-up](images/draft-powerup-v1.png), [Upgrade](images/draft-upgrade-v1.png).
 - **Hinweis** links unter dem Spielfeld: „Noch n Level bis zum Power-up“, danach „Noch n Level bis zum Ziel“.
-- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Stein ersetzen, Tauschen (5 Steine); **100:** Mischen, Joker, Kürzen, Tipp (je Buchstabe); **150:** Aufräumen, Teilen, Magnet (Stein antippen); **200:** Scan, Zeile streichen, Vervollständigen (Wortanfang anwischen); **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
+- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Tipp (je Buchstabe); **100:** Mischen, Joker, Kürzen; **150:** Aufräumen, Teilen, Magnet (Stein antippen); **200:** Scan, Zeile streichen, Vervollständigen (Wortanfang anwischen); **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
@@ -95,6 +95,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.20:** Tipp 50; Ersetzen und Tauschen vorerst deaktiviert.
 - **v4.19:** Story im Kapitel nochmal wählen: Nachfrage, dann Kapitel-Brett.
 - **v4.18:** Testmodus (Lösen gratis) in den Einstellungen.
 - **v4.17:** Vibration: Tick je verbundenem Buchstaben, Schalter in den Einstellungen.
