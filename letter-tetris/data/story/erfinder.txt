@@ -1,0 +1,60 @@
+# Kapitel „Erfinder“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+EDISON;Brachte die Glühbirne zum Leuchten
+EINSTEIN;Erfand die Relativitätstheorie, E gleich mc²
+NEWTON;Ein Apfel fiel ihm auf den Kopf
+CURIE;Erforschte die Radioaktivität, zwei Nobelpreise
+TESLA;Erfinder des Wechselstroms, heute auch eine Automarke
+DARWIN;Erklärte die Entstehung der Arten
+BENZ;Baute das erste Automobil
+DIESEL;Erfand einen Motor, der nach ihm benannt ist
+NOBEL;Erfand Dynamit und stiftete einen Preis
+GALILEI;Und sie bewegt sich doch!
+KEPLER;Entdeckte die Gesetze der Planetenbahnen
+RÖNTGEN;Entdeckte Strahlen, die durch den Körper sehen
+BELL;Erfand das Telefon
+MORSE;Erfand ein Alphabet aus Punkten und Strichen
+WATT;Verbesserte die Dampfmaschine, Einheit der Leistung
+VOLTA;Baute die erste Batterie
+OHM;Nach ihm ist die Einheit des Widerstands benannt
+AMPERE;Einheit der Stromstärke trägt seinen Namen
+ZUSE;Baute den ersten Computer in Berlin
+DRAIS;Erfand die Laufmaschine, Vorläufer des Fahrrads
+DAIMLER;Baute mit Maybach schnelle Motoren
+ZEPPELIN;Graf, baute riesige Luftschiffe
+WRIGHT;Brüder, flogen als Erste mit dem Motorflugzeug
+PASTEUR;Macht Milch haltbar durch Erhitzen
+KOCH;Entdeckte den Tuberkulose-Erreger
+BOHR;Däne, erklärte das Atommodell
+PLANCK;Begründer der Quantentheorie
+HERTZ;Einheit der Frequenz trägt seinen Namen
+CELSIUS;Nullpunkt seiner Skala ist gefrierendes Wasser
+KELVIN;Temperatur ab dem absoluten Nullpunkt
+FARADAY;Entdeckte die elektromagnetische Induktion
+MARCONI;Pionier des Radios
+TURING;Knackte die Enigma, Vater der Informatik
+LOVELACE;Erste Programmiererin der Welt, Ada mit Vornamen
+HAWKING;Physiker im Rollstuhl, erforschte Schwarze Löcher
+MENDEL;Mönch, entdeckte mit Erbsen die Vererbung
+HUMBOLDT;Forschungsreisender in Südamerika, Alexander mit Vornamen
+LEIBNIZ;Universalgelehrter, Kekse sind nach ihm benannt
+PASCAL;Baute eine Rechenmaschine, Einheit des Drucks
+EULER;Schweizer Mathematiker aus Basel
+GAUSS;Fürst der Mathematik, Glockenkurve
+EUKLID;Vater der Geometrie im alten Griechenland
+DAVINCI;Malte die Mona Lisa und skizzierte Flugmaschinen
+BOSCH;Erfand die Zündkerze fürs Auto
+SIEMENS;Erfand den elektrischen Dynamo
+FRANKLIN;Erfand den Blitzableiter
+JOBS;Gründete eine Firma mit angebissenem Apfel
+GATES;Gründete den größten Software-Konzern
+LUMIERE;Brüder, erfanden das Kino
+BRAILLE;Erfand die Blindenschrift
+NIEPCE;Machte das erste Foto der Welt
+OTTO;Erfand den Viertaktmotor, Vorname wie Nachname
+HUBBLE;Entdeckte, dass sich das Weltall ausdehnt
+HOPPER;Fand den ersten echten „Bug“ im Computer
+LINNE;Ordnete alle Pflanzen und Tiere mit Namen
+FERMI;Baute den ersten Kernreaktor
+BUNSEN;Erfand einen Gasbrenner fürs Labor
+LIEBIG;Erfand den Fleischextrakt und Dünger

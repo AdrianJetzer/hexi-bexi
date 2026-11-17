@@ -1,0 +1,67 @@
+# Kapitel „Gaming“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+LEVEL;Spielabschnitt, der immer schwerer wird
+BOSS;Riesiger Gegner am Ende des Abschnitts
+NOOB;Anfänger, der noch alles falsch macht
+CHEAT;Geheimer Trick, um zu schummeln
+LAG;Ruckeln wegen langsamer Verbindung
+SKIN;Neues Aussehen für die Spielfigur
+KONSOLE;Spielgerät für den Fernseher
+GAMEPAD;Controller mit Knöpfen in beiden Händen
+JOYSTICK;Steuerknüppel zum Spielen
+HEADSET;Kopfhörer mit Mikrofon
+QUEST;Aufgabe, die man im Spiel erledigen muss
+LOOT;Beute, die besiegte Gegner fallen lassen
+SPAWN;Ort, an dem die Figur ins Spiel kommt
+RESPAWN;Nach dem Ausscheiden wieder auftauchen
+SCORE;Punktestand
+COMBO;Mehrere Treffer hintereinander
+BONUS;Zusätzliche Punkte als Belohnung
+COIN;Münze zum Einsammeln
+MANA;Zauberenergie, oft als blauer Balken
+TRANK;Fläschchen, das Lebenspunkte auffüllt
+BUFF;Verbesserung für deine Figur
+NERF;Abschwächung durch ein Update
+GLITCH;Fehler, durch den man durch Wände läuft
+BUG;Programmfehler, wie ein Käfer
+PATCH;Flicken, der Fehler behebt
+MOD;Von Fans gemachte Spielerweiterung
+CRAFTEN;Aus Materialien Gegenstände bauen
+LOBBY;Warteraum vor der Runde
+PING;Antwortzeit des Servers in Millisekunden
+CLAN;Gruppe von Spielern, die zusammenhalten
+GILDE;Spielerbund im Rollenspiel
+RAID;Großer Gruppenangriff auf einen starken Gegner
+DUNGEON;Gefährliches Verlies voller Monster
+TURNIER;Wettkampf mit vielen Runden
+ARENA;Kampfplatz für Spieler gegeneinander
+PVP;Spieler gegen Spieler, kurz
+NPC;Figur, die vom Computer gesteuert wird
+GAMEOVER;Das Ende, wenn alle Leben weg sind
+ITEM;Gegenstand im Inventar
+INVENTAR;Rucksack mit allen gesammelten Sachen
+RANK;Rangstufe in der Bestenliste
+CARRY;Spieler, der das ganze Team trägt
+CAMPEN;An einer Stelle warten und auflauern
+SNIPER;Trifft aus großer Entfernung
+TANK;Hält im Team den meisten Schaden aus
+HEALER;Heilt die Mitspieler
+COOLDOWN;Wartezeit, bis eine Fähigkeit wieder bereit ist
+GRINDEN;Immer wieder das Gleiche tun, um stärker zu werden
+FARMEN;Ressourcen in großer Menge sammeln
+TUTORIAL;Erklärt am Anfang die Steuerung
+CUTSCENE;Filmszene zwischen den Spielabschnitten
+SANDBOX;Offene Spielwelt, in der man alles bauen kann
+ARCADE;Spielhalle mit Automaten
+RETRO;Alte Spiele mit Pixelgrafik
+SPOILER;Verrät das Ende, bevor man es gespielt hat
+CLUTCH;Allein die Runde gewinnen, wenn alle anderen raus sind
+AFK;Nicht an der Tastatur, kurz
+SPEEDRUN;Spiel so schnell wie möglich durchspielen
+HITBOX;Unsichtbarer Bereich, der Treffer zählt
+ESPORT;Wettkampf-Gaming wie ein Sport
+HUD;Anzeige mit Leben und Munition am Bildschirmrand
+FPS;Bilder pro Sekunde, kurz
+LETSPLAY;Video, in dem jemand ein Spiel spielt und kommentiert
+SAVEGAME;Gespeicherter Spielstand
+MINIMAP;Kleine Karte in der Ecke

@@ -17,6 +17,10 @@ const BOARD := [
 			["internet", "Internet"]],
 	[["goetter", "Götter"], ["komponisten", "Komponisten"], ["elemente", "Elemente"],
 			["weltraum", "Weltraum"]],
+	[["fabelwesen", "Fabelwesen"], ["sagenhelden", "Sagenhelden"], ["erfinder", "Erfinder"],
+			["inseln", "Inseln"]],
+	[["japan", "Japan & Anime"], ["superhelden", "Superhelden"], ["musikstile", "Musikstile"],
+			["gaming", "Gaming"]],
 ]
 ## Zu Beginn offene Kapitel.
 const START: PackedStringArray = ["tiere", "gemuese"]

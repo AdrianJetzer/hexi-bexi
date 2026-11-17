@@ -166,12 +166,11 @@ func test_board_slots() -> void:
 	assert_eq(StoryChapter.slot(3, 0), ["tiere", "Tiere"])
 	assert_eq(StoryChapter.slot(3, 1)[0], "berufe")
 	assert_eq(StoryChapter.slot(2, 2)[0], "hauptstaedte", "Hauptstädte über Länder")
-	assert_eq(StoryChapter.slot(0, 4), [], "obere Reihen noch leer")
 	assert_true(StoryChapter.playable("tiere"))
 	for row in StoryChapter.BOARD:
 		for c in row:
 			assert_true(StoryChapter.playable(c[0]), "Wortliste für %s" % c[0])
-	assert_eq(StoryChapter.all().size(), 16, "4 Reihen à 4 Kapitel")
+	assert_eq(StoryChapter.all().size(), 24, "Brett voll: 6 Reihen à 4 Kapitel")
 
 
 func test_no_word_twice_in_a_run() -> void:

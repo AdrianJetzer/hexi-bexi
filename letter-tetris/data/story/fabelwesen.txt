@@ -1,0 +1,62 @@
+# Kapitel „Fabelwesen“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+DRACHE;Speit Feuer und hütet einen Schatz
+EINHORN;Weißes Pferd mit einem Horn auf der Stirn
+HEXE;Fliegt auf dem Besen und braut Zaubertränke
+ZWERG;Kleiner Bergmann mit langem Bart
+RIESE;Viel größer als ein Haus
+FEE;Kleines Wesen mit Flügeln und Zauberstab
+ELFE;Zartes Naturwesen mit spitzen Ohren
+TROLL;Hässlich, groß und wohnt unter der Brücke
+VAMPIR;Trinkt Blut und fürchtet Knoblauch
+GESPENST;Huscht nachts als weißes Laken durchs Schloss
+ZOMBIE;Untoter, der langsam schlurft
+MUMIE;In Binden gewickelt, aus der Pyramide
+WERWOLF;Verwandelt sich bei Vollmond
+NIXE;Wassergeist mit Fischschwanz
+KOBOLD;Kleiner Hausgeist, der Streiche spielt
+YETI;Schneemensch im Himalaya
+PHÖNIX;Verbrennt und steigt aus der eigenen Asche auf
+ENGEL;Himmelsbote mit Flügeln und Heiligenschein
+DÄMON;Böser Geist aus der Unterwelt
+GEIST;Unsichtbares Wesen, das spukt
+GNOM;Kleiner Erdgeist, oft als Gartenfigur
+ORK;Grimmiger Krieger mit grüner Haut
+GOBLIN;Kleiner, gieriger Kobold aus Fantasy-Geschichten
+GREIF;Halb Adler, halb Löwe
+ZYKLOP;Riese mit nur einem Auge
+MEDUSA;Ihr Blick verwandelt in Stein, Schlangen als Haar
+HYDRA;Schlange, der für jeden Kopf zwei neue wachsen
+SPHINX;Löwe mit Menschenkopf, stellt Rätsel
+PEGASUS;Geflügeltes Pferd
+ZENTAUR;Oben Mensch, unten Pferd
+MINOTAUR;Stierkopf, haust im Labyrinth
+SIRENE;Lockt Seeleute mit ihrem Gesang ins Verderben
+GOLEM;Aus Lehm geformt und zum Leben erweckt
+KRAKE;Riesiger Tintenfisch, zieht Schiffe in die Tiefe
+WICHTEL;Kleiner Helfer, der heimlich Geschenke bringt
+BASILISK;Schlangenkönig mit tödlichem Blick
+CHIMÄRE;Löwe, Ziege und Schlange in einem
+HARPYIE;Vogel mit Frauenkopf
+BANSHEE;Irische Klagefrau, kündigt den Tod an
+DSCHINN;Geist aus der Wunderlampe
+GHUL;Grabräuber aus arabischen Sagen
+LINDWURM;Drache ohne Flügel aus deutschen Sagen
+FAUN;Waldgott mit Ziegenbeinen
+SATYR;Bocksbeiniger Begleiter des Dionysos
+NYMPHE;Junges Naturwesen in Quellen und Wäldern
+DRYADE;Baumnymphe
+OGER;Großer, dummer Menschenfresser
+GIGANT;Anderes Wort für einen gewaltigen Riesen
+BIGFOOT;Großfuß aus den Wäldern Amerikas
+NESSIE;Ungeheuer aus einem schottischen See
+KELPIE;Wasserpferd aus Schottland
+KAPPA;Japanischer Wasserkobold mit Schale auf dem Kopf
+TENGU;Japanischer Berggeist mit langer Nase
+GARGOYLE;Steinerne Fratze an der Kirche
+IFRIT;Feuergeist aus arabischen Märchen
+ALRAUNE;Wurzel, die schreit, wenn man sie herauszieht
+RÜBEZAHL;Berggeist aus dem Riesengebirge
+ZERBERUS;Dreiköpfiger Hund vor der Unterwelt
+LEVIATAN;Seeungeheuer aus der Bibel
+ROCH;Riesenvogel aus Sindbads Abenteuern

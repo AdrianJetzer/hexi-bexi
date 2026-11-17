@@ -1,0 +1,58 @@
+# Kapitel „Sagenhelden“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+HERKULES;Stärkster Held, vollbrachte zwölf Taten
+ACHILLES;Unverwundbar bis auf die Ferse
+ODYSSEUS;Irrte zehn Jahre über das Meer nach Hause
+TELL;Schoss den Apfel vom Kopf seines Sohnes
+MERLIN;Zauberer am Hof von König Artus
+ARTUS;König mit der Tafelrunde
+IKARUS;Flog mit Wachsflügeln zu nah an die Sonne
+PERSEUS;Schlug der Medusa den Kopf ab
+JASON;Suchte mit den Argonauten das Goldene Vlies
+THESEUS;Besiegte den Minotaurus im Labyrinth
+ORPHEUS;Sang so schön, dass selbst Steine weinten
+HEKTOR;Größter Held Trojas
+ALADIN;Fand die Wunderlampe
+SINDBAD;Seefahrer aus Tausendundeiner Nacht
+ALIBABA;Kannte das Zauberwort „Sesam, öffne dich“
+MULAN;Kämpfte als Mann verkleidet für China
+BEOWULF;Besiegte das Ungeheuer Grendel
+LANCELOT;Bester Ritter der Tafelrunde
+PARZIVAL;Gralsritter, zuerst ein Tor
+TRISTAN;Liebte Isolde, tragisches Ende
+ISOLDE;Irische Königstochter, liebte Tristan
+GAWAIN;Kämpfte gegen den Grünen Ritter
+GALAHAD;Reinster Ritter, fand den Gral
+MORGANA;Zauberin, Halbschwester von Artus
+HAGEN;Tötete Siegfried hinterrücks
+GUNTHER;Burgunderkönig im Nibelungenlied
+BRÜNHILD;Starke Königin aus Island im Nibelungenlied
+ROLAND;Paladin Karls des Großen, blies das Horn
+DIETRICH;Held aus Bern (Verona) in alten Sagen
+ÄNEAS;Floh aus Troja und gründete Roms Vorfahren
+AJAX;Riesenhafter Kämpfer vor Troja
+ARIADNE;Gab Theseus den rettenden Faden
+HELENA;Schönste Frau, wegen ihr begann der Krieg um Troja
+PENELOPE;Wartete zwanzig Jahre treu auf Odysseus
+MEDEA;Zauberin, half Jason beim Goldenen Vlies
+DÄDALUS;Baute das Labyrinth und Flügel aus Wachs
+PANDORA;Öffnete die verbotene Büchse
+ANTIGONE;Begrub ihren Bruder gegen das Verbot des Königs
+ATALANTE;Schnellste Läuferin, folgte goldenen Äpfeln
+SIGURD;Nordischer Drachentöter
+RAGNAR;Wikingerkönig mit den haarigen Hosen
+FINN;Irischer Held, Daumen der Weisheit
+CID;Spanischer Held, kurz „der Herr“
+ARMINIUS;Besiegte die Römer im Teutoburger Wald
+HIAWATHA;Held der Irokesen
+MOMOTARO;Japanischer Junge, aus einem Pfirsich geboren
+ROBINSON;Lebte jahrelang allein auf einer Insel
+WIELAND;Sagenhafter Schmied, schmiedete sich Flügel
+TARZAN;Wuchs bei den Affen im Dschungel auf
+ZORRO;Maskierter Rächer, ritzt ein Z
+SIEGMUND;Vater Siegfrieds, zog das Schwert aus dem Baum
+TILL;Narr Eulenspiegel mit dem Vornamen
+HERAKLES;Griechischer Name des stärksten Helden
+JEANNE;Jungfrau von Orléans, Vorname
+WINNETOU;Häuptling der Apachen, Blutsbruder von Old Shatterhand
+SHERLOCK;Meisterdetektiv aus der Baker Street, Vorname

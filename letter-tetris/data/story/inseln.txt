@@ -1,0 +1,63 @@
+# Kapitel „Inseln“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+MALLORCA;Lieblingsinsel der Deutschen, Hauptstadt Palma
+SYLT;Nordseeinsel, nur über den Damm zu erreichen
+RÜGEN;Größte deutsche Insel, mit Kreidefelsen
+KRETA;Größte griechische Insel, Heimat des Minotaurus
+BALI;Indonesische Insel der Götter und Reisterrassen
+HAWAII;Inselstaat der USA mit Vulkanen und Hula
+SIZILIEN;Größte Insel im Mittelmeer, mit dem Ätna
+KORSIKA;Französische Insel, Geburtsort Napoleons
+IBIZA;Partyinsel der Balearen
+ELBA;Hier wurde Napoleon zuerst verbannt
+CAPRI;Italienische Insel mit Blauer Grotte
+TAHITI;Südseeinsel, Gauguin malte hier
+RHODOS;Griechische Insel, einst mit einem riesigen Koloss
+KORFU;Grüne griechische Insel im Ionischen Meer
+MADEIRA;Portugiesische Blumeninsel im Atlantik
+MENORCA;Ruhigere Schwester von Mallorca
+GRÖNLAND;Größte Insel der Welt, fast ganz aus Eis
+BORNEO;Insel der Orang-Utans
+JAVA;Indonesische Insel, auch eine Programmiersprache
+SUMATRA;Große Insel Indonesiens mit Tigern
+HONSHU;Hauptinsel Japans
+HOKKAIDO;Nördlichste Hauptinsel Japans, viel Schnee
+OKINAWA;Japanische Insel, Heimat des Karate
+TAIWAN;Insel vor China, früher Formosa
+SANSIBAR;Gewürzinsel vor Tansania
+FEHMARN;Ostseeinsel mit Sundbrücke
+USEDOM;Ostseeinsel, geteilt mit Polen
+JUIST;Ostfriesische Insel ohne Autos
+BORKUM;Westlichste Ostfriesische Insel
+AMRUM;Nordfriesische Insel mit großem Sandstrand
+FÖHR;Grüne Insel der Nordfriesen
+MAINAU;Blumeninsel im Bodensee
+LINDAU;Inselstadt im Bodensee
+GOTLAND;Schwedische Insel mit der Stadt Visby
+BORNHOLM;Dänische Felseninsel in der Ostsee
+JERSEY;Kanalinsel, auch ein Pulloverstoff
+WIGHT;Englische Insel mit Musikfestival
+SKYE;Schottische Insel mit Nebelbergen
+ISCHIA;Thermalinsel im Golf von Neapel
+SANTORIN;Weiße Häuser am Kraterrand
+MYKONOS;Griechische Partyinsel mit Windmühlen
+NAXOS;Größte Kykladeninsel
+LESBOS;Griechische Insel der Dichterin Sappho
+SAMOS;Griechische Insel des Pythagoras
+KOS;Griechische Insel des Hippokrates
+HVAR;Sonnigste Insel Kroatiens
+KRK;Kroatische Insel ohne Vokale
+BERMUDA;Inseln mit geheimnisvollem Dreieck
+BAHAMAS;Inselstaat vor Florida
+ARUBA;Karibikinsel vor Venezuela
+CURACAO;Karibikinsel, wie ein blauer Likör
+BARBADOS;Östlichste Karibikinsel
+TRINIDAD;Karibikinsel des Steelpans
+TOBAGO;Schwesterinsel von Trinidad
+LUZON;Hauptinsel der Philippinen
+PHUKET;Größte Insel Thailands
+LOMBOK;Nachbarinsel von Bali
+GOMERA;Kanarische Insel der Pfeifsprache
+ALCATRAZ;Gefängnisinsel vor San Francisco
+ELLIS;Einwandererinsel vor New York
+ATLANTIS;Versunkene Sageninsel

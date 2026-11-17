@@ -1,0 +1,63 @@
+# Kapitel „Musikstile“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+POP;Musik aus den Charts, für alle eingängig
+ROCK;E-Gitarre, Schlagzeug und laute Verstärker
+RAP;Sprechgesang über einen Beat
+JAZZ;Improvisation mit Saxofon und Swing
+TECHNO;Elektronischer Beat im Club, die ganze Nacht
+HIPHOP;Kultur aus Rap, Breakdance und Graffiti
+METAL;Sehr harte Gitarren und Headbangen
+PUNK;Laut, schnell, rebellisch, mit Irokesenschnitt
+REGGAE;Entspannter Rhythmus aus Jamaika
+BLUES;Traurige Musik der Baumwollfelder
+SOUL;Gefühlvoller Gesang mit Gospelwurzeln
+FUNK;Groove mit Slap-Bass
+DISCO;Glitzerkugel und Schlaghosen der Siebziger
+HOUSE;Elektronische Clubmusik aus Chicago
+TRAP;Rap mit tiefen Bässen und schnellen Hi-Hats
+DUBSTEP;Elektronik mit wobbelnden Bässen
+SCHLAGER;Deutsche Mitsing-Musik für die Party
+KLASSIK;Musik von Mozart, Bach und Beethoven
+OPER;Ganze Geschichte auf der Bühne gesungen
+SALSA;Lateinamerikanischer Tanz, auch eine scharfe Soße
+SAMBA;Brasilianischer Karnevalsrhythmus
+TANGO;Leidenschaftlicher Paartanz aus Buenos Aires
+WALZER;Drehtanz im Dreivierteltakt aus Wien
+POLKA;Flotter Tanz aus Böhmen
+COUNTRY;Musik mit Cowboyhut und Banjo
+FOLK;Volksmusik mit Akustikgitarre
+GOSPEL;Kirchlicher Chorgesang voller Freude
+SWING;Tanzmusik der Big Bands
+INDIE;Musik abseits der großen Plattenfirmen
+GRUNGE;Rock aus Seattle mit Flanellhemd
+EMO;Gefühlsbetonter Rock mit schwarzer Ponyfrisur
+SKA;Schneller Offbeat mit Bläsern aus Jamaika
+TRANCE;Elektronik mit schwebenden Melodien
+DRILL;Düsterer Rap mit rutschenden Bässen
+GRIME;Schneller Rap aus London
+AFROBEAT;Afrikanischer Groove aus Nigeria
+JUNGLE;Schnelle Breakbeats und tiefe Bässe
+AMBIENT;Ruhige Klangflächen zum Entspannen
+LOFI;Entspannte Beats zum Lernen, mit Knistern
+KPOP;Koreanischer Pop mit perfekter Choreografie
+JPOP;Japanischer Pop
+ELECTRO;Elektronische Musik mit Roboterstimme
+RAVE;Party mit elektronischer Musik bis zum Morgen
+GABBER;Extrem schnelle, harte Elektronik aus Holland
+HARDCORE;Extrem harte, schnelle Variante von Punk oder Techno
+CHANSON;Französisches Lied mit Text im Mittelpunkt
+FADO;Melancholisches Lied aus Lissabon
+FLAMENCO;Spanischer Tanz mit Klatschen und Gitarre
+JODELN;Alpiner Gesang mit Kehlkopfschlag
+BAROCK;Epoche von Bach und Vivaldi
+BALLADE;Langsames, gefühlvolles Lied
+PHONK;Düsterer Rap mit Kuhglocke, aus Memphis
+HYPERPOP;Überdrehter, schriller Internetpop
+CLOUDRAP;Verträumter Rap mit Halleffekten
+SYNTHPOP;Pop mit Synthesizern der Achtziger
+GARAGE;Britischer Clubsound mit gebrochenem Beat
+MARSCH;Musik für den Gleichschritt
+BEATBOX;Schlagzeug nur mit dem Mund
+RNB;Rhythmus und Blues, kurz
+BOSSA;Brasilianischer Jazz, „neue Welle“ ohne „Nova“
+ACID;Clubmusik mit quietschendem Bass
