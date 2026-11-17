@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v5 umgesetzt** (Kapitel-Brett mit 8 Kapiteln in 2 Reihen, Dreh-Animation, Bronze / Silber / Gold). Screenshots: [Brett v1](images/chapter-board-v1.png), [Brett mit Wertungen](images/chapter-board-v2.png). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v5 umgesetzt** (Kapitel-Brett mit 8 Kapiteln in 2 Reihen, Dreh-Animation, Bronze / Silber / Gold). Screenshots: [Brett v1](images/chapter-board-v1.png), [Brett mit Wertungen](images/chapter-board-v2.png), [Nachbarn aufgedeckt](images/chapter-board-v3.png). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Münzen, Preise und Sterne sind in allen Modi gleich. Ausnahme: Die Story hat feste Hilfen statt Draft (v4.3).
 
@@ -36,18 +36,19 @@ Reihe 5   ⬡ ⬡ ⬡ ⬡    verdeckt
 Reihe 4   ⬡ ⬡ ⬡ ⬡    verdeckt
 Reihe 3   ⬡ ⬡ ⬡ ⬡    verdeckt
 Reihe 2   ⬡ ⬡ ⬡ ⬡    Flüsse · Automarken · Länder · Berufe
-Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu Beginn offen
+Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gemüse und Tiere zu Beginn offen
 ```
 
 - **Größe:** 4 Hexagons breit, 6 hoch (24 Kapitel). Leicht unten, schwer oben.
-- **Zu Beginn** ist nur **Reihe 1 aufgedeckt**; alle anderen Hexagons liegen verdeckt (Rückseite).
+- **Anordnung** wie im Spielfeld: Spalten 2 und 4 liegen einen halben Stein tiefer. Jedes Hexagon hat bis zu 6 Nachbarn.
+- **Zu Beginn** sind nur **Tiere** und **Gemüse** aufgedeckt (v5.2).
 - **Optik:** Die Kapitel sind **3D-Kristall-Hexagons wie die Spielsteine** (gleiches Licht, gleicher Glanz); Aufdecken ist eine echte Drehung wie beim Tauschen der Buchstabensteine.
 - **Beschriftung:** Ein aufgedecktes Hexagon zeigt den **Namen** des Kapitels und darunter die **Sterne** (☆☆☆ … ★★★); keine Emojis (Schrift auf Android).
 - **Kapitel geschafft:** Das Hexagon **dreht sich** und zeigt seine Wertung: **Bronze** (★), **Silber** (★★), **Gold** (★★★). Nochmal spielen kann die Wertung verbessern (die beste zählt).
-- **Animation:** Kommt man nach einem Kapitel aufs Brett zurück, dreht sich zuerst der Stein mit der neuen oder besseren Wertung, danach die neu aufgedeckte Reihe Stein für Stein (je mit kurzem Vibrations-Tick). Verdeckt: dunkles Rauchglas; offen, noch nicht geschafft: Kristall mit gedämpftem Kern; Schrift mit dunklem Rand.
-- **Nächste Reihe:** Sobald **mindestens ein Kapitel einer Reihe** geschafft ist, drehen sich **alle 4 Hexagons der nächsten Reihe** um und sind spielbar. Wer an einem Thema hängt, nimmt ein anderes derselben Reihe (Umgehung statt Sackgasse).
+- **Freischalten über Nachbarn (v5.2):** Ein geschafftes Kapitel deckt alle **angrenzenden** Hexagons auf. Beispiel: Gemüse geschafft → Kleidung, Früchte, Automarken; Tiere geschafft → Früchte, Berufe. Wer an einem Thema hängt, nimmt ein anderes offenes.
+- **Aufdeck-Animation bei jedem Betreten** des Bretts: zuerst liegen alle Steine verdeckt, dann drehen sich die aufgedeckten **nacheinander** um (von unten nach oben, je mit kurzem Vibrations-Tick); geschaffte zu Bronze / Silber / Gold. Verdeckt: dunkles Rauchglas; offen: Kristall mit gedämpftem Kern; Schrift mit dunklem Rand.
 - **Erste Version: 2 Reihen, 8 Kapitel.**
-  - Reihe 1 (einfach): **Tiere, Gemüse, Früchte, Kleidung**.
+  - Reihe 1 (einfach): **Kleidung, Gemüse, Früchte, Tiere**.
   - Reihe 2 (mittel): **Flüsse, Automarken, Länder, Berufe**. Flüsse und Automarken haben genug Wörter (je ≥ 57, nur 3–8 Buchstaben). Länder ohne lange Namen (DEUTSCHLAND, FRANKREICH usw. passen nicht in 8 Blöcke).
   - Reihen 3–6 bleiben verdeckt mit Hinweis „bald“; sie werden Stück für Stück gefüllt.
 - **Neue Wortlisten** (Kleidung, Flüsse, Automarken, Länder, Berufe) mit Rätselsätzen schreibt Claude, Adrian prüft.
@@ -120,3 +121,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 - **v5 (Entwurf):** Kapitel-Brett statt Pfad: 4 × 6 große Hexagons, Reihe 1 offen, nächste Reihe dreht sich, sobald ein Kapitel der Reihe geschafft ist; Wertung Bronze / Silber / Gold. Erste Version 2 Reihen: Tiere, Gemüse, Früchte, Kleidung; Flüsse, Automarken, Länder, Berufe.
 - **v5:** Kapitel-Brett umgesetzt (Schritte 1–3): 3D-Hexagons, Freischalten je Reihe, Bronze / Silber / Gold mit Dreh-Animation; neue Kapitel Kleidung, Flüsse, Automarken, Länder, Berufe (Wortlisten von Claude, Prüfung durch Adrian offen).
 - **v5.1:** Kein Wort doppelt pro Lauf (auch nicht als gefundenes Themenwort statt des Ziels).
+- **v5.2:** Tiere und Kleidung getauscht; Start mit Tiere und Gemüse; Freischalten über Nachbarn statt Reihen; Aufdeck-Animation bei jedem Betreten des Bretts.

@@ -5,14 +5,17 @@ extends RefCounted
 ## (# = Kommentar).
 
 ## Kapitel-Brett (spec/story-mode.md, „Kapitel-Brett“): BOARD_COLS × BOARD_ROWS Hexagons,
-## Reihe 0 unten (leicht) bis oben (schwer). Je Reihe [Kennung, Name]; Reihen ohne Eintrag
-## sind noch leer („bald“). Ein Kapitel ist spielbar, wenn seine Wortliste existiert.
+## Reihe 0 unten (leicht) bis oben (schwer), ungerade Spalten einen halben Stein tiefer (wie
+## HexGrid). Je Reihe [Kennung, Name]; Reihen ohne Eintrag sind noch leer („bald“).
+## Offen sind die START-Kapitel und alle Nachbarn geschaffter Kapitel.
 const BOARD_COLS := 4
 const BOARD_ROWS := 6
 const BOARD := [
-	[["tiere", "Tiere"], ["gemuese", "Gemüse"], ["fruechte", "Früchte"], ["kleidung", "Kleidung"]],
+	[["kleidung", "Kleidung"], ["gemuese", "Gemüse"], ["fruechte", "Früchte"], ["tiere", "Tiere"]],
 	[["fluesse", "Flüsse"], ["automarken", "Automarken"], ["laender", "Länder"], ["berufe", "Berufe"]],
 ]
+## Zu Beginn offene Kapitel.
+const START: PackedStringArray = ["tiere", "gemuese"]
 
 var id: String = ""
 var display_name: String = ""
@@ -51,18 +54,35 @@ static func playable(chapter_id: String) -> bool:
 	return FileAccess.file_exists("res://data/story/%s.txt" % chapter_id)
 
 
-## Ist Reihe row aufgedeckt? Reihe 0 immer; sonst, sobald ein Kapitel der Reihe darunter
-## geschafft ist. stars: Callable(id) -> int (beste Sterne, 0 = nicht geschafft).
-static func row_open(row: int, stars: Callable) -> bool:
-	if row <= 0:
-		return true
-	if row > BOARD.size():
+## Nachbarplätze auf dem Brett (wie HexGrid.neighbors: ungerade Spalten liegen tiefer).
+static func board_neighbors(cell: Vector2i) -> Array[Vector2i]:
+	var c := cell.x
+	var r := cell.y
+	var out: Array[Vector2i] = []
+	var off := 0 if c % 2 == 0 else -1
+	var candidates: Array[Vector2i] = [Vector2i(c, r - 1), Vector2i(c, r + 1),
+		Vector2i(c - 1, r + off), Vector2i(c - 1, r + 1 + off),
+		Vector2i(c + 1, r + off), Vector2i(c + 1, r + 1 + off)]
+	for n in candidates:
+		if n.x >= 0 and n.x < BOARD_COLS and n.y >= 0 and n.y < BOARD_ROWS:
+			out.append(n)
+	return out
+
+
+## Ist das Kapitel an diesem Platz aufgedeckt (spielbar)? START-Kapitel immer, sonst sobald
+## ein angrenzendes Kapitel geschafft ist. Leere Plätze nie.
+## stars: Callable(id) -> int (beste Sterne, 0 = nicht geschafft).
+static func cell_open(cell: Vector2i, stars: Callable) -> bool:
+	var here := slot(cell.x, cell.y)
+	if here.is_empty():
 		return false
-	for c in BOARD[row - 1]:
-		if int(stars.call(c[0])) > 0:
+	if START.has(here[0]):
+		return true
+	for n in board_neighbors(cell):
+		var other := slot(n.x, n.y)
+		if not other.is_empty() and int(stars.call(other[0])) > 0:
 			return true
 	return false
-
 
 static func load_chapter(chapter_id: String, name: String) -> StoryChapter:
 	var path := "res://data/story/%s.txt" % chapter_id

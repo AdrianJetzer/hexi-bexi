@@ -136,21 +136,34 @@ func test_no_draft_in_story() -> void:
 	assert_eq(run.owned.size(), 4, "Hilfen bleiben gleich")
 
 
-func test_board_first_row_open() -> void:
+func _open_ids(stars: Callable) -> Array:
+	var out := []
+	for row in StoryChapter.BOARD_ROWS:
+		for col in StoryChapter.BOARD_COLS:
+			if StoryChapter.cell_open(Vector2i(col, row), stars):
+				out.append(StoryChapter.slot(col, row)[0])
+	out.sort()
+	return out
+
+
+func test_board_starts_with_animals_and_vegetables() -> void:
 	var none := func(_id: String) -> int: return 0
-	assert_true(StoryChapter.row_open(0, none))
-	assert_false(StoryChapter.row_open(1, none), "Reihe 2 verdeckt, solange nichts geschafft ist")
-	assert_false(StoryChapter.row_open(5, none))
+	assert_eq(_open_ids(none), ["gemuese", "tiere"])
 
 
-func test_board_next_row_opens_after_one_chapter() -> void:
-	var gemuese := func(id: String) -> int: return 1 if id == "gemuese" else 0
-	assert_true(StoryChapter.row_open(1, gemuese), "ein Kapitel der Reihe darunter reicht")
-	assert_false(StoryChapter.row_open(2, gemuese), "nur eine Reihe weiter")
+func test_board_vegetables_open_neighbors() -> void:
+	var g := func(id: String) -> int: return 1 if id == "gemuese" else 0
+	assert_eq(_open_ids(g), ["automarken", "fruechte", "gemuese", "kleidung", "tiere"])
+
+
+func test_board_animals_open_neighbors() -> void:
+	var t := func(id: String) -> int: return 2 if id == "tiere" else 0
+	assert_eq(_open_ids(t), ["berufe", "fruechte", "gemuese", "tiere"])
 
 
 func test_board_slots() -> void:
-	assert_eq(StoryChapter.slot(0, 0), ["tiere", "Tiere"])
+	assert_eq(StoryChapter.slot(0, 0), ["kleidung", "Kleidung"])
+	assert_eq(StoryChapter.slot(3, 0), ["tiere", "Tiere"])
 	assert_eq(StoryChapter.slot(3, 1)[0], "berufe")
 	assert_eq(StoryChapter.slot(0, 4), [], "obere Reihen noch leer")
 	assert_true(StoryChapter.playable("tiere"))
@@ -181,3 +194,13 @@ func test_found_word_does_not_count_again() -> void:
 	run._complete_quest()
 	assert_false(run._theme.contains(other), "gefundenes Wort zählt nicht mehr")
 	assert_true(run._theme.contains(run.story_target), "neues Ziel zählt")
+
+
+func test_test_mode_solve_is_free() -> void:
+	assert_eq(run.price("solve"), balance.solve_price)
+	run.free_solve = true
+	assert_eq(run.price("solve"), 0, "Testmodus: Lösen gratis")
+	run.coins = 0
+	var before := run.spent
+	assert_true(run.solve(), "auch ohne Münzen")
+	assert_eq(run.spent, before, "nichts ausgegeben")

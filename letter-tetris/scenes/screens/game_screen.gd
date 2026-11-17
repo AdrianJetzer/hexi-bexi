@@ -159,8 +159,9 @@ var _word_lists: Dictionary = {}
 var _settings_button: Button
 var _settings: ColorRect
 var _settings_modes: VBoxContainer
-## Schalter „Vibration an/aus“ in den Einstellungen.
+## Schalter „Vibration an/aus“ und „Testmodus an/aus“ in den Einstellungen.
 var _vibration_button: Button
+var _test_button: Button
 var _mode_confirm: ColorRect
 var _pending_mode: String = ""
 var _confirm: ColorRect
@@ -213,6 +214,7 @@ func new_run(seed_value: int = -1) -> void:
 	for c in _fly_layer.get_children():
 		c.queue_free()
 	session = RunSession.new(BALANCE, _mode.curve, _mode.language, _dictionary, seed_value, _common)
+	session.free_solve = Settings.test_mode
 	if _is_story():
 		if _chapter == null:
 			_chapter = _default_chapter()
@@ -458,6 +460,16 @@ func _build_ui() -> void:
 		Settings.vibration_on = not Settings.vibration_on
 		_update_vibration_button()
 		Settings.tick())
+	_test_button = _button("", 40, st[1])
+	_test_button.flat = true
+	_test_button.add_theme_color_override("font_color", TEXT_DIM)
+	_test_button.custom_minimum_size = Vector2(420, 90)
+	_test_button.pressed.connect(func() -> void:
+		Settings.test_mode = not Settings.test_mode
+		if session != null:
+			session.free_solve = Settings.test_mode
+		_update_vibration_button()
+		_update_labels())
 	var close := _button("Schließen", 48, st[1])
 	close.custom_minimum_size = Vector2(420, 120)
 	close.pressed.connect(func() -> void: _settings.visible = false)
@@ -898,15 +910,15 @@ func _is_story() -> bool:
 	return _mode != null and _mode.id == Settings.STORY_MODE
 
 
-## Erstes spielbares, aufgedecktes, noch nicht geschafftes Kapitel (sonst das erste).
+## Erstes aufgedecktes, noch nicht geschafftes Kapitel (sonst das erste Start-Kapitel).
 func _default_chapter() -> StoryChapter:
-	for row in StoryChapter.BOARD.size():
-		if not StoryChapter.row_open(row, SaveData.story_stars):
-			break
-		for c in StoryChapter.BOARD[row]:
-			if StoryChapter.playable(c[0]) and SaveData.story_stars(c[0]) == 0:
-				return StoryChapter.by_id(c[0])
-	return StoryChapter.all()[0]
+	for row in StoryChapter.BOARD_ROWS:
+		for col in StoryChapter.BOARD_COLS:
+			var slot := StoryChapter.slot(col, row)
+			if StoryChapter.cell_open(Vector2i(col, row), SaveData.story_stars) \
+					and StoryChapter.playable(slot[0]) and SaveData.story_stars(slot[0]) == 0:
+				return StoryChapter.by_id(slot[0])
+	return StoryChapter.by_id(StoryChapter.START[0])
 
 
 func _on_riddle_shown(text: String) -> void:
@@ -1010,8 +1022,7 @@ func _on_chapter_input(event: InputEvent) -> void:
 	if cell != _chapter_press or cell.x < 0:
 		return
 	var slot := StoryChapter.slot(cell.x, cell.y)
-	if StoryChapter.row_open(cell.y, SaveData.story_stars) and not slot.is_empty() \
-			and StoryChapter.playable(slot[0]):
+	if StoryChapter.cell_open(cell, SaveData.story_stars) and StoryChapter.playable(slot[0]):
 		Settings.tick()
 		_start_chapter(StoryChapter.by_id(slot[0]))
 	elif _chapter_board.tiles.has(cell):
@@ -1063,6 +1074,7 @@ func _open_settings() -> void:
 
 func _update_vibration_button() -> void:
 	_vibration_button.text = "Vibration: an" if Settings.vibration_on else "Vibration: aus"
+	_test_button.text = "Testmodus: an (Lösen gratis)" if Settings.test_mode else "Testmodus: aus"
 
 
 func _on_mode_picked(id: String) -> void:

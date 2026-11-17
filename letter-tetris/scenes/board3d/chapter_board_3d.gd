@@ -22,11 +22,9 @@ const BACK_TEXT := Color(0.5, 0.9, 1.0, 0.45)
 const FONT_SIZE := 96
 ## Dunkler Rand um die Schrift (lesbar auch über dem leuchtenden Kern).
 const TEXT_OUTLINE := Color(0.0, 0.02, 0.06, 0.85)
-## Dreh-Animation: Pause vor der ersten Drehung, Abstand zwischen den Steinen einer Reihe.
+## Aufdeck-Animation: Pause vor der ersten Drehung, Abstand zwischen den Steinen.
 const TURN_START := 0.35
-const TURN_STAGGER := 0.16
-## Nach den Drehungen der Wertung folgt die neue Reihe nach dieser Pause.
-const ROW_AFTER_MEDAL := 0.8
+const TURN_STAGGER := 0.22
 
 var layout: BoardLayout
 var camera: Camera3D
@@ -36,10 +34,6 @@ var _mesh: ArrayMesh
 var _mat_open: Material
 var _mat_back: Material
 var _mat_medal: Array[Material] = []
-## Zuletzt gezeigter Stand (Kennung -> Sterne, aufgedeckte Reihen), um Änderungen zu
-## erkennen und nur diese zu drehen. Leer = noch nie gezeigt (dann ohne Animation).
-var _shown_stars: Dictionary = {}
-var _shown_rows: int = -1
 
 
 func _ready() -> void:
@@ -83,20 +77,15 @@ func _ready() -> void:
 
 
 ## Steine neu aufbauen. stars: Callable(id) -> int (beste Sterne, 0 = nicht geschafft).
-## Seit dem letzten Aufbau verbesserte Kapitel drehen sich zu Bronze / Silber / Gold, danach
-## drehen sich neu aufgedeckte Reihen Stein für Stein um. Gibt die Zahl der Drehungen zurück.
+## Beim Betreten liegen alle Steine verdeckt; dann drehen sich die aufgedeckten nacheinander
+## um (von unten nach oben, je mit kurzem Tick), geschaffte zu Bronze / Silber / Gold.
+## Gibt die Zahl der Drehungen zurück.
 func build(stars: Callable) -> int:
 	for t in tiles.values():
 		t.queue_free()
 	tiles.clear()
-	var first := _shown_rows < 0
-	var medal_turns: Array[HexTile3D] = []
-	var row_turns: Array[HexTile3D] = []
-	var open_rows := 0
+	var turns: Array[HexTile3D] = []
 	for row in StoryChapter.BOARD_ROWS:
-		var open := StoryChapter.row_open(row, stars)
-		if open:
-			open_rows = row + 1
 		for col in StoryChapter.BOARD_COLS:
 			var cell := Vector2i(col, row)
 			var slot := StoryChapter.slot(col, row)
@@ -104,49 +93,36 @@ func build(stars: Callable) -> int:
 			add_child(tile)
 			tiles[cell] = tile
 			var c := layout.center(cell)
-			if open and not slot.is_empty():
-				var id: String = slot[0]
-				var playable := StoryChapter.playable(id)
-				var s: int = int(stars.call(id)) if playable else 0
-				var front: Material = _mat_medal[clampi(s, 1, 3) - 1] if s > 0 else _mat_open
-				tile.setup("", _mesh, HEX_RADIUS * (1.0 - GAP), THICKNESS, front, _mat_back)
-				tile.place(Vector3(c.x, 0.0, c.y))
-				_front_text(tile, slot[1], -0.16, 1.0, NAME_COLOR if playable else NAME_DIM)
-				if playable:
-					_front_text(tile, "★".repeat(s) + "☆".repeat(3 - s), 0.34, 0.8,
-							STAR_GOLD if s > 0 else STAR_EMPTY)
-				else:
-					_front_text(tile, "bald", 0.34, 0.6, NAME_DIM)
-				if not first:
-					if row >= _shown_rows:
-						row_turns.append(tile)
-					elif s > int(_shown_stars.get(id, 0)):
-						medal_turns.append(tile)
-				_shown_stars[id] = s
-			else:
-				tile.setup("", _mesh, HEX_RADIUS * (1.0 - GAP), THICKNESS, _mat_open, _mat_back)
-				tile.place(Vector3(c.x, 0.0, c.y))
-				tile.set_flip(0.0)
-				if slot.is_empty():
-					_back_text(tile, "bald")
-	_shown_rows = open_rows
-	var delay := TURN_START
-	for t in medal_turns:
-		t.turn(delay)
-		delay += TURN_STAGGER
-	if not medal_turns.is_empty():
-		delay += ROW_AFTER_MEDAL
-	for t in row_turns:
-		t.turn(delay)
-		delay += TURN_STAGGER
-	# Jede Drehung mit einem kurzen Vibrations-Tick, wenn der Stein umschlägt.
-	var turned := medal_turns + row_turns
-	for k in turned.size():
+			var front: Material = _mat_open
+			var open := StoryChapter.cell_open(cell, stars)
+			var playable := not slot.is_empty() and StoryChapter.playable(slot[0])
+			var s := 0
+			if open and playable:
+				s = int(stars.call(slot[0]))
+				if s > 0:
+					front = _mat_medal[clampi(s, 1, 3) - 1]
+			tile.setup("", _mesh, HEX_RADIUS * (1.0 - GAP), THICKNESS, front, _mat_back)
+			tile.place(Vector3(c.x, 0.0, c.y))
+			if open and playable:
+				_front_text(tile, slot[1], -0.16, 1.0, NAME_COLOR)
+				_front_text(tile, "★".repeat(s) + "☆".repeat(3 - s), 0.34, 0.8,
+						STAR_GOLD if s > 0 else STAR_EMPTY)
+				turns.append(tile)
+			elif slot.is_empty():
+				_back_text(tile, "bald")
+			tile.set_flip(0.0)
+	# Von unten nach oben drehen (Bildschirm-unten = +Z), bei gleicher Höhe von links.
+	turns.sort_custom(func(a: HexTile3D, b: HexTile3D) -> bool:
+		if not is_equal_approx(a.position.z, b.position.z):
+			return a.position.z > b.position.z
+		return a.position.x < b.position.x)
+	for k in turns.size():
+		var delay := TURN_START + k * TURN_STAGGER
+		turns[k].turn(delay)
 		var tw := create_tween()
-		tw.tween_interval(TURN_START + k * TURN_STAGGER + 0.3 \
-				+ (ROW_AFTER_MEDAL if k >= medal_turns.size() and not medal_turns.is_empty() else 0.0))
+		tw.tween_interval(delay + 0.3)
 		tw.tween_callback(Settings.tick)
-	return medal_turns.size() + row_turns.size()
+	return turns.size()
 
 
 ## Kamera so setzen, dass das Brett in area passt (Pixel im Viewport), Blick von oben.

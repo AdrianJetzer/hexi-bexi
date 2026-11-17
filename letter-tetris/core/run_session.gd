@@ -103,6 +103,8 @@ var owned: PackedStringArray = PackedStringArray()
 var offer: Dictionary = {}
 ## Preise nach Upgrades (ID → Preis); sonst gilt der Grundpreis aus GameBalance.
 var _prices: Dictionary = {}
+## Testmodus: „Lösen“ kostet nichts (Einstellungen, „Testmodus“).
+var free_solve: bool = false
 ## Story-Modus (spec/story-mode.md): Kapitel mit Themenwörtern (null = normaler Lauf).
 var story: StoryChapter = null
 ## Themenwörter des Kapitels (nur diese zählen in den Zeilen).
@@ -315,6 +317,8 @@ func has_help(id: String) -> bool:
 
 ## Aktueller Preis einer Hilfe (nach Upgrades).
 func price(id: String) -> int:
+	if id == "solve" and free_solve:
+		return 0
 	return _prices.get(id, base_price(id))
 
 
