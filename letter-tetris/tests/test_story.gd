@@ -204,3 +204,20 @@ func test_test_mode_solve_is_free() -> void:
 	var before := run.spent
 	assert_true(run.solve(), "auch ohne Münzen")
 	assert_eq(run.spent, before, "nichts ausgegeben")
+
+
+func test_story_words_valid_in_normal_dictionary() -> void:
+	# Handverlesene Eigennamen der Story (Länder, Städte, Marken …) gelten auch im normalen Lauf.
+	var full := WordDictionary.from_file("res://data/languages/de/words.bin")
+	var abbrevs := ["AFK", "BMW", "BYD", "DAF", "DKW", "ESA", "FPS", "GAZ", "GMC", "HUD", "NASA",
+			"NIO", "NPC", "NSU", "PVP", "RNB", "UAZ", "WLAN"]
+	for w in abbrevs:
+		assert_false(full.contains(w), "Abkürzung %s gilt nur im Story-Kapitel" % w)
+	var missing := PackedStringArray()
+	for ch in StoryChapter.all():
+		for w in ch.words:
+			if not full.contains(w) and not abbrevs.has(w):
+				missing.append(w)
+	assert_eq(missing.size(), 0, "fehlen im Wörterbuch: %s (tools/dictionary/add_story.sh)" % ", ".join(missing))
+	var common := WordDictionary.from_file("res://data/languages/de/common.bin")
+	assert_false(common.contains("KAWAII"), "Namen und Szenewörter nicht als Tipp/Lösung")

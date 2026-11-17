@@ -1152,15 +1152,13 @@ func test_powerup_after_level_five() -> void:
 	assert_signal_emitted(run, "offer_made")
 	assert_eq(run.offer["kind"], "powerup")
 	var options: PackedStringArray = run.offer["options"]
-	assert_eq(options.size(), 2, "erste Stufe: beide zur Wahl")
-	for id in options:
-		assert_true(["replace", "swap"].has(id), id)
-	assert_false(run.choose("shuffle"), "nicht im Angebot")
-	var pick := options[0]
-	assert_true(run.choose(pick))
+	assert_eq(options, PackedStringArray(["hint"]), "erste Stufe: nur Tipp (Ersetzen, Tauschen deaktiviert)")
+	assert_false(run.choose("replace"), "nicht im Angebot")
+	assert_true(run.choose("hint"))
 	assert_true(run.offer.is_empty())
-	assert_true(run.has_help(pick))
-	assert_false(run.has_help(options[1]), "die andere gibt es nicht")
+	assert_true(run.has_help("hint"))
+	assert_false(run.has_help("replace"), "Ersetzen deaktiviert")
+	assert_false(run.has_help("swap"), "Tauschen deaktiviert")
 	assert_signal_emitted(run, "helps_changed")
 	assert_eq(run.levels_until_offer(), balance.draft_every)
 
@@ -1168,13 +1166,13 @@ func test_powerup_after_level_five() -> void:
 func test_powerup_tiers_in_order() -> void:
 	_draft_run()
 	balance.goal_level = 0  # endlos, damit nach Level 20 Upgrades kommen
-	var expected := [["replace", "swap"], ["shuffle", "joker", "shorten", "hint"],
+	var expected := [["hint"], ["shuffle", "joker", "shorten"],
 			["clear", "split", "magnet"], ["scan", "strike", "complete"]]
 	for tier in expected:
 		_finish_levels(balance.draft_every)
 		assert_eq(run.offer["kind"], "powerup")
 		var options: PackedStringArray = run.offer["options"]
-		assert_eq(options.size(), 2)
+		assert_eq(options.size(), mini(2, tier.size()))
 		for id in options:
 			assert_true(tier.has(id), id)
 		run.choose(options[0])

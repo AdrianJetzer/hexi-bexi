@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v7.12**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v7.13**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -80,6 +80,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Alle Wortformen** gelten, auch gebeugte (z. B. STERNE, RANNTE, GROSSEN).
 - **Eigennamen** (z. B. BERLIN, ANNA, OLGAS) und **Abkürzungen** (z. B. USA, KFZ) gelten **nicht**.
   - Ausnahme: Ist ein Name **auch ein normales Wort** (z. B. ROSE, WOLF, BACH, ERNST, WINTER), gilt er.
+  - Ausnahme: **Handverlesene Eigennamen aus den Story-Kapiteln** gelten auch im normalen Lauf (v7.13): Länder, Hauptstädte, Flüsse, Inseln, Marken, berühmte Personen und Figuren (z. B. BERLIN, JAPAN, RHEIN, PORSCHE, MOZART). Sie erscheinen aber nie als Tipp, Lösung oder Vorschlag. Abkürzungen aus den Story-Listen (NASA, BMW, AFK …) zählen nur im Story-Kapitel. Vornamen und unbekannte Orte (OLGAS, AADORF) bleiben draußen.
   - Entfernt wird ein Wort, wenn Wiktionary es **nur** als Eigenname oder Abkürzung kennt (samt Formen), oder wenn die Trennmuster-Liste es im Kommentar als **Name** vermerkt (z. B. „engl. Name“, „geogr. Name“), außer Wiktionary kennt es als normales Wort (z. B. Newton, Dobermann). Seltene Namen, die Wiktionary nicht kennt, können durchrutschen; dafür später ggf. eine eigene Sperrliste.
 - **Akronyme** wie DEA, CIA, CPU, AfD gelten ebenfalls nicht (in der Trennmuster-Liste als „Abk.“ markiert oder ganz großgeschrieben), außer Wiktionary kennt sie als normal geschriebenes Wort (z. B. Aids, Ufo, Abc).
 - Ebenso Wörter, deren Wiktionary-Eintrag **Großbuchstaben mitten im Wort** hat (z. B. „UGs“ als Mehrzahl von UG = Untergeschoss, „CEOs“, „NASA“, „iPod“), außer es gibt sie auch normal geschrieben. Wörter mit Bindestrich oder Leerzeichen (z. B. „Armee-Einheit“) sind davon nicht betroffen.
@@ -163,3 +164,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.10:** Wörter mit Großbuchstaben mitten im Wiktionary-Stichwort (UGS, CEOS, NASA, IPOD …) gelten nicht (160 Wörter).
 - **v7.11:** Veraltete Schreibweisen (THEE, CITAT, CONCERT …) gelten nicht (rund 1.670 Wörter).
 - **v7.12:** Umlaute Ä, Ö, Ü als eigene Steine; Wörterbuch rund 1,02 Mio. Wörter.
+- **v7.13:** Eigennamen aus den Story-Listen gelten auch im normalen Lauf (ohne Abkürzungen, nicht als Tipp/Lösung).

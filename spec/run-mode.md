@@ -1,6 +1,6 @@
 # Lauf-Modus (Roguelike)
 
-Status: **Entwurf v3**, Ziel Level 20 (v3.33), Preise v3.35. Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
+Status: **Entwurf v3**, Ziel Level 20 (v3.33), Preise v3.36. Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
 
 Markierungen: **[v1]** = kommt in Version 1 · **[später]** = gute Idee, nach Version 1 · **[offen]** = noch nicht entschieden.
 
@@ -120,8 +120,8 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 
   | nach Level | Stufe | Hilfen der Stufe (2 davon zur Wahl) |
   |---|---|---|
-  | 4 | 50 | Ersetzen, Tauschen |
-  | 8 | 100 | Mischen, Joker, Kürzen, Tipp |
+  | 4 | 50 | Tipp (einzige Wahl) |
+  | 8 | 100 | Mischen, Joker, Kürzen |
   | 12 | 150 | Aufräumen, Teilen, Magnet |
   | 16 | 200 | Scan, Zeile streichen, Vervollständigen |
 
@@ -257,3 +257,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.33:** Ziel Level 20 in allen Modi: danach Lauf geschafft mit Sternen (wie Story); Rekord = übrige Münzen; Aufgeben = nicht geschafft. Tipp kostet 100 und gehört zur 100er-Stufe (50er-Stufe: Ersetzen, Mischen). Power-ups nur noch nach Level 5, 10, 15.
 - **v3.34:** Power-ups alle 4 Level (nach 4, 8, 12, 16), damit alle vier Stufen vor dem Ziel Level 20 drankommen.
 - **v3.35:** Neue Preise: Tauschen 50, Mischen 100, Aufräumen 150, Magnet 150, Vervollständigen 200. Die Power-up-Stufen folgen den Preisen (50: Ersetzen, Tauschen; 100: Mischen, Joker, Kürzen, Tipp; 150: Aufräumen, Teilen, Magnet; 200: Scan, Zeile streichen, Vervollständigen).
+- **v3.36:** Tipp kostet wieder 50 und ist die Stufe nach Level 4 (einzige Wahl). Ersetzen und Tauschen sind vorerst deaktiviert (werden nicht angeboten).

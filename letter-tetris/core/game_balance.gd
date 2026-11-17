@@ -69,8 +69,9 @@ func difficulty(level: int) -> DifficultyLevel:
 @export var draft_every: int = 4
 ## Power-up-Stufen in Reihenfolge, je zwei bis vier Hilfe-IDs (siehe RunSession.HELP_IDS).
 @export var draft_tiers: Array[PackedStringArray] = [
-	PackedStringArray(["replace", "swap"]),
-	PackedStringArray(["shuffle", "joker", "shorten", "hint"]),
+	# Ersetzen und Tauschen sind vorerst deaktiviert (nie im Angebot), darum nur Tipp in Stufe 1.
+	PackedStringArray(["hint"]),
+	PackedStringArray(["shuffle", "joker", "shorten"]),
 	PackedStringArray(["clear", "split", "magnet"]),
 	PackedStringArray(["scan", "strike", "complete"]),
 ]
