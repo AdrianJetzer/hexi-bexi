@@ -43,6 +43,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **Anordnung** wie im Spielfeld: Spalten 2 und 4 liegen einen halben Stein tiefer. Jedes Hexagon hat bis zu 6 Nachbarn.
 - **Zu Beginn** sind nur **Tiere** und **Gemüse** aufgedeckt (v5.2).
 - **Optik:** Die Kapitel sind **3D-Kristall-Hexagons wie die Spielsteine** (gleiches Licht, gleicher Glanz); Aufdecken ist eine echte Drehung wie beim Tauschen der Buchstabensteine.
+- **Gesperrt:** Ein Kapitel, dessen Nachbarn noch nicht geschafft sind, zeigt auf dem dunklen Stein nur ein **leuchtendes Schloss** (kein Name, v5.4). Leere Plätze (noch kein Kapitel) zeigen „bald“. Antippen eines gesperrten Steins: er wackelt samt Schloss. Screenshot: [Schloss](images/chapter-board-lock-v1.png).
 - **Beschriftung:** Ein aufgedecktes Hexagon zeigt den **Namen** des Kapitels und darunter die **Sterne** (☆☆☆ … ★★★); keine Emojis (Schrift auf Android).
 - **Kapitel geschafft:** Das Hexagon **dreht sich** und zeigt seine Wertung: **Bronze** (★), **Silber** (★★), **Gold** (★★★). Nochmal spielen kann die Wertung verbessern (die beste zählt).
 - **Freischalten über Nachbarn (v5.2):** Ein geschafftes Kapitel deckt alle **angrenzenden** Hexagons auf. Beispiel: Gemüse geschafft → Kleidung, Früchte, Automarken; Tiere geschafft → Früchte, Berufe. Wer an einem Thema hängt, nimmt ein anderes offenes.
@@ -123,3 +124,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **v5.1:** Kein Wort doppelt pro Lauf (auch nicht als gefundenes Themenwort statt des Ziels).
 - **v5.2:** Tiere und Kleidung getauscht; Start mit Tiere und Gemüse; Freischalten über Nachbarn statt Reihen; Aufdeck-Animation bei jedem Betreten des Bretts.
 - **v5.3:** Reihe 3: Sportarten, Instrumente, Hauptstädte (über Länder), Internet. Weltraum für später vorgemerkt.
+- **v5.4:** Gesperrte Kapitel mit leuchtendem 3D-Schloss statt leerem dunklem Stein.

@@ -21,6 +21,9 @@ const NAME_DIM := Color(0.6, 0.75, 0.85, 0.7)
 const STAR_GOLD := Color(1.7, 1.25, 0.4)
 const STAR_EMPTY := Color(0.55, 0.7, 0.85, 0.65)
 const BACK_TEXT := Color(0.5, 0.9, 1.0, 0.45)
+## Schloss auf gesperrten Kapiteln (leuchtendes Cyan, > 1 = Glow).
+const LOCK_COLOR := Color(0.45, 1.1, 1.35)
+const LOCK_HOLE := Color(0.02, 0.05, 0.1)
 const FONT_SIZE := 96
 ## Dunkler Rand um die Schrift (lesbar auch über dem leuchtenden Kern).
 const TEXT_OUTLINE := Color(0.0, 0.02, 0.06, 0.85)
@@ -112,6 +115,8 @@ func build(stars: Callable) -> int:
 				turns.append(tile)
 			elif slot.is_empty():
 				_back_text(tile, "bald")
+			else:
+				_back_lock(tile)  # Kapitel gibt es, aber noch kein Nachbar ist geschafft
 			tile.set_flip(0.0)
 	# Von unten nach oben drehen (Bildschirm-unten = +Z), bei gleicher Höhe von links.
 	turns.sort_custom(func(a: HexTile3D, b: HexTile3D) -> bool:
@@ -162,6 +167,62 @@ func _back_text(tile: HexTile3D, text: String) -> void:
 	l.scale = Vector3(-1, -1, 1)
 	l.double_sided = true
 	tile.add_back_decoration(l)
+
+
+## Leuchtendes Schloss auf der Rückseite (liegt nach set_flip(0) oben): flacher Körper mit
+## Schlüsselloch und runder Bügel darüber. Die Drehung um Z spiegelt nur x (symmetrisch) und
+## lässt z gleich, darum liegt der Bügel bei −z (oben auf dem Bildschirm).
+func _back_lock(tile: HexTile3D) -> void:
+	var lock := Node3D.new()
+	lock.position = Vector3(0, -THICKNESS * 0.5 - 0.012, 0.06 * HEX_RADIUS)
+	var glow := StandardMaterial3D.new()
+	glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	glow.albedo_color = LOCK_COLOR
+	glow.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var hole_mat := StandardMaterial3D.new()
+	hole_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	hole_mat.albedo_color = LOCK_HOLE
+	hole_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var r := HEX_RADIUS
+	# Bügel: flacher Ring, die untere Hälfte verdeckt der Körper.
+	var shackle := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.13 * r
+	torus.outer_radius = 0.19 * r
+	torus.rings = 32
+	shackle.mesh = torus
+	shackle.material_override = glow
+	shackle.scale = Vector3(1, 0.05, 1)
+	shackle.position = Vector3(0, 0, -0.13 * r)
+	lock.add_child(shackle)
+	# Körper
+	var body := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(0.5 * r, 0.02, 0.36 * r)
+	body.mesh = box
+	body.material_override = glow
+	body.position = Vector3(0, -0.006, 0.05 * r)
+	lock.add_child(body)
+	# Schlüsselloch: Kreis und Schlitz
+	var dot := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.045 * r
+	cyl.bottom_radius = 0.045 * r
+	cyl.height = 0.01
+	dot.mesh = cyl
+	dot.material_override = hole_mat
+	dot.position = Vector3(0, -0.02, 0.02 * r)
+	lock.add_child(dot)
+	var slit := MeshInstance3D.new()
+	var sb := BoxMesh.new()
+	sb.size = Vector3(0.035 * r, 0.01, 0.1 * r)
+	slit.mesh = sb
+	slit.material_override = hole_mat
+	slit.position = Vector3(0, -0.02, 0.08 * r)
+	lock.add_child(slit)
+	for m in lock.get_children():
+		(m as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	tile.add_back_decoration(lock)
 
 
 ## Label3D, das höchstens so breit wird, dass es auf den Stein passt.
