@@ -4,8 +4,26 @@ extends RefCounted
 ## Rätselsätzen. Gelesen aus res://data/story/<id>.txt, Zeilen „WORT;Rätselsatz“
 ## (# = Kommentar).
 
-## Reihenfolge der Kapitel auf dem Pfad: [Kennung, Name].
-const CHAPTERS := [["tiere", "Tiere"], ["gemuese", "Gemüse"], ["fruechte", "Früchte"]]
+## Kapitel-Brett (spec/story-mode.md, „Kapitel-Brett“): BOARD_COLS × BOARD_ROWS Hexagons,
+## Reihe 0 unten (leicht) bis oben (schwer), ungerade Spalten einen halben Stein tiefer (wie
+## HexGrid). Je Reihe [Kennung, Name]; Reihen ohne Eintrag sind noch leer („bald“).
+## Offen sind die START-Kapitel und alle Nachbarn geschaffter Kapitel.
+const BOARD_COLS := 4
+const BOARD_ROWS := 6
+const BOARD := [
+	[["kleidung", "Kleidung"], ["gemuese", "Gemüse"], ["fruechte", "Früchte"], ["tiere", "Tiere"]],
+	[["fluesse", "Flüsse"], ["automarken", "Automarken"], ["laender", "Länder"], ["berufe", "Berufe"]],
+	[["sportarten", "Sportarten"], ["instrumente", "Instrumente"], ["hauptstaedte", "Hauptstädte"],
+			["internet", "Internet"]],
+	[["goetter", "Götter"], ["komponisten", "Komponisten"], ["elemente", "Elemente"],
+			["weltraum", "Weltraum"]],
+	[["fabelwesen", "Fabelwesen"], ["sagenhelden", "Sagenhelden"], ["erfinder", "Erfinder"],
+			["inseln", "Inseln"]],
+	[["japan", "Japan & Anime"], ["superhelden", "Superhelden"], ["musikstile", "Musikstile"],
+			["gaming", "Gaming"]],
+]
+## Zu Beginn offene Kapitel.
+const START: PackedStringArray = ["tiere", "gemuese"]
 
 var id: String = ""
 var display_name: String = ""
@@ -14,22 +32,65 @@ var words: PackedStringArray = PackedStringArray()
 var _riddles: Dictionary = {}
 
 
-## Alle Kapitel in Pfad-Reihenfolge.
+## Alle spielbaren Kapitel in Brett-Reihenfolge (Reihe für Reihe, links nach rechts).
 static func all() -> Array[StoryChapter]:
 	var out: Array[StoryChapter] = []
-	for c in CHAPTERS:
-		var ch := load_chapter(c[0], c[1])
-		if ch != null:
-			out.append(ch)
+	for row in BOARD:
+		for c in row:
+			if playable(c[0]):
+				out.append(load_chapter(c[0], c[1]))
 	return out
 
 
 static func by_id(chapter_id: String) -> StoryChapter:
-	for c in CHAPTERS:
-		if c[0] == chapter_id:
-			return load_chapter(c[0], c[1])
+	for row in BOARD:
+		for c in row:
+			if c[0] == chapter_id:
+				return load_chapter(c[0], c[1])
 	return null
 
+
+## Kennung und Name des Kapitels an Brett-Platz (Spalte, Reihe); leer = noch keins.
+static func slot(col: int, row: int) -> Array:
+	if row < 0 or row >= BOARD.size() or col < 0 or col >= (BOARD[row] as Array).size():
+		return []
+	return BOARD[row][col]
+
+
+## Gibt es die Wortliste schon?
+static func playable(chapter_id: String) -> bool:
+	return FileAccess.file_exists("res://data/story/%s.txt" % chapter_id)
+
+
+## Nachbarplätze auf dem Brett (wie HexGrid.neighbors: ungerade Spalten liegen tiefer).
+static func board_neighbors(cell: Vector2i) -> Array[Vector2i]:
+	var c := cell.x
+	var r := cell.y
+	var out: Array[Vector2i] = []
+	var off := 0 if c % 2 == 0 else -1
+	var candidates: Array[Vector2i] = [Vector2i(c, r - 1), Vector2i(c, r + 1),
+		Vector2i(c - 1, r + off), Vector2i(c - 1, r + 1 + off),
+		Vector2i(c + 1, r + off), Vector2i(c + 1, r + 1 + off)]
+	for n in candidates:
+		if n.x >= 0 and n.x < BOARD_COLS and n.y >= 0 and n.y < BOARD_ROWS:
+			out.append(n)
+	return out
+
+
+## Ist das Kapitel an diesem Platz aufgedeckt (spielbar)? START-Kapitel immer, sonst sobald
+## ein angrenzendes Kapitel geschafft ist. Leere Plätze nie.
+## stars: Callable(id) -> int (beste Sterne, 0 = nicht geschafft).
+static func cell_open(cell: Vector2i, stars: Callable) -> bool:
+	var here := slot(cell.x, cell.y)
+	if here.is_empty():
+		return false
+	if START.has(here[0]):
+		return true
+	for n in board_neighbors(cell):
+		var other := slot(n.x, n.y)
+		if not other.is_empty() and int(stars.call(other[0])) > 0:
+			return true
+	return false
 
 static func load_chapter(chapter_id: String, name: String) -> StoryChapter:
 	var path := "res://data/story/%s.txt" % chapter_id

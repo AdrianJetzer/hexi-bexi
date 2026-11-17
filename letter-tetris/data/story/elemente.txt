@@ -1,0 +1,69 @@
+# Kapitel „Elemente“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+GOLD;Gelbes Edelmetall, Symbol Au
+EISEN;Rostet, Symbol Fe
+SILBER;Glänzendes Edelmetall, Symbol Ag
+KUPFER;Rötliches Metall in Kabeln, Symbol Cu
+BLEI;Sehr schweres, weiches Metall, Symbol Pb
+ZINK;Schützt Stahl vor Rost, Symbol Zn
+ZINN;Daraus gießt man Figuren, Symbol Sn
+NEON;Edelgas in leuchtender Reklame, Symbol Ne
+HELIUM;Macht Ballons leicht und die Stimme hoch
+URAN;Brennstoff für Atomkraftwerke, Symbol U
+PLATIN;Wertvoller als Gold, Symbol Pt
+TITAN;Leichtes, sehr festes Metall, Symbol Ti
+CHLOR;Riecht im Schwimmbad, Symbol Cl
+JOD;Hilft der Schilddrüse, Symbol I
+NATRIUM;Steckt im Kochsalz, Symbol Na
+KALIUM;Steckt in Bananen, Symbol K
+CALCIUM;Macht Knochen stark, Symbol Ca
+SCHWEFEL;Riecht nach faulen Eiern, Symbol S
+PHOSPHOR;Leuchtet im Dunkeln, steckt in Streichhölzern
+SILIZIUM;Steckt in Computerchips und Sand
+CHROM;Lässt Autoteile glänzen, Symbol Cr
+NICKEL;Steckt in Münzen, Symbol Ni
+KOBALT;Gibt Glas eine tiefblaue Farbe
+ARGON;Edelgas in Glühbirnen, Symbol Ar
+FLUOR;Steckt in Zahnpasta, Symbol F
+LITHIUM;Leichtestes Metall, steckt im Handy-Akku
+MANGAN;Härtet Stahl, Symbol Mn
+RADON;Radioaktives Edelgas aus dem Boden
+RADIUM;Von Marie Curie entdeckt, leuchtet
+KRYPTON;Edelgas, wie der Heimatplanet von Superman
+XENON;Edelgas in hellen Autoscheinwerfern
+ARSEN;Bekanntes Gift in Krimis, Symbol As
+BROM;Rotbraune Flüssigkeit, Symbol Br
+SELEN;Spurenelement, nach dem Mond benannt
+WOLFRAM;Glühfaden in alten Glühbirnen, Symbol W
+BOR;Kurzes Element mit Symbol B
+BARIUM;Kontrastmittel beim Röntgen, Symbol Ba
+CÄSIUM;Taktgeber der Atomuhr
+VANADIUM;Element mit Symbol V
+POLONIUM;Von Marie Curie nach ihrer Heimat benannt
+GALLIUM;Schmilzt schon in der Hand
+INDIUM;Steckt in Touchscreens, Symbol In
+IRIDIUM;Sehr seltenes, hartes Metall, Symbol Ir
+OSMIUM;Dichtestes Element, Symbol Os
+RHODIUM;Teuerstes Edelmetall, Symbol Rh
+CADMIUM;Giftiges Metall in alten Akkus, Symbol Cd
+TELLUR;Nach der Erde benannt, Symbol Te
+ANTIMON;Halbmetall mit Symbol Sb
+BISMUT;Bildet regenbogenfarbene Kristalle, Symbol Bi
+THORIUM;Nach dem Donnergott benannt
+TANTAL;Steckt in Handy-Kondensatoren, Symbol Ta
+NIOB;Seltenes Metall mit Symbol Nb
+NEODYM;Für starke Magnete, Symbol Nd
+CER;Steckt im Feuerstein im Feuerzeug, Symbol Ce
+YTTRIUM;Nach einem schwedischen Dorf benannt, Symbol Y
+SCANDIUM;Nach Skandinavien benannt, Symbol Sc
+RUBIDIUM;Färbt Flammen rot, Symbol Rb
+HAFNIUM;Nach Kopenhagen benannt, Symbol Hf
+RHENIUM;Nach dem Rhein benannt, Symbol Re
+ERBIUM;Nach dem Dorf Ytterby benannt, Symbol Er
+HOLMIUM;Nach Stockholm benannt, Symbol Ho
+EUROPIUM;Nach einem Kontinent benannt, Symbol Eu
+CURIUM;Nach Marie und Pierre Curie benannt
+FERMIUM;Nach Enrico Fermi benannt
+NOBELIUM;Nach dem Erfinder des Dynamits benannt
+ASTAT;Seltenstes natürliches Element, Symbol At
+FRANCIUM;Nach Frankreich benannt, Symbol Fr

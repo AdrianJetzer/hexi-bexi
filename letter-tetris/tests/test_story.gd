@@ -22,7 +22,7 @@ func before_each() -> void:
 
 func test_chapters_have_enough_words_and_riddles() -> void:
 	var chapters := StoryChapter.all()
-	assert_eq(chapters.size(), 3)
+	assert_gt(chapters.size(), 2)
 	for ch in chapters:
 		assert_gt(ch.words.size(), 49, ch.id)
 		for w in ch.words:
@@ -134,3 +134,73 @@ func test_no_draft_in_story() -> void:
 		run._complete_quest()
 		assert_true(run.offer.is_empty(), "keine Auswahl nach Level %d" % (i + 1))
 	assert_eq(run.owned.size(), 4, "Hilfen bleiben gleich")
+
+
+func _open_ids(stars: Callable) -> Array:
+	var out := []
+	for row in StoryChapter.BOARD_ROWS:
+		for col in StoryChapter.BOARD_COLS:
+			if StoryChapter.cell_open(Vector2i(col, row), stars):
+				out.append(StoryChapter.slot(col, row)[0])
+	out.sort()
+	return out
+
+
+func test_board_starts_with_animals_and_vegetables() -> void:
+	var none := func(_id: String) -> int: return 0
+	assert_eq(_open_ids(none), ["gemuese", "tiere"])
+
+
+func test_board_vegetables_open_neighbors() -> void:
+	var g := func(id: String) -> int: return 1 if id == "gemuese" else 0
+	assert_eq(_open_ids(g), ["automarken", "fruechte", "gemuese", "kleidung", "tiere"])
+
+
+func test_board_animals_open_neighbors() -> void:
+	var t := func(id: String) -> int: return 2 if id == "tiere" else 0
+	assert_eq(_open_ids(t), ["berufe", "fruechte", "gemuese", "tiere"])
+
+
+func test_board_slots() -> void:
+	assert_eq(StoryChapter.slot(0, 0), ["kleidung", "Kleidung"])
+	assert_eq(StoryChapter.slot(3, 0), ["tiere", "Tiere"])
+	assert_eq(StoryChapter.slot(3, 1)[0], "berufe")
+	assert_eq(StoryChapter.slot(2, 2)[0], "hauptstaedte", "Hauptstädte über Länder")
+	assert_true(StoryChapter.playable("tiere"))
+	for row in StoryChapter.BOARD:
+		for c in row:
+			assert_true(StoryChapter.playable(c[0]), "Wortliste für %s" % c[0])
+	assert_eq(StoryChapter.all().size(), 24, "Brett voll: 6 Reihen à 4 Kapitel")
+
+
+func test_no_word_twice_in_a_run() -> void:
+	var seen := {}
+	for i in 20:
+		assert_false(seen.has(run.story_target), "Ziel %s doppelt" % run.story_target)
+		seen[run.story_target] = true
+		run._complete_quest()
+
+
+func test_found_word_does_not_count_again() -> void:
+	# Ein anderes Themenwort passender Länge finden, dann darf es später nicht mehr zählen.
+	var n := run.story_target.length()
+	var other := ""
+	for w in run.story.words:
+		if w.length() == n and w != run.story_target:
+			other = w
+			break
+	assert_ne(other, "")
+	run._used_targets[other] = true
+	run._complete_quest()
+	assert_false(run._theme.contains(other), "gefundenes Wort zählt nicht mehr")
+	assert_true(run._theme.contains(run.story_target), "neues Ziel zählt")
+
+
+func test_test_mode_solve_is_free() -> void:
+	assert_eq(run.price("solve"), balance.solve_price)
+	run.free_solve = true
+	assert_eq(run.price("solve"), 0, "Testmodus: Lösen gratis")
+	run.coins = 0
+	var before := run.spent
+	assert_true(run.solve(), "auch ohne Münzen")
+	assert_eq(run.spent, before, "nichts ausgegeben")

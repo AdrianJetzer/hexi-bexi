@@ -1,0 +1,68 @@
+# Kapitel „Sportarten“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+FUSSBALL;Elf gegen elf, und der Ball muss ins Tor
+TENNIS;Gelber Filzball, Schläger und ein Netz
+GOLF;Kleiner Ball, achtzehn Löcher
+SKI;Zwei lange Bretter für den Schnee
+JUDO;Japanischer Kampfsport im weißen Anzug mit Gürtel
+BOXEN;Kampf mit dicken Handschuhen im Ring
+REITEN;Sport im Sattel
+RUDERN;Mit Riemen im schmalen Boot übers Wasser
+SEGELN;Der Wind treibt das Boot an
+TURNEN;Reck, Barren und Bodenübung
+KARATE;Japanischer Kampfsport mit Handkantenschlag
+SURFEN;Auf dem Brett über die Welle gleiten
+TAUCHEN;Mit Flasche und Maske unter Wasser
+JOGGEN;Gemütliches Laufen im Park
+RINGEN;Zwei Gegner versuchen, sich auf die Matte zu drücken
+FECHTEN;Kampf mit Degen oder Florett
+HOCKEY;Mit dem Krummstock auf den Puck oder Ball
+RUGBY;Eiförmiger Ball, harte Zweikämpfe
+CURLING;Steine übers Eis schieben, mit Besen wischen
+YOGA;Dehnen und atmen auf der Matte
+BOWLING;Kugel rollt auf zehn Kegel
+KEGELN;Neun Holzfiguren umwerfen
+KLETTERN;Mit Seil und Griffen die Wand hinauf
+WANDERN;Zu Fuß über Berg und Tal
+RODELN;Mit dem Schlitten den Hang hinunter
+BIATHLON;Langlauf und Schießen kombiniert
+SKATEN;Rollen und Tricks auf dem kleinen Brett
+SPRINT;Kurzer, schneller Lauf
+MARATHON;Über 42 Kilometer laufen
+DARTS;Pfeile auf eine runde Scheibe werfen
+BILLARD;Mit dem Queue Kugeln einlochen
+SCHACH;König und Dame auf 64 Feldern
+POLO;Ballspiel hoch zu Pferd
+KANU;Paddeln im offenen Boot
+KAJAK;Paddeln im geschlossenen Boot, mit Doppelpaddel
+SQUASH;Ball gegen die Wand, im kleinen Raum
+SUMO;Schwere Ringer im japanischen Kreis
+AIKIDO;Japanische Kampfkunst, die die Kraft des Gegners nutzt
+KUNGFU;Chinesische Kampfkunst aus dem Shaolin-Kloster
+HANDBALL;Sieben gegen sieben, mit der Hand ins Tor
+BASEBALL;Schlagholz, Handschuh und vier Bases
+CRICKET;Englischer Schlagballsport mit Wicket
+LACROSSE;Ballspiel mit Netzschläger
+DISKUS;Runde Scheibe weit werfen
+SPEER;Langer Wurfstab in der Leichtathletik
+KUGEL;Schwerer Eisenball, wird gestoßen, nicht geworfen
+HÜRDEN;Lauf über Hindernisse auf der Bahn
+RAFTING;Im Schlauchboot durch wilde Flüsse
+KITEN;Mit Drachen und Brett übers Wasser
+PARKOUR;Über Mauern und Dächer springen
+BOULDERN;Klettern ohne Seil an niedrigen Wänden
+PILATES;Training für die Körpermitte auf der Matte
+ZUMBA;Fitnesstanz zu lateinamerikanischer Musik
+CROSSFIT;Hartes Training mit Gewichten und Seilen
+DUATHLON;Laufen, Radfahren, Laufen
+GOALBALL;Ballspiel für Blinde mit Glocke im Ball
+FRISBEE;Fliegende Scheibe werfen und fangen
+LANGLAUF;Auf schmalen Skiern durch die Loipe
+EISLAUF;Pirouetten auf Kufen
+RADSPORT;Rennen auf zwei Rädern, wie die Tour de France
+TRIAL;Motorrad- oder Velo-Geschicklichkeit über Hindernisse
+GOKART;Kleine Rennwagen auf der Bahn
+ANGELN;Mit Rute und Köder am Wasser
+BOGEN;Pfeile mit der Sehne auf die Zielscheibe
+KRAULEN;Schnellster Schwimmstil
+DELFIN;Schwimmstil mit Wellenbewegung

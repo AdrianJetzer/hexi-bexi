@@ -1,0 +1,67 @@
+# Kapitel „Götter“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+ZEUS;Griechischer Göttervater, schleudert Blitze
+THOR;Nordischer Donnergott mit Hammer
+ODIN;Nordischer Göttervater mit nur einem Auge
+APOLLO;Griechischer Gott des Lichts und der Musik
+VENUS;Römische Göttin der Liebe
+MARS;Römischer Kriegsgott
+LOKI;Nordischer Gott der List und Täuschung
+POSEIDON;Griechischer Meeresgott mit Dreizack
+HADES;Griechischer Herrscher der Unterwelt
+HERA;Gattin des Zeus, Göttin der Ehe
+ATHENE;Griechische Göttin der Weisheit, mit Eule
+AMOR;Römischer Liebesgott mit Pfeil und Bogen
+EROS;Griechischer Gott der Liebe, mit Flügeln
+HERMES;Götterbote mit geflügelten Schuhen
+ARES;Griechischer Kriegsgott
+ARTEMIS;Griechische Göttin der Jagd
+NEPTUN;Römischer Gott des Meeres
+JUPITER;Römischer Göttervater
+MERKUR;Römischer Götterbote
+ISIS;Ägyptische Muttergöttin
+OSIRIS;Ägyptischer Gott der Unterwelt
+ANUBIS;Ägyptischer Totengott mit Schakalkopf
+HORUS;Ägyptischer Himmelsgott mit Falkenkopf
+NIKE;Griechische Siegesgöttin, wie eine Schuhmarke
+GAIA;Griechische Urmutter Erde
+PAN;Hirtengott mit Bocksbeinen und Flöte
+KRONOS;Titan, Vater des Zeus
+DEMETER;Griechische Göttin der Ernte
+DIONYSOS;Griechischer Gott des Weines
+HELIOS;Griechischer Sonnengott mit Wagen
+SELENE;Griechische Mondgöttin
+EOS;Griechische Göttin der Morgenröte
+HESTIA;Griechische Göttin des Herdfeuers
+URANOS;Griechischer Gott des Himmels
+JUNO;Gattin Jupiters, römische Göttin der Ehe
+MINERVA;Römische Göttin der Weisheit
+DIANA;Römische Göttin der Jagd
+VULKAN;Römischer Gott des Feuers und der Schmiede
+BACCHUS;Römischer Gott des Weines
+JANUS;Römischer Gott mit zwei Gesichtern
+VESTA;Römische Göttin des Herdes
+CERES;Römische Göttin des Ackerbaus
+FORTUNA;Römische Göttin des Glücks
+FREYA;Nordische Göttin der Liebe
+FRIGG;Gattin Odins
+BALDUR;Nordischer Gott des Lichts
+TYR;Nordischer Kriegsgott, verlor eine Hand
+HEIMDALL;Wächter der Regenbogenbrücke
+IDUN;Hüterin der goldenen Äpfel
+FREYR;Nordischer Gott der Fruchtbarkeit
+HEL;Nordische Herrscherin der Totenwelt
+SETH;Ägyptischer Gott des Chaos
+THOT;Ägyptischer Gott der Schrift, mit Ibiskopf
+BASTET;Ägyptische Katzengöttin
+AMUN;Ägyptischer Reichsgott
+ATON;Ägyptische Sonnenscheibe als Gott
+PTAH;Ägyptischer Schöpfergott von Memphis
+SHIVA;Indischer Gott der Zerstörung, tanzt
+VISHNU;Indischer Gott, Bewahrer der Welt
+BRAHMA;Indischer Schöpfergott mit vier Köpfen
+KALI;Indische Göttin mit vielen Armen
+GANESHA;Indischer Gott mit Elefantenkopf
+KRISHNA;Indischer Gott mit blauer Haut und Flöte
+INDRA;Indischer Gott des Donners
+AGNI;Indischer Feuergott

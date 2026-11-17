@@ -1,0 +1,65 @@
+# Kapitel „Kleidung“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+HOSE;Hat zwei Beine, aber läuft nicht allein
+JACKE;Hält warm und hat oft einen Reißverschluss
+SOCKE;Verschwindet gern in der Waschmaschine
+MÜTZE;Wärmt im Winter die Ohren und den Kopf
+SCHAL;Wird im Winter um den Hals gewickelt
+KLEID;Oberteil und Rock aus einem Stück
+ROCK;Unten offen, um die Hüfte getragen
+HEMD;Hat einen Kragen und eine Knopfleiste
+SCHUH;Man trägt ihn am Fuß, mit Schnürsenkel
+HUT;Hat eine Krempe und sitzt auf dem Kopf
+MANTEL;Langer, warmer Überzieher für kalte Tage
+BLUSE;Feines Oberteil mit Knöpfen
+STIEFEL;Hoher Schuh für Regen und Schnee
+PULLI;Kuscheliges Oberteil aus Wolle, kurz gesagt
+JEANS;Blaue Hose aus festem Baumwollstoff
+GÜRTEL;Hält die Hose oben, mit Schnalle
+KAPPE;Hat einen Schirm gegen die Sonne
+WESTE;Oberteil ganz ohne Ärmel
+KRAWATTE;Langer Stoffstreifen, zum Knoten gebunden
+ANZUG;Sakko und Hose aus gleichem Stoff
+BIKINI;Zweiteilig, für Strand und Schwimmbad
+PYJAMA;Zweiteilig, man schläft darin
+SANDALE;Luftiger Sommerschuh mit Riemen
+PULLOVER;Warmes Strickoberteil, das man über den Kopf zieht
+SCHÜRZE;Schützt beim Kochen die Kleidung
+STRUMPF;Langer Fußwärmer, oft aus Nylon
+SHORTS;Kurze Hose für heiße Tage
+BADEHOSE;Zieht man(n) zum Schwimmen an
+KAPUZE;Gehört zur Jacke und schützt den Kopf vor Regen
+UNIFORM;Gleiche Kleidung für Polizei oder Soldaten
+KOSTÜM;Verkleidung für den Fasnachtsumzug
+FLIEGE;Kleiner Schleifenknoten am Hemdkragen
+SAKKO;Elegante Jacke zum Anzug
+HELM;Harte Schale, die den Kopf schützt
+SLIP;Kleine Unterhose
+DIRNDL;Bayerisches Trachtenkleid mit Schürze
+KIMONO;Langes japanisches Gewand mit Gürtel
+TRACHT;Traditionelle Kleidung einer Region
+OVERALL;Hose und Oberteil in einem, für die Arbeit
+LEGGINGS;Enge Hose aus dehnbarem Stoff
+PARKA;Lange Winterjacke mit Kapuze
+ANORAK;Wetterjacke zum Überziehen
+SCHLEIER;Dünner Stoff vor dem Gesicht der Braut
+TURBAN;Langes Tuch, um den Kopf gewickelt
+HOODIE;Pulli mit Kapuze, auf Englisch
+BLAZER;Sportliches Jackett
+PONCHO;Decke mit Loch für den Kopf
+TUNIKA;Langes, weites Oberteil
+SMOKING;Schwarzer Abendanzug mit Fliege
+FRACK;Festlicher Anzug mit langen Schößen hinten
+ZYLINDER;Hoher Hut des Zauberers
+UMHANG;Weiter Mantel ohne Ärmel, wie bei Superhelden
+SNEAKER;Bequemer Turnschuh für die Straße
+PUMPS;Elegante Damenschuhe mit Absatz
+CLOGS;Holzschuhe aus Holland
+LATZHOSE;Hose mit Brustteil und Trägern
+HALSTUCH;Kleines Tuch um den Hals
+BARETT;Flache, runde Mütze ohne Schirm
+KORSETT;Schnürt die Taille eng
+MOKASSIN;Weicher Lederschuh der Ureinwohner Amerikas
+SARI;Langes Wickeltuch der Frauen in Indien
+STOLA;Breiter Schal über den Schultern
+TALAR;Langes schwarzes Gewand von Richtern

@@ -1,0 +1,68 @@
+# Kapitel „Japan & Anime“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+SUSHI;Reis mit rohem Fisch, oft in Algen gerollt
+MANGA;Japanischer Comic, gelesen von rechts nach links
+ANIME;Japanischer Zeichentrickfilm
+NINJA;Schwarz gekleideter Schattenkrieger
+SAMURAI;Krieger mit Ehrenkodex und Schwert
+RAMEN;Nudelsuppe in großer Schüssel
+KARAOKE;Singen zu Musik ohne Gesang
+TSUNAMI;Riesige Flutwelle nach einem Seebeben
+ORIGAMI;Kunst des Papierfaltens
+BONSAI;Winziger Baum in einer Schale
+KAWAII;Japanisch für „süß, niedlich“
+SENSEI;Lehrer oder Meister
+OTAKU;Großer Fan von Anime und Manga
+COSPLAY;Sich als Lieblingsfigur verkleiden
+CHIBI;Figur mit großem Kopf und kleinem Körper
+SAKURA;Kirschblüte im Frühling
+WASABI;Grüne, scharfe Paste zum Sushi
+TOFU;Weißer Würfel aus Sojabohnen
+MISO;Würzige Paste für eine Suppe
+TEMPURA;Frittiertes Gemüse oder Garnelen im Teig
+BENTO;Lunchbox mit vielen kleinen Fächern
+ONIGIRI;Reisdreieck mit Algenblatt
+UDON;Dicke Weizennudeln
+SOBA;Buchweizennudeln
+MOCHI;Klebriger Reiskuchen
+MATCHA;Grüner Teepulver-Trend
+HAIKU;Kurzes Gedicht mit drei Zeilen
+KATANA;Langes, gebogenes Schwert
+SHURIKEN;Wurfstern der Schattenkrieger
+DOJO;Trainingshalle für Kampfkunst
+ZEN;Meditation und innere Ruhe
+KOI;Bunter Zierkarpfen im Teich
+GEISHA;Unterhaltungskünstlerin im Kimono
+SHOGUN;Militärherrscher im alten Japan
+RONIN;Samurai ohne Herrn
+DAIMYO;Fürst im alten Japan
+KABUKI;Theater mit bunt geschminkten Gesichtern
+TATAMI;Matte aus Reisstroh auf dem Boden
+FUTON;Japanische Matratze zum Ausrollen
+TORII;Rotes Tor vor einem Schrein
+SHINTO;Japanische Naturreligion
+KYOTO;Alte Kaiserstadt mit vielen Tempeln
+FUJI;Heiliger Vulkan Japans
+YEN;Japanische Währung
+OBI;Breiter Gürtel zum Kimono
+KENDO;Fechten mit Bambusschwert
+SENPAI;Älterer Mitschüler, „bemerkt mich hoffentlich“
+SAYONARA;Japanisch für „Auf Wiedersehen“
+ARIGATO;Japanisch für „Danke“
+BANZAI;Ruf für „zehntausend Jahre“
+SHONEN;Manga für Jungen mit viel Action
+SHOJO;Manga für Mädchen mit viel Gefühl
+MECHA;Riesiger Kampfroboter mit Pilot
+KAIJU;Riesenmonster, das Städte zertrampelt
+YOKAI;Geister und Dämonen aus der japanischen Sage
+KITSUNE;Magischer Fuchs mit vielen Schwänzen
+NINJUTSU;Kampfkunst der Schattenkrieger
+PACHINKO;Lautes Glücksspiel mit Metallkugeln
+MAKI;Gerollte Sushi-Variante
+SASHIMI;Roher Fisch ohne Reis
+EDAMAME;Grüne Sojabohnen in der Schote
+TAKOYAKI;Teigbällchen mit Tintenfisch
+SHIBA;Hunderasse aus einem berühmten Meme
+NARUTO;Ninja mit Fuchsgeist, oranger Anzug
+GOKU;Saiyajin mit Stachelfrisur
+TOTORO;Großer, flauschiger Waldgeist

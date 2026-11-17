@@ -1,0 +1,66 @@
+# Kapitel „Superhelden“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+BATMAN;Fledermausmann aus Gotham City
+SUPERMAN;Kommt vom Planeten Krypton, fliegt mit rotem Umhang
+HULK;Wird grün und riesig, wenn er wütend ist
+JOKER;Lachender Erzfeind mit grüner Frisur
+IRONMAN;Milliardär in einer Rüstung aus Metall
+FLASH;Schnellster Mann der Welt, roter Anzug mit Blitz
+ROBIN;Junger Gehilfe des Fledermausmanns
+GROOT;Baumwesen, sagt nur einen einzigen Satz
+VENOM;Schwarzer Symbiont mit langer Zunge
+DEADPOOL;Söldner mit großem Mundwerk, rotem Anzug
+AQUAMAN;König von Atlantis, spricht mit Fischen
+CATWOMAN;Diebin im Katzenkostüm
+THANOS;Lila Titan mit dem Handschuh der Unendlichkeit
+MAGNETO;Lenkt Metall mit seinen Gedanken
+STORM;Mutantin, die das Wetter beherrscht
+WAKANDA;Verstecktes afrikanisches Land des schwarzen Panthers
+GOTHAM;Düstere Stadt des Fledermausmanns
+ASGARD;Himmelreich des Donnergottes
+BATMOBIL;Schwarzes Auto des dunklen Ritters
+SIDEKICK;Englisch für den Gehilfen eines Helden
+MASKE;Verdeckt das Gesicht, damit niemand einen erkennt
+ANTMAN;Wird so klein wie eine Ameise
+HAWKEYE;Trifft mit Pfeil und Bogen immer
+GAMORA;Grüne Kriegerin, Ziehtochter des lila Titanen
+ROCKET;Waschbär mit großen Waffen
+DRAX;Muskelprotz, versteht keine Metaphern
+WANDA;Scharlachrote Hexe
+VISION;Synthetischer Held mit Stein auf der Stirn
+FALCON;Fliegt mit mechanischen Flügeln
+SHAZAM;Ein Junge ruft ein Zauberwort und wird zum Helden
+CYBORG;Halb Mensch, halb Maschine
+BATGIRL;Fledermaus-Heldin mit roten Haaren
+ELEKTRA;Ninja-Kämpferin mit zwei Dolchen
+LOGAN;Vorname des Helden mit Krallen aus Metall
+XAVIER;Professor im Rollstuhl, liest Gedanken
+MYSTIQUE;Blaue Gestaltwandlerin
+GAMBIT;Wirft aufgeladene Spielkarten
+COLOSSUS;Verwandelt seine Haut in Stahl
+DOOM;Doktor mit Metallmaske, Erzfeind der Fantastischen Vier
+LUTHOR;Glatzköpfiger Erzfeind des Mannes aus Stahl
+ZOD;General vom Planeten Krypton, drei Buchstaben
+DARKSEID;Herrscher des Planeten Apokolips
+BANE;Brach dem Fledermausmann den Rücken
+RIDDLER;Hinterlässt am Tatort Rätsel
+ULTRON;Böse künstliche Intelligenz
+SPIDEY;Spitzname der freundlichen Spinne aus der Nachbarschaft
+MILES;Vorname des jungen Spinnen-Helden
+BRUCE;Vorname hinter der Fledermausmaske
+CLARK;Vorname des Reporters mit Brille, der fliegen kann
+TONY;Vorname des Milliardärs in der Metallrüstung
+PETER;Vorname des Jungen, den eine Spinne biss
+NATASHA;Vorname der schwarzen Witwe
+STEVE;Vorname des Captains mit dem Schild
+BARRY;Vorname des Schnellsten
+ARTHUR;Vorname des Königs der Meere
+KRAVEN;Jäger, der die Spinne jagt
+GOBLIN;Grüner Feind auf einem Gleiter
+ROGUE;Raubt anderen mit Berührung ihre Kräfte
+BEAST;Blauer, haariger Wissenschaftler
+JUBILEE;Schießt Feuerwerk aus den Händen
+NEBULA;Blaue Cyborg-Schwester einer grünen Kriegerin
+MANTIS;Spürt die Gefühle anderer, Fühler auf dem Kopf
+OKOYE;Anführerin der Leibgarde von Wakanda
+SHURI;Geniale Erfinderin aus Wakanda

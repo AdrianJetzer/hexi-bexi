@@ -1,0 +1,63 @@
+# Kapitel „Flüsse“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+RHEIN;Fließt von der Schweiz bis in die Nordsee
+DONAU;Fließt durch Wien und Budapest
+ELBE;Fließt durch Dresden und Hamburg
+NIL;Längster Fluss Afrikas, an den Pyramiden
+MAIN;Fließt durch Frankfurt
+MOSEL;Weinfluss mit vielen Schleifen
+AMAZONAS;Größter Fluss der Erde, im Regenwald
+NECKAR;Fließt durch Heidelberg und Stuttgart
+ODER;Grenzfluss zu Polen
+WESER;Fließt durch Bremen
+ISAR;Fließt durch München
+INN;Kommt aus dem Engadin und mündet in Passau in die Donau
+SPREE;Fließt durch Berlin
+THEMSE;Fließt durch London
+SEINE;Fließt durch Paris
+AARE;Längster Fluss ganz in der Schweiz
+LIMMAT;Fließt aus dem Zürichsee
+RHONE;Kommt aus dem Wallis und fließt durch Genf
+REUSS;Fließt durch Luzern
+EMS;Kurzer Name, fließt durch Ostfriesland
+RUHR;Gab einem Industriegebiet den Namen
+SAAR;Gab einem kleinen Bundesland den Namen
+SAALE;Fließt durch Halle und Jena
+HAVEL;Fließt durch Potsdam
+LAHN;Fließt durch Marburg und Gießen
+FULDA;Trifft bei Hann. Münden die Werra
+WERRA;Trifft bei Hann. Münden die Fulda
+LECH;Fließt durch Augsburg
+LOIRE;Französischer Fluss mit vielen Schlössern
+TIBER;Fließt durch Rom
+WOLGA;Längster Fluss Europas, in Russland
+GANGES;Heiliger Fluss Indiens
+JANGTSE;Längster Fluss Chinas
+MEKONG;Fließt durch Laos, Kambodscha und Vietnam
+KONGO;Fluss mitten im afrikanischen Regenwald
+NIGER;Großer Fluss in Westafrika, wie ein Land
+JORDAN;Mündet ins Tote Meer
+EUPHRAT;Zwillingsfluss des Tigris
+TIGRIS;Fließt durch Bagdad
+INDUS;Hauptfluss Pakistans
+MOLDAU;Fließt durch Prag
+WEICHSEL;Fließt durch Warschau
+DNEPR;Fließt durch Kiew
+EBRO;Großer Fluss in Nordspanien
+TAJO;Fließt durch Toledo bis nach Lissabon
+ARNO;Fließt durch Florenz
+ETSCH;Fließt durch Bozen und Verona
+SAMBESI;Hat die Victoriafälle
+ORINOKO;Großer Fluss in Venezuela
+YUKON;Fluss des Goldrausches in Kanada
+HUDSON;Fließt durch New York
+OHIO;Nebenfluss des Mississippi, wie ein US-Staat
+MAAS;Fließt durch Belgien und Holland
+SCHELDE;Fließt durch Antwerpen
+GARONNE;Fließt durch Bordeaux
+THUR;Fließt durch das Toggenburg
+EMME;Gab einem Käsetal den Namen
+DRAU;Fließt durch Kärnten
+ENNS;Grenzfluss zwischen Ober- und Niederösterreich
+MUR;Fließt durch Graz
+ILLER;Fließt durch Kempten und Ulm

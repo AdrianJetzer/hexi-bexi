@@ -26,6 +26,13 @@ var vibration_on: bool = true:
 		_save()
 		changed.emit()
 
+## Testmodus: „Lösen“ kostet nichts (zum schnellen Durchspielen beim Testen).
+var test_mode: bool = false:
+	set(value):
+		test_mode = value
+		_save()
+		changed.emit()
+
 ## Spielmodus (Kennung, siehe GameMode / data/modes/). Neu installiert: mittel.
 const DEFAULT_MODE := "de_medium"
 const MODES: PackedStringArray = ["de_easy", "de_medium", "de_hard", "story"]
@@ -50,6 +57,7 @@ func _load() -> void:
 		sound_on = cfg.get_value("audio", "sound_on", true)
 		music_on = cfg.get_value("audio", "music_on", true)
 		vibration_on = cfg.get_value("audio", "vibration_on", true)
+		test_mode = cfg.get_value("game", "test_mode", false)
 		mode = cfg.get_value("game", "mode", DEFAULT_MODE)
 	_loading = false
 
@@ -62,6 +70,7 @@ func _save() -> void:
 	cfg.set_value("audio", "music_on", music_on)
 	cfg.set_value("audio", "vibration_on", vibration_on)
 	cfg.set_value("game", "mode", mode)
+	cfg.set_value("game", "test_mode", test_mode)
 	cfg.save(PATH)
 
 
