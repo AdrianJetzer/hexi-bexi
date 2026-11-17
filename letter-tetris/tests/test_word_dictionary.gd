@@ -96,8 +96,11 @@ func test_real_german_dictionary() -> void:
 	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "HAUS", "ROSE",
 			"WOLF", "ERNST", "BEIM", "ZUM", "MIX", "AIDS", "UFO", "TAXI", "TEE", "ZITAT", "HINUNTERGOSS"]:
 		assert_true(d.contains(w), w)
-	# Unsinn und reine Eigennamen/Abkürzungen gelten nicht.
-	for w in ["XQZT", "STERNX", "QQQ", "AB", "BERLIN", "OLGAS", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV", "DEA", "CIA", "CPU", "AFD", "HTTP", "POE", "ARMSTRONG", "AADORF", "UGS", "CEOS", "NASA", "FIFA", "IPOD", "THEE", "CITAT", "CONCERT"]:
+	# Handverlesene Eigennamen aus den Story-Listen gelten (tools/dictionary/add_story.sh).
+	for w in ["BERLIN", "JAPAN", "RHEIN", "MOZART", "PORSCHE"]:
+		assert_true(d.contains(w), w)
+	# Unsinn, sonstige Eigennamen und Abkürzungen gelten nicht.
+	for w in ["XQZT", "STERNX", "QQQ", "AB", "OLGAS", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV", "DEA", "CIA", "CPU", "AFD", "HTTP", "POE", "ARMSTRONG", "AADORF", "UGS", "CEOS", "NASA", "FIFA", "IPOD", "THEE", "CITAT", "CONCERT"]:
 		assert_false(d.contains(w), w)
 
 

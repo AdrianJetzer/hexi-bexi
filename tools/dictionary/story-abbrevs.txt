@@ -1,0 +1,20 @@
+# Abkürzungen aus den Story-Listen: zählen nur im Story-Kapitel, nicht im normalen Lauf
+# (Abkürzungen gelten dort nicht, spec/game-rules.md). Ein Wort pro Zeile.
+AFK
+BMW
+BYD
+DAF
+DKW
+ESA
+FPS
+GAZ
+GMC
+HUD
+NASA
+NIO
+NPC
+NSU
+PVP
+RNB
+UAZ
+WLAN

@@ -35,14 +35,9 @@ LC_ALL=C sort -u "$OUT/trennmuster.txt" "$OUT/wiktionary.txt" > "$OUT/de-words.t
 wc -l "$OUT/trennmuster.txt" "$OUT/wiktionary.txt" "$OUT/de-words.txt"
 ls -la "$OUT/de-words.txt"
 
-# 4) Ins kompakte Spielformat packen und ins Godot-Projekt legen
-#    (Wortlänge begrenzen mit z. B.:  MAX_LEN=15 tools/dictionary/build.sh)
-DEST="$HERE/../../letter-tetris/data/languages/de/words.bin"
-if [ -n "${MAX_LEN:-}" ]; then
-  python3 -I "$HERE/pack_words.py" "$OUT/de-words.txt" "$DEST" --max-len "$MAX_LEN"
-else
-  python3 -I "$HERE/pack_words.py" "$OUT/de-words.txt" "$DEST"
-fi
+# 4) Ins kompakte Spielformat packen und ins Godot-Projekt legen, dazu die Themenwörter der
+#    Story-Kapitel (handverlesene Eigennamen).  (Wortlänge begrenzen mit z. B.:  MAX_LEN=15 …)
+"$HERE/add_story.sh"
 
 # 5) Vorschlags-Wörter (geläufige Wörter für Wort-Hilfe, Tipp, Scan, Lösen …):
 #    Grundformen plus Mehrzahl, nach Häufigkeit in der Leipzig Corpora Collection (CC BY 4.0).
