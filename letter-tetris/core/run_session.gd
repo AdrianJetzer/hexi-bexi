@@ -56,7 +56,7 @@ const REASON_RUN_OVER := "run_over"
 const NO_CELL := Vector2i(-1, -1)
 ## Buchstabe eines Joker-Steins im Raster (steht beim Wischen für jeden Buchstaben).
 const JOKER := "*"
-## Story-Modus: Wortlängen je Stufe (Level 1–5, 6–10, 11–15, 16–20) und Füllgrad des Felds.
+## Story-Modus: Wortlängen je Stufe (Level 1–5, 6–10, 11–15, 16–20; unabhängig von den Power-ups) und Füllgrad des Felds.
 const STORY_LENGTHS: Array[Vector2i] = [Vector2i(3, 5), Vector2i(4, 6), Vector2i(5, 7), Vector2i(6, 8)]
 const STORY_FILL: Array[float] = [0.5, 0.65, 0.75, 0.88]
 ## Anteil der (nach Häufigkeit sortierten) Themenliste, aus dem je Stufe gewählt wird.

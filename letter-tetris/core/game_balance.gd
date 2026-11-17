@@ -66,7 +66,7 @@ func difficulty(level: int) -> DifficultyLevel:
 ## Roguelike-Draft (spec/run-mode.md, „Power-ups und Upgrades“): aus = alle Hilfen von Anfang an.
 @export var draft_enabled: bool = true
 ## Alle so viele Level eine Auswahl (Power-up, danach Upgrade).
-@export var draft_every: int = 5
+@export var draft_every: int = 4
 ## Power-up-Stufen in Reihenfolge, je zwei bis vier Hilfe-IDs (siehe RunSession.HELP_IDS).
 @export var draft_tiers: Array[PackedStringArray] = [
 	PackedStringArray(["replace", "shuffle"]),

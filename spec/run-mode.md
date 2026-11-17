@@ -116,17 +116,19 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 
 ### Power-ups und Upgrades (Roguelike) [v1]
 - **Start eines Laufs:** Unten sind nur **Auffüllen** (gratis) und **Lösen** (500) sichtbar.
-- **Power-up nach Level 5, 10 und 15:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
+- **Power-up nach Level 4, 8, 12 und 16:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
 
   | nach Level | Stufe | Hilfen der Stufe (2 davon zur Wahl) |
   |---|---|---|
-  | 5 | 50 | Ersetzen, Mischen |
-  | 10 | 100 | Aufräumen, Joker, Kürzen, Tipp |
-  | 15 | 150 | Tauschen, Teilen, Vervollständigen |
-  | (20) | 200 | Magnet, Scan, Zeile streichen – kommt mit dem Ziel Level 20 nicht mehr dran (offen) |
+  | 4 | 50 | Ersetzen, Mischen |
+  | 8 | 100 | Aufräumen, Joker, Kürzen, Tipp |
+  | 12 | 150 | Tauschen, Teilen, Vervollständigen |
+  | 16 | 200 | Magnet, Scan, Zeile streichen |
+
+  Danach (Level 17–20) zählt der Hinweis bis zum Ziel.
 
   Man tippt eine Karte an, ihr Knopf kommt unten dazu, dann beginnt das nächste Level. Die anderen Hilfen der Stufe gibt es in diesem Lauf **nicht**.
-- **Upgrade nach Level 25, 30, 35 …** (nur im endlosen Test-Betrieb ohne Ziel, `goal_level = 0`): Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
+- **Upgrade nach Level 24, 28, 32 …** (nur im endlosen Test-Betrieb ohne Ziel, `goal_level = 0`): Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
 - **Hinweis über den Knöpfen** (nur diese Zeile; Leiter und Münzen stehen über dem Spielfeld): „Noch 3 Level bis zum Power-up“, nach dem letzten Power-up „Noch n Level bis zum Ziel“; bei „Noch 1 Level“ leuchtet er.
 - **Knöpfe:** höchstens 6 (Auffüllen, 4 Hilfen, Lösen), in **2 Reihen zu je 3**, sortiert von gratis bis teuer – deutlich größer als vorher.
 - **Neuer Lauf:** wieder nur Auffüllen und Lösen, alle Preise wie in der Tabelle.
@@ -253,3 +255,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.31:** Steckt man fest: Feld abgedunkelt und großer Auffüllen-Knopf auf dem Feld.
 - **v3.32:** Modi Deutsch einfach (Kinder-Wortliste, Zeilen bis 5) / mittel (Zeilen bis 6, sanfter) / schwierig (bisheriges Spiel); Rekord je Modus; Belohnung wieder 100 in allen Modi.
 - **v3.33:** Ziel Level 20 in allen Modi: danach Lauf geschafft mit Sternen (wie Story); Rekord = übrige Münzen; Aufgeben = nicht geschafft. Tipp kostet 100 und gehört zur 100er-Stufe (50er-Stufe: Ersetzen, Mischen). Power-ups nur noch nach Level 5, 10, 15.
+- **v3.34:** Power-ups alle 4 Level (nach 4, 8, 12, 16), damit alle vier Stufen vor dem Ziel Level 20 drankommen.

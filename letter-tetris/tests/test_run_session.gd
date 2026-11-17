@@ -1264,3 +1264,15 @@ func test_give_up_is_not_completed() -> void:
 	assert_true(run.is_over)
 	assert_false(run.completed)
 
+
+
+func test_all_four_powerups_before_goal() -> void:
+	_draft_run()
+	for i in 4:
+		_finish_levels(balance.draft_every)
+		assert_eq(run.offer["kind"], "powerup", "Power-up %d" % (i + 1))
+		run.choose(run.offer["options"][0])
+	assert_eq(run.owned.size(), 4, "alle vier Stufen kommen vor Level 20 dran")
+	assert_lt(run.level(), balance.goal_level)
+	assert_eq(run.levels_until_offer(), 0, "danach nur noch bis zum Ziel")
+	assert_eq(run.levels_until_goal(), balance.goal_level - 4 * balance.draft_every)
