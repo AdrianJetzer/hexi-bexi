@@ -64,7 +64,7 @@ Status: **v4.3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Sc
 
 - **Münzen und Preise wie im Lauf** (100 Münzen pro Level, gleiche Preise).
 - **Kein Draft (kein Roguelike):** Im Story-Modus gibt es keine Power-up-Auswahl. Die Hilfen sind **von Anfang an fest** da (seit v4.3), weil viele Lauf-Hilfen das versteckte Wort zerstören oder nichts bringen (Mischen würfelt die Buchstaben neu, Joker, Auffüllen, Teilen, Streichen).
-  - **Rätsel** (gratis), **Tipp** (100 je Buchstabe), **Aufräumen** (100, lässt das Themenwort stehen), **Scan** (200, zeigt das Themenwort), **Lösen** (500).
+  - **Rätsel** (gratis), **Tipp** (100 je Buchstabe), **Aufräumen** (150, lässt das Themenwort stehen), **Scan** (200, zeigt das Themenwort), **Lösen** (500).
   - Nach Level 20 ist das Kapitel geschafft.
 - Die bekannten Hilfen behalten ihren Sinn (Tipp, Scan, Vervollständigen zeigen ein **Themenwort**).
 - **Neu: Rätsel** (nur im Story-Modus, **gratis**, beliebig oft): zeigt in einem **Overlay** einen kurzen Rätselsatz zum versteckten Wort, z. B. „Gelb, krumm und bei Affen beliebt“. Antippen irgendwo schließt es, der Bildschirm bleibt aufgeräumt.

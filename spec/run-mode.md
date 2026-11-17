@@ -1,6 +1,6 @@
 # Lauf-Modus (Roguelike)
 
-Status: **Entwurf v3**, Ziel Level 20 (v3.33). Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
+Status: **Entwurf v3**, Ziel Level 20 (v3.33), Preise v3.35. Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
 
 Markierungen: **[v1]** = kommt in Version 1 · **[später]** = gute Idee, nach Version 1 · **[offen]** = noch nicht entschieden.
 
@@ -91,15 +91,15 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 | Langes Wort nebenbei [später] | Bonus |
 | **Auffüllen: 5 neue Steine** | **gratis** |
 | **Stein ersetzen** | **−50** |
-| **Mischen: Buchstaben neu verteilen** | **−50** |
-| **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−100** |
+| **Mischen: Buchstaben neu verteilen** | **−100** |
+| **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−150** |
 | **Joker: ein Stein wird zum Joker** | **−100** |
 | **Kürzen: längste Zeile um einen Block kürzen** | **−100** |
 | **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
-| **Tauschen: 5 Steine neu** | **−150** |
+| **Tauschen: 5 Steine neu** | **−50** |
 | **Teilen: lange Zeile halbieren** | **−150** |
-| **Vervollständigen: angewischtes Wort zu Ende zeigen** | **−150** |
-| **Magnet: Wort um einen Stein bilden** | **−200** |
+| **Vervollständigen: angewischtes Wort zu Ende zeigen** | **−200** |
+| **Magnet: Wort um einen Stein bilden** | **−150** |
 | **Scan: Steine eines Worts zeigen (längste Zeile)** | **−200** |
 | **Zeile streichen: die längste freie Zeile fällt weg** | **−200** |
 | **Lösen: ganzen Auftrag lösen** (ohne Belohnung) | **−500** |
@@ -120,10 +120,10 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 
   | nach Level | Stufe | Hilfen der Stufe (2 davon zur Wahl) |
   |---|---|---|
-  | 4 | 50 | Ersetzen, Mischen |
-  | 8 | 100 | Aufräumen, Joker, Kürzen, Tipp |
-  | 12 | 150 | Tauschen, Teilen, Vervollständigen |
-  | 16 | 200 | Magnet, Scan, Zeile streichen |
+  | 4 | 50 | Ersetzen, Tauschen |
+  | 8 | 100 | Mischen, Joker, Kürzen, Tipp |
+  | 12 | 150 | Aufräumen, Teilen, Magnet |
+  | 16 | 200 | Scan, Zeile streichen, Vervollständigen |
 
   Danach (Level 17–20) zählt der Hinweis bis zum Ziel.
 
@@ -139,19 +139,19 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 - **Auffüllen:** 5 neue Steine an freie Plätze (Platzwahl wie bisher). **Gratis.** Das balanciert sich selbst: Zu wenige Steine – kein Wort möglich; zu viele Steine – unübersichtlich, schwerer zu finden. Der Spieler entscheidet, wann er nachlegt. Ist das Feld voll, ist Auffüllen gesperrt.
   - **Blinkt als Hinweis:** Liegt im Feld **kein gültiges Wort** (ganzes Wörterbuch), das genau in eine freie Zeile passt, blinkt die **Schrift** des Knopfs dezent zwischen Weiß und dunklem Weiß (je eine halbe Sekunde). Sobald wieder ein passendes Wort liegt, hört er auf. Kein Pulsieren bei vollem Feld (Auffüllen gesperrt), während ein Auftrag abschließt, und solange ein Joker im Feld liegt (dann ist vielleicht ein Wort möglich).
   - **Feld abgedunkelt:** Gleichzeitig wird das Spielfeld abgedunkelt (die Steine wirken gesperrt), und mitten darauf erscheint ein großer Knopf **„Auffüllen – gratis“**, damit sonnenklar ist, was zu tun ist. Antippen füllt auf; sobald wieder ein passendes Wort liegt, blendet beides aus. Die Hilfe-Knöpfe unten bleiben benutzbar (z. B. Tauschen, Mischen). Siehe [Screenshot](images/stuck-refill-v1.png).
-- **Tauschen (150):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
+- **Tauschen (50):** 5 zufällige Steine im Feld drehen sich um und bekommen neue Buchstaben, gewählt von der **Wort-Hilfe**. Auch bei vollem Feld erlaubt. Liegen weniger als 5 Steine im Feld, werden alle getauscht.
   - **Schlau, wenn man feststeckt:** Liegt kein **geläufiges** Wort im Feld, das in eine freie Zeile passt, sucht Tauschen eine Kette **benachbarter vorhandener Steine**, die mit **höchstens 5 Änderungen** ein geläufiges Wort in der Länge einer freien Zeile ergibt (möglichst wenige Änderungen, zufälliges Wort). Diese Steine drehen sich um; die übrigen Tausch-Steine werden normal getauscht, aber nie Steine der neuen Kette. Gibt es keine solche Kette (z. B. zu wenige Steine), tauscht es wie gewohnt. Das Wort muss man dann noch finden.
-- **Aufräumen (100):** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Preis 50. Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
+- **Aufräumen (150):** Räumt nur auf, wenn danach **noch ein passendes Wort im Feld liegt**: Das Spiel sucht ein **geläufiges Wort**, das in eine freie Zeile passt (bevorzugt das blinkende Tipp-Wort); dessen Steine bleiben **geschützt**. Von den übrigen verschwinden bis zu **5**, aber es bleiben immer **mindestens so viele Steine liegen, wie alle freien Zeilen zusammen Blöcke haben** (z. B. Zeilen 4 + 5 frei → mindestens 9 Steine); die **am wenigsten hilfreichen** verschwinden zuerst (durch die am wenigsten passende Wörter führen; bei Gleichstand die **seltensten Buchstaben**, Q, X, Y, J …). Die Plätze bleiben **frei** (Löcher; Auffüllen füllt sie zuerst). Liegt **kein** passendes Wort im Feld (man steckt fest), wird **nichts** entfernt: der Knopf wackelt, es kostet nichts – dann hilft Tauschen.
 - **Tipp, Buchstabe für Buchstabe (je 50):** Der erste Tipp legt ein Wort fest, das in eine freie Zeile passt, und lässt seinen ersten Stein **blinken**; jeder weitere Tipp (je 25) lässt den nächsten Stein desselben Worts blinken. Alle gezeigten Steine **blinken weiter**, auch wenn dazwischen anders gewischt wird. Sind alle Buchstaben gezeigt, ist der Tipp gesperrt. Ändert sich ein Stein des Tipp-Worts (Tauschen, Ersetzen), verfällt der Tipp; der nächste beginnt neu. Liegt kein passendes Wort im Feld, kostet der Tipp nichts. Kein Text, nur Blinken.
 - **Lösen (500):** Der aktuelle Auftrag wird sofort gelöst, es geht ins nächste Level; **keine Belohnung**. Für jede freie Zeile wird ein passendes **geläufiges Wort aus dem Feld** genommen (jeder Stein nur einmal): die Steine verschwinden, die Buchstaben fliegen in die Zeile, danach kommen wie gewohnt Wortlänge − 1 neue Steine. Gibt es für eine Zeile kein Wort im Feld, wird sie mit einem zufälligen geläufigen Wort passender Länge gefüllt (Buchstaben ploppen direkt in den Blöcken auf, das Feld bleibt dafür unverändert). Ein laufender Tipp verfällt.
 - **Joker (100):** Ein zufälliger Stein wird zum **Joker** (zeigt ★). Beim Wischen steht er für **jeden Buchstaben**, mit dem ein gültiges Wort entsteht, das in eine freie Zeile passt; in die Blöcke fliegt der passende echte Buchstabe. Tipp, Lösen, Aufräumen und die Feststeck-Erkennung beziehen Joker vorerst nicht ein.
-- **Mischen (50):** Die Buchstaben aller Steine werden zufällig auf die belegten Plätze neu verteilt; das Feld bleibt gleich voll. Die Steine drehen sich dabei um.
-- **Magnet (200):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
+- **Mischen (100):** Die Buchstaben aller Steine werden zufällig auf die belegten Plätze neu verteilt; das Feld bleibt gleich voll. Die Steine drehen sich dabei um.
+- **Magnet (150):** Knopf drücken, dann einen Stein **antippen**. Der Stein behält seinen Buchstaben; die Steine um ihn herum (eine zusammenhängende Kette, die ihn enthält) verwandeln sich so, dass mit ihm ein **geläufiges Wort** in der Länge einer freien Zeile entsteht (möglichst wenige Änderungen). Geht das nicht (zu wenige zusammenhängende Steine), wackelt der Knopf, es kostet nichts.
 - **Zeile streichen (200):** Die **freie Zeile mit den meisten Blöcken** fällt ganz weg, ohne Wort (bei mehreren gleich langen die oberste). Nur möglich, solange **mindestens 2 Zeilen frei** sind – sonst wäre es ein billiges Lösen; dann wackelt der Knopf, es kostet nichts.
 - **Kürzen (100):** Die **längste freie Zeile** verliert **einen Block** (z. B. 7 → 6, 4 → 3); bei mehreren gleich langen die oberste. Zeilen mit 3 Blöcken werden nicht kürzer (Mindestlänge eines Worts). Gibt es keine Zeile mit mindestens 4 Blöcken, wackelt der Knopf, es kostet nichts.
 - **Teilen (150):** Die **längste freie Zeile** mit mindestens 6 Blöcken wird halbiert: 6 → 3 + 3, 7 → 4 + 3, 8 → 4 + 4. Dadurch können 4 Zeilen entstehen (die Blöcke werden dann etwas kleiner). Gibt es keine solche Zeile, wackelt der Knopf, es kostet nichts.
 - **Scan (200):** Die Steine **eines** geläufigen Worts leuchten, und zwar für die **längste freie Zeile** (gibt es dafür keines, für die nächstkürzere) (nur ihr **Rand** leuchtet, damit die Buchstaben lesbar bleiben) – bis ein Wort angenommen wird oder sich das Feld ändert. Anders als der Tipp zeigt Scan alle Steine des Worts auf einmal, aber nicht ihre Reihenfolge. Gibt es kein passendes Wort, wackelt der Knopf, es kostet nichts.
-- **Vervollständigen (150):** Knopf drücken (bleibt gedrückt wie bei Ersetzen und Magnet), dann **mindestens 2 Buchstaben anwischen** und loslassen. Das Spiel sucht ein Wort, das **mit genau diesen Steinen beginnt**, vom letzten Stein aus weitergeht, **länger** ist als das Angewischte und **genau in eine freie Zeile passt** – zuerst unter den Vorschlags-Wörtern, sonst unter allen gültigen Wörtern (bei mehreren zufällig eins).
+- **Vervollständigen (200):** Knopf drücken (bleibt gedrückt wie bei Ersetzen und Magnet), dann **mindestens 2 Buchstaben anwischen** und loslassen. Das Spiel sucht ein Wort, das **mit genau diesen Steinen beginnt**, vom letzten Stein aus weitergeht, **länger** ist als das Angewischte und **genau in eine freie Zeile passt** – zuerst unter den Vorschlags-Wörtern, sonst unter allen gültigen Wörtern (bei mehreren zufällig eins).
   - **Treffer:** Das ganze Wort bekommt einen **leuchtenden Rand** wie beim Scan (bis ein Wort angenommen wird oder sich das Feld ändert); der Spieler wischt es danach selbst. Erst jetzt kostet es 150, der Modus geht aus. Wie beim Scan zeigt **Tipp** danach dasselbe Wort.
   - **Kein Treffer:** Die angewischten Steine wackeln, es kostet nichts, der Modus bleibt an – **beliebig viele Versuche**. Nochmals auf den Knopf drücken bricht ab.
   - Im Modus zählt Gewischtes **nicht** als Wort.
@@ -256,3 +256,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.32:** Modi Deutsch einfach (Kinder-Wortliste, Zeilen bis 5) / mittel (Zeilen bis 6, sanfter) / schwierig (bisheriges Spiel); Rekord je Modus; Belohnung wieder 100 in allen Modi.
 - **v3.33:** Ziel Level 20 in allen Modi: danach Lauf geschafft mit Sternen (wie Story); Rekord = übrige Münzen; Aufgeben = nicht geschafft. Tipp kostet 100 und gehört zur 100er-Stufe (50er-Stufe: Ersetzen, Mischen). Power-ups nur noch nach Level 5, 10, 15.
 - **v3.34:** Power-ups alle 4 Level (nach 4, 8, 12, 16), damit alle vier Stufen vor dem Ziel Level 20 drankommen.
+- **v3.35:** Neue Preise: Tauschen 50, Mischen 100, Aufräumen 150, Magnet 150, Vervollständigen 200. Die Power-up-Stufen folgen den Preisen (50: Ersetzen, Tauschen; 100: Mischen, Joker, Kürzen, Tipp; 150: Aufräumen, Teilen, Magnet; 200: Scan, Zeile streichen, Vervollständigen).
