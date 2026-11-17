@@ -46,7 +46,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **Beschriftung:** Ein aufgedecktes Hexagon zeigt den **Namen** des Kapitels und darunter die **Sterne** (☆☆☆ … ★★★); keine Emojis (Schrift auf Android).
 - **Kapitel geschafft:** Das Hexagon **dreht sich** und zeigt seine Wertung: **Bronze** (★), **Silber** (★★), **Gold** (★★★). Nochmal spielen kann die Wertung verbessern (die beste zählt).
 - **Freischalten über Nachbarn (v5.2):** Ein geschafftes Kapitel deckt alle **angrenzenden** Hexagons auf. Beispiel: Gemüse geschafft → Kleidung, Früchte, Automarken; Tiere geschafft → Früchte, Berufe. Wer an einem Thema hängt, nimmt ein anderes offenes.
-- **Aufdeck-Animation bei jedem Betreten** des Bretts: zuerst liegen alle Steine verdeckt, dann drehen sich die aufgedeckten **nacheinander** um (von unten nach oben, je mit kurzem Vibrations-Tick); geschaffte zu Bronze / Silber / Gold. Verdeckt: dunkles Rauchglas; offen: Kristall mit gedämpftem Kern; Schrift mit dunklem Rand.
+- **Aufdeck-Animation bei jedem Betreten** des Bretts: zuerst liegen alle Steine verdeckt, dann drehen sich die aufgedeckten **nacheinander** um (von unten nach oben, ohne Vibration); geschaffte zu Bronze / Silber / Gold. Verdeckt: dunkles Rauchglas; offen: Kristall mit gedämpftem Kern; Schrift mit dunklem Rand.
 - **Erste Version: 2 Reihen, 8 Kapitel.**
   - Reihe 1 (einfach): **Kleidung, Gemüse, Früchte, Tiere**.
   - Reihe 2 (mittel): **Flüsse, Automarken, Länder, Berufe**. Flüsse und Automarken haben genug Wörter (je ≥ 57, nur 3–8 Buchstaben). Länder ohne lange Namen (DEUTSCHLAND, FRANKREICH usw. passen nicht in 8 Blöcke).

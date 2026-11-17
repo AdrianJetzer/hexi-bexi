@@ -80,7 +80,7 @@ func _ready() -> void:
 
 ## Steine neu aufbauen. stars: Callable(id) -> int (beste Sterne, 0 = nicht geschafft).
 ## Beim Betreten liegen alle Steine verdeckt; dann drehen sich die aufgedeckten nacheinander
-## um (von unten nach oben, je mit kurzem Tick), geschaffte zu Bronze / Silber / Gold.
+## um (von unten nach oben, ohne Vibration), geschaffte zu Bronze / Silber / Gold.
 ## Gibt die Zahl der Drehungen zurück.
 func build(stars: Callable) -> int:
 	for t in tiles.values():
@@ -119,11 +119,7 @@ func build(stars: Callable) -> int:
 			return a.position.z > b.position.z
 		return a.position.x < b.position.x)
 	for k in turns.size():
-		var delay := TURN_START + k * TURN_STAGGER
-		turns[k].turn(delay)
-		var tw := create_tween()
-		tw.tween_interval(delay + 0.3)
-		tw.tween_callback(Settings.tick)
+		turns[k].turn(TURN_START + k * TURN_STAGGER)
 	return turns.size()
 
 
