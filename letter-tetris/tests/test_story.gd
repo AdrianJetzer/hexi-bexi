@@ -22,7 +22,7 @@ func before_each() -> void:
 
 func test_chapters_have_enough_words_and_riddles() -> void:
 	var chapters := StoryChapter.all()
-	assert_eq(chapters.size(), 3)
+	assert_gt(chapters.size(), 2)
 	for ch in chapters:
 		assert_gt(ch.words.size(), 49, ch.id)
 		for w in ch.words:
@@ -134,3 +134,24 @@ func test_no_draft_in_story() -> void:
 		run._complete_quest()
 		assert_true(run.offer.is_empty(), "keine Auswahl nach Level %d" % (i + 1))
 	assert_eq(run.owned.size(), 4, "Hilfen bleiben gleich")
+
+
+func test_board_first_row_open() -> void:
+	var none := func(_id: String) -> int: return 0
+	assert_true(StoryChapter.row_open(0, none))
+	assert_false(StoryChapter.row_open(1, none), "Reihe 2 verdeckt, solange nichts geschafft ist")
+	assert_false(StoryChapter.row_open(5, none))
+
+
+func test_board_next_row_opens_after_one_chapter() -> void:
+	var gemuese := func(id: String) -> int: return 1 if id == "gemuese" else 0
+	assert_true(StoryChapter.row_open(1, gemuese), "ein Kapitel der Reihe darunter reicht")
+	assert_false(StoryChapter.row_open(2, gemuese), "nur eine Reihe weiter")
+
+
+func test_board_slots() -> void:
+	assert_eq(StoryChapter.slot(0, 0), ["tiere", "Tiere"])
+	assert_eq(StoryChapter.slot(3, 1)[0], "berufe")
+	assert_eq(StoryChapter.slot(0, 4), [], "obere Reihen noch leer")
+	assert_true(StoryChapter.playable("tiere"))
+	assert_false(StoryChapter.playable("kleidung"), "Wortliste kommt in Schritt 3")

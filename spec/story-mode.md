@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v5 Entwurf** (Kapitel-Brett, noch nicht umgesetzt); umgesetzt ist v4.4 (Pfad mit Tiere, Gemüse, Früchte). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v5, Schritt 1 umgesetzt** (Kapitel-Brett mit Tiere, Gemüse, Früchte; ohne Dreh-Animation und Bronze/Silber/Gold). Screenshot: [Kapitel-Brett](images/chapter-board-v1.png). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Münzen, Preise und Sterne sind in allen Modi gleich. Ausnahme: Die Story hat feste Hilfen statt Draft (v4.3).
 
@@ -51,6 +51,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
   - Reihen 3–6 bleiben verdeckt mit Hinweis „bald“; sie werden Stück für Stück gefüllt.
 - **Neue Wortlisten** (Kleidung, Flüsse, Automarken, Länder, Berufe) mit Rätselsätzen schreibt Claude, Adrian prüft.
 - Der bisherige Pfad durchs All entfällt.
+- **Bauplan:** (1) Brett mit Freischalt-Regel ✔, (2) Dreh-Animation und Bronze / Silber / Gold, (3) neue Wortlisten.
 
 ## Wörter und Steine
 

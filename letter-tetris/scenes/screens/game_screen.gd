@@ -92,10 +92,9 @@ const BTN_PRICE_FONT := 30
 ## Story: Rätsel-Overlay (Satz groß, Hinweis klein).
 const RIDDLE_FONT := 54
 const RIDDLE_HINT_FONT := 30
-## Story: Pfad durchs All (Stationen).
-const STATION_SIZE := 210.0
-const STATION_COLORS := {"fruechte": Color(0.95, 0.45, 0.3), "tiere": Color(0.75, 0.55, 0.3),
-		"gemuese": Color(0.35, 0.75, 0.35)}
+## Story: Kapitel-Brett zwischen Titel und „Modus wechseln“ (Anteile der Bildschirmhöhe).
+const CHAPTER_BOARD_TOP := 0.15
+const CHAPTER_BOARD_BOTTOM := 0.87
 const CHOICE_TITLE_FONT := 64
 const CHOICE_NAME_FONT := 46
 const CHOICE_INFO_FONT := 38
@@ -135,8 +134,12 @@ var _theme_label: Label
 ## Story: Overlay mit dem Rätselsatz (Antippen schließt).
 var _riddle: ColorRect
 var _riddle_label: Label
+## Story: Kapitel-Brett (eigene 3D-Welt im SubViewport) mit Titel und Knopf darüber.
 var _path: ColorRect
 var _path_layer: Control
+var _chapter_view: SubViewport
+var _chapter_board: ChapterBoard3D
+var _chapter_press: Vector2i = Vector2i(-1, -1)
 var _again_button: Button
 var _joker_button: Button
 var _shuffle_button: Button
@@ -411,12 +414,24 @@ func _build_ui() -> void:
 	no.custom_minimum_size = Vector2(260, 130)
 	no.pressed.connect(func() -> void: _confirm.visible = false)
 
-	# Story: Pfad durchs All (Kapitel-Auswahl)
+	# Story: Kapitel-Brett (Kapitel-Auswahl)
 	_path = ColorRect.new()
-	_path.color = Color(0.0, 0.01, 0.04, 0.94)
+	_path.color = Color(0.0, 0.01, 0.04, 1.0)
 	_path.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_path.visible = false
+	_path.gui_input.connect(_on_chapter_input)
 	add_child(_path)
+	var container := SubViewportContainer.new()
+	container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	container.stretch = true
+	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_path.add_child(container)
+	_chapter_view = SubViewport.new()
+	_chapter_view.own_world_3d = true
+	_chapter_view.handle_input_locally = false
+	container.add_child(_chapter_view)
+	_chapter_board = ChapterBoard3D.new()
+	_chapter_view.add_child(_chapter_board)
 	_path_layer = Control.new()
 	_path_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_path_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -616,6 +631,8 @@ func _relayout() -> void:
 	var s := get_viewport_rect().size
 	if _board.session != null:
 		_board.fit_to_screen(_board_area(), s)
+	if _path.visible:
+		_fit_chapter_board()
 	var col := _column(s)
 	var margin := col.y * SIDE_MARGIN
 	var side := col.x + margin
@@ -881,18 +898,15 @@ func _is_story() -> bool:
 	return _mode != null and _mode.id == Settings.STORY_MODE
 
 
-## Erstes noch nicht geschafftes, freigeschaltetes Kapitel (sonst das erste).
+## Erstes spielbares, aufgedecktes, noch nicht geschafftes Kapitel (sonst das erste).
 func _default_chapter() -> StoryChapter:
-	var chapters := StoryChapter.all()
-	for ch in chapters:
-		if SaveData.story_stars(ch.id) == 0:
-			return ch
-	return chapters[0]
-
-
-## Kapitel i ist frei, wenn es das erste ist oder das vorherige geschafft wurde.
-func _chapter_unlocked(index: int, chapters: Array[StoryChapter]) -> bool:
-	return index == 0 or SaveData.story_stars(chapters[index - 1].id) > 0
+	for row in StoryChapter.BOARD.size():
+		if not StoryChapter.row_open(row, SaveData.story_stars):
+			break
+		for c in StoryChapter.BOARD[row]:
+			if StoryChapter.playable(c[0]) and SaveData.story_stars(c[0]) == 0:
+				return StoryChapter.by_id(c[0])
+	return StoryChapter.all()[0]
 
 
 func _on_riddle_shown(text: String) -> void:
@@ -936,19 +950,19 @@ func _stars_text(stars: int) -> String:
 
 func _start_chapter(chapter: StoryChapter) -> void:
 	_chapter = chapter
-	_path.visible = false
+	_close_path()
 	new_run()
 	_auto_riddle()
 
 
-## Pfad durchs All: Kapitel als Stationen von unten (erstes) nach oben, verbunden durch eine Linie.
+## Kapitel-Brett zeigen: 3D-Hexagons (aufgedeckt / verdeckt), darüber Titel, darunter
+## „Modus wechseln“ (spec/story-mode.md, „Kapitel-Brett“).
 func _open_path() -> void:
 	_set_tap_action("")
 	for c in _path_layer.get_children():
 		c.queue_free()
 	var s := get_viewport_rect().size
 	var col := _column(s)
-	var chapters := StoryChapter.all()
 	var title := Label.new()
 	title.text = "Story"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -956,72 +970,52 @@ func _open_path() -> void:
 	title.add_theme_color_override("font_color", BTN_GOLD)
 	title.add_theme_color_override("font_outline_color", Color(BTN_GOLD, 0.35))
 	title.add_theme_constant_override("outline_size", 10)
-	title.position = Vector2(col.x, s.y * 0.08)
+	title.position = Vector2(col.x, s.y * 0.05)
 	title.size = Vector2(col.y, 90)
 	_path_layer.add_child(title)
-	var centers: Array[Vector2] = []
-	var top := s.y * 0.26
-	var bottom := s.y * 0.78
-	for i in chapters.size():
-		var f := i / float(maxi(chapters.size() - 1, 1))
-		var x := col.x + col.y * (0.3 if i % 2 == 0 else 0.7)
-		centers.append(Vector2(x, lerpf(bottom, top, f)))
-	var line := Line2D.new()
-	line.width = 6.0
-	line.default_color = Color(BTN_EDGE, 0.35)
-	for c in centers:
-		line.add_point(c)
-	_path_layer.add_child(line)
-	for i in chapters.size():
-		_path_layer.add_child(_station(chapters[i], centers[i], _chapter_unlocked(i, chapters)))
 	var change := _button("Modus wechseln", 40, _path_layer)
 	change.flat = true
 	change.add_theme_color_override("font_color", TEXT_DIM)
 	change.size = Vector2(col.y * 0.6, 90)
 	change.position = Vector2(col.x + col.y * 0.2, s.y * 0.9)
 	change.pressed.connect(_open_settings)
+	_chapter_board.build(SaveData.story_stars)
 	_path.visible = true
+	_board.visible = false
+	_fit_chapter_board()
 
 
-## Eine Station: runder, leuchtender Planet mit Name und Sternen.
-func _station(ch: StoryChapter, center: Vector2, unlocked: bool) -> Control:
-	var root := Control.new()
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var color: Color = STATION_COLORS.get(ch.id, BTN_EDGE)
-	var planet := Button.new()
-	planet.size = Vector2.ONE * STATION_SIZE
-	planet.position = center - planet.size / 2.0
-	var st := StyleBoxFlat.new()
-	st.bg_color = color.darkened(0.35)
-	st.border_color = color.lightened(0.35)
-	st.set_border_width_all(4)
-	st.set_corner_radius_all(int(STATION_SIZE / 2.0))
-	st.corner_detail = 24
-	st.shadow_color = Color(color, 0.55)
-	st.shadow_size = 26
-	for k in ["normal", "hover", "focus", "disabled"]:
-		planet.add_theme_stylebox_override(k, st)
-	planet.add_theme_color_override("font_disabled_color", Color(1, 1, 1, 0.8))
-	var pressed := st.duplicate()
-	pressed.bg_color = color.darkened(0.1)
-	planet.add_theme_stylebox_override("pressed", pressed)
-	planet.text = ch.display_name.substr(0, 1)
-	planet.add_theme_font_size_override("font_size", 92)
-	planet.disabled = not unlocked
-	planet.pressed.connect(func() -> void: _start_chapter(ch))
-	root.add_child(planet)
-	var label := Label.new()
-	var stars := SaveData.story_stars(ch.id)
-	label.text = "%s\n%s" % [ch.display_name, _stars_text(stars) if unlocked else "gesperrt"]
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 40)
-	label.add_theme_color_override("font_color", BTN_GOLD if stars > 0 else TEXT)
-	label.size = Vector2(STATION_SIZE * 2.0, 110)
-	label.position = Vector2(center.x - STATION_SIZE, center.y + STATION_SIZE / 2.0 + 10.0)
-	root.add_child(label)
-	if not unlocked:
-		root.modulate = Color(1, 1, 1, 0.4)
-	return root
+func _close_path() -> void:
+	_path.visible = false
+	_board.visible = true
+
+
+func _fit_chapter_board() -> void:
+	var s := get_viewport_rect().size
+	var col := _column(s)
+	var margin := col.y * SIDE_MARGIN
+	var top := s.y * CHAPTER_BOARD_TOP
+	var area := Rect2(col.x + margin, top, col.y - 2.0 * margin, s.y * CHAPTER_BOARD_BOTTOM - top)
+	_chapter_board.fit(area, s)
+
+
+## Antippen eines Kapitel-Steins: aufgedeckt und spielbar → Kapitel starten, sonst wackeln.
+func _on_chapter_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):
+		return
+	var cell: Vector2i = _chapter_board.cell_at_screen(event.position)
+	if event.pressed:
+		_chapter_press = cell
+		return
+	if cell != _chapter_press or cell.x < 0:
+		return
+	var slot := StoryChapter.slot(cell.x, cell.y)
+	if StoryChapter.row_open(cell.y, SaveData.story_stars) and not slot.is_empty() \
+			and StoryChapter.playable(slot[0]):
+		Settings.tick()
+		_start_chapter(StoryChapter.by_id(slot[0]))
+	elif _chapter_board.tiles.has(cell):
+		_chapter_board.tiles[cell].shake()
 
 
 # --- Modi und Einstellungen ------------------------------------------------------------
@@ -1096,7 +1090,7 @@ func _apply_mode(id: String) -> void:
 	if _is_story():
 		_open_path()
 	else:
-		_path.visible = false
+		_close_path()
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------
