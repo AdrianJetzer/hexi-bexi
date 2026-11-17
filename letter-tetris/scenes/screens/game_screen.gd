@@ -89,9 +89,9 @@ const BTN_NAME_FONT := 36
 const BTN_NAME_FONT_LONG := 27
 const BTN_PRICE_FONT := 30
 ## Auswahl-Bildschirm (Power-up / Upgrade): Titel, Karten.
-## Story: Rätselsatz über der Info-Zeile.
-const RIDDLE_FONT := 38
-const RIDDLE_HEIGHT := 110.0
+## Story: Rätsel-Overlay (Satz groß, Hinweis klein).
+const RIDDLE_FONT := 54
+const RIDDLE_HINT_FONT := 30
 ## Story: Pfad durchs All (Stationen).
 const STATION_SIZE := 210.0
 const STATION_COLORS := {"fruechte": Color(0.95, 0.45, 0.3), "tiere": Color(0.75, 0.55, 0.3),
@@ -132,6 +132,8 @@ var _riddle_button: Button
 ## Story-Modus: aktuelles Kapitel, Themen-Name oben, Rätselsatz über dem Feld, Pfad durchs All.
 var _chapter: StoryChapter
 var _theme_label: Label
+## Story: Overlay mit dem Rätselsatz (Antippen schließt).
+var _riddle: ColorRect
 var _riddle_label: Label
 var _path: ColorRect
 var _path_layer: Control
@@ -213,7 +215,7 @@ func new_run(seed_value: int = -1) -> void:
 		session.riddle_shown.connect(_on_riddle_shown)
 	session.goal_reached.connect(_on_goal_reached)
 	_theme_label.text = _chapter.display_name if _is_story() and _chapter != null else ""
-	_riddle_label.text = ""
+	_riddle.visible = false
 	_again_button.text = "Zur Karte" if _is_story() else "Nochmal"
 	session.quest_started.connect(_on_quest_started)
 	session.quest_completed.connect(_on_quest_completed)
@@ -340,10 +342,6 @@ func _build_ui() -> void:
 	_theme_label = _label(INFO_FONT, BTN_GOLD)
 	_theme_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_theme_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_riddle_label = _label(RIDDLE_FONT, Color(1.0, 0.9, 0.7))
-	_riddle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_riddle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_riddle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_offer_hint = _label(OFFER_HINT_FONT, TEXT_DIM)
 	_offer_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_offer_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -454,6 +452,31 @@ func _build_ui() -> void:
 	mno.pressed.connect(func() -> void:
 		_mode_confirm.visible = false
 		_pending_mode = "")
+
+	# Story: Rätsel (Antippen irgendwo schließt)
+	var rd := _overlay("Rätsel")
+	_riddle = rd[0]
+	var rd_title := rd[2] as Label
+	rd_title.add_theme_font_size_override("font_size", CHOICE_TITLE_FONT)
+	rd_title.add_theme_color_override("font_color", BTN_GOLD)
+	rd_title.add_theme_color_override("font_outline_color", Color(BTN_GOLD, 0.35))
+	rd_title.add_theme_constant_override("outline_size", 10)
+	_riddle_label = Label.new()
+	_riddle_label.add_theme_font_size_override("font_size", RIDDLE_FONT)
+	_riddle_label.add_theme_color_override("font_color", TEXT)
+	_riddle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_riddle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	(rd[1] as VBoxContainer).add_child(_riddle_label)
+	var rd_hint := Label.new()
+	rd_hint.text = "Tippen zum Schließen"
+	rd_hint.add_theme_font_size_override("font_size", RIDDLE_HINT_FONT)
+	rd_hint.add_theme_color_override("font_color", TEXT_DIM)
+	rd_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	(rd[1] as VBoxContainer).add_child(rd_hint)
+	_riddle.gui_input.connect(func(e: InputEvent) -> void:
+		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.pressed:
+			_riddle.visible = false
+			_riddle.accept_event())
 
 	# Auswahl: Power-up oder Upgrade
 	var ch := _overlay("")
@@ -600,8 +623,7 @@ func _relayout() -> void:
 
 	_theme_label.position = Vector2(side + inner * 0.3, s.y * 0.012)
 	_theme_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
-	_riddle_label.position = Vector2(side, info_y - RIDDLE_HEIGHT - 8.0)
-	_riddle_label.size = Vector2(inner, RIDDLE_HEIGHT)
+	_riddle_label.custom_minimum_size = Vector2(inner * 0.86, 0)
 	# Info-Zeile direkt über dem Spielfeld: Leiter (Fortschritt) links, Münzen rechts.
 	_ladder.position = Vector2(side, info_y)
 	_ladder.size = Vector2(inner * 0.66, INFO_HEIGHT)
@@ -864,7 +886,18 @@ func _chapter_unlocked(index: int, chapters: Array[StoryChapter]) -> bool:
 
 
 func _on_riddle_shown(text: String) -> void:
-	_riddle_label.text = ("„%s“" % text) if text != "" else ""
+	if text == "":
+		_riddle.visible = false
+		return
+	_set_replace_mode(false)
+	_riddle_label.text = "„%s“" % text
+	_riddle.visible = true
+
+
+## Story: Rätsel zu Beginn des Levels automatisch zeigen (nicht über der Power-up-Auswahl).
+func _auto_riddle() -> void:
+	if _is_story() and session != null and not session.is_over and not _choice.visible:
+		session.riddle()
 
 
 func _on_goal_reached(stars: int) -> void:
@@ -895,6 +928,7 @@ func _start_chapter(chapter: StoryChapter) -> void:
 	_chapter = chapter
 	_path.visible = false
 	new_run()
+	_auto_riddle()
 
 
 ## Pfad durchs All: Kapitel als Stationen von unten (erstes) nach oben, verbunden durch eine Linie.
@@ -1097,7 +1131,8 @@ func _show_choice() -> void:
 		card.pressed.connect(func() -> void:
 			session.choose(chosen)
 			_choice.visible = false
-			_relayout())
+			_relayout()
+			_auto_riddle())
 		_choice_cards.add_child(card)
 	_choice.visible = true
 
@@ -1284,7 +1319,8 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 				_blocks.show_quest(_pending_quest)
 			_pending_quest = null
 			_queue_pulse_check()
-			_show_choice()))
+			_show_choice()
+			_auto_riddle()))
 
 
 ## Lösen ohne Wort aus dem Feld: Buchstaben ploppen nacheinander direkt in der Zeile auf.

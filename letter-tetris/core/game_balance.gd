@@ -80,8 +80,8 @@ func difficulty(level: int) -> DifficultyLevel:
 @export var upgrade_discount: float = 0.25
 @export var upgrade_min_price: int = 25
 
-## Story-Modus (spec/story-mode.md): Rätsel-Tipp.
-@export var riddle_price: int = 50
+## Story-Modus (spec/story-mode.md): Rätsel (gratis).
+@export var riddle_price: int = 0
 ## Ziel-Level in allen Modi (danach Lauf geschafft, mit Sternen); 0 = endlos. Grenze für 2 Sterne.
 @export var goal_level: int = 20
 @export var two_star_spend: int = 500

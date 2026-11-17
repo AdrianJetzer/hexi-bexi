@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/story-riddle-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Die Spielregeln sind in allen Modi gleich (Münzen, Preise, Draft).
 
@@ -63,10 +63,12 @@ Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Scre
 ## Hilfen
 
 - **Münzen und Preise wie im Lauf** (100 Münzen pro Level, gleiche Preise).
-- **Draft wie im Lauf:** Start mit **Rätsel-Tipp** und **Lösen** (immer dabei; **kein Auffüllen**, siehe oben). Power-ups nach Level 4, 8, 12 und 16 (je 2 zufällige Hilfen einer Stufe). Nach Level 20 ist das Kapitel geschafft.
+- **Draft wie im Lauf:** Start mit **Rätsel** und **Lösen** (immer dabei; **kein Auffüllen**, siehe oben). Power-ups nach Level 4, 8, 12 und 16 (je 2 zufällige Hilfen einer Stufe). Nach Level 20 ist das Kapitel geschafft.
   - **Teilen** und **Zeile streichen** werden im Story-Modus nicht angeboten (nur eine Zeile pro Level).
 - Die bekannten Hilfen behalten ihren Sinn (Tipp, Scan, Vervollständigen zeigen ein **Themenwort**).
-- **Neu: Rätsel-Tipp** (nur im Story-Modus, 50 Münzen, einmal pro Level): zeigt über der Info-Zeile einen kurzen Rätselsatz zum versteckten Wort, z. B. „Gelb, krumm und bei Affen beliebt“. Für den Anfangsbuchstaben gibt es den normalen **Tipp**.
+- **Neu: Rätsel** (nur im Story-Modus, **gratis**, beliebig oft): zeigt in einem **Overlay** einen kurzen Rätselsatz zum versteckten Wort, z. B. „Gelb, krumm und bei Affen beliebt“. Antippen irgendwo schließt es, der Bildschirm bleibt aufgeräumt.
+  - Zu **Beginn jedes Levels** erscheint das Rätsel **automatisch** (nach einer Power-up-Auswahl erst, wenn gewählt ist). Der Knopf „Rätsel“ (gratis) öffnet es jederzeit wieder.
+  - Es zählt nicht als gekaufte Hilfe (3 Sterne bleiben möglich). Rollen: Rätsel sagt, **was** gesucht ist; der **Tipp** (100) zeigt, **wo** es liegt. Screenshot: [Rätsel](images/riddle-overlay-v1.png).
   - Jedes Themenwort braucht dafür einen Rätselsatz (Claude schreibt sie, Adrian prüft).
 
 ## Voraussetzung: Umlaute
@@ -88,3 +90,4 @@ Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Scre
 - **v3:** Erste Version umgesetzt: Modus „Story“ in den Einstellungen, Pfad mit Früchte / Tiere / Gemüse, versteckte Themenwörter (nach Häufigkeit und Länge gestaffelt), Füllgrad je Stufe, Rätsel-Tipp (50, ohne zweite Stufe), Ziel Level 20, Sterne, Teilen/Streichen nicht im Story-Modus.
 - **v4:** Ziel Level 20 und Sterne gelten jetzt in allen Modi; Leiter statt „Level x von 20“; Tipp kostet 100.
 - **v4.1:** Power-ups wie im Lauf alle 4 Level (4, 8, 12, 16).
+- **v4.2:** Rätsel gratis und beliebig oft, als Overlay (Antippen schließt), automatisch zu Beginn jedes Levels; keine Textzeile mehr über dem Feld.

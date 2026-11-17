@@ -72,15 +72,16 @@ func test_riddle_help() -> void:
 	assert_true(run.has_help("riddle"))
 	assert_false(run.has_help("refill"), "kein Auffüllen im Story-Modus")
 	assert_false(run.can_refill())
-	run.coins = 50
+	run.coins = 0
+	assert_true(run.can_riddle(), "gratis")
 	var text := run.riddle()
 	assert_eq(text, run.story.riddle_for(run.story_target))
 	assert_ne(text, "")
-	assert_eq(run.coins, 0)
+	assert_eq(run.spent, 0, "zählt nicht als gekaufte Hilfe")
 	assert_signal_emitted(run, "riddle_shown")
-	run.coins = 100
-	assert_false(run.can_riddle(), "pro Level nur einmal")
+	assert_eq(run.riddle(), text, "beliebig oft")
 	assert_eq(run.current_riddle(), text)
+	assert_eq(run.stars(), 3)
 
 
 func test_goal_completes_chapter_with_stars() -> void:

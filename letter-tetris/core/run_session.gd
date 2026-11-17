@@ -108,7 +108,6 @@ var story: StoryChapter = null
 var _theme: WordDictionary
 ## Gesuchtes (verstecktes) Themenwort des aktuellen Levels.
 var story_target: String = ""
-var _riddle_open: bool = false
 var _used_targets: Dictionary = {}
 ## Im Lauf ausgegebene Münzen (für die Sterne im Story-Modus).
 var spent: int = 0
@@ -170,7 +169,6 @@ func start() -> void:
 		owned.append("riddle")
 	spent = 0
 	story_target = ""
-	_riddle_open = false
 	_used_targets.clear()
 	offer = {}
 	_prices = {}
@@ -209,34 +207,30 @@ func levels_until_goal() -> int:
 	return maxi(_balance.goal_level - _level + 1, 0)
 
 
-## Rätsel-Tipp möglich? (Story, Auftrag aktiv, noch nicht gezeigt, Münzen reichen)
+## Rätsel möglich? (Story, Auftrag aktiv). Gratis und beliebig oft (Preis aus GameBalance, 0).
 func can_riddle() -> bool:
-	return story != null and quest != null and not is_over and not _riddle_open \
+	return story != null and quest != null and not is_over \
 			and has_help("riddle") and coins >= price("riddle")
 
 
-## Hilfe „Rätsel-Tipp“: zeigt den Rätselsatz zum versteckten Wort. Gibt ihn zurück ("" = nicht möglich).
+## Hilfe „Rätsel“: zeigt den Rätselsatz zum versteckten Wort (UI: Overlay). Gibt ihn zurück ("" = nicht möglich).
 func riddle() -> String:
 	if not can_riddle():
 		return ""
-	_riddle_open = true
 	_pay(price("riddle"))
 	var text := story.riddle_for(story_target)
 	riddle_shown.emit(text)
 	return text
 
 
-## Gerade gezeigter Rätselsatz ("" = keiner).
+## Rätselsatz zum gesuchten Wort des Levels ("" = keiner / kein Story-Modus).
 func current_riddle() -> String:
-	return story.riddle_for(story_target) if story != null and _riddle_open else ""
+	return story.riddle_for(story_target) if story != null else ""
 
 
 ## Auftrag im Story-Modus: eine Zeile, so lang wie das gewählte Themenwort.
 func _story_quest(level: int) -> Quest:
 	story_target = _pick_story_target(level)
-	if _riddle_open:
-		_riddle_open = false
-		riddle_shown.emit("")
 	var q := Quest.new()
 	q.rows = PackedInt32Array([story_target.length()])
 	q.reward = _curve.reward(level)
