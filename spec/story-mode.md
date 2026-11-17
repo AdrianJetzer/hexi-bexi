@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v4.4, erste Version umgesetzt** (Kapitel Tiere, Gemüse, Früchte). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v5 Entwurf** (Kapitel-Brett, noch nicht umgesetzt); umgesetzt ist v4.4 (Pfad mit Tiere, Gemüse, Früchte). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Münzen, Preise und Sterne sind in allen Modi gleich. Ausnahme: Die Story hat feste Hilfen statt Draft (v4.3).
 
@@ -11,7 +11,7 @@ Status: **v4.4, erste Version umgesetzt** (Kapitel Tiere, Gemüse, Früchte). Sc
 ## Kapitel
 
 - Jedes Kapitel ist eine **Kategorie**, z. B. 🍎 Früchte, 🥕 Gemüse, 🐾 Tiere, 🌍 Länder, 🏛 Hauptstädte, 🚗 Automarken, 🌊 Flüsse.
-- **Ziel:** Level 20 erreichen → Kapitel geschafft, das nächste wird freigeschaltet.
+- **Ziel:** Level 20 erreichen → Kapitel geschafft (Freischalten siehe „Kapitel-Brett“).
 - **Reihenfolge der ersten Kapitel:** Tiere (sehr einfach), Gemüse, Früchte (am schwierigsten, nach Testspiel v4.4).
 - Reihenfolge von leicht (Tiere, Gemüse) nach schwer (Flüsse, Hauptstädte).
 - **Mindestens ca. 50 Wörter je Kategorie**, damit man die Lösungen nicht zu leicht auswendig lernt (unendlich wird es nicht).
@@ -23,14 +23,32 @@ Status: **v4.4, erste Version umgesetzt** (Kapitel Tiere, Gemüse, Früchte). Sc
 
 ## Einstieg
 
-- In den **Einstellungen** gibt es den Modus **„Story“** (neben einfach / mittel / schwierig). Wer ihn wählt, sieht den Pfad mit den Kapiteln; im Pfad führt „Modus wechseln“ zurück in die Einstellungen.
-- Startet die App im Story-Modus, erscheint zuerst der Pfad.
+- In den **Einstellungen** gibt es den Modus **„Story“** (neben einfach / mittel / schwierig). Wer ihn wählt, sieht das Kapitel-Brett; dort führt „Modus wechseln“ zurück in die Einstellungen.
+- Startet die App im Story-Modus, erscheint zuerst das Kapitel-Brett.
 
-## Kapitel-Auswahl
+## Kapitel-Brett (ab v5, ersetzt den Pfad)
 
-- **Pfad durchs All:** Die Kapitel sind Stationen (runde, leuchtende Planeten mit Anfangsbuchstaben) auf einem Weg von unten nach oben, verbunden durch eine Linie. Darunter Name und Sterne (☆☆☆ … ★★★); gesperrte Stationen sind gedimmt mit „gesperrt“.
-- **Freischalten:** Tiere ist offen; ein Kapitel wird frei, sobald das vorherige geschafft ist.
-- Erste, einfache Version; die schöne Gestaltung (Flug-Animation, Planeten) folgt.
+Die Kapitel-Auswahl ist selbst ein **Brett aus Hexagons**, wie das Spielfeld, nur mit größeren Steinen. Jedes Hexagon ist ein Kapitel.
+
+```
+Reihe 6   ⬡ ⬡ ⬡ ⬡    verdeckt („bald“)
+Reihe 5   ⬡ ⬡ ⬡ ⬡    verdeckt
+Reihe 4   ⬡ ⬡ ⬡ ⬡    verdeckt
+Reihe 3   ⬡ ⬡ ⬡ ⬡    verdeckt
+Reihe 2   ⬡ ⬡ ⬡ ⬡    Flüsse · Automarken · Länder · Berufe
+Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu Beginn offen
+```
+
+- **Größe:** 4 Hexagons breit, 6 hoch (24 Kapitel). Leicht unten, schwer oben.
+- **Zu Beginn** ist nur **Reihe 1 aufgedeckt**; alle anderen Hexagons liegen verdeckt (Rückseite).
+- **Kapitel geschafft:** Das Hexagon **dreht sich** und zeigt seine Wertung: **Bronze** (★), **Silber** (★★), **Gold** (★★★). Nochmal spielen kann die Wertung verbessern (die beste zählt).
+- **Nächste Reihe:** Sobald **mindestens ein Kapitel einer Reihe** geschafft ist, drehen sich **alle 4 Hexagons der nächsten Reihe** um und sind spielbar. Wer an einem Thema hängt, nimmt ein anderes derselben Reihe (Umgehung statt Sackgasse).
+- **Erste Version: 2 Reihen, 8 Kapitel.**
+  - Reihe 1 (einfach): **Tiere, Gemüse, Früchte, Kleidung**.
+  - Reihe 2 (mittel): **Flüsse, Automarken, Länder, Berufe**. Flüsse und Automarken vorher nachzählen (≥ ca. 50 Wörter aus einem Stück); sonst Ersatz z. B. Musikinstrumente oder Sportarten.
+  - Reihen 3–6 bleiben verdeckt mit Hinweis „bald“; sie werden Stück für Stück gefüllt.
+- **Neue Wortlisten** (Kleidung, Flüsse, Automarken, Länder, Berufe) mit Rätselsätzen schreibt Claude, Adrian prüft.
+- Der bisherige Pfad durchs All entfällt.
 
 ## Wörter und Steine
 
@@ -79,10 +97,10 @@ Status: **v4.4, erste Version umgesetzt** (Kapitel Tiere, Gemüse, Früchte). Sc
 
 ## Offen
 
-- Gestaltung des Pfads durchs All (Planeten, Flug-Animation).
+- Kapitel-Brett: Versatz der Reihen (wie im Spielfeld?), was auf verdeckten und offenen Hexagons steht (Name, Symbol, Sterne), Dreh-Animation beim Aufdecken, Platz für Titel und „Modus wechseln“.
 - Weg des versteckten Wortes gezielt gerade bzw. verwinkelt legen.
 - Rätselsätze und Wortlisten nach Testspielen verbessern.
-- Weitere Kapitel (z. B. Länder, Musikinstrumente).
+- Themen für Reihen 3–6.
 
 ## Verlauf
 
@@ -94,3 +112,4 @@ Status: **v4.4, erste Version umgesetzt** (Kapitel Tiere, Gemüse, Früchte). Sc
 - **v4.2:** Rätsel gratis und beliebig oft, als Overlay (Antippen schließt), automatisch zu Beginn jedes Levels; keine Textzeile mehr über dem Feld.
 - **v4.3:** Kein Draft in der Story: Rätsel, Tipp, Aufräumen, Scan und Lösen sind von Anfang an fest da; Mischen, Joker usw. entfallen (zerstören das versteckte Wort). Hinweis nur noch „bis zum Ziel“.
 - **v4.4:** Nach Testspiel: Reihenfolge Tiere → Gemüse → Früchte (Früchte am schwierigsten). Rätsel MARACUJA verrät die Lösung nicht mehr; ELSBEERE (kaum bekannt) ans Ende der Liste.
+- **v5 (Entwurf):** Kapitel-Brett statt Pfad: 4 × 6 große Hexagons, Reihe 1 offen, nächste Reihe dreht sich, sobald ein Kapitel der Reihe geschafft ist; Wertung Bronze / Silber / Gold. Erste Version 2 Reihen: Tiere, Gemüse, Früchte, Kleidung; Flüsse, Automarken, Länder, Berufe.
