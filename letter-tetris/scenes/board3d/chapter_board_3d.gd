@@ -29,7 +29,7 @@ const FONT_SIZE := 96
 const TEXT_OUTLINE := Color(0.0, 0.02, 0.06, 0.85)
 ## Aufdeck-Animation: Pause vor der ersten Drehung, Abstand zwischen den Steinen.
 const TURN_START := 0.35
-const TURN_STAGGER := 0.22
+const TURN_STAGGER := 0.07
 
 var layout: BoardLayout
 var camera: Camera3D
