@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v4.3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v4.4, erste Version umgesetzt** (Kapitel Tiere, Gemüse, Früchte). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Münzen, Preise und Sterne sind in allen Modi gleich. Ausnahme: Die Story hat feste Hilfen statt Draft (v4.3).
 
@@ -12,13 +12,13 @@ Status: **v4.3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Sc
 
 - Jedes Kapitel ist eine **Kategorie**, z. B. 🍎 Früchte, 🥕 Gemüse, 🐾 Tiere, 🌍 Länder, 🏛 Hauptstädte, 🚗 Automarken, 🌊 Flüsse.
 - **Ziel:** Level 20 erreichen → Kapitel geschafft, das nächste wird freigeschaltet.
-- **Erstes Kapitel:** Früchte.
-- Reihenfolge von leicht (Früchte, Tiere) nach schwer (Flüsse, Hauptstädte).
+- **Reihenfolge der ersten Kapitel:** Tiere (sehr einfach), Gemüse, Früchte (am schwierigsten, nach Testspiel v4.4).
+- Reihenfolge von leicht (Tiere, Gemüse) nach schwer (Flüsse, Hauptstädte).
 - **Mindestens ca. 50 Wörter je Kategorie**, damit man die Lösungen nicht zu leicht auswendig lernt (unendlich wird es nicht).
   - Genug: Tiere, Früchte (mit Exoten), Gemüse, Berufe, Länder, Hauptstädte der Welt, Sportarten, Blumen/Pflanzen, Kleidung, Musikinstrumente.
   - Knapp (nachzählen): Automarken, Flüsse, Körperteile, Werkzeuge.
   - Zu klein: Farben, Planeten, Wochentage.
-- Themenlisten sind kleine Textdateien je Kategorie (`data/story/<kapitel>.txt`, Zeilen „WORT;Rätselsatz“), **von Hand kuratiert** und **nach Häufigkeit sortiert** (bekannte Wörter zuerst). Erste Kapitel: Früchte (54 Wörter), Tiere (88), Gemüse (52).
+- Themenlisten sind kleine Textdateien je Kategorie (`data/story/<kapitel>.txt`, Zeilen „WORT;Rätselsatz“), **von Hand kuratiert** und **nach Häufigkeit sortiert** (bekannte Wörter zuerst). Erste Kapitel: Tiere (88 Wörter), Gemüse (52), Früchte (54).
 - **Nur Wörter aus einem Stück** (fürs Erste): Themenwörter mit Leerzeichen oder Bindestrich (BUENOS AIRES, NEU-DELHI, COSTA RICA) werden weggelassen.
 
 ## Einstieg
@@ -29,7 +29,7 @@ Status: **v4.3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Sc
 ## Kapitel-Auswahl
 
 - **Pfad durchs All:** Die Kapitel sind Stationen (runde, leuchtende Planeten mit Anfangsbuchstaben) auf einem Weg von unten nach oben, verbunden durch eine Linie. Darunter Name und Sterne (☆☆☆ … ★★★); gesperrte Stationen sind gedimmt mit „gesperrt“.
-- **Freischalten:** Früchte ist offen; ein Kapitel wird frei, sobald das vorherige geschafft ist.
+- **Freischalten:** Tiere ist offen; ein Kapitel wird frei, sobald das vorherige geschafft ist.
 - Erste, einfache Version; die schöne Gestaltung (Flug-Animation, Planeten) folgt.
 
 ## Wörter und Steine
@@ -93,3 +93,4 @@ Status: **v4.3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Sc
 - **v4.1:** Power-ups wie im Lauf alle 4 Level (4, 8, 12, 16).
 - **v4.2:** Rätsel gratis und beliebig oft, als Overlay (Antippen schließt), automatisch zu Beginn jedes Levels; keine Textzeile mehr über dem Feld.
 - **v4.3:** Kein Draft in der Story: Rätsel, Tipp, Aufräumen, Scan und Lösen sind von Anfang an fest da; Mischen, Joker usw. entfallen (zerstören das versteckte Wort). Hinweis nur noch „bis zum Ziel“.
+- **v4.4:** Nach Testspiel: Reihenfolge Tiere → Gemüse → Früchte (Früchte am schwierigsten). Rätsel MARACUJA verrät die Lösung nicht mehr; ELSBEERE (kaum bekannt) ans Ende der Liste.

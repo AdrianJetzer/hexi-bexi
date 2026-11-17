@@ -18,7 +18,6 @@ MELONE;Groß und rund, besonders saftig im Sommer
 BEERE;Kleine, runde Frucht, oft am Strauch
 PFIRSICH;Samtige Haut, saftig, mit Stein
 NONI;Tropische Frucht, eher als Saft bekannt
-ELSBEERE;Seltene Wildfrucht, wird zu Schnaps gebrannt
 OLIVE;Klein, grün oder schwarz, gibt wertvolles Öl
 APRIKOSE;Orange, samtig, mit Stein – auch Marille
 LITSCHI;Raue rote Schale, weißes, süßes Fruchtfleisch
@@ -39,7 +38,7 @@ KUMQUAT;Zwergorange, man isst sie mit Schale
 PHYSALIS;Kapstachelbeere im Papierlampion
 LIMONE;Anderes Wort für Zitrone
 LONGAN;Drachenauge – kleine Frucht mit glasigem Fleisch
-MARACUJA;Passionsfrucht mit knackigen Kernen
+MARACUJA;Schrumpelige Schale, innen saures Gelee mit Kernen
 RAMBUTAN;Rote, haarige Frucht aus Asien
 YUZU;Japanische Zitrusfrucht, sehr aromatisch
 GOJI;Kleine rote Beere, die man meist getrocknet isst
@@ -54,3 +53,4 @@ ACEROLA;Kleine Kirsche mit sehr viel Vitamin C
 ZWETSCHE;Längliche Pflaume für den Kuchen
 SANDDORN;Orange Beere von der Küste, sehr sauer
 KORINTHE;Kleine, dunkle getrocknete Traube
+ELSBEERE;Seltene Wildfrucht, wird zu Schnaps gebrannt
