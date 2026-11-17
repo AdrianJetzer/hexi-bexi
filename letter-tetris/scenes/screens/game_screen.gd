@@ -156,6 +156,8 @@ var _word_lists: Dictionary = {}
 var _settings_button: Button
 var _settings: ColorRect
 var _settings_modes: VBoxContainer
+## Schalter „Vibration an/aus“ in den Einstellungen.
+var _vibration_button: Button
 var _mode_confirm: ColorRect
 var _pending_mode: String = ""
 var _confirm: ColorRect
@@ -433,6 +435,14 @@ func _build_ui() -> void:
 	_settings_modes = VBoxContainer.new()
 	_settings_modes.add_theme_constant_override("separation", 22)
 	(st[1] as VBoxContainer).add_child(_settings_modes)
+	_vibration_button = _button("", 40, st[1])
+	_vibration_button.flat = true
+	_vibration_button.add_theme_color_override("font_color", TEXT_DIM)
+	_vibration_button.custom_minimum_size = Vector2(420, 90)
+	_vibration_button.pressed.connect(func() -> void:
+		Settings.vibration_on = not Settings.vibration_on
+		_update_vibration_button()
+		Settings.tick())
 	var close := _button("Schließen", 48, st[1])
 	close.custom_minimum_size = Vector2(420, 120)
 	close.pressed.connect(func() -> void: _settings.visible = false)
@@ -1053,7 +1063,12 @@ func _open_settings() -> void:
 		var chosen: String = id
 		card.pressed.connect(func() -> void: _on_mode_picked(chosen))
 		_settings_modes.add_child(card)
+	_update_vibration_button()
 	_settings.visible = true
+
+
+func _update_vibration_button() -> void:
+	_vibration_button.text = "Vibration: an" if Settings.vibration_on else "Vibration: aus"
 
 
 func _on_mode_picked(id: String) -> void:

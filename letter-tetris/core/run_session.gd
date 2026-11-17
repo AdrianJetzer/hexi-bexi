@@ -62,7 +62,8 @@ const STORY_FILL: Array[float] = [0.5, 0.65, 0.75, 0.88]
 ## Anteil der (nach Häufigkeit sortierten) Themenliste, aus dem je Stufe gewählt wird.
 const STORY_FAMILIAR: Array[float] = [0.4, 0.6, 0.85, 1.0]
 ## Hilfen, die im Story-Modus nicht angeboten werden (nur eine Zeile pro Level).
-const STORY_SKIP_HELPS: PackedStringArray = ["split", "strike"]
+## Story-Modus: feste Hilfen von Anfang an, kein Draft (spec/story-mode.md, v4.3). Lösen ist immer da.
+const STORY_HELPS: PackedStringArray = ["riddle", "hint", "clear", "scan"]
 ## Alle Hilfen mit Preis, die man im Lauf freischalten kann (Auffüllen und Lösen sind immer da).
 const HELP_IDS: PackedStringArray = ["hint", "replace", "shuffle", "clear", "joker", "shorten",
 		"swap", "split", "complete", "magnet", "scan", "strike"]
@@ -164,9 +165,10 @@ func start() -> void:
 	completed = false
 	quest = null
 	_level = 1
-	owned = PackedStringArray() if _balance.draft_enabled else HELP_IDS.duplicate()
 	if story != null:
-		owned.append("riddle")
+		owned = STORY_HELPS.duplicate()
+	else:
+		owned = PackedStringArray() if _balance.draft_enabled else HELP_IDS.duplicate()
 	spent = 0
 	story_target = ""
 	_used_targets.clear()
@@ -311,7 +313,7 @@ func base_price(id: String) -> int:
 
 ## Wie viele Level noch bis zur nächsten Auswahl (das laufende mitgezählt)? 0 = keine mehr.
 func levels_until_offer() -> int:
-	if not _balance.draft_enabled or is_over:
+	if not _drafting() or is_over:
 		return 0
 	var every := _balance.draft_every
 	var m := ceili(_level / float(every)) * every
@@ -349,6 +351,11 @@ func upgraded_price(id: String) -> int:
 	return maxi(_balance.upgrade_min_price, int(round(p / 5.0)) * 5)
 
 
+## Gibt es Power-ups / Upgrades? Nicht im Story-Modus (feste Hilfen).
+func _drafting() -> bool:
+	return _balance.draft_enabled and story == null
+
+
 func _kind_after(completed: int) -> String:
 	return "powerup" if completed / _balance.draft_every <= _balance.draft_tiers.size() else "upgrade"
 
@@ -362,8 +369,7 @@ func _options_after(completed: int) -> PackedStringArray:
 	var n := completed / every
 	if n <= _balance.draft_tiers.size():
 		for id in _balance.draft_tiers[n - 1]:
-			# Story: nur eine Zeile pro Level, Teilen und Streichen ergeben dort keinen Sinn.
-			if not owned.has(id) and not (story != null and id in STORY_SKIP_HELPS):
+			if not owned.has(id):
 				out.append(id)
 	else:
 		var ids := owned.duplicate()
@@ -375,7 +381,7 @@ func _options_after(completed: int) -> PackedStringArray:
 
 
 func _make_offer(completed: int) -> void:
-	if not _balance.draft_enabled or is_over:
+	if not _drafting() or is_over:
 		return
 	var options := _options_after(completed)
 	if options.is_empty():

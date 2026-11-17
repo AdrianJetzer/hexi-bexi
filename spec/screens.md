@@ -40,7 +40,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Anzeige:** über dem Spielfeld links die **Leiter** (20 Quadrate, eins je Level, liegend wie eine Leiter; jedes Quadrat hat seine feste Farbe im Verlauf grün → orange → rot; geschaffte Level leuchten, das laufende ist farbig umrandet, offene sind dunkel), rechts die **Münzen**. Kein Text „Level · Rekord“ mehr. Screenshot: [Leiter](images/ladder-v1.png).
 - **Power-up-Auswahl** (nach Level 4, 8, 12, 16; Upgrades nur im endlosen Test-Betrieb): halbtransparenter Bildschirm über dem Spiel mit großem, goldenem Titel („Wähle eine Hilfe“ bzw. „Welche Hilfe wird günstiger?“) und Karten im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis (beim Upgrade „alt → neu“), darunter die Erklärung (Power-up: 2 zufällige der Stufe) (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)). Screenshots: [Start](images/draft-start-v1.png), [Power-up](images/draft-powerup-v1.png), [Upgrade](images/draft-upgrade-v1.png).
 - **Hinweis** links unter dem Spielfeld: „Noch n Level bis zum Power-up“, danach „Noch n Level bis zum Ziel“.
-- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Stein ersetzen, Mischen; **100:** Aufräumen, Joker, Kürzen, Tipp (je Buchstabe); **150:** Tauschen (5 Steine), Teilen, Vervollständigen (Wortanfang anwischen); **200:** Magnet (Stein antippen), Scan, Zeile streichen; **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
+- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Stein ersetzen, Tauschen (5 Steine); **100:** Mischen, Joker, Kürzen, Tipp (je Buchstabe); **150:** Aufräumen, Teilen, Magnet (Stein antippen); **200:** Scan, Zeile streichen, Vervollständigen (Wortanfang anwischen); **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
@@ -60,6 +60,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
+- **Vibration** an/aus (Knopf „Vibration: an/aus“ unter den Modi; neu installiert: an). Beim Wischen gibt **jeder neu verbundene Buchstabe einen kurzen, leichten Tick** (ca. 15 ms); Zurückwischen und fertige Wörter vibrieren nicht.
 - **Rekord zurücksetzen** (mit Nachfrage).
 - Einstellungen werden lokal gespeichert.
 
@@ -92,6 +93,8 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.17:** Vibration: Tick je verbundenem Buchstaben, Schalter in den Einstellungen.
+- **v4.16:** Neue Preisstufen (Tauschen 50, Mischen 100, Aufräumen und Magnet 150, Vervollständigen 200).
 - **v4.15:** Leiter (20 Quadrate) statt „Level · Rekord“; Bilanz „Geschafft!“ mit Sternen bei Level 20; Rekord = übrige Münzen; Modus-Knöpfe nur mit Namen und Sternen; Tipp in der 100er-Stufe.
 - **v4.14:** Modus „Story“ in den Einstellungen, Pfad durchs All, Rätsel-Anzeige, Kapitel-Abschluss.
 - **v4.13:** Auswahl-Bildschirm überarbeitet: ohne Zeile „Power-up“/„Upgrade“, Titel hervorgehoben, Karten als Glas-Knöpfe mit Münze und größerer Erklärung.

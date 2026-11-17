@@ -5,7 +5,7 @@ extends RefCounted
 ## (# = Kommentar).
 
 ## Reihenfolge der Kapitel auf dem Pfad: [Kennung, Name].
-const CHAPTERS := [["fruechte", "Früchte"], ["tiere", "Tiere"], ["gemuese", "Gemüse"]]
+const CHAPTERS := [["tiere", "Tiere"], ["gemuese", "Gemüse"], ["fruechte", "Früchte"]]
 
 var id: String = ""
 var display_name: String = ""
