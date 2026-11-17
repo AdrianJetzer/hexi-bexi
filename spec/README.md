@@ -1,6 +1,6 @@
-# Spezifikation „Letter Tetris“
+# Spezifikation „Hexaword“
 
-Arbeitstitel: **Letter Tetris**. Handy-Game für Android first, später iOS. Engine: Godot mit GDScript (siehe `../CLAUDE.md`).
+Spielname: **Hexaword** (entschieden; vorher Arbeitstitel „Letter Tetris“). Ob der Name in Play Store und App Store frei ist, ist noch zu prüfen. Handy-Game für Android first, später iOS. Engine: Godot mit GDScript (siehe `../CLAUDE.md`).
 
 Grundidee: Buchstaben in Hexagons erscheinen im Spielfeld und füllen es von unten nach oben, der Spieler wischt Wörter, die dann verschwinden (Details in `game-rules.md`). Gespielt wird in **Läufen**: jedes Level ist ein Auftrag aus Block-Zeilen (gesuchte Wortlängen), Münzen kaufen Hilfen, wer aufgibt, beginnt neu (`run-mode.md`). Hier sammeln wir abgestimmte Anforderungen, Skizzen und offene Fragen, bevor implementiert wird.
 
