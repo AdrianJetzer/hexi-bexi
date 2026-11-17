@@ -158,3 +158,26 @@ func test_board_slots() -> void:
 		for c in row:
 			assert_true(StoryChapter.playable(c[0]), "Wortliste für %s" % c[0])
 	assert_eq(StoryChapter.all().size(), 8, "erste Version: 2 Reihen à 4 Kapitel")
+
+
+func test_no_word_twice_in_a_run() -> void:
+	var seen := {}
+	for i in 20:
+		assert_false(seen.has(run.story_target), "Ziel %s doppelt" % run.story_target)
+		seen[run.story_target] = true
+		run._complete_quest()
+
+
+func test_found_word_does_not_count_again() -> void:
+	# Ein anderes Themenwort passender Länge finden, dann darf es später nicht mehr zählen.
+	var n := run.story_target.length()
+	var other := ""
+	for w in run.story.words:
+		if w.length() == n and w != run.story_target:
+			other = w
+			break
+	assert_ne(other, "")
+	run._used_targets[other] = true
+	run._complete_quest()
+	assert_false(run._theme.contains(other), "gefundenes Wort zählt nicht mehr")
+	assert_true(run._theme.contains(run.story_target), "neues Ziel zählt")

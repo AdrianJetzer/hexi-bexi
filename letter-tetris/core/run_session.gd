@@ -187,7 +187,12 @@ func start() -> void:
 ## Kapitel setzen (vor start()). Wort-Hilfe, Tipp, Scan usw. arbeiten dann mit den Themenwörtern.
 func set_story(chapter: StoryChapter) -> void:
 	story = chapter
-	_theme = WordDictionary.from_words(chapter.words)
+	_set_theme(chapter.words)
+
+
+## Themenwörter, die gerade zählen (auch für Tipp, Scan, Lösen und die Füllbuchstaben).
+func _set_theme(words: PackedStringArray) -> void:
+	_theme = WordDictionary.from_words(words)
 	var finders: Array[WordFinder] = [WordFinder.new(_theme)]
 	_hint_finders = finders
 	_plant_words = _theme
@@ -233,6 +238,13 @@ func current_riddle() -> String:
 ## Auftrag im Story-Modus: eine Zeile, so lang wie das gewählte Themenwort.
 func _story_quest(level: int) -> Quest:
 	story_target = _pick_story_target(level)
+	# Kein Wort doppelt pro Lauf: frühere Ziele und gefundene Wörter zählen nicht mehr und
+	# werden auch nicht als Füllwort, Tipp oder Lösung gelegt.
+	var fresh := PackedStringArray()
+	for w in story.words:
+		if w == story_target or not _used_targets.has(w):
+			fresh.append(w)
+	_set_theme(fresh)
 	var q := Quest.new()
 	q.rows = PackedInt32Array([story_target.length()])
 	q.reward = _curve.reward(level)
@@ -1034,6 +1046,8 @@ func submit_path(path: Array[Vector2i]) -> bool:
 		grid.clear(cell)
 	words_found += 1
 	quest.fill(row, word)
+	if story != null:
+		_used_targets[word] = true  # gefunden: kommt in diesem Lauf nicht nochmal
 	_aim_help()
 	word_accepted.emit(word, path, row)
 	# Automatisch auffüllen: eine Wortlänge minus eins.

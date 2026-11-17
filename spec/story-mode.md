@@ -58,6 +58,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 
 - **Das Spiel versteckt das Wort:** Zu Beginn jedes Levels wählt es ein Themenwort passender Länge (z. B. BANANE) und legt dessen Buchstaben als zusammenhängenden Weg ins Feld, dazu Füllbuchstaben (wie die Wort-Hilfe beim Tauschen/Magnet). Der Spieler muss nicht raten, ob das Wort überhaupt möglich ist.
 - **Es zählt jedes Themenwort** der Kategorie mit genau passender Länge: Hat das Spiel APFEL versteckt und der Spieler findet BIRNE, zählt BIRNE.
+- **Kein Wort doppelt pro Lauf:** Ein Wort, das schon Ziel war oder gefunden wurde, zählt im selben Lauf nicht mehr und wird auch nicht mehr als Füllwort, Tipp oder Lösung gelegt (v5.1, nach Testspiel: BMW kam zweimal).
 - **Andere Wörter zählen nicht** in Themen-Zeilen (ein beliebiges Wort gleicher Länge wird abgelehnt und wackelt).
 - **Steigerung über 20 Level:**
   1. Wortlänge je Stufe à 5 Level: 3–5, 4–6, 5–7, 6–8 Buchstaben; dabei zuerst aus den bekanntesten 40 %, dann 60 %, 85 %, zuletzt allen Wörtern der Liste. Kein Wort kommt doppelt, solange noch andere übrig sind.
@@ -118,3 +119,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 - **v4.4:** Nach Testspiel: Reihenfolge Tiere → Gemüse → Früchte (Früchte am schwierigsten). Rätsel MARACUJA verrät die Lösung nicht mehr; ELSBEERE (kaum bekannt) ans Ende der Liste.
 - **v5 (Entwurf):** Kapitel-Brett statt Pfad: 4 × 6 große Hexagons, Reihe 1 offen, nächste Reihe dreht sich, sobald ein Kapitel der Reihe geschafft ist; Wertung Bronze / Silber / Gold. Erste Version 2 Reihen: Tiere, Gemüse, Früchte, Kleidung; Flüsse, Automarken, Länder, Berufe.
 - **v5:** Kapitel-Brett umgesetzt (Schritte 1–3): 3D-Hexagons, Freischalten je Reihe, Bronze / Silber / Gold mit Dreh-Animation; neue Kapitel Kleidung, Flüsse, Automarken, Länder, Berufe (Wortlisten von Claude, Prüfung durch Adrian offen).
+- **v5.1:** Kein Wort doppelt pro Lauf (auch nicht als gefundenes Themenwort statt des Ziels).
