@@ -60,6 +60,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
+- **Vibration** an/aus (Knopf „Vibration: an/aus“ unter den Modi; neu installiert: an). Beim Wischen gibt **jeder neu verbundene Buchstabe einen kurzen, leichten Tick** (ca. 15 ms); Zurückwischen und fertige Wörter vibrieren nicht.
 - **Rekord zurücksetzen** (mit Nachfrage).
 - Einstellungen werden lokal gespeichert.
 
@@ -92,6 +93,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.17:** Vibration: Tick je verbundenem Buchstaben, Schalter in den Einstellungen.
 - **v4.16:** Neue Preisstufen (Tauschen 50, Mischen 100, Aufräumen und Magnet 150, Vervollständigen 200).
 - **v4.15:** Leiter (20 Quadrate) statt „Level · Rekord“; Bilanz „Geschafft!“ mit Sternen bei Level 20; Rekord = übrige Münzen; Modus-Knöpfe nur mit Namen und Sternen; Tipp in der 100er-Stufe.
 - **v4.14:** Modus „Story“ in den Einstellungen, Pfad durchs All, Rätsel-Anzeige, Kapitel-Abschluss.

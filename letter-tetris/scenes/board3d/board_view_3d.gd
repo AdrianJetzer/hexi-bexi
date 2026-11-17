@@ -466,6 +466,7 @@ func _try_add(screen_point: Vector2) -> void:
 	var cell := layout.cell_at(Vector2(p.x, p.z), HIT_TOLERANCE)
 	if cell.x >= 0 and session.can_extend(_path, cell):
 		_path.append(cell)
+		Settings.tick()  # ein Tick je verbundenem Buchstaben
 		if _tiles.has(cell):
 			_tiles[cell].set_selected(true)
 		path_changed.emit(session.word_for(_path))
