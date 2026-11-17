@@ -41,6 +41,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 
 - **Größe:** 4 Hexagons breit, 6 hoch (24 Kapitel). Leicht unten, schwer oben.
 - **Zu Beginn** ist nur **Reihe 1 aufgedeckt**; alle anderen Hexagons liegen verdeckt (Rückseite).
+- **Beschriftung:** Ein aufgedecktes Hexagon zeigt den **Namen** des Kapitels und darunter die **Sterne** (☆☆☆ … ★★★); keine Emojis (Schrift auf Android).
 - **Kapitel geschafft:** Das Hexagon **dreht sich** und zeigt seine Wertung: **Bronze** (★), **Silber** (★★), **Gold** (★★★). Nochmal spielen kann die Wertung verbessern (die beste zählt).
 - **Nächste Reihe:** Sobald **mindestens ein Kapitel einer Reihe** geschafft ist, drehen sich **alle 4 Hexagons der nächsten Reihe** um und sind spielbar. Wer an einem Thema hängt, nimmt ein anderes derselben Reihe (Umgehung statt Sackgasse).
 - **Erste Version: 2 Reihen, 8 Kapitel.**
@@ -97,7 +98,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 
 ## Offen
 
-- Kapitel-Brett: Versatz der Reihen (wie im Spielfeld?), was auf verdeckten und offenen Hexagons steht (Name, Symbol, Sterne), Dreh-Animation beim Aufdecken, Platz für Titel und „Modus wechseln“.
+- Kapitel-Brett: Versatz der Reihen (wie im Spielfeld?), was auf verdeckten Hexagons steht, Dreh-Animation beim Aufdecken, Platz für Titel und „Modus wechseln“.
 - Weg des versteckten Wortes gezielt gerade bzw. verwinkelt legen.
 - Rätselsätze und Wortlisten nach Testspielen verbessern.
 - Themen für Reihen 3–6.
