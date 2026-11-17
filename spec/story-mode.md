@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v5, Schritt 1 umgesetzt** (Kapitel-Brett mit Tiere, Gemüse, Früchte; ohne Dreh-Animation und Bronze/Silber/Gold). Screenshot: [Kapitel-Brett](images/chapter-board-v1.png). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v5, Schritt 2 umgesetzt** (Kapitel-Brett mit Tiere, Gemüse, Früchte; Dreh-Animation, Bronze / Silber / Gold). Screenshots: [Brett v1](images/chapter-board-v1.png), [Brett mit Wertungen](images/chapter-board-v2.png). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Münzen, Preise und Sterne sind in allen Modi gleich. Ausnahme: Die Story hat feste Hilfen statt Draft (v4.3).
 
@@ -44,6 +44,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
 - **Optik:** Die Kapitel sind **3D-Kristall-Hexagons wie die Spielsteine** (gleiches Licht, gleicher Glanz); Aufdecken ist eine echte Drehung wie beim Tauschen der Buchstabensteine.
 - **Beschriftung:** Ein aufgedecktes Hexagon zeigt den **Namen** des Kapitels und darunter die **Sterne** (☆☆☆ … ★★★); keine Emojis (Schrift auf Android).
 - **Kapitel geschafft:** Das Hexagon **dreht sich** und zeigt seine Wertung: **Bronze** (★), **Silber** (★★), **Gold** (★★★). Nochmal spielen kann die Wertung verbessern (die beste zählt).
+- **Animation:** Kommt man nach einem Kapitel aufs Brett zurück, dreht sich zuerst der Stein mit der neuen oder besseren Wertung, danach die neu aufgedeckte Reihe Stein für Stein (je mit kurzem Vibrations-Tick). Verdeckt: dunkles Rauchglas; offen, noch nicht geschafft: Kristall mit gedämpftem Kern; Schrift mit dunklem Rand.
 - **Nächste Reihe:** Sobald **mindestens ein Kapitel einer Reihe** geschafft ist, drehen sich **alle 4 Hexagons der nächsten Reihe** um und sind spielbar. Wer an einem Thema hängt, nimmt ein anderes derselben Reihe (Umgehung statt Sackgasse).
 - **Erste Version: 2 Reihen, 8 Kapitel.**
   - Reihe 1 (einfach): **Tiere, Gemüse, Früchte, Kleidung**.
@@ -51,7 +52,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Tiere · Gemüse · Früchte · Kleidung   ← zu B
   - Reihen 3–6 bleiben verdeckt mit Hinweis „bald“; sie werden Stück für Stück gefüllt.
 - **Neue Wortlisten** (Kleidung, Flüsse, Automarken, Länder, Berufe) mit Rätselsätzen schreibt Claude, Adrian prüft.
 - Der bisherige Pfad durchs All entfällt.
-- **Bauplan:** (1) Brett mit Freischalt-Regel ✔, (2) Dreh-Animation und Bronze / Silber / Gold, (3) neue Wortlisten.
+- **Bauplan:** (1) Brett mit Freischalt-Regel ✔, (2) Dreh-Animation und Bronze / Silber / Gold ✔, (3) neue Wortlisten.
 
 ## Wörter und Steine
 

@@ -56,6 +56,61 @@ static func back(hex_radius: float) -> ShaderMaterial:
 	return m
 
 
+## Kapitel-Brett: offenes, noch nicht geschafftes Kapitel. Wie die Vorderseite, aber mit
+## schwächerem Kern, damit der Name darauf gut lesbar ist.
+static func chapter_open(hex_radius: float) -> ShaderMaterial:
+	var m := front(hex_radius)
+	m.set_shader_parameter("core_strength", 0.7)
+	m.set_shader_parameter("core_size", 0.45)
+	return m
+
+
+## Kapitel-Brett: geschafftes Kapitel als Bronze (1 Stern), Silber (2) oder Gold (3).
+static func chapter_medal(hex_radius: float, stars: int) -> ShaderMaterial:
+	var m := front(hex_radius)
+	var base: Color
+	var tint: Color
+	var glow: Color
+	match stars:
+		1:  # Bronze
+			base = Color(0.22, 0.1, 0.04)
+			tint = Color(0.75, 0.42, 0.2)
+			glow = Color(1.0, 0.5, 0.2)
+		2:  # Silber
+			base = Color(0.16, 0.18, 0.22)
+			tint = Color(0.75, 0.8, 0.9)
+			glow = Color(0.85, 0.92, 1.0)
+		_:  # Gold
+			base = Color(0.26, 0.17, 0.02)
+			tint = Color(0.95, 0.75, 0.25)
+			glow = Color(1.0, 0.78, 0.25)
+	m.set_shader_parameter("base_color", base)
+	m.set_shader_parameter("tint_color", tint)
+	m.set_shader_parameter("rim_color", glow)
+	m.set_shader_parameter("core_color", glow)
+	m.set_shader_parameter("opacity", 0.85)
+	m.set_shader_parameter("rim_strength", 0.8)
+	m.set_shader_parameter("core_strength", 0.6)
+	m.set_shader_parameter("core_size", 0.45)
+	m.set_shader_parameter("iridescence", 0.05)
+	return m
+
+
+## Kapitel-Brett: verdeckte Rückseite, dunkles Rauchglas (dunkler als bei den Spielsteinen).
+static func chapter_back(hex_radius: float) -> ShaderMaterial:
+	var m := back(hex_radius)
+	m.set_shader_parameter("base_color", Color(0.03, 0.04, 0.08))
+	m.set_shader_parameter("tint_color", Color(0.08, 0.1, 0.16))
+	m.set_shader_parameter("rim_color", Color(0.25, 0.5, 0.65))
+	m.set_shader_parameter("core_color", Color(0.05, 0.25, 0.4))
+	m.set_shader_parameter("rim_strength", 0.3)
+	m.set_shader_parameter("core_strength", 0.15)
+	m.set_shader_parameter("opacity", 0.96)
+	# Kaum Spiegelung: sonst wirkt das matte Glas durch den Himmel hellgrau.
+	m.set_shader_parameter("specular_value", 0.12)
+	return m
+
+
 ## Rahmen: dunkles Metall.
 static func frame_metal() -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
