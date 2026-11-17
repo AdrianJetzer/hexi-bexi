@@ -6,9 +6,9 @@
 script = ExtResource("1")
 code = "de"
 display_name = "Deutsch"
-alphabet = PackedStringArray("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
-weights = PackedFloat32Array(6.51, 1.89, 3.06, 5.08, 17.4, 1.66, 3.01, 4.76, 7.55, 0.27, 1.21, 3.44, 2.53, 9.78, 2.51, 0.79, 0.02, 7.0, 7.58, 6.15, 4.35, 0.67, 1.89, 0.03, 0.04, 1.13)
-vowels = PackedStringArray("A", "E", "I", "O", "U")
+alphabet = PackedStringArray("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Ä", "Ö", "Ü")
+weights = PackedFloat32Array(6.51, 1.89, 3.06, 5.08, 17.4, 1.66, 3.01, 4.76, 7.55, 0.27, 1.21, 3.44, 2.53, 9.78, 2.51, 0.79, 0.02, 7.0, 7.58, 6.15, 4.35, 0.67, 1.89, 0.03, 0.04, 1.13, 0.54, 0.3, 0.65)
+vowels = PackedStringArray("A", "E", "I", "O", "U", "Ä", "Ö", "Ü")
 min_vowel_ratio = 0.3
 max_vowel_ratio = 0.55
 balance_min_letters = 4

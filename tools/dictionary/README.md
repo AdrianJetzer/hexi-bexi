@@ -27,8 +27,9 @@ tools/dictionary/build.sh
 
 ## Aufbereitung
 
-- Großbuchstaben A–Z; ß → SS.
-- Wörter mit Umlauten oder anderen Sonderzeichen (Bindestrich, Leerzeichen, Ziffern …) entfallen.
+- Großbuchstaben A–Z und Ä, Ö, Ü; ß → SS.
+- Wörter mit anderen Sonderzeichen (Bindestrich, Leerzeichen, Ziffern, Akzente …) entfallen.
+- Im Spielformat stehen Umlaute als je ein Byte direkt hinter Z (Ä → `[`, Ö → `\`, Ü → `]`); `WordDictionary` übersetzt hin und zurück.
 - Mindestens 3 Buchstaben.
 - Trennmuster: nur Einträge, die in der **reformierten Rechtschreibung** gelten.
 - Wiktionary: Stichwörter deutscher Einträge plus alle einteiligen Beugungsformen.
@@ -61,7 +62,7 @@ tools/dictionary/build.sh
 | Trennmuster (ohne Namen/Abkürzungen/Akronyme/römische Zahlen) | 381.852 (vorher 390.374) |
 | Wiktionary (ohne Namen/Abkürzungen/Akronyme/römische Zahlen) | 652.750 |
 | Entfernt (Namen/Abkürzungen) | 42.599 |
-| Kombiniert | 802.530 (vorher 804.207; 1.677 veraltete Schreibweisen und Namen entfernt) |
+| Kombiniert | 1.016.262 (mit Umlauten; vorher 802.530 ohne) |
 
 ## Offen
 

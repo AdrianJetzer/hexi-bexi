@@ -1,0 +1,90 @@
+# Kapitel „Tiere“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+HUND;Bester Freund des Menschen
+WOLF;Heult den Mond an
+KATZE;Schnurrt und miaut
+PFERD;Man kann darauf reiten
+KREBS;Läuft seitwärts und hat Scheren
+MAUS;Klein, grau, mag Käse
+FUCHS;Rot, schlau und listig
+ADLER;Großer Greifvogel
+SCHLANGE;Hat keine Beine und zischt
+HAHN;Kräht am Morgen
+BÄR;Groß, stark und liebt Honig
+LEOPARD;Gefleckte Raubkatze, klettert auf Bäume
+KUH;Gibt Milch und sagt Muh
+PANTHER;Schwarze Raubkatze
+TIGER;Gestreifte Raubkatze
+KÄFER;Hat einen Panzer und sechs Beine
+HIRSCH;Hat ein großes Geweih
+IGEL;Hat Stacheln und rollt sich ein
+SCHWEIN;Grunzt und wälzt sich im Schlamm
+ENTE;Schwimmt und sagt Quak
+PUMA;Große Wildkatze aus Amerika
+LÖWE;König der Tiere
+HASE;Lange Ohren, versteckt Ostereier
+REH;Scheues Tier im Wald, das Bambi
+ESEL;Grau, lange Ohren, sagt Iah
+SCHAF;Gibt Wolle
+FLIEGE;Summt um den Kopf
+TAUBE;Gurrt auf dem Stadtplatz
+BIBER;Baut Dämme mit seinen Zähnen
+STORCH;Bringt angeblich die Babys
+SPINNE;Hat acht Beine und spinnt Netze
+BIENE;Macht Honig
+FROSCH;Quakt am Teich
+MARDER;Beißt gern Autokabel durch
+JAGUAR;Gefleckte Raubkatze aus Südamerika
+ZIEGE;Meckert und klettert auf Felsen
+KROKODIL;Großes Reptil mit vielen Zähnen
+HAI;Raubfisch mit spitzen Zähnen
+HUHN;Legt Eier
+GANS;Großer weißer Vogel, schnattert
+RABE;Großer schwarzer Vogel
+ELEFANT;Hat einen Rüssel
+AFFE;Klettert gern und isst Bananen
+GEIER;Kreist über der Savanne
+SCHNECKE;Trägt ihr Haus auf dem Rücken
+WAL;Das größte Tier im Meer
+ELCH;Großer Hirsch aus dem Norden
+HUMMER;Großer Krebs mit kräftigen Scheren
+PAPAGEI;Bunter Vogel, der sprechen kann
+FALKE;Schneller Greifvogel
+PINGUIN;Vogel, der nicht fliegt, aber schwimmt
+MÜCKE;Sticht nachts
+DACHS;Schwarz-weißes Gesicht, gräbt Baue
+KRÖTE;Warziger Verwandter des Froschs
+EULE;Sieht nachts gut und gilt als weise
+RAUPE;Wird später zum Schmetterling
+LUCHS;Wildkatze mit Pinselohren
+KÄNGURU;Springt und trägt sein Junges im Beutel
+PANDA;Schwarz-weißer Bär, frisst Bambus
+ZEBRA;Pferd mit Streifen
+SPATZ;Kleiner, frecher Vogel
+GIRAFFE;Hat den längsten Hals
+NASHORN;Hat ein Horn auf der Nase
+LAMA;Spuckt, wenn es sich ärgert
+KAMEL;Hat Höcker und lebt in der Wüste
+AMEISE;Klein, fleißig, lebt im Haufen
+AAL;Langer Fisch, glitschig wie eine Schlange
+ROBBE;Liegt am Strand und hat Flossen
+OTTER;Spielt im Wasser und schwimmt auf dem Rücken
+DELFIN;Klug, verspielt, springt aus dem Wasser
+UHU;Große Eule mit Federohren
+GEPARD;Das schnellste Landtier
+KRAKE;Hat acht Arme
+NILPFERD;Dicker Riese, der im Fluss badet
+KOALA;Schläft viel auf Eukalyptusbäumen
+EMU;Großer Laufvogel aus Australien
+GORILLA;Der größte Menschenaffe
+FASAN;Bunter Vogel mit langem Schwanz
+ORCA;Schwarz-weißer Schwertwal
+FLAMINGO;Rosa Vogel, steht auf einem Bein
+QUALLE;Durchsichtig, schwimmt im Meer und nesselt
+ECHSE;Schuppiges Kriechtier, liebt die Sonne
+AMSEL;Schwarzer Singvogel mit gelbem Schnabel
+SCHAKAL;Wildhund aus Afrika und Asien
+LEGUAN;Große Echse mit Kamm
+YAK;Zottiges Rind aus dem Himalaja
+GNU;Afrikanische Antilope mit Bart
+HYÄNE;Lacht in der Savanne

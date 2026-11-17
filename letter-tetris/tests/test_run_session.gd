@@ -1152,9 +1152,9 @@ func test_powerup_after_level_five() -> void:
 	assert_signal_emitted(run, "offer_made")
 	assert_eq(run.offer["kind"], "powerup")
 	var options: PackedStringArray = run.offer["options"]
-	assert_eq(options.size(), 2, "2 von 3 zur Wahl")
+	assert_eq(options.size(), 2, "erste Stufe: beide zur Wahl")
 	for id in options:
-		assert_true(["hint", "replace", "shuffle"].has(id), id)
+		assert_true(["replace", "shuffle"].has(id), id)
 	assert_false(run.choose("swap"), "nicht im Angebot")
 	var pick := options[0]
 	assert_true(run.choose(pick))
@@ -1167,7 +1167,8 @@ func test_powerup_after_level_five() -> void:
 
 func test_powerup_tiers_in_order() -> void:
 	_draft_run()
-	var expected := [["hint", "replace", "shuffle"], ["clear", "joker", "shorten"],
+	balance.goal_level = 0  # endlos, damit nach Level 20 Upgrades kommen
+	var expected := [["replace", "shuffle"], ["clear", "joker", "shorten", "hint"],
 			["swap", "split", "complete"], ["magnet", "scan", "strike"]]
 	for tier in expected:
 		_finish_levels(balance.draft_every)
@@ -1183,6 +1184,7 @@ func test_powerup_tiers_in_order() -> void:
 
 func test_upgrade_lowers_price_by_quarter() -> void:
 	_draft_run()
+	balance.goal_level = 0  # endlos, damit nach Level 20 Upgrades kommen
 	for i in 4:
 		_finish_levels(balance.draft_every)
 		run.choose(run.offer["options"][0])
@@ -1234,7 +1236,43 @@ func test_powerup_choices_vary_between_runs() -> void:
 	for seed_value in range(1, 13):
 		run = RunSession.new(balance, curve, lang, dict, seed_value)
 		run.start()
+		# Zweite Stufe (nach Level 10): 2 von 4 zur Wahl.
+		_finish_levels(balance.draft_every)
+		run.choose(run.offer["options"][0])
 		_finish_levels(balance.draft_every)
 		seen[",".join(run.offer["options"])] = true
 	assert_gt(seen.size(), 1, "nicht immer dieselben zwei")
 
+
+func test_run_ends_at_goal_with_stars() -> void:
+	watch_signals(run)
+	run.start()
+	_finish_levels(balance.goal_level - 1)
+	assert_false(run.is_over)
+	assert_eq(run.levels_until_goal(), 1)
+	_finish_levels(1)
+	assert_true(run.is_over, "nach Level 20 ist der Lauf geschafft")
+	assert_true(run.completed)
+	assert_eq(run.level(), balance.goal_level)
+	assert_signal_emitted_with_parameters(run, "goal_reached", [3])
+	assert_signal_not_emitted(run, "run_ended")
+
+
+func test_give_up_is_not_completed() -> void:
+	run.start()
+	run.give_up()
+	assert_true(run.is_over)
+	assert_false(run.completed)
+
+
+
+func test_all_four_powerups_before_goal() -> void:
+	_draft_run()
+	for i in 4:
+		_finish_levels(balance.draft_every)
+		assert_eq(run.offer["kind"], "powerup", "Power-up %d" % (i + 1))
+		run.choose(run.offer["options"][0])
+	assert_eq(run.owned.size(), 4, "alle vier Stufen kommen vor Level 20 dran")
+	assert_lt(run.level(), balance.goal_level)
+	assert_eq(run.levels_until_offer(), 0, "danach nur noch bis zum Ziel")
+	assert_eq(run.levels_until_goal(), balance.goal_level - 4 * balance.draft_every)

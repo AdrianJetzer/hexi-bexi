@@ -1,0 +1,56 @@
+# Kapitel „Früchte“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+ORANGE;Runde Zitrusfrucht, gleich wie ihre Farbe
+APFEL;Rund, rot oder grün, fiel Newton auf den Kopf
+FEIGE;Weich und süß, voller winziger Kerne
+ZITRONE;Gelb und richtig sauer
+BANANE;Gelb, krumm und bei Affen beliebt
+KIRSCHE;Rot, rund, oft zu zweit am Stiel
+ANANAS;Stachelige Schale und grüner Schopf obendrauf
+BIRNE;Unten dick, oben schmal – wie eine Glühlampe
+KIWI;Braun und haarig außen, grün innen
+TRAUBE;Wächst in Rispen am Weinstock
+PFLAUME;Blau-lila mit Stein, gut im Kuchen
+ERDBEERE;Rot mit Pünktchen außen, wächst am Boden
+MANGO;Süße, saftige Frucht mit großem flachem Kern
+AVOCADO;Grün, cremig, Hauptsache in der Guacamole
+MELONE;Groß und rund, besonders saftig im Sommer
+BEERE;Kleine, runde Frucht, oft am Strauch
+PFIRSICH;Samtige Haut, saftig, mit Stein
+NONI;Tropische Frucht, eher als Saft bekannt
+ELSBEERE;Seltene Wildfrucht, wird zu Schnaps gebrannt
+OLIVE;Klein, grün oder schwarz, gibt wertvolles Öl
+APRIKOSE;Orange, samtig, mit Stein – auch Marille
+LITSCHI;Raue rote Schale, weißes, süßes Fruchtfleisch
+HOLUNDER;Schwarze Beeren und weiße Blüten für Sirup
+PAPAYA;Tropisch, orange innen, mit schwarzen Kernen
+QUITTE;Hart und gelb, wird zu Gelee gekocht
+MISPEL;Alte Frucht, wird erst nach Frost weich
+KIWANO;Horngurke mit Stacheln, innen grün
+LIMETTE;Kleine grüne Schwester der Zitrone
+KAKI;Orange Frucht, die aussieht wie eine Tomate
+ROSINE;Getrocknete Weintraube
+HIMBEERE;Rot und weich, innen hohl
+PEPINO;Birnenmelone aus Südamerika
+SCHLEHE;Blaue Wildfrucht vom Schwarzdorn
+DATTEL;Süße Frucht der Palme, oft getrocknet
+POMELO;Die größte aller Zitrusfrüchte
+KUMQUAT;Zwergorange, man isst sie mit Schale
+PHYSALIS;Kapstachelbeere im Papierlampion
+LIMONE;Anderes Wort für Zitrone
+LONGAN;Drachenauge – kleine Frucht mit glasigem Fleisch
+MARACUJA;Passionsfrucht mit knackigen Kernen
+RAMBUTAN;Rote, haarige Frucht aus Asien
+YUZU;Japanische Zitrusfrucht, sehr aromatisch
+GOJI;Kleine rote Beere, die man meist getrocknet isst
+GUAVE;Tropische Frucht mit rosa oder weißem Fleisch
+NASHI;Asiatische Birne, rund wie ein Apfel
+SALAK;Schlangenfrucht mit schuppiger brauner Schale
+DURIAN;Stinkt stark, schmeckt aber süß
+PITAYA;Drachenfrucht mit pinker Schale
+LOQUAT;Japanische Wollmispel, gelb-orange
+SATSUMA;Kernlose Mandarinenart
+ACEROLA;Kleine Kirsche mit sehr viel Vitamin C
+ZWETSCHE;Längliche Pflaume für den Kuchen
+SANDDORN;Orange Beere von der Küste, sehr sauer
+KORINTHE;Kleine, dunkle getrocknete Traube

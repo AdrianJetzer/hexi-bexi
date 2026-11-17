@@ -66,11 +66,11 @@ func difficulty(level: int) -> DifficultyLevel:
 ## Roguelike-Draft (spec/run-mode.md, „Power-ups und Upgrades“): aus = alle Hilfen von Anfang an.
 @export var draft_enabled: bool = true
 ## Alle so viele Level eine Auswahl (Power-up, danach Upgrade).
-@export var draft_every: int = 5
-## Power-up-Stufen in Reihenfolge, je drei Hilfe-IDs (siehe RunSession.HELP_IDS).
+@export var draft_every: int = 4
+## Power-up-Stufen in Reihenfolge, je zwei bis vier Hilfe-IDs (siehe RunSession.HELP_IDS).
 @export var draft_tiers: Array[PackedStringArray] = [
-	PackedStringArray(["hint", "replace", "shuffle"]),
-	PackedStringArray(["clear", "joker", "shorten"]),
+	PackedStringArray(["replace", "shuffle"]),
+	PackedStringArray(["clear", "joker", "shorten", "hint"]),
 	PackedStringArray(["swap", "split", "complete"]),
 	PackedStringArray(["magnet", "scan", "strike"]),
 ]
@@ -79,3 +79,9 @@ func difficulty(level: int) -> DifficultyLevel:
 ## Upgrade: Preis sinkt um diesen Anteil (gerundet auf 5), nie unter upgrade_min_price.
 @export var upgrade_discount: float = 0.25
 @export var upgrade_min_price: int = 25
+
+## Story-Modus (spec/story-mode.md): Rätsel (gratis).
+@export var riddle_price: int = 0
+## Ziel-Level in allen Modi (danach Lauf geschafft, mit Sternen); 0 = endlos. Grenze für 2 Sterne.
+@export var goal_level: int = 20
+@export var two_star_spend: int = 500

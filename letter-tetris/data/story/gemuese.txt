@@ -1,0 +1,54 @@
+# Kapitel „Gemüse“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+KOHL;Großer Kopf aus Blättern
+SALAT;Grüne Blätter in der Schüssel
+SPARGEL;Weiße oder grüne Stangen im Frühling
+MAIS;Gelbe Körner am Kolben, auch als Popcorn
+PILZ;Wächst im Wald und hat einen Hut
+LINSE;Klein und flach, für Eintopf
+ZWIEBEL;Bringt beim Schneiden zum Weinen
+KÜRBIS;Groß, orange, an Halloween geschnitzt
+PAPRIKA;Rot, gelb oder grün, innen hohl
+SPINAT;Grüne Blätter, machen Popeye stark
+CHILI;Klein und richtig scharf
+SOJA;Bohne für Tofu und Sauce
+ZUCCHINI;Lange grüne Frucht wie eine Gurke
+RETTICH;Weiße, scharfe Wurzel
+MANGOLD;Große Blätter mit bunten Stielen
+DILL;Kraut zur Gurke und zum Lachs
+INGWER;Scharfe Wurzel für Tee
+TOMATE;Rot, rund, wird zu Ketchup
+LAUCH;Langer Stängel, weiß und grün
+GURKE;Grün und lang, kommt oft in den Salat
+BROKKOLI;Sieht aus wie ein kleiner grüner Baum
+BÄRLAUCH;Wildes Kraut im Frühling, riecht nach Knoblauch
+TRÜFFEL;Teurer Pilz, den Schweine finden
+MÖHRE;Orange, lang, Hasen lieben sie
+SELLERIE;Knolle oder Stange mit kräftigem Duft
+BOHNE;Wächst in einer Hülse, z. B. grün oder weiß
+RUCOLA;Würziger Salat, auch Rauke genannt
+KRESSE;Wächst schnell auf Watte
+FENCHEL;Knolle mit Geschmack nach Anis
+PEPERONI;Längliche, scharfe Paprika
+RÜBE;Wächst in der Erde, oft rot oder weiß
+WIRSING;Kohl mit gekrausten Blättern
+KAROTTE;Anderes Wort für Möhre
+SPROSSE;Junger Keimling, z. B. von der Sojabohne
+TARO;Stärkereiche Knolle aus den Tropen
+ERBSE;Klein, grün, rund, steckt in einer Schote
+KOHLRABI;Hellgrüne Knolle mit Blättern
+RAPUNZEL;Feldsalat – wie das Märchen
+PORREE;Anderes Wort für Lauch
+KERBEL;Zartes Kraut für die Suppe
+SCHOTE;Hülle von Erbsen und Bohnen
+MANIOK;Tropische Wurzel, auch Cassava
+ENDIVIE;Bitterer Salat mit krausen Blättern
+LATTICH;Altes Wort für Kopfsalat
+OKRA;Grüne Schoten, Ladyfingers genannt
+YAMS;Tropische Knolle, ähnlich wie Kartoffel
+RANDE;Rote Rübe auf Schweizerdeutsch
+KAPER;Eingelegte Blütenknospe, salzig
+BATATE;Süßkartoffel
+MORCHEL;Edler Pilz mit wabenförmigem Hut
+CHICOREE;Bittere weiße Blätterknospe
+PORTULAK;Fleischige Blätter, wächst als Unkraut

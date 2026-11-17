@@ -1,4 +1,4 @@
-"""Packt eine Wortliste (ein Wort pro Zeile, A-Z) ins kompakte Spielformat.
+"""Packt eine Wortliste (ein Wort pro Zeile, A-Z und Ä Ö Ü) ins kompakte Spielformat.
 
 Usage: python3 -I pack_words.py <words.txt> <out.bin> [--max-len N]
 
@@ -8,18 +8,26 @@ Format (alle Zahlen little-endian uint32):
   L x 4    Anzahl Wörter je Länge 1..L
   Daten    Wörter gruppiert nach Länge (aufsteigend), je Gruppe sortiert,
            ASCII ohne Trennzeichen (feste Breite = Länge)
+
+Umlaute als je ein Byte direkt hinter Z: Ä → "[", Ö → "\\", Ü → "]" (sortiert nach diesen
+Bytes). Das Spiel übersetzt beim Suchen hin und zurück (WordDictionary).
 """
 import re
 import struct
 import sys
 
-ALLOWED = re.compile(r"^[A-Z]+$")
+ALLOWED = re.compile(r"^[A-ZÄÖÜ]+$")
+ENCODE = str.maketrans({"Ä": "[", "Ö": "\\", "Ü": "]"})
+
+
+def encode(word):
+    return word.translate(ENCODE)
 
 
 def pack(words):
     by_len = {}
     for w in words:
-        by_len.setdefault(len(w), set()).add(w)
+        by_len.setdefault(len(w), set()).add(encode(w))
     max_len = max(by_len) if by_len else 0
     out = bytearray(b"LTW1")
     out += struct.pack("<I", max_len)

@@ -1,0 +1,132 @@
+extends GutTest
+## Story-Modus (spec/story-mode.md).
+
+var balance: GameBalance
+var curve: QuestCurve
+var lang: LanguageData
+var dict: WordDictionary
+var run: RunSession
+
+
+func before_each() -> void:
+	balance = (load("res://data/balance.tres") as GameBalance).duplicate() as GameBalance
+	balance.grid_rows = 6
+	curve = load("res://data/quest_curve.tres") as QuestCurve
+	lang = load("res://data/languages/de/language.tres") as LanguageData
+	dict = WordDictionary.from_words(PackedStringArray(["HAUS", "STERN", "TISCH", "BIRNE", "APFEL"]))
+	run = RunSession.new(balance, curve, lang, dict, 7)
+	run.set_story(StoryChapter.by_id("fruechte"))
+	watch_signals(run)
+	run.start()
+
+
+func test_chapters_have_enough_words_and_riddles() -> void:
+	var chapters := StoryChapter.all()
+	assert_eq(chapters.size(), 3)
+	for ch in chapters:
+		assert_gt(ch.words.size(), 49, ch.id)
+		for w in ch.words:
+			assert_between(w.length(), 3, 8, "%s: %s" % [ch.id, w])
+			for i in w.length():
+				assert_true(lang.alphabet.has(w[i]), "%s: Buchstabe in %s" % [ch.id, w])
+			assert_ne(ch.riddle_for(w), "", "Rätsel für %s" % w)
+
+
+func test_quest_is_one_row_with_hidden_theme_word() -> void:
+	assert_ne(run.story_target, "")
+	assert_eq(run.quest.rows, PackedInt32Array([run.story_target.length()]))
+	var only := WordDictionary.from_words(PackedStringArray([run.story_target]))
+	var found := WordFinder.new(only).find_paths(run.grid, 3, 8, func(_w: String) -> bool: return true, 1)
+	assert_eq(found.size(), 1, "das gesuchte Wort liegt als Weg im Feld")
+
+
+func test_only_theme_words_count() -> void:
+	var n := run.story_target.length()
+	run.grid.clear_all()
+	# Ein echtes Wort gleicher Länge, das keine Frucht ist, zählt nicht.
+	var other := "TISCH" if n == 5 else "HAUS"
+	var cells: Array[Vector2i] = []
+	for i in other.length():
+		var c := Vector2i(0, i)
+		run.grid.set_letter(c, other[i])
+		cells.append(c)
+	assert_false(run.submit_path(cells))
+	# Eine andere Frucht passender Länge zählt.
+	var fruit := ""
+	for w in run.story.words:
+		if w.length() == n and w != run.story_target:
+			fruit = w
+			break
+	if fruit == "":
+		fruit = run.story_target
+	run.grid.clear_all()
+	cells.clear()
+	for i in fruit.length():
+		var c := Vector2i(1, i)
+		run.grid.set_letter(c, fruit[i])
+		cells.append(c)
+	assert_true(run.submit_path(cells), "andere Frucht gleicher Länge: " + fruit)
+
+
+func test_riddle_help() -> void:
+	assert_true(run.has_help("riddle"))
+	assert_false(run.has_help("refill"), "kein Auffüllen im Story-Modus")
+	assert_false(run.can_refill())
+	run.coins = 0
+	assert_true(run.can_riddle(), "gratis")
+	var text := run.riddle()
+	assert_eq(text, run.story.riddle_for(run.story_target))
+	assert_ne(text, "")
+	assert_eq(run.spent, 0, "zählt nicht als gekaufte Hilfe")
+	assert_signal_emitted(run, "riddle_shown")
+	assert_eq(run.riddle(), text, "beliebig oft")
+	assert_eq(run.current_riddle(), text)
+	assert_eq(run.stars(), 3)
+
+
+func test_goal_completes_chapter_with_stars() -> void:
+	for i in balance.goal_level - 1:
+		run._complete_quest()
+		if not run.offer.is_empty():
+			run.choose(run.offer["options"][0])
+	assert_eq(run.level(), balance.goal_level)
+	assert_false(run.is_over)
+	assert_eq(run.levels_until_offer(), 0, "nach Level 20 keine Auswahl mehr")
+	run._complete_quest()
+	assert_true(run.is_over)
+	assert_signal_emitted_with_parameters(run, "goal_reached", [3])
+
+
+func test_stars_by_spending() -> void:
+	run.spent = 0
+	assert_eq(run.stars(), 3)
+	run.spent = 50
+	assert_eq(run.stars(), 2)
+	run.spent = balance.two_star_spend + 1
+	assert_eq(run.stars(), 1)
+
+
+func test_words_get_longer() -> void:
+	var lengths := []
+	for i in balance.goal_level - 1:
+		lengths.append(run.story_target.length())
+		run._complete_quest()
+		if not run.offer.is_empty():
+			run.choose(run.offer["options"][0])
+	var early := 0.0
+	var late := 0.0
+	for i in 5:
+		early += lengths[i]
+		late += lengths[lengths.size() - 1 - i]
+	assert_gt(late, early, "späte Wörter sind länger")
+
+
+func test_no_split_or_strike_offered() -> void:
+	for i in 15:
+		run._complete_quest()
+		if not run.offer.is_empty():
+			var options: PackedStringArray = run.offer["options"]
+			assert_false(options.has("split"))
+			assert_false(options.has("strike"))
+			run.choose(options[0])
+

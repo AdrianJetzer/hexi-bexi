@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v7.11**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v7.12**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -85,7 +85,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Ebenso Wörter, deren Wiktionary-Eintrag **Großbuchstaben mitten im Wort** hat (z. B. „UGs“ als Mehrzahl von UG = Untergeschoss, „CEOs“, „NASA“, „iPod“), außer es gibt sie auch normal geschrieben. Wörter mit Bindestrich oder Leerzeichen (z. B. „Armee-Einheit“) sind davon nicht betroffen.
 - **Veraltete Schreibweisen** gelten nicht (im Wiktionary als veraltet markierte Formen, z. B. THEE für Tee, CITAT, CONCERT, TELEPHON), außer es gibt das Wort auch in heutiger Schreibung. Alte Formen mit ß bleiben unberührt (aus „hinuntergoß“ wird HINUNTERGOSS, und das ist heute richtig).
 - **Römische Zahlen** (z. B. LIII, XII) gelten nicht, außer sie sind auch ein normales Wort (z. B. MIX).
-- Weiterhin: nur A–Z, Wörter mit Umlauten vorerst nicht (siehe „Sprache“).
+- Buchstaben A–Z und Ä, Ö, Ü (siehe „Sprache“).
 
 ### Vorschlags-Wörter (geläufige Wörter)
 - Zwei Listen mit getrennten Aufgaben:
@@ -107,7 +107,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
   - **Basis:** Trennmuster-Wortliste (DANTE / Werner Lemberg, `repo.or.cz/wortliste.git`), Lizenz **MIT**.
   - **Ergänzung:** Wiktionary (Auszug über kaikki.org) für fehlende Formen und zum Erkennen von Eigennamen und Abkürzungen, Lizenz **CC BY-SA 3.0 / GFDL**.
 - **Aufbereitung** (einmalig, als eigene Wortliste fürs Spiel):
-  - Großbuchstaben A–Z; **ß → SS**; Wörter mit **Umlauten entfallen**; Wörter mit anderen Sonderzeichen (Bindestrich, Apostroph, Ziffern) entfallen.
+  - Großbuchstaben A–Z und Ä, Ö, Ü; **ß → SS**; Wörter mit anderen Sonderzeichen (Bindestrich, Apostroph, Ziffern, andere Akzente) entfallen.
   - **Mindestens 3 Buchstaben.**
   - Nur **neue Rechtschreibung**.
 - **Lizenzpflichten:** Namensnennung beider Quellen (z. B. im Store-Text oder einem Lizenz-Hinweis in der App). Die aus Wiktionary abgeleitete Wortliste bleibt unter **CC BY-SA**; der Spielcode ist davon nicht betroffen.
@@ -123,8 +123,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ### Sprache
 - **Zuerst Deutsch.**
-- **Geplant:** Umlaute **Ä, Ö, Ü** als eigene Steine im ganzen Spiel (Voraussetzung für den Story-Modus, siehe [story-mode.md](story-mode.md)); **ß bleibt SS**.
-- Erste Version: **ohne Umlaute und Sonderzeichen**, nur die Buchstaben A–Z. **ß wird als SS** geschrieben. **Wörter mit Umlauten** (z. B. „Bär“) werden vorerst **weggelassen**.
+- **Umlaute Ä, Ö, Ü** sind eigene Steine (seit v7.12), mit eigener Häufigkeit (Ä 0,54 %, Ö 0,30 %, Ü 0,65 %). Wörter mit Umlauten gelten (SCHÖN, GRÜN, MÖHRE). **ß wird als SS** geschrieben.
 - Von Anfang an so bauen, dass **weitere Sprachen** möglich sind: Wörterbuch, Alphabet und Buchstabenverteilung austauschbar, keine fest verdrahtete Sprache im Spielcode.
 
 ## Später festlegen
@@ -163,3 +162,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.9:** Raster 5 × 5 (25 Plätze), damit unten mehr Platz für die Hilfe-Knöpfe ist.
 - **v7.10:** Wörter mit Großbuchstaben mitten im Wiktionary-Stichwort (UGS, CEOS, NASA, IPOD …) gelten nicht (160 Wörter).
 - **v7.11:** Veraltete Schreibweisen (THEE, CITAT, CONCERT …) gelten nicht (rund 1.670 Wörter).
+- **v7.12:** Umlaute Ä, Ö, Ü als eigene Steine; Wörterbuch rund 1,02 Mio. Wörter.

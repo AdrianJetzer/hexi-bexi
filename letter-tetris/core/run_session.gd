@@ -40,6 +40,10 @@ signal run_ended(level: int, reason: String)
 signal offer_made(offer: Dictionary)
 ## Freigeschaltete Hilfen oder Preise haben sich geändert (nach choose()).
 signal helps_changed()
+## Story-Modus: Rätselsatz zum gesuchten Wort ("" = ausblenden).
+signal riddle_shown(text: String)
+## Ziel-Level gelöst (Lauf bzw. Kapitel geschafft), mit Sternen 1–3. Danach ist der Lauf vorbei.
+signal goal_reached(stars: int)
 
 const REASON_TOO_SHORT := "too_short"
 const REASON_INVALID_PATH := "invalid_path"
@@ -52,6 +56,13 @@ const REASON_RUN_OVER := "run_over"
 const NO_CELL := Vector2i(-1, -1)
 ## Buchstabe eines Joker-Steins im Raster (steht beim Wischen für jeden Buchstaben).
 const JOKER := "*"
+## Story-Modus: Wortlängen je Stufe (Level 1–5, 6–10, 11–15, 16–20; unabhängig von den Power-ups) und Füllgrad des Felds.
+const STORY_LENGTHS: Array[Vector2i] = [Vector2i(3, 5), Vector2i(4, 6), Vector2i(5, 7), Vector2i(6, 8)]
+const STORY_FILL: Array[float] = [0.5, 0.65, 0.75, 0.88]
+## Anteil der (nach Häufigkeit sortierten) Themenliste, aus dem je Stufe gewählt wird.
+const STORY_FAMILIAR: Array[float] = [0.4, 0.6, 0.85, 1.0]
+## Hilfen, die im Story-Modus nicht angeboten werden (nur eine Zeile pro Level).
+const STORY_SKIP_HELPS: PackedStringArray = ["split", "strike"]
 ## Alle Hilfen mit Preis, die man im Lauf freischalten kann (Auffüllen und Lösen sind immer da).
 const HELP_IDS: PackedStringArray = ["hint", "replace", "shuffle", "clear", "joker", "shorten",
 		"swap", "split", "complete", "magnet", "scan", "strike"]
@@ -62,6 +73,8 @@ var grid: HexGrid
 var coins: int = 0
 var words_found: int = 0
 var is_over: bool = false
+## Ziel-Level gelöst (Lauf bzw. Kapitel geschafft).
+var completed: bool = false
 ## Aktueller Auftrag (kommt automatisch).
 var quest: Quest
 
@@ -89,6 +102,15 @@ var owned: PackedStringArray = PackedStringArray()
 var offer: Dictionary = {}
 ## Preise nach Upgrades (ID → Preis); sonst gilt der Grundpreis aus GameBalance.
 var _prices: Dictionary = {}
+## Story-Modus (spec/story-mode.md): Kapitel mit Themenwörtern (null = normaler Lauf).
+var story: StoryChapter = null
+## Themenwörter des Kapitels (nur diese zählen in den Zeilen).
+var _theme: WordDictionary
+## Gesuchtes (verstecktes) Themenwort des aktuellen Levels.
+var story_target: String = ""
+var _used_targets: Dictionary = {}
+## Im Lauf ausgegebene Münzen (für die Sterne im Story-Modus).
+var spent: int = 0
 ## Zufall für die Power-up-Auswahl (welche Hilfen der Stufe angeboten werden).
 var _draft_rng: RandomNumberGenerator
 
@@ -139,9 +161,15 @@ func start() -> void:
 	coins = _balance.start_coins
 	words_found = 0
 	is_over = false
+	completed = false
 	quest = null
 	_level = 1
 	owned = PackedStringArray() if _balance.draft_enabled else HELP_IDS.duplicate()
+	if story != null:
+		owned.append("riddle")
+	spent = 0
+	story_target = ""
+	_used_targets.clear()
 	offer = {}
 	_prices = {}
 	_reset_hint()
@@ -152,11 +180,123 @@ func start() -> void:
 	_start_quest()
 
 
+# --- Story-Modus ---------------------------------------------------------------------
+
+## Kapitel setzen (vor start()). Wort-Hilfe, Tipp, Scan usw. arbeiten dann mit den Themenwörtern.
+func set_story(chapter: StoryChapter) -> void:
+	story = chapter
+	_theme = WordDictionary.from_words(chapter.words)
+	var finders: Array[WordFinder] = [WordFinder.new(_theme)]
+	_hint_finders = finders
+	_plant_words = _theme
+	_spawner.finder = WordFinder.new(_theme, _balance.min_length, _balance.help_max_word_length)
+
+
+## Sterne für einen geschafften Lauf / ein Kapitel: 3 = keine Hilfe gekauft, 2 = höchstens
+## two_star_spend Münzen ausgegeben, sonst 1.
+func stars() -> int:
+	if spent <= 0:
+		return 3
+	return 2 if spent <= _balance.two_star_spend else 1
+
+
+## Noch so viele Level bis zum Ziel (das laufende mitgezählt); 0 = kein Ziel.
+func levels_until_goal() -> int:
+	if _balance.goal_level <= 0:
+		return 0
+	return maxi(_balance.goal_level - _level + 1, 0)
+
+
+## Rätsel möglich? (Story, Auftrag aktiv). Gratis und beliebig oft (Preis aus GameBalance, 0).
+func can_riddle() -> bool:
+	return story != null and quest != null and not is_over \
+			and has_help("riddle") and coins >= price("riddle")
+
+
+## Hilfe „Rätsel“: zeigt den Rätselsatz zum versteckten Wort (UI: Overlay). Gibt ihn zurück ("" = nicht möglich).
+func riddle() -> String:
+	if not can_riddle():
+		return ""
+	_pay(price("riddle"))
+	var text := story.riddle_for(story_target)
+	riddle_shown.emit(text)
+	return text
+
+
+## Rätselsatz zum gesuchten Wort des Levels ("" = keiner / kein Story-Modus).
+func current_riddle() -> String:
+	return story.riddle_for(story_target) if story != null else ""
+
+
+## Auftrag im Story-Modus: eine Zeile, so lang wie das gewählte Themenwort.
+func _story_quest(level: int) -> Quest:
+	story_target = _pick_story_target(level)
+	var q := Quest.new()
+	q.rows = PackedInt32Array([story_target.length()])
+	q.reward = _curve.reward(level)
+	return q
+
+
+## Länger werdende Wörter über die Level (Stufen à 5 Level), ohne Wiederholung solange möglich.
+func _pick_story_target(level: int) -> String:
+	var stage := clampi((level - 1) / 5, 0, STORY_LENGTHS.size() - 1)
+	var r: Vector2i = STORY_LENGTHS[stage]
+	# Bekannte Wörter zuerst: die Liste ist nach Häufigkeit sortiert, frühe Stufen nehmen nur
+	# den vorderen Teil (STORY_FAMILIAR), spätere auch seltenere Wörter.
+	var familiar := ceili(story.words.size() * STORY_FAMILIAR[stage])
+	var pool := PackedStringArray()
+	for i in mini(familiar, story.words.size()):
+		var w := story.words[i]
+		if w.length() >= r.x and w.length() <= r.y and not _used_targets.has(w):
+			pool.append(w)
+	if pool.is_empty():
+		for w in story.words_between(r.x, r.y):
+			if not _used_targets.has(w):
+				pool.append(w)
+	if pool.is_empty():
+		for w in story.words:
+			if not _used_targets.has(w):
+				pool.append(w)
+	if pool.is_empty():
+		_used_targets.clear()
+		pool = story.words
+	var w := pool[_hint_rng.randi_range(0, pool.size() - 1)]
+	_used_targets[w] = true
+	return w
+
+
+## Feld für das Level vorbereiten: auffüllen bis zur Stufe (mehr Füllbuchstaben = schwerer),
+## dann das gesuchte Wort als zusammenhängenden Weg hineinlegen.
+func _prepare_story_board() -> void:
+	var stage := clampi((_level - 1) / 5, 0, STORY_FILL.size() - 1)
+	var want := int(round(grid.size() * STORY_FILL[stage]))
+	want = maxi(want, story_target.length() + 2)
+	var have := grid.size() - grid.free_count()
+	if have < want:
+		_spawn(want - have)
+	var only := WordDictionary.from_words(PackedStringArray([story_target]))
+	var n := story_target.length()
+	for attempt in 3:
+		var plan := _planter.plant(grid, only, PackedInt32Array([n]), n)
+		if not plan.is_empty():
+			var path: Array[Vector2i] = []
+			path.assign(plan["path"])
+			for i in path.size():
+				if grid.get_letter(path[i]) != story_target[i]:
+					grid.set_letter(path[i], story_target[i])
+					tile_changed.emit(path[i], story_target[i])
+			return
+		if _spawn(n) == 0:
+			return
+
+
 # --- Roguelike-Draft: Power-ups und Upgrades --------------------------------------
 
 ## Ist diese Hilfe in diesem Lauf verfügbar? Auffüllen und Lösen immer.
 func has_help(id: String) -> bool:
-	return id == "refill" or id == "solve" or owned.has(id)
+	if id == "refill":
+		return story == null  # Story-Modus: das Spiel legt selbst die richtigen Buchstaben
+	return id == "solve" or owned.has(id)
 
 
 ## Aktueller Preis einer Hilfe (nach Upgrades).
@@ -175,6 +315,8 @@ func levels_until_offer() -> int:
 		return 0
 	var every := _balance.draft_every
 	var m := ceili(_level / float(every)) * every
+	if _balance.goal_level > 0 and m >= _balance.goal_level:
+		return 0  # nach dem Ziel-Level kommt keine Auswahl mehr
 	if _options_after(m).is_empty():
 		return 0
 	return m - _level + 1
@@ -220,7 +362,8 @@ func _options_after(completed: int) -> PackedStringArray:
 	var n := completed / every
 	if n <= _balance.draft_tiers.size():
 		for id in _balance.draft_tiers[n - 1]:
-			if not owned.has(id):
+			# Story: nur eine Zeile pro Level, Teilen und Streichen ergeben dort keinen Sinn.
+			if not owned.has(id) and not (story != null and id in STORY_SKIP_HELPS):
 				out.append(id)
 	else:
 		var ids := owned.duplicate()
@@ -271,7 +414,7 @@ func refill_price() -> int:
 
 ## Auffüllen möglich? (Münzen reichen, Platz frei)
 func can_refill() -> bool:
-	return not is_over and coins >= refill_price() and grid.free_count() > 0
+	return not is_over and has_help("refill") and coins >= refill_price() and grid.free_count() > 0
 
 
 ## Hilfe „Auffüllen“: einige neue Hexagons gegen Münzen. Gibt die Anzahl neuer Hexagons zurück.
@@ -957,7 +1100,11 @@ func _check_path(path: Array[Vector2i]) -> String:
 		if _resolve_joker(raw, true) == "":
 			return REASON_NOT_MATCHING
 		return ""
-	if not _dictionary.contains(raw):
+	if story != null:
+		# Story: nur Themenwörter zählen (ein anderes echtes Wort passt nicht)
+		if not _theme.contains(raw):
+			return REASON_NOT_MATCHING if _dictionary.contains(raw) else REASON_NOT_A_WORD
+	elif not _dictionary.contains(raw):
 		return REASON_NOT_A_WORD
 	if not quest.matches(raw):
 		return REASON_NOT_MATCHING
@@ -976,12 +1123,15 @@ func _resolve_joker(raw: String, must_fit: bool) -> String:
 	if must_fit and quest != null and not quest.free_lengths().has(raw.length()):
 		return ""
 	var dicts: Array[WordDictionary] = []
-	if _plant_words != _dictionary:
-		dicts.append(_plant_words)
-	dicts.append(_dictionary)
+	if story != null:
+		dicts.append(_theme)  # Story: der Joker steht nur für Themenwörter
+	else:
+		if _plant_words != _dictionary:
+			dicts.append(_plant_words)
+		dicts.append(_dictionary)
 	for d in dicts:
 		var w := _fill_joker(raw, d)
-		if w != "" and _dictionary.contains(w):
+		if w != "" and (_dictionary.contains(w) or story != null):
 			return w
 	return ""
 
@@ -1009,6 +1159,12 @@ func _complete_quest(rewarded: bool = true) -> void:
 	coins += reward
 	quest_completed.emit(done, reward)
 	coins_changed.emit(coins)
+	if _balance.goal_level > 0 and _level >= _balance.goal_level:
+		# Ziel erreicht: Lauf bzw. Kapitel geschafft
+		is_over = true
+		completed = true
+		goal_reached.emit(stars())
+		return
 	_level += 1
 	_apply_help()
 	level_changed.emit(_level)
@@ -1019,7 +1175,11 @@ func _complete_quest(rewarded: bool = true) -> void:
 ## Auftrag für das aktuelle Level erzeugen und starten.
 func _start_quest() -> void:
 	_reset_hint()
-	quest = _generator.quest_for(_level).start()
+	if story != null:
+		quest = _story_quest(_level).start()
+		_prepare_story_board()
+	else:
+		quest = _generator.quest_for(_level).start()
 	_aim_help()
 	quest_started.emit(quest)
 
@@ -1032,6 +1192,7 @@ func _end(reason: String) -> void:
 
 
 func _pay(amount: int) -> void:
+	spent += mini(amount, coins)
 	coins = maxi(coins - amount, 0)
 	coins_changed.emit(coins)
 
