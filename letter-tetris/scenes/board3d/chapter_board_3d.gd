@@ -10,7 +10,9 @@ const GAP := 0.06
 const THICKNESS := 0.42
 const CORNER := 0.16
 const BEVEL := 0.13
-const CAMERA_FOV := 32.0
+## Enger Blickwinkel aus großer Entfernung: fast ohne Perspektive, damit Steine am Rand nicht
+## schräg (mit sichtbaren Seitenwänden) wirken.
+const CAMERA_FOV := 8.0
 const FRAME_MARGIN := 0.2
 const HIT_TOLERANCE := 0.9
 ## Schrift auf den Steinen.
