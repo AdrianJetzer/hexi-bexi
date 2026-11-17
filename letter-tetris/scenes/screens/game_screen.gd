@@ -1078,7 +1078,9 @@ func _update_vibration_button() -> void:
 
 
 func _on_mode_picked(id: String) -> void:
-	if id == Settings.mode:
+	# Story mitten im Kapitel nochmal gewählt: wie ein Moduswechsel (Nachfrage, dann Brett).
+	var back_to_board := id == Settings.STORY_MODE and _is_story() and not _path.visible
+	if id == Settings.mode and not back_to_board:
 		_settings.visible = false
 		return
 	if session != null and not session.is_over:

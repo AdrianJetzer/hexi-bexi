@@ -57,6 +57,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**, **Story** (siehe [story-mode.md](story-mode.md)). Der aktuelle ist markiert. Neu installiert: **mittel**.
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
+  - Im Story-Modus mitten im Kapitel nochmal **Story** wählen: dieselbe Nachfrage; Ja führt zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen).
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
@@ -94,6 +95,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.19:** Story im Kapitel nochmal wählen: Nachfrage, dann Kapitel-Brett.
 - **v4.18:** Testmodus (Lösen gratis) in den Einstellungen.
 - **v4.17:** Vibration: Tick je verbundenem Buchstaben, Schalter in den Einstellungen.
 - **v4.16:** Neue Preisstufen (Tauschen 50, Mischen 100, Aufräumen und Magnet 150, Vervollständigen 200).
