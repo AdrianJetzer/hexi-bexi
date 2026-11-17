@@ -1,0 +1,56 @@
+# Kapitel „Instrumente“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+GITARRE;Sechs Saiten und ein Loch im Bauch
+KLAVIER;Schwarze und weiße Tasten
+GEIGE;Wird mit dem Bogen gestrichen und unters Kinn geklemmt
+FLÖTE;Man bläst quer oder längs hinein
+TROMMEL;Wird mit Stöcken geschlagen
+HARFE;Viele Saiten in einem großen Rahmen, Engel spielen sie
+TROMPETE;Glänzendes Blech mit drei Ventilen
+ORGEL;Hat Pfeifen und steht in der Kirche
+CELLO;Großes Streichinstrument, zwischen den Knien gespielt
+TUBA;Tiefstes Blechblasinstrument
+OBOE;Doppelrohrblatt, gibt dem Orchester den Ton an
+HORN;Rund gewundenes Blech, auch auf der Jagd
+SAXOFON;Aus Blech, aber ein Holzblasinstrument
+BASS;Spielt die tiefen Töne in der Band
+GONG;Große Metallscheibe, die lange nachklingt
+BANJO;Runde Trommel mit Saiten, Country-Musik
+UKULELE;Kleine Gitarre aus Hawaii
+ALPHORN;Sehr langes Holzrohr in den Schweizer Bergen
+POSAUNE;Blechblasinstrument mit Zug
+FAGOTT;Langes, tiefes Holzblasinstrument
+XYLOFON;Holzplättchen, mit Schlägeln gespielt
+TRIANGEL;Gebogener Metallstab, macht „Ding“
+PAUKE;Große Kesseltrommel im Orchester
+BECKEN;Zwei Metallteller, die man zusammenschlägt
+TAMBURIN;Kleine Rahmentrommel mit Schellen
+RASSEL;Gefüllt mit Körnern, man schüttelt sie
+MARIMBA;Großes Xylofon mit Resonanzröhren
+CEMBALO;Barockes Tasteninstrument, zupft die Saiten
+SPINETT;Kleines Tasteninstrument aus dem Barock
+FLÜGEL;Großes Klavier mit liegenden Saiten
+KEYBOARD;Elektronisches Tasteninstrument
+SYNTH;Erzeugt Klänge elektronisch, kurz gesagt
+BRATSCHE;Etwas größer und tiefer als die Geige
+LAUTE;Alte Zupfgeige mit rundem Bauch
+ZITHER;Flacher Kasten mit vielen Saiten, liegt auf dem Tisch
+SITAR;Indisches Saiteninstrument mit langem Hals
+PANFLÖTE;Mehrere Röhren nebeneinander, aus den Anden
+OKARINA;Kleine Gefäßflöte aus Ton
+PIKKOLO;Kleinste und höchste Flöte
+KAZOO;Man summt hinein, und es schnarrt
+CAJON;Kiste, auf der man sitzt und trommelt
+BONGO;Zwei kleine Trommeln, mit den Händen gespielt
+CONGA;Hohe kubanische Handtrommel
+DJEMBE;Afrikanische Bechertrommel
+GLOCKE;Hängt im Turm und läutet
+SCHELLE;Kleines Glöckchen am Pferdegeschirr
+VIOLINE;Anderes Wort für Geige
+KORNETT;Kleine Schwester der Trompete
+LEIER;Antikes Saiteninstrument, Lyra
+SCHALMEI;Altes Holzblasinstrument mit lautem Ton
+HANG;Ufo-förmige Stahltrommel aus Bern
+THEREMIN;Wird gespielt, ohne es zu berühren
+MELODICA;Tastatur mit Schlauch zum Hineinblasen
+DRUMS;Englisch für das Schlagzeug

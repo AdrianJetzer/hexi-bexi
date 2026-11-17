@@ -13,6 +13,8 @@ const BOARD_ROWS := 6
 const BOARD := [
 	[["kleidung", "Kleidung"], ["gemuese", "Gemüse"], ["fruechte", "Früchte"], ["tiere", "Tiere"]],
 	[["fluesse", "Flüsse"], ["automarken", "Automarken"], ["laender", "Länder"], ["berufe", "Berufe"]],
+	[["sportarten", "Sportarten"], ["instrumente", "Instrumente"], ["hauptstaedte", "Hauptstädte"],
+			["internet", "Internet"]],
 ]
 ## Zu Beginn offene Kapitel.
 const START: PackedStringArray = ["tiere", "gemuese"]

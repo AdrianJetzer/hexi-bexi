@@ -1,0 +1,72 @@
+# Kapitel „Internet“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+APP;Kleines Programm fürs Handy
+CHAT;Unterhaltung mit getippten Nachrichten
+EMOJI;Kleines gelbes Gesicht in der Nachricht
+SELFIE;Foto von sich selbst mit ausgestrecktem Arm
+LIKE;Daumen hoch für einen Beitrag
+MEME;Lustiges Bild mit Text, das alle teilen
+WLAN;Funknetz für das Internet zu Hause
+AKKU;Muss täglich geladen werden
+HANDY;Telefon für die Hosentasche
+LINK;Anklicken, und schon ist man auf einer anderen Seite
+VIDEO;Bewegte Bilder, oft mit Ton
+STREAM;Live zuschauen, ohne herunterzuladen
+PODCAST;Sendung zum Hören, wann man will
+HASHTAG;Wort mit Raute davor
+STORY;Beitrag, der nach 24 Stunden verschwindet
+FOLLOWER;Abonniert dein Profil
+PROFIL;Seite mit deinem Bild und deinen Angaben
+POST;Beitrag in den sozialen Netzwerken
+TABLET;Flacher Bildschirm zum Wischen, größer als ein Handy
+LAPTOP;Computer zum Aufklappen
+CLOUD;Speicher irgendwo im Netz, wie eine Wolke
+AVATAR;Bildfigur, die dich im Netz darstellt
+PASSWORT;Geheimes Wort zum Einloggen
+LOGIN;Anmelden mit Name und Geheimwort
+BROWSER;Programm zum Surfen im Netz
+SPAM;Unerwünschte Werbung im Postfach
+EMAIL;Elektronischer Brief
+VIRUS;Schädliches Programm, das sich verbreitet
+HACKER;Dringt in fremde Computer ein
+UPDATE;Neue Version einer App
+DOWNLOAD;Datei aus dem Netz holen
+UPLOAD;Datei ins Netz stellen
+VLOG;Video-Tagebuch
+BLOG;Online-Tagebuch mit Texten
+FEED;Endlose Liste neuer Beiträge
+REEL;Kurzes Hochkant-Video
+SHORTS;Kurze Videos auf der großen Videoplattform
+FILTER;Macht das Foto schöner oder lustiger
+TROLL;Stört absichtlich in Diskussionen
+GAMER;Spielt Videospiele
+STREAMER;Spielt live vor Zuschauern
+ROUTER;Kiste mit Antennen, verteilt das Netz
+MODEM;Verbindet den Router mit der Leitung
+PIXEL;Kleinster Bildpunkt
+SCREEN;Englisch für Bildschirm
+MAUS;Klickt und hat ein Rad, aber kein Fell
+TASTATUR;Hat Buchstaben zum Tippen
+CURSOR;Blinkender Strich, der zeigt, wo man tippt
+DATEI;Gespeichertes Dokument auf dem Computer
+ORDNER;Hier sammeln sich Dateien
+SERVER;Großer Computer, der Webseiten ausliefert
+WEBSITE;Seite im Internet mit eigener Adresse
+DOMAIN;Adresse einer Webseite, wie punkt de
+COOKIE;Kleiner Krümel, den Webseiten speichern
+CAPTCHA;Beweist, dass du kein Roboter bist
+BOT;Programm, das automatisch antwortet
+CODE;Programmiertext oder Zahlenkombination
+SMILEY;Lachendes Gesicht aus Satzzeichen
+GIF;Kleines Bild, das sich immer wiederholt
+WEBCAM;Kamera am Computer für Videoanrufe
+TWEET;Kurze Nachricht, früher mit Vogel-Logo
+ONLINE;Mit dem Netz verbunden
+OFFLINE;Nicht mit dem Netz verbunden
+SURFEN;Von Seite zu Seite klicken
+SWIPEN;Mit dem Finger wischen
+SCROLLEN;Durch die Seite nach unten wischen
+TEILEN;Einen Beitrag an Freunde weitergeben
+LIVE;Jetzt gerade, ohne Aufnahme
+VIRAL;Verbreitet sich rasend schnell im Netz
+YOUTUBER;Macht Videos auf der großen Videoplattform

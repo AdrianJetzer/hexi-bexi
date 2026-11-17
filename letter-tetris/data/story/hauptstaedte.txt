@@ -1,0 +1,70 @@
+# Kapitel „Hauptstädte“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+BERLIN;Hauptstadt Deutschlands, mit dem Brandenburger Tor
+PARIS;Stadt des Eiffelturms
+ROM;Ewige Stadt mit dem Kolosseum
+WIEN;Stadt der Walzer und Sachertorte
+BERN;Bundesstadt der Schweiz mit dem Bärengraben
+LONDON;Stadt von Big Ben und Tower Bridge
+MADRID;Hauptstadt Spaniens, mit dem Prado
+PRAG;Goldene Stadt an der Moldau
+OSLO;Hauptstadt Norwegens am Fjord
+MOSKAU;Hat den Kreml und den Roten Platz
+ATHEN;Hat die Akropolis
+TOKIO;Riesige Hauptstadt Japans
+PEKING;Hat die Verbotene Stadt
+KAIRO;Liegt am Nil, nahe den Pyramiden
+DUBLIN;Hauptstadt Irlands, Heimat des Guinness
+LISSABON;Hauptstadt Portugals mit gelben Straßenbahnen
+WARSCHAU;Hauptstadt Polens an der Weichsel
+BUDAPEST;Zwei Stadtteile beidseits der Donau
+HELSINKI;Hauptstadt Finnlands an der Ostsee
+BRÜSSEL;Sitz der EU, mit dem Atomium
+VADUZ;Hauptstadt Liechtensteins
+ANKARA;Hauptstadt der Türkei (nicht Istanbul)
+BANGKOK;Hauptstadt Thailands
+HANOI;Hauptstadt Vietnams
+SEOUL;Hauptstadt Südkoreas
+MANILA;Hauptstadt der Philippinen
+JAKARTA;Hauptstadt Indonesiens
+CANBERRA;Hauptstadt Australiens (nicht Sydney)
+OTTAWA;Hauptstadt Kanadas
+LIMA;Hauptstadt Perus
+QUITO;Hauptstadt Ecuadors in den Anden
+BOGOTA;Hauptstadt Kolumbiens
+CARACAS;Hauptstadt Venezuelas
+SANTIAGO;Hauptstadt Chiles
+HAVANNA;Hauptstadt Kubas mit Oldtimern
+NAIROBI;Hauptstadt Kenias
+DAKAR;Hauptstadt Senegals, Ziel einer berühmten Rallye
+RABAT;Hauptstadt Marokkos (nicht Marrakesch)
+TUNIS;Hauptstadt Tunesiens
+ALGIER;Hauptstadt Algeriens
+ACCRA;Hauptstadt Ghanas
+ABUJA;Hauptstadt Nigerias
+LUANDA;Hauptstadt Angolas
+HARARE;Hauptstadt Simbabwes
+TEHERAN;Hauptstadt des Iran
+BAGDAD;Hauptstadt des Irak am Tigris
+DAMASKUS;Hauptstadt Syriens, uralte Stadt
+BEIRUT;Hauptstadt des Libanon
+AMMAN;Hauptstadt Jordaniens
+DOHA;Hauptstadt Katars
+RIAD;Hauptstadt Saudi-Arabiens
+KABUL;Hauptstadt Afghanistans
+TIFLIS;Hauptstadt Georgiens
+ERIWAN;Hauptstadt Armeniens
+BAKU;Hauptstadt Aserbaidschans am Kaspischen Meer
+KIEW;Hauptstadt der Ukraine am Dnepr
+MINSK;Hauptstadt von Belarus
+RIGA;Hauptstadt Lettlands
+TALLINN;Hauptstadt Estlands
+VILNIUS;Hauptstadt Litauens
+BELGRAD;Hauptstadt Serbiens an der Donau
+ZAGREB;Hauptstadt Kroatiens
+SOFIA;Hauptstadt Bulgariens
+BUKAREST;Hauptstadt Rumäniens
+TIRANA;Hauptstadt Albaniens
+SKOPJE;Hauptstadt Nordmazedoniens
+VALLETTA;Hauptstadt Maltas
+NIKOSIA;Geteilte Hauptstadt Zyperns
