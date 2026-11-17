@@ -1,6 +1,6 @@
 # Lauf-Modus (Roguelike)
 
-Status: **Entwurf v3**. Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
+Status: **Entwurf v3**, Ziel Level 20 (v3.33). Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
 
 Markierungen: **[v1]** = kommt in Version 1 · **[später]** = gute Idee, nach Version 1 · **[offen]** = noch nicht entschieden.
 
@@ -19,8 +19,10 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 1. **Start:** Level 1, **0 Münzen**, Spielfeld mit **10 Hexagons** (Platzwahl wie bisher; weniger Steine sind übersichtlicher). Der erste Auftrag erscheint sofort.
 2. **Level:** Über dem Spielfeld stehen die Block-Zeilen des Auftrags. Der Spieler wischt Wörter.
 3. **Gelöst:** Sind alle Zeilen gefüllt, gibt es Münzen, der Auftrag verschwindet und der **nächste erscheint automatisch** (keine Wahl, keine Unterbrechung).
-4. **Ende:** Nur durch **„Aufgeben“** (mit Nachfrage), z. B. wenn man nicht weiterkommt und kein Geld mehr für Hilfen hat. Dann wird die **Lösung** gezeigt, danach die Bilanz (erreichtes Level, Rekord). Neuer Lauf ab Level 1.
-5. **Rekord:** nur das **höchste erreichte Level**.
+4. **Ziel: Level 20** (in allen Modi). Ist Level 20 gelöst, ist der Lauf **geschafft**: Bilanz „Geschafft!“ mit **Sternen** und den übrigen Münzen. Neuer Lauf ab Level 1.
+   - **Sterne:** ★★★ = keine Hilfe gekauft, ★★ = höchstens 500 Münzen ausgegeben, ★ = geschafft (wie im Story-Modus). Gespeichert wird die beste Wertung je Modus; sie steht in den Einstellungen auf dem Modus-Knopf.
+5. **Aufgeben** (mit Nachfrage), z. B. wenn man nicht weiterkommt und kein Geld mehr für Hilfen hat: Die **Lösung** wird gezeigt, danach die Bilanz „Nicht geschafft“ (Level n von 20). Keine Sterne, kein Rekord.
+6. **Rekord:** die meisten **übrigen Münzen** nach Level 20 (höchstens 20 × 100 = 2000), je Modus.
 
 ## Aufträge
 
@@ -88,12 +90,12 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 | Auftrag gelöst | **+100** (fest, unabhängig vom Level und Modus) |
 | Langes Wort nebenbei [später] | Bonus |
 | **Auffüllen: 5 neue Steine** | **gratis** |
-| **Tipp: nächsten Buchstaben zeigen** | **−50** je Buchstabe |
 | **Stein ersetzen** | **−50** |
 | **Mischen: Buchstaben neu verteilen** | **−50** |
 | **Aufräumen: bis zu 5 wenig hilfreiche Steine entfernen** | **−100** |
 | **Joker: ein Stein wird zum Joker** | **−100** |
 | **Kürzen: längste Zeile um einen Block kürzen** | **−100** |
+| **Tipp: nächsten Buchstaben zeigen** | **−100** je Buchstabe |
 | **Tauschen: 5 Steine neu** | **−150** |
 | **Teilen: lange Zeile halbieren** | **−150** |
 | **Vervollständigen: angewischtes Wort zu Ende zeigen** | **−150** |
@@ -102,7 +104,7 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 | **Zeile streichen: die längste freie Zeile fällt weg** | **−200** |
 | **Lösen: ganzen Auftrag lösen** (ohne Belohnung) | **−500** |
 
-- **Preisstufen:** Die 12 Hilfen mit Preis stehen in **vier Stufen zu je drei**: 50, 100, 150, 200 (nach Stärke). **Lösen** ist ein **Sonderknopf**, immer da und sehr teuer (500). Die Hilfe-Knöpfe stehen in dieser Reihenfolge: von gratis bis teuer (gleicher Preis: Reihenfolge der Tabelle).
+- **Preisstufen:** Die 12 Hilfen mit Preis stehen in **vier Stufen**: 50 (2 Hilfen), 100 (4), 150 (3), 200 (3), nach Stärke. **Lösen** ist ein **Sonderknopf**, immer da und sehr teuer (500). Die Hilfe-Knöpfe stehen in dieser Reihenfolge: von gratis bis teuer (gleicher Preis: Reihenfolge der Tabelle).
 - Münzen sind die **Währung** des Laufs. Es gibt keine Punkte, nur Münzen und Level.
 
 ## Spielfeld
@@ -114,18 +116,18 @@ Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfe
 
 ### Power-ups und Upgrades (Roguelike) [v1]
 - **Start eines Laufs:** Unten sind nur **Auffüllen** (gratis) und **Lösen** (500) sichtbar.
-- **Power-up nach Level 5, 10, 15 und 20:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** der drei Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
+- **Power-up nach Level 5, 10 und 15:** Ist der Auftrag gelöst, erscheint ein **Auswahl-Bildschirm** mit **2 Karten** (Name, Preis, kurze Erklärung) – **zwei zufällige** Hilfen der nächsten Preisstufe (so ist jeder Lauf anders):
 
   | nach Level | Stufe | Hilfen der Stufe (2 davon zur Wahl) |
   |---|---|---|
-  | 5 | 50 | Tipp, Ersetzen, Mischen |
-  | 10 | 100 | Aufräumen, Joker, Kürzen |
+  | 5 | 50 | Ersetzen, Mischen |
+  | 10 | 100 | Aufräumen, Joker, Kürzen, Tipp |
   | 15 | 150 | Tauschen, Teilen, Vervollständigen |
-  | 20 | 200 | Magnet, Scan, Zeile streichen |
+  | (20) | 200 | Magnet, Scan, Zeile streichen – kommt mit dem Ziel Level 20 nicht mehr dran (offen) |
 
   Man tippt eine Karte an, ihr Knopf kommt unten dazu, dann beginnt das nächste Level. Die anderen Hilfen der Stufe gibt es in diesem Lauf **nicht**.
-- **Upgrade nach Level 25, 30, 35 …:** Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
-- **Hinweis über den Knöpfen** (nur diese Zeile; Level, Rekord und Münzen stehen über dem Spielfeld): „Noch 3 Level bis zum Power-up“ bzw. „… bis zum Upgrade“; bei „Noch 1 Level“ leuchtet er.
+- **Upgrade nach Level 25, 30, 35 …** (nur im endlosen Test-Betrieb ohne Ziel, `goal_level = 0`): Die Karten zeigen die eigenen Hilfen **und Lösen**; die gewählte wird **25 % günstiger** (vom aktuellen Preis, auf 5 gerundet, **nie unter 25**; z. B. 200 → 150 → 115 → 85). Mehrere Upgrades auf dieselbe Hilfe sind erlaubt. Hilfen, die schon 25 kosten, stehen nicht zur Wahl. Steht keine mehr zur Wahl, entfällt das Upgrade.
+- **Hinweis über den Knöpfen** (nur diese Zeile; Leiter und Münzen stehen über dem Spielfeld): „Noch 3 Level bis zum Power-up“, nach dem letzten Power-up „Noch n Level bis zum Ziel“; bei „Noch 1 Level“ leuchtet er.
 - **Knöpfe:** höchstens 6 (Auffüllen, 4 Hilfen, Lösen), in **2 Reihen zu je 3**, sortiert von gratis bis teuer – deutlich größer als vorher.
 - **Neuer Lauf:** wieder nur Auffüllen und Lösen, alle Preise wie in der Tabelle.
 - **Test-Modus:** Ein Spielwert (`draft_enabled` in `data/balance.tres`) schaltet den Draft ab; dann sind alle Hilfen von Anfang an da (zum Testen).
@@ -250,3 +252,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.30:** Kurve doppelt so lang (jeder feste Auftrag zweimal, Budget ab Level 21, +1 alle 10 Level, Hilfe-Stufe gestreckt); Atempausen ab Level 11 jedes 5. Level (eine Zeile mit 3–4 Blöcken); Power-ups nach Level 5/10/15/20, Upgrades alle 5 Level; Belohnung 50 statt 100.
 - **v3.31:** Steckt man fest: Feld abgedunkelt und großer Auffüllen-Knopf auf dem Feld.
 - **v3.32:** Modi Deutsch einfach (Kinder-Wortliste, Zeilen bis 5) / mittel (Zeilen bis 6, sanfter) / schwierig (bisheriges Spiel); Rekord je Modus; Belohnung wieder 100 in allen Modi.
+- **v3.33:** Ziel Level 20 in allen Modi: danach Lauf geschafft mit Sternen (wie Story); Rekord = übrige Münzen; Aufgeben = nicht geschafft. Tipp kostet 100 und gehört zur 100er-Stufe (50er-Stufe: Ersetzen, Mischen). Power-ups nur noch nach Level 5, 10, 15.

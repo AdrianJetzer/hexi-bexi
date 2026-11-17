@@ -42,8 +42,8 @@ signal offer_made(offer: Dictionary)
 signal helps_changed()
 ## Story-Modus: Rätselsatz zum gesuchten Wort ("" = ausblenden).
 signal riddle_shown(text: String)
-## Story-Modus: Kapitel geschafft (Ziel-Level gelöst), mit Sternen 1–3.
-signal story_completed(stars: int)
+## Ziel-Level gelöst (Lauf bzw. Kapitel geschafft), mit Sternen 1–3. Danach ist der Lauf vorbei.
+signal goal_reached(stars: int)
 
 const REASON_TOO_SHORT := "too_short"
 const REASON_INVALID_PATH := "invalid_path"
@@ -73,6 +73,8 @@ var grid: HexGrid
 var coins: int = 0
 var words_found: int = 0
 var is_over: bool = false
+## Ziel-Level gelöst (Lauf bzw. Kapitel geschafft).
+var completed: bool = false
 ## Aktueller Auftrag (kommt automatisch).
 var quest: Quest
 
@@ -160,6 +162,7 @@ func start() -> void:
 	coins = _balance.start_coins
 	words_found = 0
 	is_over = false
+	completed = false
 	quest = null
 	_level = 1
 	owned = PackedStringArray() if _balance.draft_enabled else HELP_IDS.duplicate()
@@ -191,17 +194,19 @@ func set_story(chapter: StoryChapter) -> void:
 	_spawner.finder = WordFinder.new(_theme, _balance.min_length, _balance.help_max_word_length)
 
 
-## Sterne für ein geschafftes Kapitel: 3 = keine Hilfe gekauft, 2 = höchstens
-## story_two_star_spend Münzen ausgegeben, sonst 1.
-func story_stars() -> int:
+## Sterne für einen geschafften Lauf / ein Kapitel: 3 = keine Hilfe gekauft, 2 = höchstens
+## two_star_spend Münzen ausgegeben, sonst 1.
+func stars() -> int:
 	if spent <= 0:
 		return 3
-	return 2 if spent <= _balance.story_two_star_spend else 1
+	return 2 if spent <= _balance.two_star_spend else 1
 
 
-## Noch so viele Level bis zum Ziel (das laufende mitgezählt).
+## Noch so viele Level bis zum Ziel (das laufende mitgezählt); 0 = kein Ziel.
 func levels_until_goal() -> int:
-	return maxi(_balance.story_goal - _level + 1, 0)
+	if _balance.goal_level <= 0:
+		return 0
+	return maxi(_balance.goal_level - _level + 1, 0)
 
 
 ## Rätsel-Tipp möglich? (Story, Auftrag aktiv, noch nicht gezeigt, Münzen reichen)
@@ -316,7 +321,7 @@ func levels_until_offer() -> int:
 		return 0
 	var every := _balance.draft_every
 	var m := ceili(_level / float(every)) * every
-	if story != null and m >= _balance.story_goal:
+	if _balance.goal_level > 0 and m >= _balance.goal_level:
 		return 0  # nach dem Ziel-Level kommt keine Auswahl mehr
 	if _options_after(m).is_empty():
 		return 0
@@ -1160,10 +1165,11 @@ func _complete_quest(rewarded: bool = true) -> void:
 	coins += reward
 	quest_completed.emit(done, reward)
 	coins_changed.emit(coins)
-	if story != null and _level >= _balance.story_goal:
-		# Kapitel geschafft
+	if _balance.goal_level > 0 and _level >= _balance.goal_level:
+		# Ziel erreicht: Lauf bzw. Kapitel geschafft
 		is_over = true
-		story_completed.emit(story_stars())
+		completed = true
+		goal_reached.emit(stars())
 		return
 	_level += 1
 	_apply_help()

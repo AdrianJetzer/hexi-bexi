@@ -18,8 +18,8 @@ func test_balance_run_values_from_spec() -> void:
 	assert_eq(b.refill_count, 5)
 	# Preise (spec/run-mode.md, „Münzen“); Auffüllen gratis.
 	var prices := {"refill_price": 0,
-		"hint_price": 50, "replace_price": 50, "shuffle_price": 50,
-		"clear_price": 100, "joker_price": 100, "shorten_price": 100,
+		"replace_price": 50, "shuffle_price": 50,
+		"clear_price": 100, "joker_price": 100, "shorten_price": 100, "hint_price": 100,
 		"swap_price": 150, "split_price": 150, "complete_price": 150,
 		"magnet_price": 200, "scan_price": 200, "strike_price": 200,
 		"solve_price": 500}

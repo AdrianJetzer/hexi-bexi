@@ -1,49 +1,55 @@
 extends Node
-## Rekord im Lauf-Modus (höchstes erreichtes Level) je Spielmodus, lokal gespeichert
-## (user://save.cfg). Als Autoload „SaveData“ überall verfügbar. Später erweiterbar um
-## Online-Ranglisten.
+## Rekorde und Sterne, lokal gespeichert (user://save.cfg). Als Autoload „SaveData“ überall
+## verfügbar. Später erweiterbar um Online-Ranglisten.
+##
+## Lauf (einfach / mittel / schwierig): je Modus die meisten übrigen Münzen eines geschafften
+## Laufs (Rekord) und die besten Sterne. Story: je Kapitel die besten Sterne.
+## Mode- und Kapitel-Kennungen sind verschieden, daher teilen sie sich die Sterne-Tabelle.
 
 const PATH := "user://save.cfg"
-## Alter Rekord (vor den Modi) zählt für „schwierig“, das bisherige Spiel.
-const LEGACY_MODE := "de_hard"
 
-## Modus-Kennung → höchstes erreichtes Level.
-var _best: Dictionary = {}
-## Story-Modus: Kapitel-Kennung → beste Sterne (0 = noch nicht geschafft).
+## Modus-Kennung → meiste übrige Münzen nach Level 20.
+var _coins: Dictionary = {}
+## Modus- oder Kapitel-Kennung → beste Sterne (0 = noch nicht geschafft).
 var _stars: Dictionary = {}
 
 
 func _ready() -> void:
 	var cfg := ConfigFile.new()
-	if cfg.load(PATH) == OK:
-		for key in cfg.get_section_keys("run") if cfg.has_section("run") else []:
-			if key == "best_level":
-				_best[LEGACY_MODE] = maxi(int(_best.get(LEGACY_MODE, 0)), int(cfg.get_value("run", key)))
-			elif key.begins_with("stars_"):
+	if cfg.load(PATH) == OK and cfg.has_section("run"):
+		for key in cfg.get_section_keys("run"):
+			if key.begins_with("stars_"):
 				_stars[key.substr(6)] = int(cfg.get_value("run", key))
-			elif key.begins_with("best_"):
-				var id: String = key.substr(5)
-				_best[id] = maxi(int(_best.get(id, 0)), int(cfg.get_value("run", key)))
+			elif key.begins_with("coins_"):
+				_coins[key.substr(6)] = int(cfg.get_value("run", key))
+			# Alte Rekorde „best_…“ (höchstes Level) gelten nicht mehr: das Ziel ist jetzt Level 20.
 
 
-## Rekord im Modus (leer = aktueller Modus aus den Einstellungen); 0 = noch keiner.
-func best_level(mode: String = "") -> int:
-	return int(_best.get(_mode(mode), 0))
+## Rekord im Modus (leer = aktueller Modus): meiste übrige Münzen; 0 = noch keiner.
+func best_coins(mode: String = "") -> int:
+	return int(_coins.get(_mode(mode), 0))
 
 
-## Erreichtes Level eines beendeten Laufs melden. Gibt true zurück, wenn es ein neuer Rekord ist.
-func submit_level(level: int, mode: String = "") -> bool:
+## Beste Sterne eines Modus (leer = aktueller); 0 = noch nicht geschafft.
+func mode_stars(mode: String = "") -> int:
+	return int(_stars.get(_mode(mode), 0))
+
+
+## Geschafften Lauf melden (übrige Münzen, Sterne). Gibt true zurück bei neuem Münz-Rekord.
+func submit_run(coins: int, stars: int, mode: String = "") -> bool:
 	var id := _mode(mode)
-	if level <= best_level(id):
-		return false
-	_best[id] = level
+	var record := coins > best_coins(id)
+	if record:
+		_coins[id] = coins
+	if stars > mode_stars(id):
+		_stars[id] = stars
 	_save()
-	return true
+	return record
 
 
 ## Rekord löschen (alle Modi und Kapitel).
 func reset_record() -> void:
-	_best.clear()
+	_coins.clear()
 	_stars.clear()
 	_save()
 
@@ -68,8 +74,8 @@ func _mode(mode: String) -> String:
 
 func _save() -> void:
 	var cfg := ConfigFile.new()
-	for id in _best:
-		cfg.set_value("run", "best_" + id, _best[id])
+	for id in _coins:
+		cfg.set_value("run", "coins_" + id, _coins[id])
 	for id in _stars:
 		cfg.set_value("run", "stars_" + id, _stars[id])
 	cfg.save(PATH)

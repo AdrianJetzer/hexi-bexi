@@ -117,7 +117,8 @@ var _board: BoardView3D
 var _blocks: QuestBlocks
 ## Ebene für fliegende Buchstaben (über allem außer den Overlays).
 var _fly_layer: Control
-var _level_label: Label
+## Fortschritt zum Ziel (20 Quadrate) links in der Info-Zeile.
+var _ladder: LevelLadder
 var _coins_label: Label
 ## Goldene Münze vor der Münzzahl (wie auf den Knöpfen).
 var _coins_icon: Panel
@@ -210,7 +211,7 @@ func new_run(seed_value: int = -1) -> void:
 			_chapter = _default_chapter()
 		session.set_story(_chapter)
 		session.riddle_shown.connect(_on_riddle_shown)
-		session.story_completed.connect(_on_story_completed)
+	session.goal_reached.connect(_on_goal_reached)
 	_theme_label.text = _chapter.display_name if _is_story() and _chapter != null else ""
 	_riddle_label.text = ""
 	_again_button.text = "Zur Karte" if _is_story() else "Nochmal"
@@ -253,12 +254,13 @@ func _build_ui() -> void:
 	_blocks = QuestBlocks.new()
 	add_child(_blocks)
 
-	_level_label = _label(INFO_FONT, TEXT_DIM)
+	_ladder = LevelLadder.new()
+	add_child(_ladder)
 	_coins_label = _label(INFO_FONT, ACCENT)
 	_coins_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_coins_icon = _coin(30)
 	add_child(_coins_icon)
-	for l in [_level_label, _coins_label]:
+	for l in [_coins_label]:
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 	_refill_button = _button("", BUTTON_FONT)
@@ -600,9 +602,9 @@ func _relayout() -> void:
 	_theme_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
 	_riddle_label.position = Vector2(side, info_y - RIDDLE_HEIGHT - 8.0)
 	_riddle_label.size = Vector2(inner, RIDDLE_HEIGHT)
-	# Info-Zeile direkt über dem Spielfeld: Level · Rekord links, Münzen rechts.
-	_level_label.position = Vector2(side, info_y)
-	_level_label.size = Vector2(inner * 0.6, INFO_HEIGHT)
+	# Info-Zeile direkt über dem Spielfeld: Leiter (Fortschritt) links, Münzen rechts.
+	_ladder.position = Vector2(side, info_y)
+	_ladder.size = Vector2(inner * 0.66, INFO_HEIGHT)
 	_coins_label.position = Vector2(side + inner * 0.6, info_y)
 	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
 	# Unten: die Knöpfe. Der Hinweis „Noch n Level …“ steht links unter dem Feld,
@@ -636,10 +638,10 @@ func _relayout() -> void:
 func _update_labels() -> void:
 	if session == null:
 		return
-	if session.story != null:
-		_level_label.text = "Level %d von %d" % [mini(session.level(), BALANCE.story_goal), BALANCE.story_goal]
-	else:
-		_level_label.text = "Level %d · Rekord %d" % [session.level(), maxi(SaveData.best_level(), session.level())]
+	_ladder.visible = BALANCE.goal_level > 0
+	_ladder.steps = maxi(BALANCE.goal_level, 1)
+	_ladder.done = session.level() - 1 + (1 if session.completed else 0)
+	_ladder.show_current = not session.is_over
 	_coins_label.text = str(session.coins)
 	_place_coin_icon()
 	for id in _buttons:
@@ -865,9 +867,18 @@ func _on_riddle_shown(text: String) -> void:
 	_riddle_label.text = ("„%s“" % text) if text != "" else ""
 
 
-func _on_story_completed(stars: int) -> void:
-	SaveData.submit_story(session.story.id, stars)
-	_summary_label.text = "Kapitel geschafft!\n\n%s\n%s" % [session.story.display_name, _stars_text(stars)]
+func _on_goal_reached(stars: int) -> void:
+	if session.story != null:
+		SaveData.submit_story(session.story.id, stars)
+		_summary_label.text = "Kapitel geschafft!\n\n%s\n%s" % [session.story.display_name, _stars_text(stars)]
+	else:
+		var record := SaveData.submit_run(session.coins, stars)
+		_summary_label.text = "Geschafft!\n\n%s\n\n%d Münzen übrig\nRekord: %d%s" % [
+			_stars_text(stars), session.coins, SaveData.best_coins(), "\nNeuer Rekord!" if record else ""]
+	_update_labels()
+	for b in _help_buttons():
+		b.visible = false
+	_offer_hint.visible = false
 	# Erst die letzten Buchstaben ankommen lassen, dann die Bilanz zeigen.
 	var t := create_tween()
 	t.tween_interval(_last_flight + 1.0)
@@ -984,7 +995,7 @@ func _word_list(path: String) -> WordDictionary:
 	return _word_lists[path]
 
 
-## Einstellungen öffnen: Modi als Karten, der aktuelle mit Goldrand.
+## Einstellungen öffnen: Modi als Karten (Name, Sterne), der aktuelle mit Goldrand.
 func _open_settings() -> void:
 	_set_tap_action("")
 	for c in _settings_modes.get_children():
@@ -996,7 +1007,9 @@ func _open_settings() -> void:
 		card.custom_minimum_size = Vector2(w, 170)
 		card.add_theme_font_size_override("font_size", 34)
 		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		card.text = "%s\n%s" % [m.display_name, m.description]
+		# Nur der Name; darunter die besten Sterne (Story: Sterne je Kapitel auf dem Pfad).
+		card.text = m.display_name if id == Settings.STORY_MODE \
+				else "%s\n%s" % [m.display_name, _stars_text(SaveData.mode_stars(id))]
 		var current: bool = id == Settings.mode
 		var edge := BTN_EDGE_SOLVE if current else BTN_EDGE
 		card.add_theme_stylebox_override("normal", _btn_box(BTN_BG, edge, 0.9 if current else 0.6, 0.35 if current else 0.2, 12))
@@ -1043,8 +1056,8 @@ func _apply_mode(id: String) -> void:
 func _update_offer_hint() -> void:
 	var n := session.levels_until_offer() if BALANCE.draft_enabled else 0
 	var kind := session.next_offer_kind()
-	if n <= 0 and session.story != null and not session.is_over:
-		# Story: nach dem letzten Power-up zählt der Hinweis bis zum Ziel.
+	if n <= 0 and session.levels_until_goal() > 0 and not session.is_over:
+		# Nach dem letzten Power-up zählt der Hinweis bis zum Ziel.
 		var g := session.levels_until_goal()
 		_offer_hint.text = "Noch 1 Level bis zum Ziel" if g == 1 else "Noch %d Level bis zum Ziel" % g
 	elif n <= 0:
@@ -1293,11 +1306,10 @@ func _on_confirm_give_up() -> void:
 func _on_run_ended(level: int, _reason: String) -> void:
 	if session.story != null:
 		_summary_label.text = "Kapitel nicht geschafft\n\n%s\nLevel %d von %d" % [
-			session.story.display_name, level, BALANCE.story_goal]
+			session.story.display_name, level, BALANCE.goal_level]
 	else:
-		var new_record := SaveData.submit_level(level)
-		_summary_label.text = "Lauf beendet\n\nLevel %d erreicht\n\nRekord: Level %d%s" % [
-			level, SaveData.best_level(), "\nNeuer Rekord!" if new_record else ""]
+		_summary_label.text = "Nicht geschafft\n\nLevel %d von %d\n\nRekord: %d Münzen" % [
+			level, BALANCE.goal_level, SaveData.best_coins()]
 	_update_labels()
 	for b in _help_buttons():
 		b.visible = false

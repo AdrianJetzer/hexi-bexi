@@ -67,10 +67,10 @@ func difficulty(level: int) -> DifficultyLevel:
 @export var draft_enabled: bool = true
 ## Alle so viele Level eine Auswahl (Power-up, danach Upgrade).
 @export var draft_every: int = 5
-## Power-up-Stufen in Reihenfolge, je drei Hilfe-IDs (siehe RunSession.HELP_IDS).
+## Power-up-Stufen in Reihenfolge, je zwei bis vier Hilfe-IDs (siehe RunSession.HELP_IDS).
 @export var draft_tiers: Array[PackedStringArray] = [
-	PackedStringArray(["hint", "replace", "shuffle"]),
-	PackedStringArray(["clear", "joker", "shorten"]),
+	PackedStringArray(["replace", "shuffle"]),
+	PackedStringArray(["clear", "joker", "shorten", "hint"]),
 	PackedStringArray(["swap", "split", "complete"]),
 	PackedStringArray(["magnet", "scan", "strike"]),
 ]
@@ -80,7 +80,8 @@ func difficulty(level: int) -> DifficultyLevel:
 @export var upgrade_discount: float = 0.25
 @export var upgrade_min_price: int = 25
 
-## Story-Modus (spec/story-mode.md): Rätsel-Tipp, Ziel-Level, Grenze für 2 Sterne.
+## Story-Modus (spec/story-mode.md): Rätsel-Tipp.
 @export var riddle_price: int = 50
-@export var story_goal: int = 20
-@export var story_two_star_spend: int = 500
+## Ziel-Level in allen Modi (danach Lauf geschafft, mit Sternen); 0 = endlos. Grenze für 2 Sterne.
+@export var goal_level: int = 20
+@export var two_star_spend: int = 500

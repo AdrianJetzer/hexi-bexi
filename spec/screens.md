@@ -37,17 +37,17 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - Aufbau siehe [screen-layout.md](screen-layout.md), Regeln siehe [game-rules.md](game-rules.md).
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
-- **Anzeige:** **Münzen**, **Level**, **Rekord**.
+- **Anzeige:** über dem Spielfeld links die **Leiter** (20 Quadrate, eins je Level, liegend wie eine Leiter; jedes Quadrat hat seine feste Farbe im Verlauf grün → orange → rot; geschaffte Level leuchten, das laufende ist farbig umrandet, offene sind dunkel), rechts die **Münzen**. Kein Text „Level · Rekord“ mehr. Screenshot: [Leiter](images/ladder-v1.png).
 - **Power-up-Auswahl** (nach Level 5, 10, 15, 20; danach Upgrades alle 5 Level): halbtransparenter Bildschirm über dem Spiel mit großem, goldenem Titel („Wähle eine Hilfe“ bzw. „Welche Hilfe wird günstiger?“) und Karten im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis (beim Upgrade „alt → neu“), darunter die Erklärung (Power-up: 2 zufällige der Stufe) (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)). Screenshots: [Start](images/draft-start-v1.png), [Power-up](images/draft-powerup-v1.png), [Upgrade](images/draft-upgrade-v1.png).
-- **Hinweis** links unter dem Spielfeld: „Noch n Level bis zum Power-up/Upgrade“.
-- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Tipp (je Buchstabe), Stein ersetzen, Mischen; **100:** Aufräumen, Joker, Kürzen; **150:** Tauschen (5 Steine), Teilen, Vervollständigen (Wortanfang anwischen); **200:** Magnet (Stein antippen), Scan, Zeile streichen; **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
+- **Hinweis** links unter dem Spielfeld: „Noch n Level bis zum Power-up“, danach „Noch n Level bis zum Ziel“.
+- **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Stein ersetzen, Mischen; **100:** Aufräumen, Joker, Kürzen, Tipp (je Buchstabe); **150:** Tauschen (5 Steine), Teilen, Vervollständigen (Wortanfang anwischen); **200:** Magnet (Stein antippen), Scan, Zeile streichen; **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
   - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
 
 ### Bilanz (ersetzt „Game-Over“)
-- Erscheint, wenn der Spieler **aufgibt**. Vorher zeigt das Spiel die **Lösung** (Steine blinken, Buchstaben fliegen in die Zeile); der Knopf **„Weiter“** öffnet die Bilanz.
-- Zeigt **erreichtes Level** und **Rekord**, mit Hinweis bei **neuem Rekord**.
+- **Geschafft** (Level 20 gelöst): „Geschafft!“, **Sterne**, **übrige Münzen** und **Rekord** (meiste übrige Münzen), mit Hinweis bei **neuem Rekord**. Screenshot: [Geschafft](images/goal-done-v1.png).
+- **Aufgegeben:** Vorher zeigt das Spiel die **Lösung** (Steine blinken, Buchstaben fliegen in die Zeile); der Knopf **„Weiter“** öffnet die Bilanz „Nicht geschafft“ mit **Level n von 20** und dem Rekord.
 - Knöpfe:
   - **Nochmal:** startet sofort einen neuen Lauf ab Level 1.
   - **Menü:** zurück zum Startbildschirm.
@@ -55,6 +55,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 ### Einstellungen
 - **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links). Siehe [Screenshot](images/settings-modes-v1.png).
 - **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**, **Story** (siehe [story-mode.md](story-mode.md)). Der aktuelle ist markiert. Neu installiert: **mittel**.
+  - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Soundeffekte** an/aus.
@@ -64,8 +65,8 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 
 ## Rekord
 
-- **Ein Rekord je Modus:** das **höchste erreichte Level** im jeweiligen Modus. Startbildschirm, Spiel und Bilanz zeigen den Rekord des aktuellen Modus.
-- Der Rekord zählt beim **Aufgeben**.
+- **Ein Rekord je Modus:** die meisten **übrigen Münzen** eines geschafften Laufs (Level 20) im jeweiligen Modus, dazu die besten **Sterne**. Die Bilanz zeigt den Rekord des aktuellen Modus.
+- Der Rekord zählt nur bei einem **geschafften** Lauf, nicht beim Aufgeben. Alte Rekorde (höchstes Level) gelten nicht mehr.
 - Wird **lokal auf dem Gerät** gespeichert.
 - Architektur so anlegen, dass **später Online-Ranglisten** möglich sind (Google Play Games, Game Center).
 
@@ -91,6 +92,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.15:** Leiter (20 Quadrate) statt „Level · Rekord“; Bilanz „Geschafft!“ mit Sternen bei Level 20; Rekord = übrige Münzen; Modus-Knöpfe nur mit Namen und Sternen; Tipp in der 100er-Stufe.
 - **v4.14:** Modus „Story“ in den Einstellungen, Pfad durchs All, Rätsel-Anzeige, Kapitel-Abschluss.
 - **v4.13:** Auswahl-Bildschirm überarbeitet: ohne Zeile „Power-up“/„Upgrade“, Titel hervorgehoben, Karten als Glas-Knöpfe mit Münze und größerer Erklärung.
 - **v4.12:** Knopf „Einstellungen“ oben rechts; Modus einfach / mittel / schwierig mit Neustart-Nachfrage; Rekord je Modus.

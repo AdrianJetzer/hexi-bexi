@@ -1,0 +1,77 @@
+class_name LevelLadder
+extends Control
+## Fortschritt zum Ziel als liegende Leiter (spec/screens.md, „Spiel“): eine Reihe Quadrate,
+## eins je Level. Jedes Quadrat hat seine feste Farbe im Verlauf grün → orange → rot.
+## Geschaffte Level leuchten, das laufende ist farbig umrandet, offene sind dunkel.
+
+const GREEN := Color(0.25, 0.86, 0.45)
+const ORANGE := Color(1.0, 0.62, 0.16)
+const RED := Color(0.96, 0.26, 0.26)
+const EMPTY := Color(1.0, 1.0, 1.0, 0.06)
+const EMPTY_EDGE := Color(1.0, 1.0, 1.0, 0.16)
+## Abstand zwischen den Quadraten im Verhältnis zur Quadratgröße.
+const GAP := 0.28
+
+var steps: int = 20:
+	set(v):
+		steps = maxi(v, 1)
+		queue_redraw()
+## Geschaffte Level (0 … steps).
+var done: int = 0:
+	set(v):
+		done = clampi(v, 0, steps)
+		queue_redraw()
+## Laufendes Level hervorheben?
+var show_current: bool = true:
+	set(v):
+		show_current = v
+		queue_redraw()
+
+
+func _init() -> void:
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+## Farbe des Quadrats i (0-basiert) im Verlauf grün → orange → rot.
+func color_at(i: int) -> Color:
+	var t := float(i) / float(maxi(steps - 1, 1))
+	return GREEN.lerp(ORANGE, t * 2.0) if t < 0.5 else ORANGE.lerp(RED, (t - 0.5) * 2.0)
+
+
+func _draw() -> void:
+	var cell := minf(size.y * 0.62, size.x / (steps + (steps - 1) * GAP))
+	var gap := cell * GAP
+	var y := (size.y - cell) * 0.5
+	var radius := int(round(cell * 0.22))
+	for i in steps:
+		var r := Rect2(i * (cell + gap), y, cell, cell)
+		var box := StyleBoxFlat.new()
+		box.set_corner_radius_all(radius)
+		box.anti_aliasing = true
+		var c := color_at(i)
+		if i < done:
+			# Geschafft: leuchtend, mit sanftem Schein und hellem Glanz oben.
+			box.bg_color = c
+			box.shadow_color = Color(c, 0.55)
+			box.shadow_size = int(round(cell * 0.35))
+			box.border_color = c.lightened(0.45)
+			box.set_border_width_all(maxi(1, int(round(cell * 0.06))))
+		elif i == done and show_current:
+			# Laufendes Level: dunkel mit farbigem Rand.
+			box.bg_color = Color(c, 0.18)
+			box.border_color = c
+			box.set_border_width_all(maxi(2, int(round(cell * 0.1))))
+			box.shadow_color = Color(c, 0.35)
+			box.shadow_size = int(round(cell * 0.25))
+		else:
+			box.bg_color = EMPTY
+			box.border_color = EMPTY_EDGE
+			box.set_border_width_all(maxi(1, int(round(cell * 0.05))))
+		draw_style_box(box, r)
+		if i < done:
+			var shine := StyleBoxFlat.new()
+			shine.set_corner_radius_all(maxi(radius - 1, 0))
+			shine.anti_aliasing = true
+			shine.bg_color = Color(1, 1, 1, 0.28)
+			draw_style_box(shine, Rect2(r.position + Vector2(cell * 0.14, cell * 0.12),
+					Vector2(cell * 0.72, cell * 0.28)))

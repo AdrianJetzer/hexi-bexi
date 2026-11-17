@@ -84,30 +84,30 @@ func test_riddle_help() -> void:
 
 
 func test_goal_completes_chapter_with_stars() -> void:
-	for i in balance.story_goal - 1:
+	for i in balance.goal_level - 1:
 		run._complete_quest()
 		if not run.offer.is_empty():
 			run.choose(run.offer["options"][0])
-	assert_eq(run.level(), balance.story_goal)
+	assert_eq(run.level(), balance.goal_level)
 	assert_false(run.is_over)
 	assert_eq(run.levels_until_offer(), 0, "nach Level 20 keine Auswahl mehr")
 	run._complete_quest()
 	assert_true(run.is_over)
-	assert_signal_emitted_with_parameters(run, "story_completed", [3])
+	assert_signal_emitted_with_parameters(run, "goal_reached", [3])
 
 
 func test_stars_by_spending() -> void:
 	run.spent = 0
-	assert_eq(run.story_stars(), 3)
+	assert_eq(run.stars(), 3)
 	run.spent = 50
-	assert_eq(run.story_stars(), 2)
-	run.spent = balance.story_two_star_spend + 1
-	assert_eq(run.story_stars(), 1)
+	assert_eq(run.stars(), 2)
+	run.spent = balance.two_star_spend + 1
+	assert_eq(run.stars(), 1)
 
 
 func test_words_get_longer() -> void:
 	var lengths := []
-	for i in balance.story_goal - 1:
+	for i in balance.goal_level - 1:
 		lengths.append(run.story_target.length())
 		run._complete_quest()
 		if not run.offer.is_empty():

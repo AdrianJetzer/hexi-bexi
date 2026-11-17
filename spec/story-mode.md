@@ -1,6 +1,6 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/story-riddle-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/story-riddle-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
 **Grundsatz:** Die Spielregeln sind in allen Modi gleich (Münzen, Preise, Draft).
 
@@ -57,7 +57,8 @@ Status: **v3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Scre
 
 - **Scheitern nur durch Aufgeben:** Wer das Wort nicht findet, gibt auf. Das Kapitel ist nicht geschafft und kann neu gestartet werden. (Kein Zeitlimit, keine Leben.)
 - **Sterne (1–3)** für ein geschafftes Kapitel: ★★★ = keine Hilfe gekauft, ★★ = höchstens 500 Münzen ausgegeben, ★ = geschafft. Gespeichert wird die beste Wertung je Kapitel.
-- Anzeige im Spiel: oben in der Mitte der Kapitel-Name, links „Level 3 von 20“, unter dem Feld „Noch n Level bis zum Power-up“ bzw. nach dem letzten Power-up „Noch n Level bis zum Ziel“.
+- Die Sterne-Regel gilt seit v4 auch im normalen Lauf (siehe [run-mode.md](run-mode.md)).
+- Anzeige im Spiel: oben in der Mitte der Kapitel-Name, über dem Feld links die **Leiter** (20 Quadrate, wie im Lauf), unter dem Feld „Noch n Level bis zum Power-up“ bzw. nach dem letzten Power-up „Noch n Level bis zum Ziel“.
 
 ## Hilfen
 
@@ -85,3 +86,4 @@ Status: **v3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Scre
 - **v1:** Konzept aus dem Brainstorming: Kapitel mit Kategorien (≥ 50 Wörter), Ziel Level 20, versteckte Themenwörter, jedes Themenwort passender Länge zählt, Scheitern nur durch Aufgeben, Sterne, Rätsel-Tipp, Umlaute (ß = SS) als Voraussetzung.
 - **v2:** Geklärt: Münzen/Preise und Draft wie im Lauf (Grundsatz: Regeln überall gleich); Start mit Rätsel-Tipp und Lösen, kein Auffüllen; Kapitel-Auswahl als Pfad durchs All; nur Wörter aus einem Stück; Versteck-Stärke steigt über die 20 Level.
 - **v3:** Erste Version umgesetzt: Modus „Story“ in den Einstellungen, Pfad mit Früchte / Tiere / Gemüse, versteckte Themenwörter (nach Häufigkeit und Länge gestaffelt), Füllgrad je Stufe, Rätsel-Tipp (50, ohne zweite Stufe), Ziel Level 20, Sterne, Teilen/Streichen nicht im Story-Modus.
+- **v4:** Ziel Level 20 und Sterne gelten jetzt in allen Modi; Leiter statt „Level x von 20“; Tipp kostet 100.
