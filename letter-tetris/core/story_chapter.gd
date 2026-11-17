@@ -15,6 +15,8 @@ const BOARD := [
 	[["fluesse", "Flüsse"], ["automarken", "Automarken"], ["laender", "Länder"], ["berufe", "Berufe"]],
 	[["sportarten", "Sportarten"], ["instrumente", "Instrumente"], ["hauptstaedte", "Hauptstädte"],
 			["internet", "Internet"]],
+	[["goetter", "Götter"], ["komponisten", "Komponisten"], ["elemente", "Elemente"],
+			["weltraum", "Weltraum"]],
 ]
 ## Zu Beginn offene Kapitel.
 const START: PackedStringArray = ["tiere", "gemuese"]

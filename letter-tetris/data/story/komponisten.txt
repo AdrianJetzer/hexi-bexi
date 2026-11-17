@@ -1,0 +1,66 @@
+# Kapitel „Komponisten“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+BACH;Thomaskantor in Leipzig, schrieb Fugen
+MOZART;Wunderkind aus Salzburg, „Zauberflöte“
+VERDI;Italiener, schrieb „Aida“
+WAGNER;Schrieb den „Ring des Nibelungen“
+CHOPIN;Polnischer Klavierpoet in Paris
+HAYDN;Vater der Sinfonie, Melodie der deutschen Hymne
+HÄNDEL;Schrieb den „Messias“ und die „Wassermusik“
+VIVALDI;Schrieb „Die vier Jahreszeiten“
+BRAHMS;Schrieb ein berühmtes Wiegenlied
+SCHUBERT;Schrieb „Die Forelle“ und viele Lieder
+STRAUSS;Walzerkönig, „An der schönen blauen Donau“
+LISZT;Ungarischer Klaviervirtuose
+PUCCINI;Schrieb „La Bohème“ und „Tosca“
+ROSSINI;Schrieb „Der Barbier von Sevilla“
+BIZET;Schrieb die Oper „Carmen“
+RAVEL;Schrieb den „Boléro“
+DEBUSSY;Schrieb „Clair de lune“
+GRIEG;Norweger, „In der Halle des Bergkönigs“
+MAHLER;Österreicher mit riesigen Sinfonien
+DVORAK;Tscheche, Sinfonie „Aus der Neuen Welt“
+SMETANA;Schrieb „Die Moldau“
+ORFF;Schrieb „Carmina Burana“
+ELGAR;Brite, „Pomp and Circumstance“
+HOLST;Schrieb die Suite „Die Planeten“
+SATIE;Franzose, schrieb die „Gymnopédies“
+BERLIOZ;Schrieb die „Symphonie fantastique“
+WEBER;Schrieb die Oper „Der Freischütz“
+BRUCKNER;Österreichischer Sinfoniker und Organist
+SCHUMANN;Schrieb die „Kinderszenen“
+TELEMANN;Barockkomponist aus Hamburg, sehr fleißig
+PURCELL;Englischer Barockkomponist
+GLUCK;Schrieb „Orpheus und Eurydike“
+SALIERI;Angeblicher Rivale Mozarts
+CORELLI;Italienischer Barockgeiger
+ALBINONI;Berühmt für ein trauriges Adagio
+BELLINI;Schrieb die Oper „Norma“
+SIBELIUS;Finne, schrieb „Finlandia“
+GERSHWIN;Schrieb „Rhapsody in Blue“
+COPLAND;Amerikaner, „Appalachian Spring“
+BARTOK;Ungar, sammelte Volkslieder
+LIGETI;Ungar, Musik in „2001: Odyssee im Weltraum“
+CAGE;Schrieb ein Stück aus reiner Stille
+GLASS;Amerikanischer Minimalist, wie ein Trinkgefäß
+REICH;Amerikanischer Minimalist, „Music for 18 Musicians“
+ZIMMER;Deutscher Filmkomponist, „König der Löwen“
+WILLIAMS;Filmmusik zu „Star Wars“ und „Der weiße Hai“
+EINAUDI;Italienischer Pianist mit ruhiger Filmmusik
+BORODIN;Russe, Komponist und Chemiker
+GLINKA;Vater der russischen Musik
+SKRJABIN;Russe, wollte Farben hören
+CZERNY;Schüler Beethovens, schrieb Klavierübungen
+HUMMEL;Österreichischer Pianist, wie ein Insekt
+LEHAR;Schrieb „Die lustige Witwe“
+LORTZING;Schrieb „Zar und Zimmermann“
+NICOLAI;Schrieb „Die lustigen Weiber von Windsor“
+FLOTOW;Schrieb die Oper „Martha“
+BERG;Schrieb die Oper „Wozzeck“
+WEBERN;Schüler Schönbergs, sehr kurze Stücke
+NIELSEN;Dänischer Sinfoniker
+FAURE;Franzose, schrieb ein sanftes Requiem
+KODALY;Ungarischer Musikpädagoge
+JANACEK;Tscheche, „Das schlaue Füchslein“
+PÄRT;Este mit ruhiger, glockenhafter Musik
+LULLY;Hofkomponist von Ludwig XIV.

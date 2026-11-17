@@ -171,7 +171,7 @@ func test_board_slots() -> void:
 	for row in StoryChapter.BOARD:
 		for c in row:
 			assert_true(StoryChapter.playable(c[0]), "Wortliste für %s" % c[0])
-	assert_eq(StoryChapter.all().size(), 12, "3 Reihen à 4 Kapitel")
+	assert_eq(StoryChapter.all().size(), 16, "4 Reihen à 4 Kapitel")
 
 
 func test_no_word_twice_in_a_run() -> void:

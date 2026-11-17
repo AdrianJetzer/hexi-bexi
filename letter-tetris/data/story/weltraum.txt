@@ -1,0 +1,61 @@
+# Kapitel „Weltraum“: ein Wort pro Zeile, „WORT;Rätselsatz“. Nur Wörter aus einem Stück, 3–8 Buchstaben.
+# Sortiert nach Häufigkeit (bekannte Wörter zuerst; die frühen Level nehmen bevorzugt diese).
+MOND;Begleiter der Erde, mal voll, mal sichelförmig
+SONNE;Unser Stern, spendet Licht und Wärme
+STERN;Funkelt nachts am Himmel
+ERDE;Der blaue Planet, auf dem wir leben
+MARS;Der rote Planet
+RAKETE;Startet mit Feuerstrahl ins All
+PLANET;Kreist um einen Stern
+KOMET;Schweifstern mit leuchtendem Schwanz
+UFO;Unbekanntes Flugobjekt
+ALIEN;Außerirdischer Besucher
+VENUS;Hellster Planet am Abendhimmel
+SATURN;Planet mit großen Ringen
+JUPITER;Größter Planet unseres Sonnensystems
+PLUTO;Früher der neunte Planet, heute ein Zwerg
+ORBIT;Umlaufbahn um einen Himmelskörper
+GALAXIE;Riesige Ansammlung von Milliarden Sternen
+METEOR;Sternschnuppe, verglüht in der Luft
+KRATER;Einschlagloch auf dem Mond
+NEPTUN;Äußerster Planet, blau und stürmisch
+URANUS;Eisriese, der auf der Seite liegt
+MERKUR;Planet am nächsten an der Sonne
+KOSMOS;Anderes Wort für das ganze Universum
+SATELLIT;Kreist um die Erde und sendet Daten
+SPUTNIK;Erster künstlicher Satellit, aus Russland
+TELESKOP;Fernrohr für den Blick zu den Sternen
+SONDE;Unbemanntes Raumfahrzeug, das fremde Planeten erkundet
+SHUTTLE;Raumfähre, die wie ein Flugzeug landete
+KAPSEL;Kleine Kabine, in der Astronauten landen
+ROVER;Fahrzeug, das über den Mars rollt
+NEBEL;Leuchtende Wolke aus Gas und Staub
+ASTEROID;Gesteinsbrocken, der um die Sonne kreist
+METEORIT;Gestein aus dem All, auf der Erde gefunden
+VOLLMOND;Ganz runde, helle Scheibe am Nachthimmel
+NEUMOND;Der Mond ist dann unsichtbar
+SICHEL;Schmale Form des Mondes
+PULSAR;Stern, der wie ein Leuchtturm blinkt
+QUASAR;Extrem helles Zentrum einer fernen Galaxie
+NOVA;Stern, der plötzlich hell aufleuchtet
+ORION;Sternbild des Jägers mit Gürtel
+SIRIUS;Hellster Stern am Nachthimmel
+POLARIS;Nordstern, zeigt die Richtung
+WEGA;Heller Stern im Sternbild Leier
+PHOBOS;Größerer der beiden Marsmonde
+DEIMOS;Kleinerer der beiden Marsmonde
+TITAN;Größter Mond des Saturn
+EUROPA;Jupitermond mit Eispanzer, wie ein Kontinent
+GANYMED;Größter Mond im Sonnensystem
+KALLISTO;Narbiger Jupitermond
+ZENIT;Punkt genau senkrecht über dem Beobachter
+AURORA;Polarlicht am Himmel
+HUBBLE;Berühmtes Weltraumteleskop
+APOLLO;Mondlandeprogramm der USA
+GEMINI;Amerikanisches Raumfahrtprogramm, die Zwillinge
+SOJUS;Russische Raumkapsel
+MIR;Russische Raumstation, „Frieden“
+ISS;Internationale Raumstation, kurz
+NASA;Amerikanische Raumfahrtbehörde
+ESA;Europäische Raumfahrtbehörde
+VAKUUM;Luftleerer Raum
