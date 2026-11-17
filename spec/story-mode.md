@@ -1,8 +1,8 @@
 # Story-Modus (Kapitel mit Themen)
 
-Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
+Status: **v4.3, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Screenshots: [Pfad](images/story-path-v1.png), [Rätsel](images/riddle-overlay-v1.png), [Kapitel geschafft](images/story-done-v1.png).
 
-**Grundsatz:** Die Spielregeln sind in allen Modi gleich (Münzen, Preise, Draft).
+**Grundsatz:** Münzen, Preise und Sterne sind in allen Modi gleich. Ausnahme: Die Story hat feste Hilfen statt Draft (v4.3).
 
 ## Warum
 
@@ -58,13 +58,14 @@ Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Scre
 - **Scheitern nur durch Aufgeben:** Wer das Wort nicht findet, gibt auf. Das Kapitel ist nicht geschafft und kann neu gestartet werden. (Kein Zeitlimit, keine Leben.)
 - **Sterne (1–3)** für ein geschafftes Kapitel: ★★★ = keine Hilfe gekauft, ★★ = höchstens 500 Münzen ausgegeben, ★ = geschafft. Gespeichert wird die beste Wertung je Kapitel.
 - Die Sterne-Regel gilt seit v4 auch im normalen Lauf (siehe [run-mode.md](run-mode.md)).
-- Anzeige im Spiel: oben in der Mitte der Kapitel-Name, über dem Feld links die **Leiter** (20 Quadrate, wie im Lauf), unter dem Feld „Noch n Level bis zum Power-up“ bzw. nach dem letzten Power-up „Noch n Level bis zum Ziel“.
+- Anzeige im Spiel: oben in der Mitte der Kapitel-Name, über dem Feld links die **Leiter** (20 Quadrate, wie im Lauf), unter dem Feld „Noch n Level bis zum Ziel“.
 
 ## Hilfen
 
 - **Münzen und Preise wie im Lauf** (100 Münzen pro Level, gleiche Preise).
-- **Draft wie im Lauf:** Start mit **Rätsel** und **Lösen** (immer dabei; **kein Auffüllen**, siehe oben). Power-ups nach Level 4, 8, 12 und 16 (je 2 zufällige Hilfen einer Stufe). Nach Level 20 ist das Kapitel geschafft.
-  - **Teilen** und **Zeile streichen** werden im Story-Modus nicht angeboten (nur eine Zeile pro Level).
+- **Kein Draft (kein Roguelike):** Im Story-Modus gibt es keine Power-up-Auswahl. Die Hilfen sind **von Anfang an fest** da (seit v4.3), weil viele Lauf-Hilfen das versteckte Wort zerstören oder nichts bringen (Mischen würfelt die Buchstaben neu, Joker, Auffüllen, Teilen, Streichen).
+  - **Rätsel** (gratis), **Tipp** (100 je Buchstabe), **Aufräumen** (100, lässt das Themenwort stehen), **Scan** (200, zeigt das Themenwort), **Lösen** (500).
+  - Nach Level 20 ist das Kapitel geschafft.
 - Die bekannten Hilfen behalten ihren Sinn (Tipp, Scan, Vervollständigen zeigen ein **Themenwort**).
 - **Neu: Rätsel** (nur im Story-Modus, **gratis**, beliebig oft): zeigt in einem **Overlay** einen kurzen Rätselsatz zum versteckten Wort, z. B. „Gelb, krumm und bei Affen beliebt“. Antippen irgendwo schließt es, der Bildschirm bleibt aufgeräumt.
   - Zu **Beginn jedes Levels** erscheint das Rätsel **automatisch** (nach einer Power-up-Auswahl erst, wenn gewählt ist). Der Knopf „Rätsel“ (gratis) öffnet es jederzeit wieder.
@@ -91,3 +92,4 @@ Status: **v4, erste Version umgesetzt** (Kapitel Früchte, Tiere, Gemüse). Scre
 - **v4:** Ziel Level 20 und Sterne gelten jetzt in allen Modi; Leiter statt „Level x von 20“; Tipp kostet 100.
 - **v4.1:** Power-ups wie im Lauf alle 4 Level (4, 8, 12, 16).
 - **v4.2:** Rätsel gratis und beliebig oft, als Overlay (Antippen schließt), automatisch zu Beginn jedes Levels; keine Textzeile mehr über dem Feld.
+- **v4.3:** Kein Draft in der Story: Rätsel, Tipp, Aufräumen, Scan und Lösen sind von Anfang an fest da; Mischen, Joker usw. entfallen (zerstören das versteckte Wort). Hinweis nur noch „bis zum Ziel“.

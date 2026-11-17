@@ -121,12 +121,16 @@ func test_words_get_longer() -> void:
 	assert_gt(late, early, "späte Wörter sind länger")
 
 
-func test_no_split_or_strike_offered() -> void:
-	for i in 15:
-		run._complete_quest()
-		if not run.offer.is_empty():
-			var options: PackedStringArray = run.offer["options"]
-			assert_false(options.has("split"))
-			assert_false(options.has("strike"))
-			run.choose(options[0])
+func test_fixed_helps_from_start() -> void:
+	for id in ["riddle", "hint", "clear", "scan", "solve"]:
+		assert_true(run.has_help(id), "Story hat %s von Anfang an" % id)
+	for id in ["refill", "replace", "shuffle", "joker", "shorten", "swap", "split", "complete", "magnet", "strike"]:
+		assert_false(run.has_help(id), "Story ohne %s" % id)
 
+
+func test_no_draft_in_story() -> void:
+	assert_eq(run.levels_until_offer(), 0, "kein Hinweis auf Power-ups")
+	for i in 19:
+		run._complete_quest()
+		assert_true(run.offer.is_empty(), "keine Auswahl nach Level %d" % (i + 1))
+	assert_eq(run.owned.size(), 4, "Hilfen bleiben gleich")
