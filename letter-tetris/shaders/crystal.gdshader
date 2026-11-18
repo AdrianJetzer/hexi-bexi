@@ -2,7 +2,7 @@
 // Durchscheinend mit leichter Lichtbrechung, leuchtender Kante (Fresnel),
 // schillernder Kante (Iridescence) und innerem Leuchtkern.
 shader_type spatial;
-render_mode blend_mix, cull_back, depth_draw_opaque, specular_schlick_ggx;
+render_mode blend_mix, cull_back, depth_draw_opaque, specular_schlick_ggx, shadows_disabled;
 
 uniform vec4 base_color : source_color = vec4(0.30, 0.42, 0.95, 1.0);
 // Farbe, mit der der Hintergrund durch den Kristall getönt wird
