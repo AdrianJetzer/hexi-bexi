@@ -291,7 +291,9 @@ func _build_ui() -> void:
 	_board.path_changed.connect(func(word: String) -> void:
 		_blocks.preview(word)
 		_swiping = word != ""
-		_update_finger())
+		# Beim Loslassen erst nach der Wort-Prüfung (gleiches Bild): ein richtiges Wort schließt
+		# die Runde ab, dann bleibt der Finger weg.
+		_update_finger.call_deferred())
 
 	_ladder = LevelLadder.new()
 	add_child(_ladder)
@@ -1144,11 +1146,11 @@ func _update_finger() -> void:
 	if not want:
 		_finger.stop()
 		return
-	if _finger.is_playing():
-		return
 	var pts := PackedVector2Array()
 	for cell in session.tutorial_path():
 		pts.append(_tile_screen_pos(cell))
+	if _finger.is_playing() and _finger.points() == pts:
+		return  # zeigt schon diesen Weg
 	_finger.play(pts)
 
 
@@ -1432,6 +1434,7 @@ func _on_word_accepted(word: String, cells: Array[Vector2i], row: int) -> void:
 
 func _on_quest_completed(_q: Quest, reward: int) -> void:
 	_completing = true
+	_finger.stop()
 	if reward > 0:
 		_show_reward(reward)
 	# Erst alle Buchstaben ankommen lassen, dann Auftrag ausblenden und den nächsten zeigen.
@@ -1448,7 +1451,8 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
 			_pending_quest = null
-			_update_finger()
+			# Tutorial: Finger erst, wenn die Buchstaben oben sind und die neuen Steine liegen.
+			_finger_soon()
 			_show_choice()
 			_auto_riddle()))
 

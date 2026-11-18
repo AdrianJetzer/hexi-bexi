@@ -29,6 +29,11 @@ func _init() -> void:
 	modulate.a = 0.0
 
 
+## Der gerade gezeigte Weg.
+func points() -> PackedVector2Array:
+	return _points
+
+
 func is_playing() -> bool:
 	return _loop != null and _loop.is_valid()
 
@@ -60,6 +65,7 @@ func stop() -> void:
 	if _loop:
 		_loop.kill()
 	_loop = null
+	_points = PackedVector2Array()
 	modulate.a = 0.0
 	queue_redraw()
 

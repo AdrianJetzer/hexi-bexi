@@ -82,7 +82,7 @@ Ohne Text, nur mit einem gezeichneten Finger. Screenshot: [Finger](images/tutori
 - **Ablauf:** Es läuft im Modus **Einfach**, mit zwei festen Runden auf dem normalen Feld:
   1. **DAS:** eine Zeile mit 3 Kästchen; in der untersten Reihe liegt D–A–S als Kette, dazu 7 andere Steine.
   2. **BAUM:** eine Zeile mit 4 Kästchen; B–A–U–M in der untersten Reihe, dazu 6 andere Steine.
-- **Finger:** Eine gezeichnete, leuchtend umrandete Hand setzt auf den ersten Buchstaben, zieht mit leuchtender Spur über das Wort, hebt ab und beginnt nach kurzer Pause von vorn, bis der Spieler das Wort **selbst wischt**. Während man wischt, verschwindet der Finger; nach einem Fehlversuch kommt er wieder.
+- **Finger:** Eine gezeichnete, leuchtend umrandete Hand setzt auf den ersten Buchstaben, zieht mit leuchtender Spur über das Wort, hebt ab und beginnt nach kurzer Pause von vorn, bis der Spieler das Wort **selbst wischt**. Während man wischt, verschwindet der Finger; nach einem Fehlversuch kommt er wieder. Nach dem richtigen Wort verschwindet er sofort und kommt erst wieder, wenn die Buchstaben oben angekommen sind und die neuen Steine liegen (dann mit dem Weg des neuen Worts).
 - **Nur das Zielwort zählt** (auch andere echte Wörter werden abgelehnt). Kein Nachfüllen, keine Münzen, keine Hilfen, keine Leiter, kein Aufgeben-Knopf; nur der Menü-Knopf bleibt.
 - **Danach:** ein normaler Lauf im **vorher gewählten Modus** (Level 1). Beim ersten Start ist das **Einfach** (neue Installationen starten in Einfach). Wer im Tutorial über das Menü einen Modus wählt, verlässt es; es gilt dann als gesehen.
 
