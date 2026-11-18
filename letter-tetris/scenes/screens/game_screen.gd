@@ -104,6 +104,7 @@ const CHAPTER_BOARD_TOP := 0.15
 const CHAPTER_BOARD_BOTTOM := 0.87
 ## Einstellungen: Höhe der Modus-Karten und der Knöpfe darunter (gleich groß).
 const SETTINGS_CARD_HEIGHT := 170
+const SETTINGS_GAP := 22
 ## Dezente Knöpfe unter den Modi (Vibration, Tutorial, Schließen): grau statt cyan, ohne Leuchten.
 const BTN2_BG := Color(0.08, 0.09, 0.13, 0.94)
 const BTN2_BG_PRESSED := Color(0.17, 0.19, 0.26, 0.97)
@@ -461,13 +462,17 @@ func _build_ui() -> void:
 	sub.add_theme_font_size_override("font_size", 40)
 	sub.add_theme_color_override("font_color", TEXT_DIM)
 	(st[1] as VBoxContainer).add_child(sub)
+	# Eine Liste mit überall gleichem Abstand: erst die Modi, dann Vibration, Tutorial, Schließen
+	# als dezentere Knöpfe gleicher Größe.
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", SETTINGS_GAP)
+	(st[1] as VBoxContainer).add_child(list)
 	_settings_modes = VBoxContainer.new()
-	_settings_modes.add_theme_constant_override("separation", 22)
-	(st[1] as VBoxContainer).add_child(_settings_modes)
-	# Darunter, etwas abgesetzt: Vibration, Tutorial, Schließen als dezentere Knöpfe gleicher Größe.
+	_settings_modes.add_theme_constant_override("separation", SETTINGS_GAP)
+	list.add_child(_settings_modes)
 	_settings_more = VBoxContainer.new()
-	_settings_more.add_theme_constant_override("separation", 22)
-	(st[1] as VBoxContainer).add_child(_settings_more)
+	_settings_more.add_theme_constant_override("separation", SETTINGS_GAP)
+	list.add_child(_settings_more)
 	_vibration_button = _secondary_button("", _settings_more)
 	_vibration_button.pressed.connect(func() -> void:
 		Settings.vibration_on = not Settings.vibration_on

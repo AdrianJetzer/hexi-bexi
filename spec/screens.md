@@ -62,7 +62,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu ein kurzes
   - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Kein Ton, keine Musik** (v4.37): Das Spiel ist stumm, deshalb gibt es keine Schalter dafür. Rückmeldung nur über Optik und Vibration.
-- **Knöpfe unter den Modi** (v4.39): **„Vibration: an/aus“**, **„Tutorial“**, **„Schließen“** – gleich groß wie die Modus-Karten, aber dezenter: dunkelgrau, dünner grauer Rand ohne Leuchten, graue Schrift; etwas Abstand zu den Modi. So ordnen sie sich den Modi unter.
+- **Knöpfe unter den Modi** (v4.39): **„Vibration: an/aus“**, **„Tutorial“**, **„Schließen“** – gleich groß wie die Modus-Karten, aber dezenter: dunkelgrau, dünner grauer Rand ohne Leuchten, graue Schrift; **alle sieben Knöpfe mit gleichem Abstand** (22 px). So ordnen sie sich den Modi unter.
 - **Vibration** an/aus (Knopf „Vibration: an/aus“; neu installiert: an). Beim Wischen gibt **jeder neu verbundene Buchstabe einen kurzen, leichten Tick** (ca. 15 ms); Zurückwischen und fertige Wörter vibrieren nicht.
 - **Testmodus** an/aus (Knopf „Testmodus: an/aus“ unter Vibration; neu installiert: aus). **Zurzeit ausgeblendet** (v4.21, Schalter `TEST_MODE_MENU` im Code); solange ist der Testmodus wirkungslos. Ist er an, kostet **Lösen 0 Münzen** (alle Modi), zum schnellen Durchspielen beim Testen.
 - **Rekord zurücksetzen** (mit Nachfrage).
