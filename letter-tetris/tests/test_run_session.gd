@@ -810,11 +810,27 @@ func test_joker_turns_a_tile_into_joker() -> void:
 	_use_rows([3])
 	_column(0, "AST")
 	run.coins = 50
-	var cell := run.joker()
-	assert_ne(cell, RunSession.NO_CELL)
+	var chosen := Vector2i(0, 1)
+	var cell := run.joker(chosen)
+	assert_eq(cell, chosen, "der angetippte Stein wird zum Joker")
 	assert_eq(run.grid.get_letter(cell), RunSession.JOKER)
 	assert_eq(run.coins, 0)
 	assert_signal_emitted_with_parameters(run, "tile_changed", [cell, RunSession.JOKER])
+
+
+func test_joker_on_joker_or_empty_is_free() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "A*T")
+	run.coins = 100
+	assert_eq(run.joker(Vector2i(0, 1)), RunSession.NO_CELL, "schon Joker")
+	var empty := Vector2i(-1, -1)
+	for c in run.grid.all_cells():
+		if not run.grid.is_occupied(c):
+			empty = c
+			break
+	assert_eq(run.joker(empty), RunSession.NO_CELL, "leerer Platz")
+	assert_eq(run.coins, 100, "kostet nichts")
 
 
 func test_joker_stands_for_any_letter() -> void:

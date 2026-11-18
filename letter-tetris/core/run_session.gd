@@ -770,15 +770,12 @@ func can_joker() -> bool:
 	return false
 
 
-## Hilfe „Joker“: ein zufälliger Stein wird zum Joker. Gibt den Platz zurück (NO_CELL = nicht möglich).
-func joker() -> Vector2i:
-	if not can_joker():
+## Hilfe „Joker“: der angetippte Stein wird zum Joker (spec/run-mode.md, „Joker“). Gibt den Platz
+## zurück; NO_CELL = nicht möglich (leerer Platz, schon Joker, zu wenig Münzen) – kostet dann nichts.
+func joker(cell: Vector2i) -> Vector2i:
+	if not can_joker() or not grid.is_inside(cell) or not grid.is_occupied(cell) \
+			or grid.get_letter(cell) == JOKER:
 		return NO_CELL
-	var cells: Array[Vector2i] = []
-	for cell in grid.all_cells():
-		if grid.is_occupied(cell) and grid.get_letter(cell) != JOKER:
-			cells.append(cell)
-	var cell := cells[_hint_rng.randi_range(0, cells.size() - 1)]
 	grid.set_letter(cell, JOKER)
 	_pay(price("joker"))
 	tile_changed.emit(cell, JOKER)
