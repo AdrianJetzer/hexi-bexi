@@ -1456,3 +1456,8 @@ func _on_run_ended(level: int, _reason: String) -> void:
 		var word := session.word_for(solution)
 		_board.show_hint(solution)
 		_fly_word(word, solution, session.quest.free_row_for(word))
+	else:
+		# Kein schönes Wort im Feld: ein schönes Wort ploppt direkt in die Zeile.
+		var fb := session.solution_fallback()
+		if not fb.is_empty():
+			_on_row_filled(fb["row"], fb["word"])
