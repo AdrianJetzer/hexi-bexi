@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1")
 id = "story"
-display_name = "Story"
+display_name = "STORY"
 description = "Kapitel mit Themen (Früchte, Tiere, Gemüse) – Ziel: Level 20."
 language = ExtResource("2")
 curve = ExtResource("3")

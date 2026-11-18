@@ -19,7 +19,6 @@ const HIT_TOLERANCE := 0.9
 const NAME_COLOR := Color(0.9, 1.4, 1.5)
 const NAME_DIM := Color(0.6, 0.75, 0.85, 0.7)
 const STAR_GOLD := Color(1.7, 1.25, 0.4)
-const STAR_EMPTY := Color(0.55, 0.7, 0.85, 0.65)
 const BACK_TEXT := Color(0.5, 0.9, 1.0, 0.45)
 ## Schloss auf gesperrten Kapiteln (leuchtendes Cyan, > 1 = Glow).
 const LOCK_COLOR := Color(0.45, 1.1, 1.35)
@@ -109,9 +108,12 @@ func build(stars: Callable) -> int:
 			tile.setup("", _mesh, HEX_RADIUS * (1.0 - GAP), THICKNESS, front, _mat_back)
 			tile.place(Vector3(c.x, 0.0, c.y))
 			if open and playable:
-				_front_text(tile, slot[1], -0.16, 1.0, NAME_COLOR)
-				_front_text(tile, "★".repeat(s) + "☆".repeat(3 - s), 0.34, 0.8,
-						STAR_GOLD if s > 0 else STAR_EMPTY)
+				# Ohne Sterne (noch nicht geschafft): nur der Name, mittig; keine leeren Sterne.
+				if s > 0:
+					_front_text(tile, slot[1], -0.16, 1.0, NAME_COLOR)
+					_front_text(tile, "★".repeat(s) + "☆".repeat(3 - s), 0.34, 0.8, STAR_GOLD)
+				else:
+					_front_text(tile, slot[1], 0.0, 1.0, NAME_COLOR)
 				turns.append(tile)
 			elif slot.is_empty():
 				_back_text(tile, "bald")

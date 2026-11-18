@@ -56,7 +56,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 
 ### Einstellungen
 - **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links). Siehe [Screenshot](images/settings-modes-v1.png).
-- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**, **Story** (siehe [story-mode.md](story-mode.md)). Der aktuelle ist markiert. Neu installiert: **mittel**.
+- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **EASY**, **MEDIUM**, **HARD**, **STORY** (siehe [story-mode.md](story-mode.md); Beschriftung der Knöpfe seit v4.31, intern weiter einfach / mittel / schwierig / Story). Der aktuelle ist markiert. Neu installiert: **mittel**.
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
@@ -101,6 +101,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.28:** Wisch-Vorschau als Lava-Glut statt Abdunkeln: pulsiert rein, beim Loslassen wieder raus.
 - **v4.29:** Glut in Magenta (passt zu den Power-up-Farben), schnelles Aufflammen statt Einblenden. Cyan-Variante evtl. später testen.
 - **v4.30:** Glut als Kristall-Plasma in Cyan (passt zu den Steinen); Magenta verworfen.
+- **v4.31:** Modus-Knöpfe beschriftet mit EASY, MEDIUM, HARD, STORY.
 - **v4.26:** Symbol-Knöpfe tiefer (nicht mehr im Rand); Power-up-Drehung ohne Rauch.
 - **v4.25:** Aufgeben und Einstellungen als Symbol-Knöpfe (Kreuz, Menü) statt Text.
 - **v4.24:** Power-up-Quadrate drehen sich beim Level-Abschluss mit Funken und Rauch.
