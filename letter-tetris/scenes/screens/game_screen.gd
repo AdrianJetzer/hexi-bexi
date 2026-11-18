@@ -39,6 +39,8 @@ const BUTTON_FONT_SMALL := 23
 const BOTTOM_PAD := 56.0
 ## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
 const INFO_FONT := 40
+## Größe der Symbol-Knöpfe oben (Aufgeben, Einstellungen): schmal, fast quadratisch.
+const ICON_BUTTON_SIZE := Vector2(88, 76)
 ## Abstand der Info-Zeile zur Oberkante des Felds (Pixel).
 const INFO_GAP := 24.0
 
@@ -376,25 +378,11 @@ func _build_ui() -> void:
 	_offer_hint.cell_ratio = 0.9
 	add_child(_offer_hint)
 
-	# „Aufgeben“: schlichter Text wie die Info-Zeile (gleiche Schrift, linksbündig, ohne Rahmen).
-	_give_up_button = _button("Aufgeben", INFO_FONT)
-	_give_up_button.flat = true
-	_give_up_button.add_theme_color_override("font_color", TEXT_DIM)
-	_give_up_button.add_theme_color_override("font_hover_color", TEXT)
-	_give_up_button.add_theme_color_override("font_pressed_color", TEXT)
-	_give_up_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
-		_give_up_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	# „Aufgeben“ (Kreuz) und „Einstellungen“ (Menü): schmale Glas-Knöpfe nur mit Symbol, dezenter
+	# als die Hilfe-Knöpfe; der Rand leuchtet beim Antippen auf (spec/screens.md v4.25).
+	_give_up_button = _icon_button("close")
 	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
-
-	_settings_button = _button("Einstellungen", INFO_FONT)
-	_settings_button.flat = true
-	_settings_button.add_theme_color_override("font_color", TEXT_DIM)
-	_settings_button.add_theme_color_override("font_hover_color", TEXT)
-	_settings_button.add_theme_color_override("font_pressed_color", TEXT)
-	_settings_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
-		_settings_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	_settings_button = _icon_button("menu")
 	_settings_button.pressed.connect(_open_settings)
 
 	_continue_button = _button("Weiter", 56)
@@ -673,10 +661,10 @@ func _relayout() -> void:
 	var margin := col.y * SIDE_MARGIN
 	var side := col.x + margin
 	var inner := col.y - 2.0 * margin
+	_give_up_button.size = ICON_BUTTON_SIZE
 	_give_up_button.position = Vector2(side, s.y * 0.012)
-	_give_up_button.size = Vector2(inner * 0.4, INFO_HEIGHT)
-	_settings_button.size = Vector2(inner * 0.5, INFO_HEIGHT)
-	_settings_button.position = Vector2(side + inner - _settings_button.size.x, s.y * 0.012)
+	_settings_button.size = ICON_BUTTON_SIZE
+	_settings_button.position = Vector2(side + inner - ICON_BUTTON_SIZE.x, s.y * 0.012)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
@@ -786,6 +774,26 @@ func _place_coin_icon() -> void:
 	var right := _coins_label.position.x + _coins_label.size.x
 	_coins_icon.position = Vector2(right - w - _coins_icon.size.x - 12.0,
 			_coins_label.position.y + (_coins_label.size.y - _coins_icon.size.y) / 2.0)
+
+
+## Schmaler Glas-Knopf nur mit Symbol (oben links/rechts).
+func _icon_button(kind: String) -> Button:
+	var b := Button.new()
+	b.focus_mode = Control.FOCUS_NONE
+	var normal := _btn_box(BTN_BG, BTN_EDGE, 0.35, 0.12, 6)
+	var pressed := _btn_box(BTN_BG_PRESSED, BTN_EDGE, 1.0, 0.6, 18)
+	for st in ["normal", "hover", "focus", "disabled"]:
+		b.add_theme_stylebox_override(st, normal)
+	for st in ["pressed", "hover_pressed"]:
+		b.add_theme_stylebox_override(st, pressed)
+	var icon := GlyphIcon.new()
+	icon.kind = kind
+	icon.color = Color(BTN_TEXT, 0.8)
+	b.add_child(icon)
+	b.button_down.connect(func() -> void: icon.color = BTN_TEXT)
+	b.button_up.connect(func() -> void: icon.color = Color(BTN_TEXT, 0.8))
+	add_child(b)
+	return b
 
 
 func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow: int) -> StyleBoxFlat:
