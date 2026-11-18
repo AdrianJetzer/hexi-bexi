@@ -133,6 +133,20 @@ func vanish(delay: float = 0.0) -> void:
 	t.chain().tween_callback(queue_free)
 
 
+## Zerspringen (gefundenes Wort): nach `delay` zerbricht der Stein zufällig in Kristall-Splitter
+## (ShardBurst), der Stein selbst verschwindet sofort. Der Buchstabe fliegt separat nach oben.
+func shatter(delay: float = 0.0, flash: Color = Color(0.6, 1.0, 1.0)) -> void:
+	var t := create_tween()
+	if delay > 0.0:
+		t.tween_interval(delay)
+	t.tween_callback(func() -> void:
+		var burst := ShardBurst.new()
+		get_parent().add_child(burst)
+		burst.global_transform = global_transform
+		burst.setup(radius, thickness, _front_mat, flash)
+		queue_free())
+
+
 ## Pulsieren (Tipp): wechselt zwischen normal und ausgewählt, bis stop_pulse().
 func start_pulse() -> void:
 	stop_pulse()

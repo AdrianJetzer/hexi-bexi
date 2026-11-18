@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v8.1** (Wörterbuch: Namen gelten, schöne Wörter; Spiel zeigt nur schöne Wörter; Durchsicht offen). Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v8.2** (Wörterbuch: Namen gelten, schöne Wörter; Spiel zeigt nur schöne Wörter; Durchsicht offen). Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -74,6 +74,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **Mindestlänge:** immer **3 Buchstaben**.
 - Angenommen wird nur ein Wort, das **genau so lang** ist wie eine noch freie Block-Zeile des Auftrags. Ein echtes, aber nicht passendes Wort wird **abgelehnt**; die Steine bleiben liegen (siehe [run-mode.md](run-mode.md)).
 - Ein gültiges Wort **verschwindet**, also alle seine Hexagons. Zurück bleiben Löcher.
+  - **Zerspringen (v8.2):** Gleichzeitig fliegt jeder Buchstabe nach oben in seinen Block, und der übrig gebliebene Stein zerspringt in **Kristall-Splitter** – jedes Mal zufällig: 7 bis 12 Splitter, Bruchpunkt nicht genau in der Mitte, unregelmäßige Schnitte, zufällige Flugrichtung und Drehung. Die Splitter fliegen nach außen und leicht nach oben, fallen dann, werden kleiner und verglimmen (ca. 0,8 s); dazu ein kurzer Lichtblitz. Die Steine eines Worts zerspringen leicht versetzt nacheinander.
 - Bei einem **ungültigen** oder **nicht passenden** Wort bleibt das Feld unverändert; die Steine **wackeln**. Kein Text.
 
 ### Gültige Wörter
@@ -167,3 +168,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.13:** Eigennamen aus den Story-Listen gelten auch im normalen Lauf (ohne Abkürzungen, nicht als Tipp/Lösung).
 - **v8 (Entwurf):** Eigennamen gelten wieder (samt Formen, nie vom Spiel gelegt), Abkürzungen weiterhin nicht. Neue Liste „schöne Wörter“: nur Grundformen ohne Mehrzahl, alltagsnah, ohne gesperrte Wörter und Namen, ca. 4.000–6.000, Durchsicht durch Adrian.
 - **v8.1:** Tipp, Scan, Lösen und Aufgeben-Lösung nur noch aus den schönen Wörtern (kein Rückgriff aufs ganze Wörterbuch); ohne schönes Wort im Feld ploppt eines direkt in die Zeile.
+- **v8.2:** Gefundene Steine zerspringen zufällig in Kristall-Splitter, während der Buchstabe nach oben fliegt.

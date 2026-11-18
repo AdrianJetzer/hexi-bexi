@@ -41,6 +41,7 @@ var _beam_mat: StandardMaterial3D
 var _static: Node3D
 var _burst_frame: int = -1
 var _burst_index: int = 0
+var _prewarmed := false
 ## Antipp-Modus statt Wischen (z. B. „Stein ersetzen“).
 ## Neigung der Kamera in Grad (0 = senkrecht von oben). Mehr Neigung = mehr 3D-Tiefe.
 @export var tilt_deg: float = 0.0
@@ -123,6 +124,7 @@ func setup(p_session: RunSession) -> void:
 	for cell in g.all_cells():
 		if g.is_occupied(cell):
 			_make_tile(cell, g.get_letter(cell))
+	_prewarm_shards()
 
 
 ## Kamera so setzen, dass das Feld (mit Rahmen) in area passt (Pixel im Viewport).
@@ -188,6 +190,18 @@ func screen_bottom() -> float:
 	var r := layout.grid_rect()
 	var edge := Vector3(r.get_center().x, THICKNESS * 0.1, r.end.y + 0.1)
 	return camera.unproject_position(edge).y
+
+
+## Splitter einmal unsichtbar erzeugen, damit Shader und Licht beim ersten echten Zerspringen
+## schon vorbereitet sind (sonst erscheinen die Splitter im ersten Bild kurz schwarz).
+func _prewarm_shards() -> void:
+	if _prewarmed:
+		return
+	_prewarmed = true
+	var burst := ShardBurst.new()
+	add_child(burst)
+	burst.position = Vector3(0, -50, 0)
+	burst.setup(HEX_RADIUS * (1.0 - GAP), THICKNESS, _mat_front)
 
 
 ## Welt-Position der Mitte eines Platzes (Hexagon-Mitte).
@@ -412,7 +426,7 @@ func _on_word_accepted(_word: String, cells: Array[Vector2i], _row: int) -> void
 		if _tiles.has(cell):
 			var tile: HexTile3D = _tiles[cell]
 			_tiles.erase(cell)
-			tile.vanish(i * 0.06)
+			tile.shatter(i * 0.06)
 
 
 ## Aufräumen: diese Steine verschwinden (wie bei einem gefundenen Wort).
