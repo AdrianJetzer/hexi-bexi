@@ -24,7 +24,7 @@ var block_size: float = 80.0
 var _blocks: Array = []
 var _rows := PackedInt32Array()
 var _fade: Tween
-## Wisch-Vorschau (spec/screens.md v4.28): Blöcke flammen beim Wischen magenta auf (Rand bleibt
+## Wisch-Vorschau (spec/screens.md v4.28): Blöcke flammen beim Wischen als Cyan-Plasma auf (Rand bleibt
 ## gleich), beim Loslassen glühen sie aus; Puls bei „zu lang“.
 const EMBER_SHADER := preload("res://shaders/ember.gdshader")
 ## Aufflammen: in GLOW_IN fast weißglühend hoch, dann in GLOW_SETTLE zur ruhigen Glut.

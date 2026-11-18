@@ -1,6 +1,6 @@
 shader_type canvas_item;
-// Glut in einem Auftrags-Block (spec/screens.md, „Wisch-Vorschau“): flackernde Magenta-Glut,
-// unten dunkelviolett, darüber pink, zur Mitte hell-rosa. Farben über c0–c3 einstellbar. intensity 0 = aus, 1 = Glut,
+// Glut in einem Auftrags-Block (spec/screens.md, „Wisch-Vorschau“): flackerndes Kristall-Plasma,
+// unten tiefblau, darüber cyan, zur Mitte weiß-cyan. Farben über c0–c3 einstellbar. intensity 0 = aus, 1 = Glut,
 // über 1 = heller Puls.
 
 uniform float intensity = 0.0;
@@ -32,10 +32,10 @@ float fbm(vec2 p) {
 	return v;
 }
 
-uniform vec3 c0 : source_color = vec3(0.20, 0.03, 0.32);
-uniform vec3 c1 : source_color = vec3(0.58, 0.10, 0.70);
-uniform vec3 c2 : source_color = vec3(1.0, 0.32, 0.74);
-uniform vec3 c3 : source_color = vec3(1.0, 0.86, 0.97);
+uniform vec3 c0 : source_color = vec3(0.02, 0.07, 0.28);
+uniform vec3 c1 : source_color = vec3(0.04, 0.36, 0.78);
+uniform vec3 c2 : source_color = vec3(0.28, 0.88, 1.0);
+uniform vec3 c3 : source_color = vec3(0.88, 1.0, 1.0);
 
 vec3 lava(float h) {
 	if (h < 0.4) return mix(c0, c1, h / 0.4);
