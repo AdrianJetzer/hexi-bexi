@@ -42,27 +42,35 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu ein kurzes
 - **Power-up-Auswahl** (nach Level 4, 8, 12, 16; Upgrades nur im endlosen Test-Betrieb): halbtransparenter Bildschirm über dem Spiel mit großem, goldenem Titel („Wähle eine Hilfe“ bzw. „Welche Hilfe wird günstiger?“) und Karten im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis (beim Upgrade „alt → neu“), darunter die Erklärung (Power-up: 2 zufällige der Stufe) (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)). Screenshots: [Start](images/draft-start-v1.png), [Power-up](images/draft-powerup-v1.png), [Upgrade](images/draft-upgrade-v1.png).
 - **Power-up-Anzeige** links unter dem Spielfeld, **ohne Text** (v4.22): je Level bis zum nächsten Power-up ein Quadrat (4 Stück, etwas größer als die Leiter, eigene Farben Cyan, Violett, Pink, Gold). Geschaffte Level leuchten, das laufende ist umrandet; im Level vor dem Power-up pulsiert die Anzeige. **Animation (v4.24):** Ist ein Level geschafft, dreht sich sein Quadrat kurz danach mit Perspektive um die senkrechte Achse (hebt sich leicht an), wechselt in der Mitte von dunkel auf seine Farbe mit Glanzstreifen und versprüht Funken (ohne Rauch, v4.26); danach leuchtet das nächste Quadrat sanft als „ready“ auf. Nach dem goldenen bleiben alle vier gefüllt, bis die Power-up-Auswahl erledigt ist. Keine Vibration. Nach dem letzten Power-up und im Story-Modus gibt es keine Anzeige (den Weg zum Ziel zeigt die Leiter). Screenshot: [Power-up-Quadrate](images/powerup-squares-v1.png).
 - **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Tipp (je Buchstabe); **100:** Mischen, Joker, Kürzen; **150:** Aufräumen, Teilen, Magnet (Stein antippen); **200:** Scan, Zeile streichen, Vervollständigen (Wortanfang anwischen); **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
-- **Oben links / oben rechts (v4.25):** etwas Abstand zum oberen Rand (runde Display-Ecken), schmale Glas-Knöpfe **nur mit Symbol**, dezenter als die Hilfe-Knöpfe (schwacher Rand, leuchtet beim Antippen): **Kreuz** = Aufgeben, **Menü (drei Striche)** = Einstellungen. Symbole selbst gezeichnet (Linien), kein Text.
+- **Oben links / oben rechts (v4.25):** etwas Abstand zum oberen Rand (runde Display-Ecken), schmale Glas-Knöpfe **nur mit Symbol**, dezenter als die Hilfe-Knöpfe (schwacher Rand, leuchtet beim Antippen): **Kreuz** = Aufgeben, **Haus** = Home-Screen (v4.40, vorher drei Striche = Einstellungen). Symbole selbst gezeichnet (Linien), kein Text.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
-  - **Ja:** Lauf endet, es folgt der **Bilanz-Screen**. **Nein:** weiterspielen.
+  - **Ja:** Lauf endet, das Spiel zeigt die Lösung (siehe Bilanz). **Nein:** weiterspielen.
+  - Nach dem Aufgeben fragt das Kreuz **nicht nochmal**: Es führt wie „Weiter“ auf den Home-Screen (v4.41).
 
 ### Bilanz (ersetzt „Game-Over“)
 - **Geschafft** (Level 20 gelöst): „Geschafft!“, **Sterne**, **übrige Münzen** und **Rekord** (meiste übrige Münzen), mit Hinweis bei **neuem Rekord**. Screenshot: [Geschafft](images/goal-done-v1.png).
-- **Aufgegeben:** Vorher zeigt das Spiel die **Lösung** (Steine blinken, Buchstaben fliegen in die Zeile); der Knopf **„Weiter“** öffnet die Bilanz „Nicht geschafft“ mit **Level n von 20** und dem Rekord.
-- Knöpfe:
-  - **Nochmal:** startet sofort einen neuen Lauf ab Level 1.
-  - **Menü:** zurück zum Startbildschirm.
+- **Aufgegeben:** Vorher zeigt das Spiel die **Lösung** (Steine blinken, Buchstaben fliegen in die Zeile); der Knopf **„Weiter“** (oder das Kreuz) führt **direkt auf den Home-Screen**, wie nach einem kalten Start: Darunter läuft schon ein neuer Lauf im gleichen Modus (Story: das Kapitel-Brett), Modus wählen ohne Nachfrage. **Keine Bilanz „Nicht geschafft“ mehr** (v4.41).
+- Knopf **„Weiter“** (v4.43, vorher „Nochmal“ bzw. in der Story „Zur Karte“): führt auf den **Home-Screen**, wie nach dem Aufgeben. Darunter läuft schon ein neuer Lauf im gleichen Modus (Story: das Kapitel-Brett). So endet **jeder Lauf auf dem Home-Screen**.
 
-### Einstellungen
-- **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links). Siehe [Screenshot](images/settings-modes-v1.png).
+### Home-Screen (früher „Einstellungen“)
+- **Home-Knopf** oben rechts im Spiel und auf dem Kapitel-Brett: Glas-Knopf mit gezeichnetem **Haus** (v4.40, vorher drei Striche). Öffnet den Home-Screen als Ebene über dem Spiel. Siehe [Screenshot](images/home-screen-v1.png).
+- **Aufbau (v4.40):** kein Titel oben. Zuerst die Überschrift **„Modus“** (groß, Größe wie früher der Titel) mit den vier Modus-Karten, darunter die Überschrift **„Einstellungen“** (gleich groß) mit Vibration, Tutorial, Schließen.
+- **Wann er erscheint (v4.40):**
+  - App war nur im Hintergrund: Sie geht dort weiter, wo man war (kein Home-Screen).
+  - Allererster Start: Tutorial, danach direkt ins Spiel.
+  - **Kalter Start** (App beendet, Handy neu gestartet) nach dem Tutorial: **Home-Screen**. Darunter läuft schon ein neuer Lauf im gespeicherten Modus (Läufe werden nicht gespeichert). Den aktuellen Modus antippen oder „Schließen“ = ins Spiel; ein anderer Modus wechselt **ohne Nachfrage**, weil noch nichts gespielt ist. Ebenso startet „Tutorial“ dann ohne Nachfrage.
+- **Android-Zurück** (Taste oder Geste, v4.42): immer einen Schritt Richtung Home-Screen.
+  - Nachfrage offen („Aufgeben?“, „Modus wechseln?“, „Tutorial starten?“): wie **Nein**. Rätsel offen: schließt es.
+  - Im Spiel (auch Tutorial, Kapitel-Brett, Power-up-Auswahl, Bilanz „Geschafft!“, nach dem Aufgeben): öffnet den **Home-Screen** (über allem; schließt man ihn, ist das Darunter wieder da).
+  - Auf dem Home-Screen: Die App geht in den **Hintergrund** (wie die Home-Taste); der Lauf bleibt, solange Android die App im Speicher behält. Früher beendete Zurück die App sofort.
 - **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Einfach**, **Mittel**, **Schwer**, **Story** (siehe [story-mode.md](story-mode.md); Beschriftung der Knöpfe seit v4.32). Der aktuelle ist markiert. Neu installiert: **Einfach** (v4.38, vorher mittel).
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Kein Ton, keine Musik** (v4.37): Das Spiel ist stumm, deshalb gibt es keine Schalter dafür. Rückmeldung nur über Optik und Vibration.
-- **Knöpfe unter den Modi** (v4.39): **„Vibration: an/aus“**, **„Tutorial“**, **„Schließen“** – gleich groß wie die Modus-Karten, aber dezenter: dunkelgrau, dünner grauer Rand ohne Leuchten, graue Schrift; **alle sieben Knöpfe mit gleichem Abstand** (22 px). So ordnen sie sich den Modi unter.
+- **Knöpfe unter „Einstellungen“** (v4.39): **„Vibration: an/aus“**, **„Tutorial“**, **„Schließen“** – gleich groß wie die Modus-Karten, aber dezenter: dunkelgrau, dünner grauer Rand ohne Leuchten, graue Schrift. Innerhalb eines Abschnitts gleicher Abstand (22 px), zwischen Überschrift und Knöpfen 40 px. So ordnen sie sich den Modi unter.
 - **Vibration** an/aus (Knopf „Vibration: an/aus“; neu installiert: an). Beim Wischen gibt **jeder neu verbundene Buchstabe einen kurzen, leichten Tick** (ca. 15 ms); Zurückwischen und fertige Wörter vibrieren nicht.
 - **Testmodus** an/aus (Knopf „Testmodus: an/aus“ unter Vibration; neu installiert: aus). **Zurzeit ausgeblendet** (v4.21, Schalter `TEST_MODE_MENU` im Code); solange ist der Testmodus wirkungslos. Ist er an, kostet **Lösen 0 Münzen** (alle Modi), zum schnellen Durchspielen beim Testen.
 - **Rekord zurücksetzen** (mit Nachfrage).
@@ -128,6 +136,10 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 - **v4.36:** Leistung: Nebel-Rauschen vorberechnet, automatische 3D-Auflösung auf schwächeren Handys.
 - **v4.37:** Kein Ton und keine Musik; Schalter dafür entfernt.
 - **v4.38:** Tutorial beim ersten Start und über das Menü (DAS, BAUM, Finger); neu installiert startet Einfach.
+- **v4.43:** Bilanz „Geschafft!“ bzw. „Kapitel geschafft!“: Knopf „Weiter“ führt auf den Home-Screen (vorher „Nochmal“ / „Zur Karte“).
+- **v4.42:** Android-Zurück: schließt Nachfragen, öffnet sonst den Home-Screen; auf dem Home-Screen geht die App in den Hintergrund statt sich zu beenden.
+- **v4.41:** Nach dem Aufgeben führen „Weiter“ und das Kreuz direkt auf den Home-Screen; die Bilanz „Nicht geschafft“ entfällt, das Kreuz fragt nicht nochmal.
+- **v4.40:** Einstellungen werden zum Home-Screen: Haus-Symbol statt drei Striche, kein Titel oben, Überschrift „Modus“ groß, neue Überschrift „Einstellungen“ vor Vibration; nach kaltem Start erscheint der Home-Screen.
 - **v4.39:** Einstellungen: Vibration, Tutorial und Schließen als dezente graue Knöpfe in Größe der Modus-Karten.
 - **v4.26:** Symbol-Knöpfe tiefer (nicht mehr im Rand); Power-up-Drehung ohne Rauch.
 - **v4.25:** Aufgeben und Einstellungen als Symbol-Knöpfe (Kreuz, Menü) statt Text.

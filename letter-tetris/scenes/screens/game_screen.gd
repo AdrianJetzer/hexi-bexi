@@ -105,6 +105,8 @@ const CHAPTER_BOARD_BOTTOM := 0.87
 ## Einstellungen: Höhe der Modus-Karten und der Knöpfe darunter (gleich groß).
 const SETTINGS_CARD_HEIGHT := 170
 const SETTINGS_GAP := 22
+## Home-Screen: Abstand zwischen Überschrift und Knöpfen bzw. zwischen den Abschnitten.
+const SETTINGS_HEADING_GAP := 40
 ## Dezente Knöpfe unter den Modi (Vibration, Tutorial, Schließen): grau statt cyan, ohne Leuchten.
 const BTN2_BG := Color(0.08, 0.09, 0.13, 0.94)
 const BTN2_BG_PRESSED := Color(0.17, 0.19, 0.26, 0.97)
@@ -213,6 +215,8 @@ const OFFER_FLIP_DELAY := 0.55
 var _choice: ColorRect
 var _choice_title: Label
 var _choice_cards: VBoxContainer
+## Home-Screen nach kaltem Start: Der Lauf darunter ist noch unberührt, Modus wählen ohne Nachfrage.
+var _home_fresh: bool = false
 
 
 func _ready() -> void:
@@ -228,6 +232,8 @@ func _ready() -> void:
 		new_run()
 		if _is_story():
 			_open_path.call_deferred()
+		# Kalter Start nach dem Tutorial: erst der Home-Screen (spec/screens.md v4.40).
+		_open_home_on_start.call_deferred()
 	# Schwächere Handys: 3D-Auflösung automatisch senken, wenn es ruckelt.
 	var guard := PerfGuard.new()
 	guard.extra_viewports.append(_chapter_view)
@@ -255,7 +261,6 @@ func new_run(seed_value: int = -1) -> void:
 	session.goal_reached.connect(_on_goal_reached)
 	_theme_label.text = _chapter.display_name if _is_story() and _chapter != null else ""
 	_riddle.visible = false
-	_again_button.text = "Zur Karte" if _is_story() else "Nochmal"
 	session.quest_started.connect(_on_quest_started)
 	session.quest_completed.connect(_on_quest_completed)
 	session.coins_changed.connect(func(_c: int) -> void: _update_labels())
@@ -394,18 +399,21 @@ func _build_ui() -> void:
 	_offer_hint.cell_ratio = 0.9
 	add_child(_offer_hint)
 
-	# „Aufgeben“ (Kreuz) und „Einstellungen“ (Menü): schmale Glas-Knöpfe nur mit Symbol, dezenter
+	# „Aufgeben“ (Kreuz) und Home-Screen (Haus): schmale Glas-Knöpfe nur mit Symbol, dezenter
 	# als die Hilfe-Knöpfe; der Rand leuchtet beim Antippen auf (spec/screens.md v4.25).
 	_give_up_button = _icon_button("close")
-	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
-	_settings_button = _icon_button("menu")
+	_give_up_button.pressed.connect(func() -> void:
+		# Nach dem Aufgeben fragt das Kreuz nicht nochmal, sondern führt wie „Weiter“ heim.
+		if _continue_button.visible:
+			_home_after_run()
+		else:
+			_confirm.visible = true)
+	_settings_button = _icon_button("home")
 	_settings_button.pressed.connect(_open_settings)
 
 	_continue_button = _button("Weiter", 56)
 	_continue_button.visible = false
-	_continue_button.pressed.connect(func() -> void:
-		_continue_button.visible = false
-		_summary.visible = true)
+	_continue_button.pressed.connect(_home_after_run)
 
 	_finger = TutorialFinger.new()
 	add_child(_finger)
@@ -452,27 +460,23 @@ func _build_ui() -> void:
 	_path_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_path.add_child(_path_layer)
 
-	# Einstellungen: Modus wählen
-	var st := _overlay("Einstellungen")
+	# Home-Screen: Überschrift „Modus“ mit den Modi, darunter „Einstellungen“ mit Vibration,
+	# Tutorial, Schließen als dezentere Knöpfe gleicher Größe (spec/screens.md v4.40).
+	var st := _overlay("Modus")
 	_settings = st[0]
-	(st[1] as VBoxContainer).add_theme_constant_override("separation", 36)
-	var sub := Label.new()
-	sub.text = "Modus"
-	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub.add_theme_font_size_override("font_size", 40)
-	sub.add_theme_color_override("font_color", TEXT_DIM)
-	(st[1] as VBoxContainer).add_child(sub)
-	# Eine Liste mit überall gleichem Abstand: erst die Modi, dann Vibration, Tutorial, Schließen
-	# als dezentere Knöpfe gleicher Größe.
-	var list := VBoxContainer.new()
-	list.add_theme_constant_override("separation", SETTINGS_GAP)
-	(st[1] as VBoxContainer).add_child(list)
+	(st[1] as VBoxContainer).add_theme_constant_override("separation", SETTINGS_HEADING_GAP)
 	_settings_modes = VBoxContainer.new()
 	_settings_modes.add_theme_constant_override("separation", SETTINGS_GAP)
-	list.add_child(_settings_modes)
+	(st[1] as VBoxContainer).add_child(_settings_modes)
+	var more_head := Label.new()
+	more_head.text = "Einstellungen"
+	more_head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	more_head.add_theme_font_size_override("font_size", 68)
+	more_head.add_theme_color_override("font_color", TEXT)
+	(st[1] as VBoxContainer).add_child(more_head)
 	_settings_more = VBoxContainer.new()
 	_settings_more.add_theme_constant_override("separation", SETTINGS_GAP)
-	list.add_child(_settings_more)
+	(st[1] as VBoxContainer).add_child(_settings_more)
 	_vibration_button = _secondary_button("", _settings_more)
 	_vibration_button.pressed.connect(func() -> void:
 		Settings.vibration_on = not Settings.vibration_on
@@ -489,7 +493,7 @@ func _build_ui() -> void:
 		_update_vibration_button()
 		_update_labels())
 	var close := _secondary_button("Schließen", _settings_more)
-	close.pressed.connect(func() -> void: _settings.visible = false)
+	close.pressed.connect(_close_settings)
 
 	# Nachfrage: Modus mitten im Lauf wechseln
 	var mc := _overlay("Modus wechseln und\nneu starten?")
@@ -564,14 +568,10 @@ func _build_ui() -> void:
 	var s := _overlay("")
 	_summary = s[0]
 	_summary_label = s[2]
-	_again_button = _button("Nochmal", 64, s[1])
+	# „Weiter“: jeder Lauf endet auf dem Home-Screen (screens.md v4.43).
+	_again_button = _button("Weiter", 64, s[1])
 	_again_button.custom_minimum_size = Vector2(520, 140)
-	_again_button.pressed.connect(func() -> void:
-		if _is_story():
-			_summary.visible = false
-			_open_path()
-		else:
-			new_run())
+	_again_button.pressed.connect(_home_after_run)
 
 
 ## Halbtransparente Ebene mit zentrierter Spalte. Gibt [Ebene, Spalte, Titel] zurück.
@@ -1009,7 +1009,7 @@ func _open_path() -> void:
 	title.size = Vector2(col.y, 90)
 	_path_layer.add_child(title)
 	# Einstellungen: derselbe Symbol-Knopf an derselben Stelle wie im Spiel (Konsistenz).
-	var menu := _icon_button("menu", _path_layer)
+	var menu := _icon_button("home", _path_layer)
 	menu.size = ICON_BUTTON_SIZE
 	menu.position = _settings_button_pos(s)
 	menu.pressed.connect(_open_settings)
@@ -1093,7 +1093,57 @@ func _open_settings() -> void:
 	for b in _settings_more.get_children():
 		(b as Control).custom_minimum_size = Vector2(w, SETTINGS_CARD_HEIGHT)
 	_update_vibration_button()
+	# Über allem (auch über Power-up-Auswahl und Bilanz), die Nachfragen darüber.
+	move_child(_settings, -1)
+	move_child(_mode_confirm, -1)
+	move_child(_tutorial_confirm, -1)
 	_settings.visible = true
+
+
+## Android-Zurück (Taste oder Geste, spec/screens.md v4.42): immer einen Schritt Richtung
+## Home-Screen. Nachfragen wie „Nein“, im Spiel öffnet es den Home-Screen, auf dem Home-Screen
+## geht die App in den Hintergrund (der Lauf bleibt im Speicher).
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		_on_back()
+
+
+func _on_back() -> void:
+	if _mode_confirm.visible:
+		_mode_confirm.visible = false
+		_pending_mode = ""
+	elif _tutorial_confirm.visible:
+		_tutorial_confirm.visible = false
+	elif _confirm.visible:
+		_confirm.visible = false
+	elif _riddle.visible:
+		_riddle.visible = false
+	elif _settings.visible:
+		_to_background()
+	else:
+		_open_settings()
+
+
+## App in den Hintergrund schicken wie die Home-Taste (Android: Activity.moveTaskToBack).
+## Geht das nicht, beendet sich die App wie früher bei Zurück.
+func _to_background() -> void:
+	if OS.get_name() != "Android":
+		return
+	if Engine.has_singleton("AndroidRuntime"):
+		var activity = Engine.get_singleton("AndroidRuntime").getActivity()
+		if activity != null and activity.moveTaskToBack(true):
+			return
+	get_tree().quit()
+
+
+func _open_home_on_start() -> void:
+	_open_settings()
+	_home_fresh = true
+
+
+func _close_settings() -> void:
+	_settings.visible = false
+	_home_fresh = false
 
 
 func _update_vibration_button() -> void:
@@ -1105,7 +1155,14 @@ func _on_mode_picked(id: String) -> void:
 	# Denselben Modus nochmal gewählt: wie ein Moduswechsel (Nachfrage, dann Neustart bzw. in der
 	# Story zurück aufs Brett). Nur auf dem Kapitel-Brett selbst schließen sich die Einstellungen.
 	if id == Settings.mode and _is_story() and _path.visible:
-		_settings.visible = false
+		_close_settings()
+		return
+	if _home_fresh:
+		# Nach kaltem Start ist noch nichts gespielt: aktueller Modus = einfach ins Spiel.
+		if id == Settings.mode:
+			_close_settings()
+		else:
+			_apply_mode(id)
 		return
 	if session != null and not session.is_over:
 		_pending_mode = id
@@ -1117,7 +1174,7 @@ func _on_mode_picked(id: String) -> void:
 ## Modus wechseln und neu starten.
 func _apply_mode(id: String) -> void:
 	_mode_confirm.visible = false
-	_settings.visible = false
+	_close_settings()
 	_pending_mode = ""
 	if id == "":
 		return
@@ -1139,7 +1196,8 @@ func _apply_mode(id: String) -> void:
 
 ## Menü-Eintrag „Tutorial“: mitten im Lauf erst nachfragen.
 func _on_tutorial_picked() -> void:
-	if session != null and not session.is_over and not session.tutorial and not _path.visible:
+	if session != null and not session.is_over and not session.tutorial and not _path.visible \
+			and not _home_fresh:
 		_tutorial_confirm.visible = true
 	else:
 		_start_tutorial()
@@ -1148,7 +1206,7 @@ func _on_tutorial_picked() -> void:
 ## Tutorial starten (Modus Einfach); danach geht es im vorher gewählten Modus weiter.
 func _start_tutorial() -> void:
 	_tutorial_confirm.visible = false
-	_settings.visible = false
+	_close_settings()
 	if not _tutorial_active:
 		_tutorial_return = Settings.mode
 	_tutorial_active = true
@@ -1504,13 +1562,20 @@ func _on_confirm_give_up() -> void:
 	session.give_up()
 
 
-func _on_run_ended(level: int, _reason: String) -> void:
-	if session.story != null:
-		_summary_label.text = "Kapitel nicht geschafft\n\n%s\nLevel %d von %d" % [
-			session.story.display_name, level, BALANCE.goal_level]
+## Lauf vorbei (nach dem Aufgeben „Weiter“ oder Kreuz, nach „Geschafft!“ „Weiter“): auf den
+## Home-Screen, darunter läuft schon ein neuer Lauf bzw. liegt das Kapitel-Brett, wie nach einem
+## kalten Start (screens.md v4.41, v4.43).
+func _home_after_run() -> void:
+	_continue_button.visible = false
+	_summary.visible = false
+	if _is_story():
+		_open_path()
 	else:
-		_summary_label.text = "Nicht geschafft\n\nLevel %d von %d\n\nRekord: %d Münzen" % [
-			level, BALANCE.goal_level, SaveData.best_coins()]
+		new_run()
+	_open_home_on_start()
+
+
+func _on_run_ended(_level: int, _reason: String) -> void:
 	_update_labels()
 	for b in _help_buttons():
 		b.visible = false
