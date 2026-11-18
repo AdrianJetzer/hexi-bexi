@@ -61,8 +61,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
-- **Soundeffekte** an/aus.
-- **Musik** an/aus (Version 1 hat also Musik).
+- **Kein Ton, keine Musik** (v4.37): Das Spiel ist stumm, deshalb gibt es keine Schalter dafür. Rückmeldung nur über Optik und Vibration.
 - **Vibration** an/aus (Knopf „Vibration: an/aus“ unter den Modi; neu installiert: an). Beim Wischen gibt **jeder neu verbundene Buchstabe einen kurzen, leichten Tick** (ca. 15 ms); Zurückwischen und fertige Wörter vibrieren nicht.
 - **Testmodus** an/aus (Knopf „Testmodus: an/aus“ unter Vibration; neu installiert: aus). **Zurzeit ausgeblendet** (v4.21, Schalter `TEST_MODE_MENU` im Code); solange ist der Testmodus wirkungslos. Ist er an, kostet **Lösen 0 Münzen** (alle Modi), zum schnellen Durchspielen beim Testen.
 - **Rekord zurücksetzen** (mit Nachfrage).
@@ -114,6 +113,7 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 - **v4.34:** Glut der Wisch-Vorschau gedämpft (ruhige Glut und Aufflammen schwächer).
 - **v4.35:** Lava/Plasma verworfen: Vorschau-Blöcke sehen aus wie gelöste (türkis, weißer Buchstabe), nur leicht durchsichtig.
 - **v4.36:** Leistung: Nebel-Rauschen vorberechnet, automatische 3D-Auflösung auf schwächeren Handys.
+- **v4.37:** Kein Ton und keine Musik; Schalter dafür entfernt.
 - **v4.26:** Symbol-Knöpfe tiefer (nicht mehr im Rand); Power-up-Drehung ohne Rauch.
 - **v4.25:** Aufgeben und Einstellungen als Symbol-Knöpfe (Kreuz, Menü) statt Text.
 - **v4.24:** Power-up-Quadrate drehen sich beim Level-Abschluss mit Funken und Rauch.

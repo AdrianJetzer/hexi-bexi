@@ -23,13 +23,13 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Startbildschirm** (Titel/Logo, Spielen, Rekord, Einstellungen).
 - **Spiel** mit Auftrags-Zeilen, Münzen, Level, Rekord, Hilfe-Knöpfen und Knopf „Aufgeben“.
 - **Bilanz** (erreichtes Level, Rekord, neuer Rekord; Nochmal, Menü).
-- **Einstellungen** (Soundeffekte, Musik, Rekord zurücksetzen).
+- **Einstellungen** (Modus, Vibration, Rekord zurücksetzen). Kein Ton, keine Musik.
 - Spiel hält an, wenn die App in den Hintergrund geht.
 
 ### Optik und Ton ([look-and-sound.md](look-and-sound.md))
 - **Ein Theme: Kosmisch / Sci-Fi** (Kristall-Hexagons, Metallrahmen mit Leuchtkante, animierter Nebel).
 - Effekte: Erscheinen + Drehung, Energie-Strahl beim Wischen, Kristalle zerspringen, Wackeln bei ungültigem Wort, Licht erlischt beim Rundenende.
-- **Soundeffekte und Musik.**
+- **Kein Ton, keine Musik**; nur Vibration.
 
 ### Technik ([tech.md](tech.md))
 - Godot 4.7, GDScript, Mobile-Renderer.
@@ -56,7 +56,6 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 ## Muss vor oder während der Umsetzung geklärt werden
 
 - **Wörterbuch:** Quellen, Aufbereitung und Format erledigt (804.367 Wörter ohne Eigennamen, Abkürzungen, Akronyme und römische Zahlen, ~10 MB). Offen: evtl. Wortlänge begrenzen; Lizenz-Hinweis in der App.
-- **Quelle für Musik und Soundeffekte**, Liste der Sounds.
 - **Sprites** für das Theme Kosmisch (Hexagon vorne/hinten, Rahmen, Hintergrund-Ebenen, Logo).
 - Farbpalette und Schrift für die Buchstaben.
 - Feintuning von Auftrags-Kurve, Münz-Preisen, Hilfe-Stufen und Vokal-Ausgleich durch Testspiele.
@@ -65,7 +64,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 
 - Ein Lauf lässt sich vom Startbildschirm über mehrere Aufträge bis zur Bilanz spielen, alle Regeln oben funktionieren.
 - Alle Screens und ihre Übergänge funktionieren.
-- Theme Kosmisch mit allen genannten Effekten, Sound und Musik ist eingebaut.
+- Theme Kosmisch mit allen genannten Effekten ist eingebaut (ohne Ton).
 - Läuft auf einem Android-10-Mittelklasse-Handy flüssig mit 60 fps.
 - Steht als interner Test im Play Store.
 

@@ -9,16 +9,7 @@ const PATH := "user://settings.cfg"
 const TICK_MS := 15
 const TICK_STRENGTH := 0.45
 
-var sound_on: bool = true:
-	set(value):
-		sound_on = value
-		_save()
-		changed.emit()
-var music_on: bool = true:
-	set(value):
-		music_on = value
-		_save()
-		changed.emit()
+## Kein Ton und keine Musik (spec/look-and-sound.md v3): nur Vibration.
 ## Kurzer Vibrations-Tick beim Verbinden der Buchstaben (spec/screens.md, „Einstellungen“).
 var vibration_on: bool = true:
 	set(value):
@@ -54,8 +45,6 @@ func _load() -> void:
 	_loading = true
 	var cfg := ConfigFile.new()
 	if cfg.load(PATH) == OK:
-		sound_on = cfg.get_value("audio", "sound_on", true)
-		music_on = cfg.get_value("audio", "music_on", true)
 		vibration_on = cfg.get_value("audio", "vibration_on", true)
 		test_mode = cfg.get_value("game", "test_mode", false)
 		mode = cfg.get_value("game", "mode", DEFAULT_MODE)
@@ -66,8 +55,6 @@ func _save() -> void:
 	if _loading:
 		return
 	var cfg := ConfigFile.new()
-	cfg.set_value("audio", "sound_on", sound_on)
-	cfg.set_value("audio", "music_on", music_on)
 	cfg.set_value("audio", "vibration_on", vibration_on)
 	cfg.set_value("game", "mode", mode)
 	cfg.set_value("game", "test_mode", test_mode)
