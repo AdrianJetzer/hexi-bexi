@@ -41,6 +41,8 @@ const BOTTOM_PAD := 56.0
 const INFO_FONT := 40
 ## Größe der Symbol-Knöpfe oben (Aufgeben, Einstellungen): schmal, fast quadratisch.
 const ICON_BUTTON_SIZE := Vector2(88, 76)
+## Abstand der oberen Knöpfe zum oberen Rand (runde Display-Ecken, Kamera-Loch).
+const TOP_INSET := 36.0
 ## Abstand der Info-Zeile zur Oberkante des Felds (Pixel).
 const INFO_GAP := 24.0
 
@@ -662,9 +664,10 @@ func _relayout() -> void:
 	var side := col.x + margin
 	var inner := col.y - 2.0 * margin
 	_give_up_button.size = ICON_BUTTON_SIZE
-	_give_up_button.position = Vector2(side, s.y * 0.012)
+	var top_y := s.y * 0.012 + TOP_INSET
+	_give_up_button.position = Vector2(side, top_y)
 	_settings_button.size = ICON_BUTTON_SIZE
-	_settings_button.position = Vector2(side + inner - ICON_BUTTON_SIZE.x, s.y * 0.012)
+	_settings_button.position = Vector2(side + inner - ICON_BUTTON_SIZE.x, top_y)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
@@ -672,7 +675,7 @@ func _relayout() -> void:
 	if _board.session != null:
 		info_y = maxf(info_y, _board.screen_top() - INFO_HEIGHT - INFO_GAP)
 
-	_theme_label.position = Vector2(side + inner * 0.3, s.y * 0.012)
+	_theme_label.position = Vector2(side + inner * 0.3, top_y + (ICON_BUTTON_SIZE.y - INFO_HEIGHT) * 0.5)
 	_theme_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
 	_riddle_label.custom_minimum_size = Vector2(inner * 0.86, 0)
 	# Info-Zeile direkt über dem Spielfeld: Leiter (Fortschritt) links, Münzen rechts.
