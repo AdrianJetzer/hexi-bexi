@@ -57,7 +57,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**, **Story** (siehe [story-mode.md](story-mode.md)). Der aktuelle ist markiert. Neu installiert: **mittel**.
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
-  - Im Story-Modus mitten im Kapitel nochmal **Story** wählen: dieselbe Nachfrage; Ja führt zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen).
+  - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
@@ -95,6 +95,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.23:** Denselben Modus nochmal wählen fragt „Modus wechseln und neu starten?“ (Neustart).
 - **v4.22:** Kein Text unter dem Feld mehr: Power-up-Anzeige als 4 farbige Quadrate, Story ohne „bis zum Ziel“.
 - **v4.21:** Menüeintrag Testmodus ausgeblendet.
 - **v4.20:** Tipp 50; Ersetzen und Tauschen vorerst deaktiviert.
