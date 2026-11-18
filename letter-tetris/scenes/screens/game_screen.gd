@@ -676,13 +676,13 @@ func _relayout() -> void:
 	_ladder.size = Vector2(inner * 0.66, INFO_HEIGHT)
 	_coins_label.position = Vector2(side + inner * 0.6, info_y)
 	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
-	# Unten: die Knöpfe. Die Power-up-Quadrate stehen links unter dem Feld,
-	# im gleichen Abstand wie die Info-Zeile darüber.
+	# Unten: die Knöpfe. Die Power-up-Quadrate stehen links, mittig zwischen Feld und Knöpfen.
 	var info_top := s.y - _bottom_height() + 12.0
 	var buttons_top := info_top
 	var hint_y := info_top - INFO_HEIGHT
 	if _board.session != null:
-		hint_y = minf(_board.screen_bottom() + INFO_GAP, buttons_top - INFO_HEIGHT)
+		var mid := (_board.screen_bottom() + buttons_top) * 0.5
+		hint_y = minf(mid - INFO_HEIGHT * 0.5, buttons_top - INFO_HEIGHT)
 	_offer_hint.position = Vector2(side, hint_y)
 	if _stuck_veil.visible:
 		_place_stuck_veil()
