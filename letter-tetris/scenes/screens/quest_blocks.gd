@@ -23,7 +23,8 @@ var _blocks: Array = []
 var _rows := PackedInt32Array()
 var _fade: Tween
 ## Wisch-Vorschau (spec/screens.md v4.27): abgedunkelte Blöcke beim Wischen, Puls bei „zu lang“.
-const PREVIEW_DIM := Color(0.42, 0.48, 0.62, 1.0)
+## Vorschau: nur die Füllung wird dunkler, der Rand bleibt gleich.
+const PREVIEW_BG := Color(0.0, 0.01, 0.04, 0.95)
 const PULSE_BRIGHT := Color(1.9, 1.9, 1.9, 1.0)
 var _preview_panels: Array[Panel] = []
 var _pulse: Tween
@@ -110,7 +111,7 @@ func put_letter(row: int, i: int, letter: String, pop: bool = true) -> void:
 func preview(count: int) -> void:
 	for p in _preview_panels:
 		if is_instance_valid(p):
-			p.self_modulate = Color.WHITE
+			p.add_theme_stylebox_override("panel", _style(false))
 	_preview_panels.clear()
 	if count <= 0:
 		return
@@ -126,7 +127,7 @@ func preview(count: int) -> void:
 	if best >= 0:
 		for i in count:
 			var panel: Panel = _blocks[best][i]["panel"]
-			panel.self_modulate = PREVIEW_DIM
+			panel.add_theme_stylebox_override("panel", _style(false, true))
 			_preview_panels.append(panel)
 	elif longest > 0:
 		_pulse_rows(longest)
@@ -199,9 +200,9 @@ func _place() -> void:
 		y += block_size + gap
 
 
-func _style(filled: bool) -> StyleBoxFlat:
+func _style(filled: bool, preview: bool = false) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = FILLED_BG if filled else BLOCK_BG
+	s.bg_color = FILLED_BG if filled else (PREVIEW_BG if preview else BLOCK_BG)
 	s.border_color = FILLED_BORDER if filled else BLOCK_BORDER
 	s.set_border_width_all(3)
 	s.set_corner_radius_all(int(block_size * 0.18))
