@@ -51,9 +51,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu ein kurzes
 ### Bilanz (ersetzt „Game-Over“)
 - **Geschafft** (Level 20 gelöst): „Geschafft!“, **Sterne**, **übrige Münzen** und **Rekord** (meiste übrige Münzen), mit Hinweis bei **neuem Rekord**. Screenshot: [Geschafft](images/goal-done-v1.png).
 - **Aufgegeben:** Vorher zeigt das Spiel die **Lösung** (Steine blinken, Buchstaben fliegen in die Zeile); der Knopf **„Weiter“** (oder das Kreuz) führt **direkt auf den Home-Screen**, wie nach einem kalten Start: Darunter läuft schon ein neuer Lauf im gleichen Modus (Story: das Kapitel-Brett), Modus wählen ohne Nachfrage. **Keine Bilanz „Nicht geschafft“ mehr** (v4.41).
-- Knöpfe:
-  - **Nochmal:** startet sofort einen neuen Lauf ab Level 1.
-  - **Menü:** zurück zum Startbildschirm.
+- Knopf **„Weiter“** (v4.43, vorher „Nochmal“ bzw. in der Story „Zur Karte“): führt auf den **Home-Screen**, wie nach dem Aufgeben. Darunter läuft schon ein neuer Lauf im gleichen Modus (Story: das Kapitel-Brett). So endet **jeder Lauf auf dem Home-Screen**.
 
 ### Home-Screen (früher „Einstellungen“)
 - **Home-Knopf** oben rechts im Spiel und auf dem Kapitel-Brett: Glas-Knopf mit gezeichnetem **Haus** (v4.40, vorher drei Striche). Öffnet den Home-Screen als Ebene über dem Spiel. Siehe [Screenshot](images/home-screen-v1.png).
@@ -138,6 +136,7 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 - **v4.36:** Leistung: Nebel-Rauschen vorberechnet, automatische 3D-Auflösung auf schwächeren Handys.
 - **v4.37:** Kein Ton und keine Musik; Schalter dafür entfernt.
 - **v4.38:** Tutorial beim ersten Start und über das Menü (DAS, BAUM, Finger); neu installiert startet Einfach.
+- **v4.43:** Bilanz „Geschafft!“ bzw. „Kapitel geschafft!“: Knopf „Weiter“ führt auf den Home-Screen (vorher „Nochmal“ / „Zur Karte“).
 - **v4.42:** Android-Zurück: schließt Nachfragen, öffnet sonst den Home-Screen; auf dem Home-Screen geht die App in den Hintergrund statt sich zu beenden.
 - **v4.41:** Nach dem Aufgeben führen „Weiter“ und das Kreuz direkt auf den Home-Screen; die Bilanz „Nicht geschafft“ entfällt, das Kreuz fragt nicht nochmal.
 - **v4.40:** Einstellungen werden zum Home-Screen: Haus-Symbol statt drei Striche, kein Titel oben, Überschrift „Modus“ groß, neue Überschrift „Einstellungen“ vor Vibration; nach kaltem Start erscheint der Home-Screen.

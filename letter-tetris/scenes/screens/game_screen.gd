@@ -261,7 +261,6 @@ func new_run(seed_value: int = -1) -> void:
 	session.goal_reached.connect(_on_goal_reached)
 	_theme_label.text = _chapter.display_name if _is_story() and _chapter != null else ""
 	_riddle.visible = false
-	_again_button.text = "Zur Karte" if _is_story() else "Nochmal"
 	session.quest_started.connect(_on_quest_started)
 	session.quest_completed.connect(_on_quest_completed)
 	session.coins_changed.connect(func(_c: int) -> void: _update_labels())
@@ -406,7 +405,7 @@ func _build_ui() -> void:
 	_give_up_button.pressed.connect(func() -> void:
 		# Nach dem Aufgeben fragt das Kreuz nicht nochmal, sondern führt wie „Weiter“ heim.
 		if _continue_button.visible:
-			_home_after_give_up()
+			_home_after_run()
 		else:
 			_confirm.visible = true)
 	_settings_button = _icon_button("home")
@@ -414,7 +413,7 @@ func _build_ui() -> void:
 
 	_continue_button = _button("Weiter", 56)
 	_continue_button.visible = false
-	_continue_button.pressed.connect(_home_after_give_up)
+	_continue_button.pressed.connect(_home_after_run)
 
 	_finger = TutorialFinger.new()
 	add_child(_finger)
@@ -569,14 +568,10 @@ func _build_ui() -> void:
 	var s := _overlay("")
 	_summary = s[0]
 	_summary_label = s[2]
-	_again_button = _button("Nochmal", 64, s[1])
+	# „Weiter“: jeder Lauf endet auf dem Home-Screen (screens.md v4.43).
+	_again_button = _button("Weiter", 64, s[1])
 	_again_button.custom_minimum_size = Vector2(520, 140)
-	_again_button.pressed.connect(func() -> void:
-		if _is_story():
-			_summary.visible = false
-			_open_path()
-		else:
-			new_run())
+	_again_button.pressed.connect(_home_after_run)
 
 
 ## Halbtransparente Ebene mit zentrierter Spalte. Gibt [Ebene, Spalte, Titel] zurück.
@@ -1567,10 +1562,12 @@ func _on_confirm_give_up() -> void:
 	session.give_up()
 
 
-## Nach dem Aufgeben („Weiter“ oder Kreuz): ohne Bilanz auf den Home-Screen, darunter läuft
-## schon ein neuer Lauf bzw. liegt das Kapitel-Brett, wie nach einem kalten Start (screens.md v4.41).
-func _home_after_give_up() -> void:
+## Lauf vorbei (nach dem Aufgeben „Weiter“ oder Kreuz, nach „Geschafft!“ „Weiter“): auf den
+## Home-Screen, darunter läuft schon ein neuer Lauf bzw. liegt das Kapitel-Brett, wie nach einem
+## kalten Start (screens.md v4.41, v4.43).
+func _home_after_run() -> void:
 	_continue_button.visible = false
+	_summary.visible = false
 	if _is_story():
 		_open_path()
 	else:
