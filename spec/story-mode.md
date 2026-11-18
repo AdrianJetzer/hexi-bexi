@@ -23,7 +23,7 @@ Status: **v5 umgesetzt** (Kapitel-Brett mit 8 Kapiteln in 2 Reihen, Dreh-Animati
 
 ## Einstieg
 
-- In den **Einstellungen** gibt es den Modus **„Story“** (neben einfach / mittel / schwierig). Wer ihn wählt, sieht das Kapitel-Brett; dort führt „Modus wechseln“ zurück in die Einstellungen.
+- In den **Einstellungen** gibt es den Modus **„Story“** (neben einfach / mittel / schwierig). Wer ihn wählt, sieht das Kapitel-Brett; dort öffnet der Menü-Knopf oben rechts (gleich platziert wie im Spiel) die Einstellungen (v5.9).
 - Startet die App im Story-Modus, erscheint zuerst das Kapitel-Brett.
 
 ## Kapitel-Brett (ab v5, ersetzt den Pfad)
@@ -130,3 +130,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **v5.6:** Brett voll (24 Kapitel). Reihe 5: Fabelwesen, Sagenhelden, Erfinder, Inseln. Reihe 6 („Gottmodus“, für Junge): Japan & Anime, Superhelden, Musikstile, Gaming.
 - **v5.7:** Pro Level drehen sich alle Steine neu (zufällig), Auffüllen bis zum Füllgrad, Wort im ganzen Feld.
 - **v5.8:** Kein Hinweistext „Noch n Level bis zum Ziel“ mehr unter dem Feld.
+- **v5.9:** Kapitel-Brett ohne Text „Modus wechseln“; stattdessen derselbe Menü-Knopf oben rechts wie im Spiel.

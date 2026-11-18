@@ -682,6 +682,22 @@ func test_refill_suggested_uses_full_dictionary() -> void:
 	assert_false(run.refill_suggested(), "aber ein gültiges Wort")
 
 
+func test_solve_and_hint_only_use_nice_words() -> void:
+	# STERN ist gültig, aber kein schönes Wort: Lösen nimmt es nicht, sondern legt ein schönes Wort.
+	var common := WordDictionary.from_words(PackedStringArray(["HAUS", "BLUME"]))
+	run = RunSession.new(balance, curve, lang, dict, 42, common)
+	run.start()
+	_use_rows([5])
+	_column(0, "STERN")
+	run.coins = 1000
+	assert_eq(run.solution().size(), 0, "keine Lösung aus dem ganzen Wörterbuch")
+	assert_eq(run.solution_fallback()["word"], "BLUME", "Aufgeben zeigt ein schönes Wort")
+	watch_signals(run)
+	assert_true(run.solve())
+	assert_signal_emitted_with_parameters(run, "row_filled", [0, "BLUME"])
+	assert_true(run.grid.is_occupied(Vector2i(0, 0)), "STERN bleibt liegen")
+
+
 func test_refill_not_suggested_when_board_full_or_joker() -> void:
 	run.start()
 	_use_rows([5])

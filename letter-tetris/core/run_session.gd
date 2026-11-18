@@ -87,6 +87,9 @@ var _curve: QuestCurve
 var _picker: LetterPicker
 ## Sucht Wörter für den Tipp: zuerst geläufige, dann alle.
 var _hint_finders: Array[WordFinder] = []
+## Sucht in ALLEN gültigen Wörtern: nur für „steckt man fest?“ (has_fitting_word), nie für
+## Wörter, die das Spiel zeigt.
+var _valid_finder: WordFinder
 var _hint_rng: RandomNumberGenerator
 var _planter: WordPlanter
 ## Woraus schlaues Tauschen seine Wörter nimmt (geläufige Wörter, sonst alle).
@@ -148,9 +151,10 @@ func _init(balance: GameBalance, curve: QuestCurve, lang: LanguageData, dictiona
 	else:
 		_draft_rng.randomize()
 	_plant_words = common_words if common_words != null else dictionary
-	if common_words != null:
-		_hint_finders.append(WordFinder.new(common_words))
-	_hint_finders.append(WordFinder.new(dictionary))
+	# Was das Spiel selbst zeigt oder legt (Tipp, Scan, Lösen, Lösung beim Aufgeben), stammt nur
+	# aus den schönen Wörtern, nie aus dem ganzen Wörterbuch (spec/game-rules.md v8.1).
+	_hint_finders.append(WordFinder.new(common_words if common_words != null else dictionary))
+	_valid_finder = WordFinder.new(dictionary)
 	if common_words != null:
 		_spawner.finder = WordFinder.new(common_words, balance.min_length, balance.help_max_word_length)
 	grid = HexGrid.new(balance.grid_cols, balance.grid_rows)
@@ -197,6 +201,7 @@ func _set_theme(words: PackedStringArray) -> void:
 	_theme = WordDictionary.from_words(words)
 	var finders: Array[WordFinder] = [WordFinder.new(_theme)]
 	_hint_finders = finders
+	_valid_finder = finders[0]  # Story: nur Themenwörter zählen
 	_plant_words = _theme
 	_spawner.finder = WordFinder.new(_theme, _balance.min_length, _balance.help_max_word_length)
 
@@ -533,8 +538,7 @@ func has_fitting_word() -> bool:
 		if grid.is_occupied(cell) and grid.get_letter(cell) == JOKER:
 			return true
 	var q := quest
-	var finder: WordFinder = _hint_finders[_hint_finders.size() - 1]
-	return not finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
+	return not _valid_finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
 			func(w: String) -> bool: return q.matches(w), 1).is_empty()
 
 
@@ -735,6 +739,17 @@ func _find_word_of_length(n: int) -> Array[Vector2i]:
 			path.assign(found[_hint_rng.randi_range(0, found.size() - 1)]["path"])
 			return path
 	return []
+
+
+## Lösung beim Aufgeben, wenn kein schönes Wort im Feld liegt: ein zufälliges schönes Wort
+## für die erste freie Zeile. {} = keine freie Zeile.
+func solution_fallback() -> Dictionary:
+	if quest == null:
+		return {}
+	for row in quest.rows.size():
+		if quest.filled[row] == "":
+			return {"row": row, "word": _random_word(quest.rows[row])}
+	return {}
 
 
 ## Zufälliges geläufiges Wort mit n Buchstaben (für Zeilen ohne passendes Wort im Feld).
@@ -978,7 +993,12 @@ func complete(prefix: Array[Vector2i]) -> Array[Vector2i]:
 	if p_min > p_max:
 		return cells
 	var q := quest
-	for finder in _hint_finders:
+	# Vervollständigen: der Spieler gibt den Anfang vor, darum zuletzt auch alle gültigen Wörter
+	# (spec/run-mode.md, „Vervollständigen“).
+	var finders: Array[WordFinder] = _hint_finders.duplicate()
+	if not finders.has(_valid_finder):
+		finders.append(_valid_finder)
+	for finder in finders:
 		var found := finder.find_paths_from(grid, prefix, p_min, p_max,
 				func(w: String) -> bool: return q.matches(w))
 		if not found.is_empty():

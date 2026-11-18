@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v8** (Wörterbuch: Namen gelten, schöne Wörter; umgesetzt, Durchsicht der schönen Wörter offen). Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v8.1** (Wörterbuch: Namen gelten, schöne Wörter; Spiel zeigt nur schöne Wörter; Durchsicht offen). Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -98,6 +98,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
   - **Ohne Namen** und ohne Abkürzungen.
   - **Größe:** **5.000** Wörter (3 Buchstaben: ca. 120, 4: 540, 5: 880, 6–8: je ca. 1.150).
   - **Durchsicht durch Adrian:** Die Liste wird in Portionen (nach Länge) vorgelegt; was nicht gefällt, kommt auf die Sperrliste.
+- **Nur schöne Wörter zeigen (v8.1):** Tipp, Scan, Lösen und die Lösung beim Aufgeben suchen **nur** in den schönen Wörtern, nie mehr ersatzweise im ganzen Wörterbuch (vorher konnte so z. B. ISCH als Lösung kommen). Liegt kein schönes Wort im Feld: Lösen und die Lösung beim Aufgeben lassen ein schönes Wort direkt in die Zeile ploppen; Tipp und Scan kosten nichts und wackeln. Ausnahmen: „Steckt man fest?“ (großer Auffüllen-Knopf) prüft alle gültigen Wörter; Vervollständigen (Anfang vom Spieler) greift zuletzt auch auf alle gültigen Wörter zurück.
 - **Weiterhin:** ohne Artikel und Pronomen (DER, DIE, ICH, WIR …; Ausnahme SEIN), ohne Akronyme, nur Wörter, die auch gültig sind.
 - **Häufigkeit (Quelle):** **Leipzig Corpora Collection** (Uni Leipzig, Wortschatz), Korpora `deu_news_2023_1M` und `deu_mixed-typical_2011_1M`, Lizenz **CC BY** (vor Veröffentlichung auf der Quellseite prüfen). Nicht geeignet: DeReKo (nur nicht-kommerziell); Untertitel-Listen und wordfreq (CC BY-SA, eher heikel).
 - **Bisher (v7.7 bis v7.13):** 10.000 häufigste Grundformen plus Mehrzahl, Häufigkeit aus beiden Korpora gemittelt.
@@ -165,3 +166,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.12:** Umlaute Ä, Ö, Ü als eigene Steine; Wörterbuch rund 1,02 Mio. Wörter.
 - **v7.13:** Eigennamen aus den Story-Listen gelten auch im normalen Lauf (ohne Abkürzungen, nicht als Tipp/Lösung).
 - **v8 (Entwurf):** Eigennamen gelten wieder (samt Formen, nie vom Spiel gelegt), Abkürzungen weiterhin nicht. Neue Liste „schöne Wörter“: nur Grundformen ohne Mehrzahl, alltagsnah, ohne gesperrte Wörter und Namen, ca. 4.000–6.000, Durchsicht durch Adrian.
+- **v8.1:** Tipp, Scan, Lösen und Aufgeben-Lösung nur noch aus den schönen Wörtern (kein Rückgriff aufs ganze Wörterbuch); ohne schönes Wort im Feld ploppt eines direkt in die Zeile.

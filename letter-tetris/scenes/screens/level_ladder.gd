@@ -31,6 +31,16 @@ var cell_ratio: float = 0.62:
 	set(v):
 		cell_ratio = v
 		queue_redraw()
+## Dieses Quadrat nicht zeichnen (z. B. während es sich dreht), -1 = keins.
+var hidden_index: int = -1:
+	set(v):
+		hidden_index = v
+		queue_redraw()
+## Deckkraft der Umrandung des laufenden Levels (zum sanften Aufleuchten „ready“).
+var current_alpha: float = 1.0:
+	set(v):
+		current_alpha = v
+		queue_redraw()
 ## Laufendes Level hervorheben?
 var show_current: bool = true:
 	set(v):
@@ -50,12 +60,20 @@ func color_at(i: int) -> Color:
 	return GREEN.lerp(ORANGE, t * 2.0) if t < 0.5 else ORANGE.lerp(RED, (t - 0.5) * 2.0)
 
 
+## Lage des Quadrats i im Control (für Animationen darüber).
+func cell_rect(i: int) -> Rect2:
+	var cell := minf(size.y * cell_ratio, size.x / (steps + (steps - 1) * GAP))
+	return Rect2(i * cell * (1.0 + GAP), (size.y - cell) * 0.5, cell, cell)
+
+
 func _draw() -> void:
 	var cell := minf(size.y * cell_ratio, size.x / (steps + (steps - 1) * GAP))
 	var gap := cell * GAP
 	var y := (size.y - cell) * 0.5
 	var radius := int(round(cell * 0.22))
 	for i in steps:
+		if i == hidden_index:
+			continue
 		var r := Rect2(i * (cell + gap), y, cell, cell)
 		var box := StyleBoxFlat.new()
 		box.set_corner_radius_all(radius)
@@ -70,10 +88,10 @@ func _draw() -> void:
 			box.set_border_width_all(maxi(1, int(round(cell * 0.06))))
 		elif i == done and show_current:
 			# Laufendes Level: dunkel mit farbigem Rand.
-			box.bg_color = Color(c, 0.18)
-			box.border_color = c
+			box.bg_color = Color(c, 0.18 * current_alpha)
+			box.border_color = Color(c, current_alpha)
 			box.set_border_width_all(maxi(2, int(round(cell * 0.1))))
-			box.shadow_color = Color(c, 0.35)
+			box.shadow_color = Color(c, 0.35 * current_alpha)
 			box.shadow_size = int(round(cell * 0.25))
 		else:
 			box.bg_color = EMPTY

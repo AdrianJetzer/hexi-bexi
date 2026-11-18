@@ -35,9 +35,14 @@ const OFFER_COLORS: Array[Color] = [Color(0.3, 0.85, 1.0), Color(0.62, 0.45, 1.0
 ## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
 const BUTTON_FONT := 33
 const BUTTON_FONT_SMALL := 23
-const BOTTOM_PAD := 24.0
+## Abstand der Knöpfe zum unteren Rand (Platz für runde Display-Ecken).
+const BOTTOM_PAD := 56.0
 ## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
 const INFO_FONT := 40
+## Größe der Symbol-Knöpfe oben (Aufgeben, Einstellungen): schmal, fast quadratisch.
+const ICON_BUTTON_SIZE := Vector2(88, 76)
+## Abstand der oberen Knöpfe zum oberen Rand (runde Display-Ecken, Kamera-Loch).
+const TOP_INSET := 36.0
 ## Abstand der Info-Zeile zur Oberkante des Felds (Pixel).
 const INFO_GAP := 24.0
 
@@ -192,6 +197,14 @@ var _stuck_veil: ColorRect
 var _stuck_button: Button
 var _stuck_tween: Tween
 var _offer_hint_pulse: Tween
+## Zuletzt gezeigter Stand der Power-up-Quadrate (Level, Level bis zur Auswahl), um den Schritt
+## zum nächsten Level zu erkennen und das Quadrat drehen zu lassen.
+var _offer_seen_level: int = 0
+var _offer_seen_n: int = 0
+## Läuft gerade eine Dreh-Animation?
+var _offer_flip: SquareFlip
+## Pause nach dem Level-Abschluss, bevor sich das Quadrat dreht (Buchstaben fliegen noch).
+const OFFER_FLIP_DELAY := 0.55
 ## Auswahl-Bildschirm für Power-ups und Upgrades.
 var _choice: ColorRect
 var _choice_title: Label
@@ -249,6 +262,14 @@ func new_run(seed_value: int = -1) -> void:
 	_continue_button.visible = false
 	_choice.visible = false
 	_offer_hint.visible = true
+	# Neuer Lauf: Power-up-Quadrate ohne Dreh-Animation neu aufbauen.
+	if _offer_flip != null:
+		_offer_flip.queue_free()
+		_offer_flip = null
+	_offer_hint.hidden_index = -1
+	_offer_hint.current_alpha = 1.0
+	_offer_seen_level = 0
+	_offer_seen_n = 0
 	_stuck_veil.visible = false
 	_confirm.visible = false
 	_board.setup(session)
@@ -359,25 +380,11 @@ func _build_ui() -> void:
 	_offer_hint.cell_ratio = 0.9
 	add_child(_offer_hint)
 
-	# „Aufgeben“: schlichter Text wie die Info-Zeile (gleiche Schrift, linksbündig, ohne Rahmen).
-	_give_up_button = _button("Aufgeben", INFO_FONT)
-	_give_up_button.flat = true
-	_give_up_button.add_theme_color_override("font_color", TEXT_DIM)
-	_give_up_button.add_theme_color_override("font_hover_color", TEXT)
-	_give_up_button.add_theme_color_override("font_pressed_color", TEXT)
-	_give_up_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
-		_give_up_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	# „Aufgeben“ (Kreuz) und „Einstellungen“ (Menü): schmale Glas-Knöpfe nur mit Symbol, dezenter
+	# als die Hilfe-Knöpfe; der Rand leuchtet beim Antippen auf (spec/screens.md v4.25).
+	_give_up_button = _icon_button("close")
 	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
-
-	_settings_button = _button("Einstellungen", INFO_FONT)
-	_settings_button.flat = true
-	_settings_button.add_theme_color_override("font_color", TEXT_DIM)
-	_settings_button.add_theme_color_override("font_hover_color", TEXT)
-	_settings_button.add_theme_color_override("font_pressed_color", TEXT)
-	_settings_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	for st in ["normal", "hover", "pressed", "focus", "disabled"]:
-		_settings_button.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	_settings_button = _icon_button("menu")
 	_settings_button.pressed.connect(_open_settings)
 
 	_continue_button = _button("Weiter", 56)
@@ -646,6 +653,13 @@ func _board_area() -> Rect2:
 	return Rect2(side, top, col.y * (1.0 - 2.0 * SIDE_MARGIN), s.y - top - _bottom_height())
 
 
+## Platz des Einstellungen-Knopfs oben rechts (im Spiel und auf dem Kapitel-Brett gleich).
+func _settings_button_pos(s: Vector2) -> Vector2:
+	var col := _column(s)
+	var margin := col.y * SIDE_MARGIN
+	return Vector2(col.x + col.y - margin - ICON_BUTTON_SIZE.x, s.y * 0.012 + TOP_INSET)
+
+
 func _relayout() -> void:
 	var s := get_viewport_rect().size
 	if _board.session != null:
@@ -656,10 +670,11 @@ func _relayout() -> void:
 	var margin := col.y * SIDE_MARGIN
 	var side := col.x + margin
 	var inner := col.y - 2.0 * margin
-	_give_up_button.position = Vector2(side, s.y * 0.012)
-	_give_up_button.size = Vector2(inner * 0.4, INFO_HEIGHT)
-	_settings_button.size = Vector2(inner * 0.5, INFO_HEIGHT)
-	_settings_button.position = Vector2(side + inner - _settings_button.size.x, s.y * 0.012)
+	_give_up_button.size = ICON_BUTTON_SIZE
+	var top_y := s.y * 0.012 + TOP_INSET
+	_give_up_button.position = Vector2(side, top_y)
+	_settings_button.size = ICON_BUTTON_SIZE
+	_settings_button.position = _settings_button_pos(s)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
@@ -667,7 +682,7 @@ func _relayout() -> void:
 	if _board.session != null:
 		info_y = maxf(info_y, _board.screen_top() - INFO_HEIGHT - INFO_GAP)
 
-	_theme_label.position = Vector2(side + inner * 0.3, s.y * 0.012)
+	_theme_label.position = Vector2(side + inner * 0.3, top_y + (ICON_BUTTON_SIZE.y - INFO_HEIGHT) * 0.5)
 	_theme_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
 	_riddle_label.custom_minimum_size = Vector2(inner * 0.86, 0)
 	# Info-Zeile direkt über dem Spielfeld: Leiter (Fortschritt) links, Münzen rechts.
@@ -675,13 +690,13 @@ func _relayout() -> void:
 	_ladder.size = Vector2(inner * 0.66, INFO_HEIGHT)
 	_coins_label.position = Vector2(side + inner * 0.6, info_y)
 	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
-	# Unten: die Knöpfe. Die Power-up-Quadrate stehen links unter dem Feld,
-	# im gleichen Abstand wie die Info-Zeile darüber.
+	# Unten: die Knöpfe. Die Power-up-Quadrate stehen links, mittig zwischen Feld und Knöpfen.
 	var info_top := s.y - _bottom_height() + 12.0
 	var buttons_top := info_top
 	var hint_y := info_top - INFO_HEIGHT
 	if _board.session != null:
-		hint_y = minf(_board.screen_bottom() + INFO_GAP, buttons_top - INFO_HEIGHT)
+		var mid := (_board.screen_bottom() + buttons_top) * 0.5
+		hint_y = minf(mid - INFO_HEIGHT * 0.5, buttons_top - INFO_HEIGHT)
 	_offer_hint.position = Vector2(side, hint_y)
 	if _stuck_veil.visible:
 		_place_stuck_veil()
@@ -769,6 +784,26 @@ func _place_coin_icon() -> void:
 	var right := _coins_label.position.x + _coins_label.size.x
 	_coins_icon.position = Vector2(right - w - _coins_icon.size.x - 12.0,
 			_coins_label.position.y + (_coins_label.size.y - _coins_icon.size.y) / 2.0)
+
+
+## Schmaler Glas-Knopf nur mit Symbol (oben links/rechts).
+func _icon_button(kind: String, parent: Node = self) -> Button:
+	var b := Button.new()
+	b.focus_mode = Control.FOCUS_NONE
+	var normal := _btn_box(BTN_BG, BTN_EDGE, 0.35, 0.12, 6)
+	var pressed := _btn_box(BTN_BG_PRESSED, BTN_EDGE, 1.0, 0.6, 18)
+	for st in ["normal", "hover", "focus", "disabled"]:
+		b.add_theme_stylebox_override(st, normal)
+	for st in ["pressed", "hover_pressed"]:
+		b.add_theme_stylebox_override(st, pressed)
+	var icon := GlyphIcon.new()
+	icon.kind = kind
+	icon.color = Color(BTN_TEXT, 0.8)
+	b.add_child(icon)
+	b.button_down.connect(func() -> void: icon.color = BTN_TEXT)
+	b.button_up.connect(func() -> void: icon.color = Color(BTN_TEXT, 0.8))
+	parent.add_child(b)
+	return b
 
 
 func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow: int) -> StyleBoxFlat:
@@ -992,12 +1027,11 @@ func _open_path() -> void:
 	title.position = Vector2(col.x, s.y * 0.05)
 	title.size = Vector2(col.y, 90)
 	_path_layer.add_child(title)
-	var change := _button("Modus wechseln", 40, _path_layer)
-	change.flat = true
-	change.add_theme_color_override("font_color", TEXT_DIM)
-	change.size = Vector2(col.y * 0.6, 90)
-	change.position = Vector2(col.x + col.y * 0.2, s.y * 0.9)
-	change.pressed.connect(_open_settings)
+	# Einstellungen: derselbe Symbol-Knopf an derselben Stelle wie im Spiel (Konsistenz).
+	var menu := _icon_button("menu", _path_layer)
+	menu.size = ICON_BUTTON_SIZE
+	menu.position = _settings_button_pos(s)
+	menu.pressed.connect(_open_settings)
 	_chapter_board.build(SaveData.story_stars)
 	_path.visible = true
 	_board.visible = false
@@ -1085,9 +1119,9 @@ func _update_vibration_button() -> void:
 
 
 func _on_mode_picked(id: String) -> void:
-	# Story mitten im Kapitel nochmal gewählt: wie ein Moduswechsel (Nachfrage, dann Brett).
-	var back_to_board := id == Settings.STORY_MODE and _is_story() and not _path.visible
-	if id == Settings.mode and not back_to_board:
+	# Denselben Modus nochmal gewählt: wie ein Moduswechsel (Nachfrage, dann Neustart bzw. in der
+	# Story zurück aufs Brett). Nur auf dem Kapitel-Brett selbst schließen sich die Einstellungen.
+	if id == Settings.mode and _is_story() and _path.visible:
 		_settings.visible = false
 		return
 	if session != null and not session.is_over:
@@ -1121,22 +1155,77 @@ func _update_offer_hint() -> void:
 	# Kein Text (spec/screens.md v4.22): je Level bis zum Power-up ein Quadrat; geschaffte Level
 	# leuchten, das laufende ist umrandet. Ohne anstehende Auswahl (Story, nach dem letzten
 	# Power-up) verschwindet die Anzeige; den Weg zum Ziel zeigt die Leiter.
+	# Ein geschafftes Level dreht sein Quadrat mit Funken und Rauch (v4.24).
+	if _offer_flip != null:
+		return  # die Animation ruft am Ende wieder auf
 	var n := session.levels_until_offer() if BALANCE.draft_enabled else 0
 	var every := BALANCE.draft_every
-	_offer_hint.visible = n > 0 and not session.is_over
-	if n > 0:
+	var level := session.level()
+	var pending := not session.offer.is_empty()
+	if level == _offer_seen_level + 1 and _offer_seen_n > 0 and _offer_hint.visible:
+		var idx := every - _offer_seen_n
+		_offer_seen_level = level
+		_offer_seen_n = n
+		_flip_offer_square(idx, every)
+		return
+	_offer_seen_level = level
+	_offer_seen_n = n
+	_offer_hint.visible = (n > 0 or pending) and not session.is_over
+	if pending:
+		_offer_hint.steps = every
+		_offer_hint.done = every
+		_offer_hint.show_current = false
+	elif n > 0:
 		_offer_hint.steps = every
 		_offer_hint.done = every - n
 		_offer_hint.show_current = true
-	var glow := n == 1
-	if glow and _offer_hint_pulse == null:
+	_set_offer_pulse(n == 1 and not pending)
+
+
+func _set_offer_pulse(on: bool) -> void:
+	if on and _offer_hint_pulse == null:
 		_offer_hint_pulse = create_tween().set_loops()
 		_offer_hint_pulse.tween_property(_offer_hint, "modulate", PULSE_BRIGHT, PULSE_HALF)
 		_offer_hint_pulse.tween_property(_offer_hint, "modulate", Color.WHITE, PULSE_HALF)
-	elif not glow and _offer_hint_pulse != null:
+	elif not on and _offer_hint_pulse != null:
 		_offer_hint_pulse.kill()
 		_offer_hint_pulse = null
 		_offer_hint.modulate = Color.WHITE
+
+
+## Quadrat idx (das Level, das gerade geschafft wurde) dreht sich zu seiner Farbe; danach wird das
+## nächste Quadrat „ready“ (Umrandung leuchtet auf). Beim letzten (Gold) bleiben alle vier
+## gefüllt, bis die Power-up-Auswahl erledigt ist.
+func _flip_offer_square(idx: int, every: int) -> void:
+	_set_offer_pulse(false)
+	_offer_hint.steps = every
+	_offer_hint.done = idx
+	_offer_hint.show_current = true  # bis die Drehung beginnt, bleibt das Quadrat sichtbar
+	_offer_flip = SquareFlip.new()
+	_offer_flip.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(_offer_flip)
+	var r := _offer_hint.cell_rect(idx)
+	r.position += _offer_hint.position
+	var color := _offer_hint.color_at(idx)
+	var flip := _offer_flip
+	var t := create_tween()
+	t.tween_interval(OFFER_FLIP_DELAY)
+	t.tween_callback(func() -> void:
+		_offer_hint.show_current = false
+		_offer_hint.hidden_index = idx
+		flip.play(r, color))
+	flip.finished.connect(func() -> void:
+		_offer_hint.hidden_index = -1
+		_offer_hint.done = idx + 1
+		_offer_flip = null
+		var last := idx + 1 >= every
+		if not last and session != null and not session.is_over:
+			# nächstes Quadrat leuchtet sanft als „ready“ auf
+			_offer_hint.current_alpha = 0.0
+			_offer_hint.show_current = true
+			var fade := create_tween()
+			fade.tween_property(_offer_hint, "current_alpha", 1.0, 0.45)
+		_update_offer_hint())
 
 
 ## Liegt eine Auswahl an, Karten zeigen (nach der Abschluss-Animation des Auftrags).
@@ -1384,3 +1473,8 @@ func _on_run_ended(level: int, _reason: String) -> void:
 		var word := session.word_for(solution)
 		_board.show_hint(solution)
 		_fly_word(word, solution, session.quest.free_row_for(word))
+	else:
+		# Kein schönes Wort im Feld: ein schönes Wort ploppt direkt in die Zeile.
+		var fb := session.solution_fallback()
+		if not fb.is_empty():
+			_on_row_filled(fb["row"], fb["word"])
