@@ -19,6 +19,9 @@ extends Resource
 ## Nach einem gefundenen Wort kommen automatisch (Wortlänge − dieser Wert) neue Hexagons
 ## (nicht bei Aufträgen „ohne Nachziehen“).
 @export var auto_refill_less: int = 1
+## Liegt kein schönes Wort mehr im Feld, das in eine freie Zeile passt, füllt das Spiel selbst
+## gratis auf (je refill_count Steine), bis eines geht oder das Feld voll ist (v8.5).
+@export var auto_refill: bool = true
 ## Hilfe „Tauschen“: so viele zufällige Steine bekommen neue Buchstaben.
 @export var swap_count: int = 5
 @export var swap_price: int = 50

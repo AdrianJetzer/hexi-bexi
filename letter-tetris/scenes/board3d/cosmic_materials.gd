@@ -185,12 +185,39 @@ static func background() -> StandardMaterial3D:
 
 
 const NEBULA_SHADER := preload("res://scenes/board3d/nebula_background.gdshader")
+## Kantenlänge der vorberechneten Nebel-Rauschtextur (Pixel) und Pixel je Rausch-Gitterzelle
+## (Kachel im Shader = NEBULA_NOISE_SIZE / NEBULA_NOISE_CELL = 8 Einheiten).
+const NEBULA_NOISE_SIZE := 512
+const NEBULA_NOISE_CELL := 64.0
+static var _nebula_noise: Texture2D
+
+
+## Kachelbares Rauschen (6 Schichten) für den Nebel, einmal erzeugt und für alle Hintergründe
+## geteilt.
+static func nebula_noise() -> Texture2D:
+	if _nebula_noise != null:
+		return _nebula_noise
+	var noise := FastNoiseLite.new()
+	noise.noise_type = FastNoiseLite.TYPE_VALUE
+	noise.seed = 7
+	noise.frequency = 1.0 / NEBULA_NOISE_CELL
+	noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+	noise.fractal_octaves = 6
+	noise.fractal_lacunarity = 2.0
+	noise.fractal_gain = 0.5
+	var img := noise.get_seamless_image(NEBULA_NOISE_SIZE, NEBULA_NOISE_SIZE, false, false, 0.1, false)
+	img.convert(Image.FORMAT_L8)
+	img.generate_mipmaps()
+	_nebula_noise = ImageTexture.create_from_image(img)
+	return _nebula_noise
+
 
 ## Animierter Hintergrund (Nebel, Sterne, Lichtschein, Vignette). Stile:
 ## 1 = Tiefsee-Nebel, 2 = Galaxie, 3 = Dunkle Eleganz.
 static func nebula_background(style: int) -> ShaderMaterial:
 	var m := ShaderMaterial.new()
 	m.shader = NEBULA_SHADER
+	m.set_shader_parameter("noise_tex", nebula_noise())
 	match style:
 		2:
 			m.set_shader_parameter("color_deep", Color(0.02, 0.01, 0.06))

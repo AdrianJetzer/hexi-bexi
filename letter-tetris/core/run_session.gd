@@ -539,17 +539,10 @@ func has_fitting_word() -> bool:
 			return true
 	var q := quest
 	# „Feststecken“ heißt: kein schönes Wort im Feld (v8.4). Seltene gültige Wörter darf man
-	# trotzdem wischen, aber das Spiel bietet dann Auffüllen an.
+	# trotzdem wischen, aber das Spiel füllt dann selbst auf (v8.5).
 	var finder: WordFinder = _hint_finders[0]
 	return not finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
 			func(w: String) -> bool: return q.matches(w), 1).is_empty()
-
-
-## Soll der Auffüllen-Knopf pulsieren? Kein gültiges passendes Wort im Feld und Auffüllen möglich.
-func refill_suggested() -> bool:
-	if quest == null or quest.is_done() or not can_refill():
-		return false
-	return not has_fitting_word()
 
 
 ## Aufräumen möglich? (Auftrag aktiv, Münzen reichen)
@@ -1138,10 +1131,28 @@ func _hint_valid() -> bool:
 	return word_for(_hint_cells) == _hint_word
 
 
-## Tipp verwerfen, wenn sich ein Stein des Tipp-Worts geändert hat.
+## Tipp verwerfen, wenn sich ein Stein des Tipp-Worts geändert hat. Danach selbst auffüllen,
+## falls kein schönes Wort mehr im Feld liegt (v8.5).
 func _check_hint() -> void:
 	if not _hint_cells.is_empty() and not _hint_valid():
 		_reset_hint()
+	_auto_refill()
+
+
+## Automatisch auffüllen (spec/game-rules.md v8.5): Liegt kein schönes Wort im Feld, das in eine
+## freie Zeile passt, kommen gratis neue Steine dazu (je refill_count), bis eines geht oder das
+## Feld voll ist. Ersetzt den früheren Auffüllen-Dialog. Gibt die Anzahl neuer Steine zurück.
+func _auto_refill() -> int:
+	if not _balance.auto_refill or is_over or quest == null or quest.is_done() \
+			or quest.free_lengths().is_empty():
+		return 0
+	var placed := 0
+	while not has_fitting_word() and grid.free_count() > 0:
+		var n := _spawn(maxi(_balance.refill_count, 1))
+		if n == 0:
+			break
+		placed += n
+	return placed
 
 
 func _reset_hint() -> void:
@@ -1269,6 +1280,7 @@ func _start_quest() -> void:
 		quest = _generator.quest_for(_level).start()
 	_aim_help()
 	quest_started.emit(quest)
+	_auto_refill()
 
 
 func _end(reason: String) -> void:
