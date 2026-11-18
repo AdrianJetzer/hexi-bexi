@@ -11,6 +11,7 @@ var run: RunSession
 func before_each() -> void:
 	balance = (load("res://data/balance.tres") as GameBalance).duplicate() as GameBalance
 	balance.grid_rows = 6
+	balance.auto_refill = false  # Felder werden von Hand gebaut
 	curve = load("res://data/quest_curve.tres") as QuestCurve
 	lang = load("res://data/languages/de/language.tres") as LanguageData
 	dict = WordDictionary.from_words(PackedStringArray(["HAUS", "STERN", "TISCH", "BIRNE", "APFEL"]))

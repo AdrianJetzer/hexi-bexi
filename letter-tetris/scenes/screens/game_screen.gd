@@ -106,14 +106,6 @@ const CHOICE_TITLE_FONT := 64
 const CHOICE_NAME_FONT := 46
 const CHOICE_INFO_FONT := 38
 const CHOICE_CARD_HEIGHT := 230.0
-## Auffüllen-Hinweis: Schrift blinkt dezent zwischen Weiß und dunklem Weiß (je halbe Sekunde).
-const BLINK_HALF := 0.5
-const BLINK_BRIGHT := Color(1.0, 1.0, 1.0)
-const BLINK_DIM := Color(0.5, 0.52, 0.6)
-## Feststecken: Abdunkeln des Felds und Größe des Auffüllen-Knopfs darauf (Pixel).
-const STUCK_VEIL := Color(0.0, 0.01, 0.04, 0.62)
-const STUCK_BUTTON_SIZE := Vector2(460, 200)
-const STUCK_FADE := 0.3
 
 var session: RunSession
 
@@ -184,18 +176,12 @@ var _pending_quest: Quest
 ## Dauer des zuletzt gestarteten Flugs (bis der letzte Buchstabe ankommt).
 var _last_flight: float = 0.0
 var _sequence: Tween
-var _refill_pulse: Tween
-var _pulse_check_queued: bool = false
 ## Hilfe-ID → Knopf.
 var _buttons: Dictionary = {}
 ## Hilfe-ID → {"name": Label, "price": Label, "coin": Panel} (Beschriftung der Knöpfe).
 var _button_parts: Dictionary = {}
 ## Power-up-Anzeige links unter dem Feld: je Level bis zur Auswahl ein Quadrat (eigene Farben).
 var _offer_hint: LevelLadder
-## Steckt man fest (kein gültiges Wort passt): Feld abdunkeln und großer Auffüllen-Knopf darauf.
-var _stuck_veil: ColorRect
-var _stuck_button: Button
-var _stuck_tween: Tween
 var _offer_hint_pulse: Tween
 ## Zuletzt gezeigter Stand der Power-up-Quadrate (Level, Level bis zur Auswahl), um den Schritt
 ## zum nächsten Level zu erkennen und das Quadrat drehen zu lassen.
@@ -254,9 +240,6 @@ func new_run(seed_value: int = -1) -> void:
 	session.tile_changed.connect(func(_c: Vector2i, _l: String) -> void: _update_labels())
 	session.run_ended.connect(_on_run_ended)
 	session.hint_changed.connect(func(cells: Array[Vector2i]) -> void: _board.show_hint(cells))
-	session.tiles_removed.connect(func(_c: Array[Vector2i]) -> void: _queue_pulse_check())
-	session.quest_progress.connect(func(_q: Quest) -> void: _queue_pulse_check())
-	session.quest_reshaped.connect(func(_q: Quest) -> void: _queue_pulse_check())
 	session.helps_changed.connect(_relayout)
 	_summary.visible = false
 	_continue_button.visible = false
@@ -270,7 +253,6 @@ func new_run(seed_value: int = -1) -> void:
 	_offer_hint.current_alpha = 1.0
 	_offer_seen_level = 0
 	_offer_seen_n = 0
-	_stuck_veil.visible = false
 	_confirm.visible = false
 	_board.setup(session)
 	_relayout()
@@ -391,23 +373,6 @@ func _build_ui() -> void:
 	_continue_button.pressed.connect(func() -> void:
 		_continue_button.visible = false
 		_summary.visible = true)
-
-	# Abdunkeln des Felds + großer Auffüllen-Knopf, wenn man feststeckt
-	_stuck_veil = ColorRect.new()
-	_stuck_veil.color = STUCK_VEIL
-	_stuck_veil.mouse_filter = Control.MOUSE_FILTER_STOP
-	_stuck_veil.visible = false
-	add_child(_stuck_veil)
-	_stuck_button = Button.new()
-	_style_help_button(_stuck_button, "refill", false)
-	for c in _stuck_button.get_children():
-		for l in c.get_children():
-			if l is Label:
-				l.add_theme_font_size_override("font_size", 52)
-	_stuck_button.pressed.connect(func() -> void:
-		_set_replace_mode(false)
-		session.refill())
-	_stuck_veil.add_child(_stuck_button)
 
 	_fly_layer = Control.new()
 	_fly_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -697,8 +662,6 @@ func _relayout() -> void:
 		var mid := (_board.screen_bottom() + buttons_top) * 0.5
 		hint_y = minf(mid - INFO_HEIGHT * 0.5, buttons_top - INFO_HEIGHT)
 	_offer_hint.position = Vector2(side, hint_y)
-	if _stuck_veil.visible:
-		_place_stuck_veil()
 	_offer_hint.size = Vector2(inner, INFO_HEIGHT)
 	var gap := 12.0
 	var buttons := _help_buttons()
@@ -755,7 +718,6 @@ func _update_labels() -> void:
 	_update_offer_hint()
 	if session.is_over:
 		_set_replace_mode(false)
-	_queue_pulse_check()
 
 
 # --- Hilfe-Knöpfe gestalten ------------------------------------------------------------
@@ -886,63 +848,6 @@ func _style_help_button(b: Button, id: String, register: bool = true) -> void:
 		price.text = "gratis"
 		price.add_theme_color_override("font_color", BTN_FREE)
 		coin.visible = false
-
-
-# --- Pulsierender Auffüllen-Knopf ----------------------------------------------------
-
-## Prüfung einmal pro Frame bündeln (beim Auffüllen kommen mehrere Steine nacheinander).
-func _queue_pulse_check() -> void:
-	if _pulse_check_queued:
-		return
-	_pulse_check_queued = true
-	_update_refill_pulse.call_deferred()
-
-
-func _update_refill_pulse() -> void:
-	_pulse_check_queued = false
-	var want := session != null and not _completing and session.refill_suggested()
-	if want and _refill_pulse == null:
-		var name_label: Label = _button_parts["refill"]["name"]
-		var set_color := func(c: Color) -> void:
-			name_label.add_theme_color_override("font_color", c)
-		_refill_pulse = create_tween().set_loops()
-		_refill_pulse.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		_refill_pulse.tween_method(set_color, BLINK_BRIGHT, BLINK_DIM, BLINK_HALF)
-		_refill_pulse.tween_method(set_color, BLINK_DIM, BLINK_BRIGHT, BLINK_HALF)
-	elif not want and _refill_pulse != null:
-		_refill_pulse.kill()
-		_refill_pulse = null
-		(_button_parts["refill"]["name"] as Label).add_theme_color_override("font_color", BTN_TEXT)
-	_show_stuck(want)
-
-
-## Feld abdunkeln und den großen Auffüllen-Knopf zeigen (oder wieder ausblenden).
-func _show_stuck(on: bool) -> void:
-	if on == (_stuck_veil.visible and _stuck_veil.modulate.a > 0.5):
-		return
-	if _stuck_tween:
-		_stuck_tween.kill()
-	if on:
-		_place_stuck_veil()
-		_stuck_veil.visible = true
-		_stuck_veil.modulate.a = 0.0
-	_stuck_tween = create_tween()
-	_stuck_tween.tween_property(_stuck_veil, "modulate:a", 1.0 if on else 0.0, STUCK_FADE)
-	if not on:
-		_stuck_tween.tween_callback(func() -> void: _stuck_veil.visible = false)
-
-
-## Abdunkeln genau über dem Feld (Oberkante bis Unterkante), Knopf in der Mitte.
-func _place_stuck_veil() -> void:
-	if _board.session == null:
-		return
-	var area := _board_area()
-	var top := _board.screen_top()
-	var bottom := _board.screen_bottom()
-	_stuck_veil.position = Vector2(area.position.x, top)
-	_stuck_veil.size = Vector2(area.size.x, bottom - top)
-	_stuck_button.size = STUCK_BUTTON_SIZE
-	_stuck_button.position = (_stuck_veil.size - STUCK_BUTTON_SIZE) / 2.0
 
 
 # --- Story-Modus ------------------------------------------------------------------------
@@ -1437,7 +1342,6 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
 			_pending_quest = null
-			_queue_pulse_check()
 			_show_choice()
 			_auto_riddle()))
 

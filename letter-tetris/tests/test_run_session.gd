@@ -15,6 +15,8 @@ func before_each() -> void:
 	balance.grid_rows = 6
 	# Ohne Roguelike-Draft: alle Hilfen von Anfang an (Draft-Tests schalten ihn selbst ein).
 	balance.draft_enabled = false
+	# Ohne automatisches Auffüllen: die Tests bauen Felder von Hand (eigene Tests schalten es ein).
+	balance.auto_refill = false
 	balance.refill_price = 100
 	balance.swap_price = 50
 	balance.clear_price = 100
@@ -647,39 +649,75 @@ func test_clear_with_real_dictionary_is_fast_enough() -> void:
 	assert_lt(ms, 2000)
 
 
-# --- Auffüllen-Knopf pulsiert ---------------------------------------------------------
+# --- Feststecken und automatisches Auffüllen (v8.5) -----------------------------------------
 
-func test_refill_suggested_when_no_valid_word_fits() -> void:
+func test_has_fitting_word() -> void:
 	run.start()
 	_use_rows([5])
 	_column(0, "WABUH")
-	run.coins = 1000
 	assert_false(run.has_fitting_word())
-	assert_true(run.refill_suggested())
 	_column(0, "STERN")
 	assert_true(run.has_fitting_word())
-	assert_false(run.refill_suggested())
 
 
-func test_refill_suggested_only_for_exact_free_length() -> void:
+func test_no_fitting_word_for_other_length() -> void:
 	run.start()
 	_use_rows([4])
 	_column(0, "STERN")
-	run.coins = 1000
 	assert_false(run.has_fitting_word(), "STERN hat 5 Buchstaben, gesucht sind 4")
-	assert_true(run.refill_suggested())
 
 
-func test_refill_suggested_without_nice_word() -> void:
-	# STERN ist gültig, aber kein schönes Wort: man steckt fest, Auffüllen wird angeboten (v8.4).
+func test_stuck_without_nice_word() -> void:
+	# STERN ist gültig, aber kein schönes Wort: man steckt fest (v8.4).
 	var common := WordDictionary.from_words(PackedStringArray(["HAUS"]))
 	run = RunSession.new(balance, curve, lang, dict, 42, common)
 	run.start()
 	_use_rows([5])
 	_column(0, "STERN")
-	run.coins = 1000
 	assert_true(run.is_stuck(), "kein schönes Wort")
-	assert_true(run.refill_suggested(), "Auffüllen anbieten, auch wenn STERN gültig wäre")
+	assert_false(run.has_fitting_word())
+
+
+func test_joker_counts_as_fitting() -> void:
+	run.start()
+	_use_rows([5])
+	_column(0, "WAB*H")
+	assert_true(run.has_fitting_word(), "Joker zählt als vielleicht")
+
+
+func test_auto_refill_after_word_when_stuck() -> void:
+	balance.auto_refill = true
+	run.start()
+	_use_rows([3, 5])
+	var ohr := _column(0, "OHR")
+	_column(1, "WABUH", false)
+	var coins := run.coins
+	assert_true(run.submit_path(ohr))
+	assert_true(run.has_fitting_word() or run.grid.free_count() == 0,
+			"selbst aufgefüllt, bis ein Wort geht oder das Feld voll ist")
+	assert_gt(_occupied(), 5 + 2, "mehr als die üblichen Wortlänge − 1 neuen Steine")
+	assert_eq(run.coins, coins, "gratis")
+
+
+func test_no_auto_refill_when_word_fits() -> void:
+	balance.auto_refill = true
+	run.start()
+	_use_rows([3, 5])
+	var ohr := _column(0, "OHR")
+	_column(1, "STERN", false)
+	assert_true(run.submit_path(ohr))
+	assert_eq(_occupied(), 5 + 2, "STERN passt noch: nur Wortlänge − 1 neue Steine")
+
+
+func test_auto_refill_stops_when_board_full() -> void:
+	balance.auto_refill = true
+	run.start()
+	_use_rows([5])
+	for cell in run.grid.all_cells():
+		run.grid.set_letter(cell, "Q")
+	run.grid.clear(Vector2i(0, 0))
+	run._auto_refill()
+	assert_eq(run.grid.free_count(), 0, "letzter freier Platz gefüllt, dann Schluss")
 
 
 func test_solve_and_hint_only_use_nice_words() -> void:
@@ -699,18 +737,6 @@ func test_solve_and_hint_only_use_nice_words() -> void:
 	assert_signal_emitted(run, "tile_changed", "Steine drehen sich um")
 	var params: Array = get_signal_parameters(run, "word_accepted")
 	assert_eq(params[0], "BLUME", "das schöne Wort fliegt aus dem Feld")
-
-
-func test_refill_not_suggested_when_board_full_or_joker() -> void:
-	run.start()
-	_use_rows([5])
-	run.coins = 1000
-	for cell in run.grid.all_cells():
-		run.grid.set_letter(cell, "Q")
-	assert_false(run.refill_suggested(), "Feld voll: Auffüllen geht nicht")
-	_column(0, "WAB*H")
-	assert_true(run.has_fitting_word(), "Joker zählt als vielleicht")
-	assert_false(run.refill_suggested())
 
 
 # --- Schlaues Tauschen -------------------------------------------------------------------
