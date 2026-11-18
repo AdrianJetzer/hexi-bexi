@@ -29,7 +29,9 @@ const BUTTONS_PER_ROW := 3
 const BUTTON_ROWS := 2
 const BUTTONS_PER_ROW_ALL := 5
 ## Hinweis „Noch n Level bis zum Power-up“ links unter dem Feld (Schrift wie die Info-Zeile).
-const OFFER_HINT_FONT := INFO_FONT
+## Farben der Power-up-Quadrate: Cyan, Violett, Pink, Gold (das Power-up-Level).
+const OFFER_COLORS: Array[Color] = [Color(0.3, 0.85, 1.0), Color(0.62, 0.45, 1.0),
+		Color(1.0, 0.42, 0.75), Color(1.0, 0.8, 0.3)]
 ## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
 const BUTTON_FONT := 33
 const BUTTON_FONT_SMALL := 23
@@ -183,7 +185,8 @@ var _pulse_check_queued: bool = false
 var _buttons: Dictionary = {}
 ## Hilfe-ID → {"name": Label, "price": Label, "coin": Panel} (Beschriftung der Knöpfe).
 var _button_parts: Dictionary = {}
-var _offer_hint: Label
+## Power-up-Anzeige links unter dem Feld: je Level bis zur Auswahl ein Quadrat (eigene Farben).
+var _offer_hint: LevelLadder
 ## Steckt man fest (kein gültiges Wort passt): Feld abdunkeln und großer Auffüllen-Knopf darauf.
 var _stuck_veil: ColorRect
 var _stuck_button: Button
@@ -351,9 +354,10 @@ func _build_ui() -> void:
 	_theme_label = _label(INFO_FONT, BTN_GOLD)
 	_theme_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_theme_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_offer_hint = _label(OFFER_HINT_FONT, TEXT_DIM)
-	_offer_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_offer_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_offer_hint = LevelLadder.new()
+	_offer_hint.palette = OFFER_COLORS
+	_offer_hint.cell_ratio = 0.9
+	add_child(_offer_hint)
 
 	# „Aufgeben“: schlichter Text wie die Info-Zeile (gleiche Schrift, linksbündig, ohne Rahmen).
 	_give_up_button = _button("Aufgeben", INFO_FONT)
@@ -671,7 +675,7 @@ func _relayout() -> void:
 	_ladder.size = Vector2(inner * 0.66, INFO_HEIGHT)
 	_coins_label.position = Vector2(side + inner * 0.6, info_y)
 	_coins_label.size = Vector2(inner * 0.4, INFO_HEIGHT)
-	# Unten: die Knöpfe. Der Hinweis „Noch n Level …“ steht links unter dem Feld,
+	# Unten: die Knöpfe. Die Power-up-Quadrate stehen links unter dem Feld,
 	# im gleichen Abstand wie die Info-Zeile darüber.
 	var info_top := s.y - _bottom_height() + 12.0
 	var buttons_top := info_top
@@ -1114,20 +1118,18 @@ func _apply_mode(id: String) -> void:
 
 ## „Noch n Level bis zum Power-up/Upgrade“; bei 1 Level leuchtet der Hinweis.
 func _update_offer_hint() -> void:
+	# Kein Text (spec/screens.md v4.22): je Level bis zum Power-up ein Quadrat; geschaffte Level
+	# leuchten, das laufende ist umrandet. Ohne anstehende Auswahl (Story, nach dem letzten
+	# Power-up) verschwindet die Anzeige; den Weg zum Ziel zeigt die Leiter.
 	var n := session.levels_until_offer() if BALANCE.draft_enabled else 0
-	var kind := session.next_offer_kind()
-	if n <= 0 and session.levels_until_goal() > 0 and not session.is_over:
-		# Nach dem letzten Power-up zählt der Hinweis bis zum Ziel.
-		var g := session.levels_until_goal()
-		_offer_hint.text = "Noch 1 Level bis zum Ziel" if g == 1 else "Noch %d Level bis zum Ziel" % g
-	elif n <= 0:
-		_offer_hint.text = ""
-	else:
-		var what := "Power-up" if kind == "powerup" else "Upgrade"
-		_offer_hint.text = ("Noch 1 Level bis zum %s" % what) if n == 1 else ("Noch %d Level bis zum %s" % [n, what])
+	var every := BALANCE.draft_every
+	_offer_hint.visible = n > 0 and not session.is_over
+	if n > 0:
+		_offer_hint.steps = every
+		_offer_hint.done = every - n
+		_offer_hint.show_current = true
 	var glow := n == 1
 	if glow and _offer_hint_pulse == null:
-		_offer_hint.add_theme_color_override("font_color", ACCENT)
 		_offer_hint_pulse = create_tween().set_loops()
 		_offer_hint_pulse.tween_property(_offer_hint, "modulate", PULSE_BRIGHT, PULSE_HALF)
 		_offer_hint_pulse.tween_property(_offer_hint, "modulate", Color.WHITE, PULSE_HALF)
@@ -1135,7 +1137,6 @@ func _update_offer_hint() -> void:
 		_offer_hint_pulse.kill()
 		_offer_hint_pulse = null
 		_offer_hint.modulate = Color.WHITE
-		_offer_hint.add_theme_color_override("font_color", TEXT_DIM)
 
 
 ## Liegt eine Auswahl an, Karten zeigen (nach der Abschluss-Animation des Auftrags).

@@ -12,9 +12,9 @@ Grundidee: Buchstaben in Hexagons erscheinen im Spielfeld und füllen es von unt
 | [run-mode.md](run-mode.md) | **Lauf-Modus (Roguelike):** Aufträge als Block-Zeilen, Ziel Level 20 mit Sternen, Münzen, Hilfen, Aufgeben, Kurve | Entwurf v3.36 |
 | [story-mode.md](story-mode.md) | **Story-Modus (Konzept):** Kapitel nach Kategorien (Früchte, Tiere …), Ziel Level 20, versteckte Themenwörter, Rätsel-Tipp | v5 (Kapitel-Brett, 8 Kapitel) |
 | [game-rules.md](game-rules.md) | Spielregeln des Grundspiels: Raster, Nachschub, Wörter wischen, Wort-Hilfe, Hilfe-Stufen, Wörterbuch | Entwurf v8 (Wörterbuch-Konzept) |
-| [screens.md](screens.md) | Screens und Ablauf: Start, Spiel, Bilanz, Einstellungen | Entwurf v4.21 |
+| [screens.md](screens.md) | Screens und Ablauf: Start, Spiel, Bilanz, Einstellungen | Entwurf v4.22 |
 | [look-and-sound.md](look-and-sound.md) | Optik und Ton: Theme-System, Theme „Kosmisch“ (Version 1), 3D-Hexagons aus Rauchglas, Effekte | Entwurf v2 |
-| [architecture.md](architecture.md) | Architektur: Trennung Logik/Darstellung, 3D-Spielfeld mit 2D-Oberfläche, Lauf-Modus in der Logik, Ordnerstruktur, Tests mit GUT | Entwurf v4.21 |
+| [architecture.md](architecture.md) | Architektur: Trennung Logik/Darstellung, 3D-Spielfeld mit 2D-Oberfläche, Lauf-Modus in der Logik, Ordnerstruktur, Tests mit GUT | Entwurf v4.22 |
 | [tech.md](tech.md) | Technik und Rahmen: Engine, Geräte, Austauschbarkeit, offline, Release, Git | Entwurf v1 |
 | [screen-layout.md](screen-layout.md) | Aufbau des Hauptspiel-Screens (Hochformat, geschlossenes Spielfeld mit Zickzack-Innenkante, Raster 5 × 5) | Entwurf v14 |
 

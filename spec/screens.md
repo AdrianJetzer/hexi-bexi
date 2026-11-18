@@ -39,7 +39,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** über dem Spielfeld links die **Leiter** (20 Quadrate, eins je Level, liegend wie eine Leiter; jedes Quadrat hat seine feste Farbe im Verlauf grün → orange → rot; geschaffte Level leuchten, das laufende ist farbig umrandet, offene sind dunkel), rechts die **Münzen**. Kein Text „Level · Rekord“ mehr. Screenshot: [Leiter](images/ladder-v1.png).
 - **Power-up-Auswahl** (nach Level 4, 8, 12, 16; Upgrades nur im endlosen Test-Betrieb): halbtransparenter Bildschirm über dem Spiel mit großem, goldenem Titel („Wähle eine Hilfe“ bzw. „Welche Hilfe wird günstiger?“) und Karten im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis (beim Upgrade „alt → neu“), darunter die Erklärung (Power-up: 2 zufällige der Stufe) (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)). Screenshots: [Start](images/draft-start-v1.png), [Power-up](images/draft-powerup-v1.png), [Upgrade](images/draft-upgrade-v1.png).
-- **Hinweis** links unter dem Spielfeld: „Noch n Level bis zum Power-up“, danach „Noch n Level bis zum Ziel“.
+- **Power-up-Anzeige** links unter dem Spielfeld, **ohne Text** (v4.22): je Level bis zum nächsten Power-up ein Quadrat (4 Stück, etwas größer als die Leiter, eigene Farben Cyan, Violett, Pink, Gold). Geschaffte Level leuchten, das laufende ist umrandet; im Level vor dem Power-up pulsiert die Anzeige. Nach dem letzten Power-up und im Story-Modus gibt es keine Anzeige (den Weg zum Ziel zeigt die Leiter). Screenshot: [Power-up-Quadrate](images/powerup-squares-v1.png).
 - **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Tipp (je Buchstabe); **100:** Mischen, Joker, Kürzen; **150:** Aufräumen, Teilen, Magnet (Stein antippen); **200:** Scan, Zeile streichen, Vervollständigen (Wortanfang anwischen); **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
 - **Knopf „Aufgeben“:**
   - Tippen öffnet die Nachfrage **„Aufgeben?“** mit Ja / Nein.
@@ -95,6 +95,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.22:** Kein Text unter dem Feld mehr: Power-up-Anzeige als 4 farbige Quadrate, Story ohne „bis zum Ziel“.
 - **v4.21:** Menüeintrag Testmodus ausgeblendet.
 - **v4.20:** Tipp 50; Ersetzen und Tauschen vorerst deaktiviert.
 - **v4.19:** Story im Kapitel nochmal wählen: Nachfrage, dann Kapitel-Brett.
