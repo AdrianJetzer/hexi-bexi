@@ -35,7 +35,8 @@ const OFFER_COLORS: Array[Color] = [Color(0.3, 0.85, 1.0), Color(0.62, 0.45, 1.0
 ## Schrift der Hilfe-Knöpfe (klein: für lange Namen wie „Vervollständigen“).
 const BUTTON_FONT := 33
 const BUTTON_FONT_SMALL := 23
-const BOTTOM_PAD := 24.0
+## Abstand der Knöpfe zum unteren Rand (Platz für runde Display-Ecken).
+const BOTTOM_PAD := 56.0
 ## Schriftgröße der Info-Zeile (Level · Rekord links, Münzen rechts in Gold).
 const INFO_FONT := 40
 ## Abstand der Info-Zeile zur Oberkante des Felds (Pixel).
