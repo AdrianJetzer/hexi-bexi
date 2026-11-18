@@ -384,7 +384,18 @@ func clear_scan() -> void:
 func _on_tile_spawned(cell: Vector2i, letter: String) -> void:
 	clear_scan()
 	# Mehrere Hexagons im selben Moment (Start, Auffüllen, nach einem Wort) erscheinen nacheinander.
-	_make_tile(cell, letter).appear(_next_burst_delay())
+	var delay := _next_burst_delay()
+	_make_tile(cell, letter).appear(delay)
+	_settled_at = maxf(_settled_at, _now() + delay + HexTile3D.APPEAR_TIME)
+
+
+## Sekunden, bis alle gerade erscheinenden Steine fertig gedreht sind (0 = schon fertig).
+func settle_time() -> float:
+	return maxf(_settled_at - _now(), 0.0)
+
+
+func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
 
 
 ## Ein Stein bekommt einen neuen Buchstaben (Ersetzen, Säen): er dreht sich einmal um.
@@ -407,6 +418,9 @@ func clear_hint() -> void:
 		if _tiles.has(cell):
 			_tiles[cell].stop_pulse()
 	_hint_cells.clear()
+
+
+var _settled_at := 0.0
 
 
 func _next_burst_delay() -> float:

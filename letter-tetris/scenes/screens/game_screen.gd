@@ -102,6 +102,8 @@ const RIDDLE_HINT_FONT := 30
 ## Story: Kapitel-Brett zwischen Titel und „Modus wechseln“ (Anteile der Bildschirmhöhe).
 const CHAPTER_BOARD_TOP := 0.15
 const CHAPTER_BOARD_BOTTOM := 0.87
+## Tutorial: Pause nach dem Aufbau des Felds, bis der Finger erscheint (Sekunden).
+const FINGER_DELAY := 0.35
 const CHOICE_TITLE_FONT := 64
 const CHOICE_NAME_FONT := 46
 const CHOICE_INFO_FONT := 38
@@ -164,6 +166,12 @@ var _test_button: Button
 ## Menüeintrag „Testmodus“ zeigen? Aus: Knopf versteckt und Testmodus wirkungslos (spec/screens.md).
 const TEST_MODE_MENU := false
 var _mode_confirm: ColorRect
+## Tutorial (spec/screens.md, „Tutorial“): läuft gerade, Modus danach, Finger, Nachfrage.
+var _tutorial_active := false
+var _tutorial_return := ""
+var _finger: TutorialFinger
+var _tutorial_confirm: ColorRect
+var _swiping := false
 var _pending_mode: String = ""
 var _confirm: ColorRect
 var _summary: ColorRect
@@ -204,9 +212,12 @@ func _ready() -> void:
 	_load_mode()
 	_build_ui()
 	get_viewport().size_changed.connect(_relayout)
-	new_run()
-	if _is_story():
-		_open_path.call_deferred()
+	if not Settings.tutorial_seen:
+		_start_tutorial()
+	else:
+		new_run()
+		if _is_story():
+			_open_path.call_deferred()
 	# Schwächere Handys: 3D-Auflösung automatisch senken, wenn es ruckelt.
 	var guard := PerfGuard.new()
 	guard.extra_viewports.append(_chapter_view)
@@ -223,6 +234,9 @@ func new_run(seed_value: int = -1) -> void:
 		c.queue_free()
 	session = RunSession.new(BALANCE, _mode.curve, _mode.language, _dictionary, seed_value, _common)
 	session.free_solve = Settings.test_mode and TEST_MODE_MENU
+	_finger.stop()
+	if _tutorial_active:
+		session.set_tutorial()
 	if _is_story():
 		if _chapter == null:
 			_chapter = _default_chapter()
@@ -274,7 +288,12 @@ func _build_ui() -> void:
 
 	_blocks = QuestBlocks.new()
 	add_child(_blocks)
-	_board.path_changed.connect(func(word: String) -> void: _blocks.preview(word))
+	_board.path_changed.connect(func(word: String) -> void:
+		_blocks.preview(word)
+		_swiping = word != ""
+		# Beim Loslassen erst nach der Wort-Prüfung (gleiches Bild): ein richtiges Wort schließt
+		# die Runde ab, dann bleibt der Finger weg.
+		_update_finger.call_deferred())
 
 	_ladder = LevelLadder.new()
 	add_child(_ladder)
@@ -378,6 +397,9 @@ func _build_ui() -> void:
 		_continue_button.visible = false
 		_summary.visible = true)
 
+	_finger = TutorialFinger.new()
+	add_child(_finger)
+
 	_fly_layer = Control.new()
 	_fly_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fly_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -441,6 +463,11 @@ func _build_ui() -> void:
 		Settings.vibration_on = not Settings.vibration_on
 		_update_vibration_button()
 		Settings.tick())
+	var tut := _button("Tutorial", 40, st[1])
+	tut.flat = true
+	tut.add_theme_color_override("font_color", TEXT_DIM)
+	tut.custom_minimum_size = Vector2(420, 90)
+	tut.pressed.connect(_on_tutorial_picked)
 	_test_button = _button("", 40, st[1])
 	_test_button.flat = true
 	_test_button.add_theme_color_override("font_color", TEXT_DIM)
@@ -471,6 +498,20 @@ func _build_ui() -> void:
 	mno.pressed.connect(func() -> void:
 		_mode_confirm.visible = false
 		_pending_mode = "")
+
+	# Nachfrage: Tutorial mitten im Lauf starten
+	var tc := _overlay("Tutorial starten?\nDer Lauf wird beendet.")
+	_tutorial_confirm = tc[0]
+	var trow := HBoxContainer.new()
+	trow.alignment = BoxContainer.ALIGNMENT_CENTER
+	trow.add_theme_constant_override("separation", 40)
+	(tc[1] as VBoxContainer).add_child(trow)
+	var tyes := _button("Ja", 56, trow)
+	tyes.custom_minimum_size = Vector2(260, 130)
+	tyes.pressed.connect(_start_tutorial)
+	var tno := _button("Nein", 56, trow)
+	tno.custom_minimum_size = Vector2(260, 130)
+	tno.pressed.connect(func() -> void: _tutorial_confirm.visible = false)
 
 	# Story: Rätsel (Antippen irgendwo schließt)
 	var rd := _overlay("Rätsel")
@@ -676,7 +717,8 @@ func _relayout() -> void:
 	for b in _buttons.values():
 		b.visible = false
 	for i in buttons.size():
-		buttons[i].visible = not _continue_button.visible and not _summary.visible
+		buttons[i].visible = not _continue_button.visible and not _summary.visible \
+				and not (session != null and session.tutorial)
 		buttons[i].position = Vector2(side + (i % per_row) * (bw + gap),
 				buttons_top + (i / per_row) * BUTTON_STEP)
 		buttons[i].size = Vector2(bw, BUTTON_HEIGHT)
@@ -722,6 +764,12 @@ func _update_labels() -> void:
 	_update_offer_hint()
 	if session.is_over:
 		_set_replace_mode(false)
+	# Tutorial: nur Auftrag und Feld (keine Leiter, Münzen, Aufgeben).
+	var tut := session.tutorial
+	_ladder.visible = _ladder.visible and not tut
+	_coins_label.visible = not tut
+	_coins_icon.visible = not tut
+	_give_up_button.visible = not tut
 
 
 # --- Hilfe-Knöpfe gestalten ------------------------------------------------------------
@@ -1046,6 +1094,10 @@ func _apply_mode(id: String) -> void:
 	_pending_mode = ""
 	if id == "":
 		return
+	if _tutorial_active:
+		# Tutorial verlassen (fertig oder per Moduswahl abgebrochen): gilt als gesehen.
+		_tutorial_active = false
+		Settings.tutorial_seen = true
 	Settings.mode = id
 	_load_mode()
 	_chapter = null
@@ -1054,6 +1106,56 @@ func _apply_mode(id: String) -> void:
 		_open_path()
 	else:
 		_close_path()
+
+
+# --- Tutorial ---------------------------------------------------------------------------
+
+## Menü-Eintrag „Tutorial“: mitten im Lauf erst nachfragen.
+func _on_tutorial_picked() -> void:
+	if session != null and not session.is_over and not session.tutorial and not _path.visible:
+		_tutorial_confirm.visible = true
+	else:
+		_start_tutorial()
+
+
+## Tutorial starten (Modus Einfach); danach geht es im vorher gewählten Modus weiter.
+func _start_tutorial() -> void:
+	_tutorial_confirm.visible = false
+	_settings.visible = false
+	if not _tutorial_active:
+		_tutorial_return = Settings.mode
+	_tutorial_active = true
+	_mode = Settings.load_mode("de_easy")
+	_dictionary = _word_list(_mode.valid_words_path())
+	_common = _word_list(_mode.suggestion_words_path())
+	_chapter = null
+	_close_path()
+	new_run()
+	_finger_soon()
+
+
+## Finger erst zeigen, wenn das Feld fertig aufgebaut ist (alle Steine gedreht), plus kurze Pause.
+func _finger_soon() -> void:
+	get_tree().create_timer(_board.settle_time() + FINGER_DELAY).timeout.connect(_update_finger)
+
+
+## Finger zeigen, solange eine Tutorial-Runde läuft und man nicht selbst wischt.
+func _update_finger() -> void:
+	var want := _tutorial_active and session != null and not _completing and not _swiping \
+			and not session.tutorial_path().is_empty()
+	if not want:
+		_finger.stop()
+		return
+	if _board.settle_time() > 0.0:
+		if not _finger.is_playing():
+			_finger_soon()  # Feld baut sich noch auf: danach nochmal
+		return
+	var pts := PackedVector2Array()
+	for cell in session.tutorial_path():
+		pts.append(_tile_screen_pos(cell))
+	if _finger.is_playing() and _finger.points() == pts:
+		return  # zeigt schon diesen Weg
+	_finger.play(pts)
 
 
 # --- Power-ups und Upgrades -----------------------------------------------------------
@@ -1066,6 +1168,9 @@ func _update_offer_hint() -> void:
 	# Ein geschafftes Level dreht sein Quadrat mit Funken und Rauch (v4.24).
 	if _offer_flip != null:
 		return  # die Animation ruft am Ende wieder auf
+	if session.tutorial:
+		_offer_hint.visible = false
+		return
 	var n := session.levels_until_offer() if BALANCE.draft_enabled else 0
 	var every := BALANCE.draft_every
 	var level := session.level()
@@ -1333,6 +1438,7 @@ func _on_word_accepted(word: String, cells: Array[Vector2i], row: int) -> void:
 
 func _on_quest_completed(_q: Quest, reward: int) -> void:
 	_completing = true
+	_finger.stop()
 	if reward > 0:
 		_show_reward(reward)
 	# Erst alle Buchstaben ankommen lassen, dann Auftrag ausblenden und den nächsten zeigen.
@@ -1343,9 +1449,14 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 	_sequence.tween_callback(func() -> void:
 		_blocks.finish(func() -> void:
 			_completing = false
+			if _tutorial_active and session.completed:
+				_apply_mode(_tutorial_return)  # Tutorial geschafft: normal weiter
+				return
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
 			_pending_quest = null
+			# Tutorial: Finger erst, wenn die Buchstaben oben sind und die neuen Steine liegen.
+			_finger_soon()
 			_show_choice()
 			_auto_riddle()))
 

@@ -25,7 +25,7 @@ Status: **Entwurf v4**. Angepasst an Lauf-Modus v3 mit Block-Zeilen ([run-mode.m
 
 ## Screens in Version 1
 
-Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung / kein Tutorial in Version 1.
+Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu ein kurzes **Tutorial** beim ersten Start (v4.38, siehe unten).
 
 ### Startbildschirm
 - **Titel/Logo**, schön inszeniert.
@@ -56,13 +56,12 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 
 ### Einstellungen
 - **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links). Siehe [Screenshot](images/settings-modes-v1.png).
-- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Einfach**, **Mittel**, **Schwer**, **Story** (siehe [story-mode.md](story-mode.md); Beschriftung der Knöpfe seit v4.32). Der aktuelle ist markiert. Neu installiert: **mittel**.
+- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Einfach**, **Mittel**, **Schwer**, **Story** (siehe [story-mode.md](story-mode.md); Beschriftung der Knöpfe seit v4.32). Der aktuelle ist markiert. Neu installiert: **Einfach** (v4.38, vorher mittel).
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
-- **Soundeffekte** an/aus.
-- **Musik** an/aus (Version 1 hat also Musik).
+- **Kein Ton, keine Musik** (v4.37): Das Spiel ist stumm, deshalb gibt es keine Schalter dafür. Rückmeldung nur über Optik und Vibration.
 - **Vibration** an/aus (Knopf „Vibration: an/aus“ unter den Modi; neu installiert: an). Beim Wischen gibt **jeder neu verbundene Buchstabe einen kurzen, leichten Tick** (ca. 15 ms); Zurückwischen und fertige Wörter vibrieren nicht.
 - **Testmodus** an/aus (Knopf „Testmodus: an/aus“ unter Vibration; neu installiert: aus). **Zurzeit ausgeblendet** (v4.21, Schalter `TEST_MODE_MENU` im Code); solange ist der Testmodus wirkungslos. Ist er an, kostet **Lösen 0 Münzen** (alle Modi), zum schnellen Durchspielen beim Testen.
 - **Rekord zurücksetzen** (mit Nachfrage).
@@ -74,6 +73,18 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - Der Rekord zählt nur bei einem **geschafften** Lauf, nicht beim Aufgeben. Alte Rekorde (höchstes Level) gelten nicht mehr.
 - Wird **lokal auf dem Gerät** gespeichert.
 - Architektur so anlegen, dass **später Online-Ranglisten** möglich sind (Google Play Games, Game Center).
+
+## Tutorial (v4.38)
+
+Ohne Text, nur mit einem gezeichneten Finger. Screenshot: [Finger](images/tutorial-finger-v1.png).
+
+- **Wann:** automatisch beim **ersten Start** (auch einmal nach einem Update, wenn es noch nicht gesehen wurde) und jederzeit über **Einstellungen → „Tutorial“**. Läuft gerade ein Lauf, fragt das Spiel erst **„Tutorial starten? Der Lauf wird beendet.“** (Ja / Nein).
+- **Ablauf:** Es läuft im Modus **Einfach**, mit zwei festen Runden auf dem normalen Feld:
+  1. **DAS:** eine Zeile mit 3 Kästchen; in der untersten Reihe liegt D–A–S als Kette, dazu 7 andere Steine.
+  2. **BAUM:** eine Zeile mit 4 Kästchen; B–A–U–M in der untersten Reihe, dazu 6 andere Steine.
+- **Finger:** Eine gezeichnete, leuchtend umrandete Hand setzt auf den ersten Buchstaben, zieht mit leuchtender Spur über das Wort, hebt ab und beginnt nach kurzer Pause von vorn, bis der Spieler das Wort **selbst wischt**. Während man wischt, verschwindet der Finger; nach einem Fehlversuch kommt er wieder. Er erscheint erst, wenn das Feld fertig aufgebaut ist (alle Steine gedreht), auch beim Start. Nach dem richtigen Wort verschwindet er sofort und kommt erst wieder, wenn die Buchstaben oben angekommen sind und die neuen Steine liegen (dann mit dem Weg des neuen Worts).
+- **Nur das Zielwort zählt** (auch andere echte Wörter werden abgelehnt). Kein Nachfüllen, keine Münzen, keine Hilfen, keine Leiter, kein Aufgeben-Knopf; nur der Menü-Knopf bleibt.
+- **Danach:** ein normaler Lauf im **vorher gewählten Modus** (Level 1). Beim ersten Start ist das **Einfach** (neue Installationen starten in Einfach). Wer im Tutorial über das Menü einen Modus wählt, verlässt es; es gilt dann als gesehen.
 
 ## Leistung (v4.36)
 
@@ -114,6 +125,8 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 - **v4.34:** Glut der Wisch-Vorschau gedämpft (ruhige Glut und Aufflammen schwächer).
 - **v4.35:** Lava/Plasma verworfen: Vorschau-Blöcke sehen aus wie gelöste (türkis, weißer Buchstabe), nur leicht durchsichtig.
 - **v4.36:** Leistung: Nebel-Rauschen vorberechnet, automatische 3D-Auflösung auf schwächeren Handys.
+- **v4.37:** Kein Ton und keine Musik; Schalter dafür entfernt.
+- **v4.38:** Tutorial beim ersten Start und über das Menü (DAS, BAUM, Finger); neu installiert startet Einfach.
 - **v4.26:** Symbol-Knöpfe tiefer (nicht mehr im Rand); Power-up-Drehung ohne Rauch.
 - **v4.25:** Aufgeben und Einstellungen als Symbol-Knöpfe (Kreuz, Menü) statt Text.
 - **v4.24:** Power-up-Quadrate drehen sich beim Level-Abschluss mit Funken und Rauch.
