@@ -162,6 +162,8 @@ var _settings_modes: VBoxContainer
 ## Schalter „Vibration an/aus“ und „Testmodus an/aus“ in den Einstellungen.
 var _vibration_button: Button
 var _test_button: Button
+## Menüeintrag „Testmodus“ zeigen? Aus: Knopf versteckt und Testmodus wirkungslos (spec/screens.md).
+const TEST_MODE_MENU := false
 var _mode_confirm: ColorRect
 var _pending_mode: String = ""
 var _confirm: ColorRect
@@ -214,7 +216,7 @@ func new_run(seed_value: int = -1) -> void:
 	for c in _fly_layer.get_children():
 		c.queue_free()
 	session = RunSession.new(BALANCE, _mode.curve, _mode.language, _dictionary, seed_value, _common)
-	session.free_solve = Settings.test_mode
+	session.free_solve = Settings.test_mode and TEST_MODE_MENU
 	if _is_story():
 		if _chapter == null:
 			_chapter = _default_chapter()
@@ -464,6 +466,7 @@ func _build_ui() -> void:
 	_test_button.flat = true
 	_test_button.add_theme_color_override("font_color", TEXT_DIM)
 	_test_button.custom_minimum_size = Vector2(420, 90)
+	_test_button.visible = TEST_MODE_MENU
 	_test_button.pressed.connect(func() -> void:
 		Settings.test_mode = not Settings.test_mode
 		if session != null:

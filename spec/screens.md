@@ -62,7 +62,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Soundeffekte** an/aus.
 - **Musik** an/aus (Version 1 hat also Musik).
 - **Vibration** an/aus (Knopf „Vibration: an/aus“ unter den Modi; neu installiert: an). Beim Wischen gibt **jeder neu verbundene Buchstabe einen kurzen, leichten Tick** (ca. 15 ms); Zurückwischen und fertige Wörter vibrieren nicht.
-- **Testmodus** an/aus (Knopf „Testmodus: an/aus“ unter Vibration; neu installiert: aus). Ist er an, kostet **Lösen 0 Münzen** (alle Modi), zum schnellen Durchspielen beim Testen.
+- **Testmodus** an/aus (Knopf „Testmodus: an/aus“ unter Vibration; neu installiert: aus). **Zurzeit ausgeblendet** (v4.21, Schalter `TEST_MODE_MENU` im Code); solange ist der Testmodus wirkungslos. Ist er an, kostet **Lösen 0 Münzen** (alle Modi), zum schnellen Durchspielen beim Testen.
 - **Rekord zurücksetzen** (mit Nachfrage).
 - Einstellungen werden lokal gespeichert.
 
@@ -95,6 +95,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.21:** Menüeintrag Testmodus ausgeblendet.
 - **v4.20:** Tipp 50; Ersetzen und Tauschen vorerst deaktiviert.
 - **v4.19:** Story im Kapitel nochmal wählen: Nachfrage, dann Kapitel-Brett.
 - **v4.18:** Testmodus (Lösen gratis) in den Einstellungen.
