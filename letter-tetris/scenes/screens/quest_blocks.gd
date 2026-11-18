@@ -33,6 +33,8 @@ const GLOW_IN := 0.05
 const GLOW_SETTLE := 0.25
 const GLOW_OUT_PEAK := 0.08
 const GLOW_OUT := 0.28
+## Umriss der Vorschau-Buchstaben (lesbar auf hellem Plasma).
+const GHOST_OUTLINE := Color(0.02, 0.1, 0.3, 0.9)
 var _preview_panels: Array[Panel] = []
 var _pulse: Tween
 
@@ -79,6 +81,7 @@ func show_quest(q: Quest, animate: bool = true) -> void:
 			add_child(panel)
 			var glow := _make_glow()
 			panel.add_child(glow)
+			glow.add_child(_make_ghost())
 			var label := Label.new()
 			label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -118,7 +121,8 @@ func put_letter(row: int, i: int, letter: String, pop: bool = true) -> void:
 ## so ein Wort noch passt, glühen die ersten `count` Blöcke auf (neu dazukommende mit Puls).
 ## Passt es in keine freie Zeile (zu lang), glühen die längsten freien Zeilen kurz zweimal auf.
 ## 0 = Vorschau aus: alles glüht mit einem letzten Puls aus.
-func preview(count: int) -> void:
+func preview(word: String) -> void:
+	var count := word.length()
 	var want: Array[Panel] = []
 	var best := -1
 	var longest := 0
@@ -136,7 +140,9 @@ func preview(count: int) -> void:
 	for p in _preview_panels:
 		if is_instance_valid(p) and not want.has(p):
 			_glow_out(p)
-	for p in want:
+	for i in want.size():
+		var p := want[i]
+		_ghost_of(p).text = word[i]
 		if not _preview_panels.has(p):
 			_glow_in(p)
 	_preview_panels = want
@@ -181,6 +187,22 @@ func _make_glow() -> ColorRect:
 	return glow
 
 
+## Vorschau-Buchstabe in der Glut (blendet mit ihr ein und aus).
+func _make_ghost() -> Label:
+	var l := Label.new()
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.set_anchors_preset(Control.PRESET_FULL_RECT)
+	l.add_theme_color_override("font_color", Color(1, 1, 1))
+	l.add_theme_color_override("font_outline_color", GHOST_OUTLINE)
+	return l
+
+
+func _ghost_of(panel: Panel) -> Label:
+	return _glow_of(panel).get_child(0) as Label
+
+
 func _glow_of(panel: Panel) -> ColorRect:
 	for row in _blocks:
 		for b in row:
@@ -194,6 +216,7 @@ func _set_glow(v: float, glow: ColorRect) -> void:
 		return
 	(glow.material as ShaderMaterial).set_shader_parameter("intensity", v)
 	glow.visible = v > 0.001
+	(glow.get_child(0) as Label).modulate.a = clampf(v, 0.0, 1.0)
 
 
 func _glow_tween(panel: Panel) -> Tween:
@@ -289,6 +312,9 @@ func _place() -> void:
 			(glow.material as ShaderMaterial).set_shader_parameter("radius",
 				maxf(block_size * 0.18 - BORDER, 0.0) / maxf(glow.size.x, 1.0))
 			(_blocks[r][i]["label"] as Label).add_theme_font_size_override("font_size", int(block_size * 0.62))
+			var ghost := glow.get_child(0) as Label
+			ghost.add_theme_font_size_override("font_size", int(block_size * 0.62))
+			ghost.add_theme_constant_override("outline_size", maxi(4, int(block_size * 0.1)))
 		y += block_size + gap
 
 
