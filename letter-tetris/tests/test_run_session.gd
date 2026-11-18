@@ -98,7 +98,7 @@ func test_word_completes_quest_and_next_comes_automatically() -> void:
 	assert_eq(run.coins, 100)
 	assert_eq(run.level(), 2)
 	assert_not_null(run.quest, "nächster Auftrag sofort da")
-	assert_eq(run.quest.rows, PackedInt32Array([3]), "Level 2 laut Kurve")
+	assert_eq(run.quest.rows, PackedInt32Array([4]), "Level 2 laut Kurve")
 	assert_signal_emitted(run, "quest_completed")
 	assert_signal_emit_count(run, "quest_started", 2)
 

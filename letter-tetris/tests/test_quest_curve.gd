@@ -16,23 +16,29 @@ func _gen(seed_value: int = 1) -> QuestGenerator:
 func test_curve_from_spec() -> void:
 	assert_not_null(curve)
 	assert_eq(curve.last_level(), 20)
-	# Jeder feste Auftrag zweimal; Level 15 und 20 sind Atempausen (eigener Test).
+	# Schwer: jedes Level ein eigener Auftrag, bis 4 + 8 in Level 20 (run-mode.md v3.40).
 	var expected := {
-		1: [3], 2: [3], 3: [4], 4: [4], 5: [3, 3], 6: [3, 3], 7: [3, 4], 8: [3, 4],
-		9: [5], 10: [5], 11: [4, 4], 12: [4, 4], 13: [3, 3, 4], 14: [3, 3, 4],
-		16: [4, 5], 17: [6], 18: [6], 19: [3, 4, 5]}
+		1: [3], 2: [4], 3: [3, 3], 4: [5], 5: [3, 4], 6: [6], 7: [4, 4], 8: [3, 5],
+		9: [3, 3, 3], 10: [7], 11: [4, 5], 12: [3, 3, 4], 13: [3, 6], 14: [5, 5],
+		15: [8], 16: [4, 6], 17: [3, 4, 4], 18: [5, 6], 19: [4, 7], 20: [4, 8]}
 	for level in expected:
 		assert_eq(_gen().quest_for(level).rows, PackedInt32Array(expected[level]), "Level %d" % level)
 
 
+func test_hard_has_no_breaks() -> void:
+	for level in [5, 10, 15, 20, 25, 30]:
+		assert_false(curve.is_break(level), "Level %d" % level)
+
+
 func test_breaks_every_fifth_level_from_eleven() -> void:
+	curve = load("res://data/quest_curve_medium.tres") as QuestCurve
 	var g := _gen(3)
-	for level in [15, 20, 25, 30, 100]:
+	for level in [15, 20]:
 		assert_true(curve.is_break(level), "Level %d" % level)
 		var rows := g.quest_for(level).rows
 		assert_eq(rows.size(), 1, "eine Zeile in Level %d" % level)
 		assert_between(rows[0], 3, 4)
-	for level in [5, 10, 11, 21, 24]:
+	for level in [5, 10, 11, 16]:
 		assert_false(curve.is_break(level), "Level %d" % level)
 
 
