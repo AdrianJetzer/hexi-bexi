@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Spiel-Wortliste (words.bin) = Wörterbuch (out/de-words.txt) + alle Themenwörter der Story-Kapitel
-# (letter-tetris/data/story/*.txt, Spalte vor „;“). So gelten handverlesene Eigennamen wie Länder,
+# (hexi-bexi/data/story/*.txt, Spalte vor „;“). So gelten handverlesene Eigennamen wie Länder,
 # Hauptstädte, Flüsse, Marken und berühmte Personen auch im normalen Lauf (spec/game-rules.md).
 # Die Vorschlags-Wörter (common.bin, easy*.bin) bleiben unberührt: Namen erscheinen nie als Tipp,
 # Lösung oder gesuchtes Wort im normalen Lauf.
@@ -9,8 +9,8 @@ set -euo pipefail
 export LC_ALL=en_US.UTF-8  # für die Umlaute in grep; sort läuft mit LC_ALL=C
 HERE="$(cd "$(dirname "$0")" && pwd)"
 OUT="$HERE/out"
-STORY="$HERE/../../letter-tetris/data/story"
-DEST="$HERE/../../letter-tetris/data/languages/de/words.bin"
+STORY="$HERE/../../hexi-bexi/data/story"
+DEST="$HERE/../../hexi-bexi/data/languages/de/words.bin"
 # Abkürzungen (story-abbrevs.txt) bleiben draußen, sie zählen nur im Story-Kapitel.
 grep -hv '^#' "$STORY"/*.txt | cut -d';' -f1 | tr -d ' \r' | grep -E '^[A-ZÄÖÜ]{3,}$' \
   | grep -vxFf <(grep -v '^#' "$HERE/story-abbrevs.txt") | LC_ALL=C sort -u > "$OUT/story-words.txt"

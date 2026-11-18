@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="Hexaword"
+config/name="Hexi Bexi"
 run/main_scene="res://scenes/screens/game_screen.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
 config/quit_on_go_back=false
 
 [autoload]

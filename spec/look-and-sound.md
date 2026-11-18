@@ -1,6 +1,6 @@
 # Optik und Ton
 
-Status: **Entwurf v3**. Stil und Effekte für Version 1 abgestimmt; **kein Ton, keine Musik** (v3).
+Status: **Entwurf v4**. Stil und Effekte für Version 1 abgestimmt; **kein Ton, keine Musik** (v3).
 
 Grundanforderung (siehe `../CLAUDE.md`): Das Spiel MUSS gut aussehen und **premium** wirken. Schöne, selbst gebaute Sprites, **keine Pixel Art**, **tolle Lichteffekte**.
 
@@ -20,7 +20,7 @@ Grundanforderung (siehe `../CLAUDE.md`): Das Spiel MUSS gut aussehen und **premi
 - **Licht, Leuchten (Glow), Partikel** macht Godot **live**.
 - Bilder/Texturen (z. B. Hintergrund-Nebel, Logo) können weiterhin selbst gebaut werden.
 - Live-Effekte kosten Leistung: **früh auf einem echten Android-Gerät testen.**
-- Prototyp zum Ausprobieren der Optik: `letter-tetris/scenes/prototypes/hex3d_proto.tscn`.
+- Prototyp zum Ausprobieren der Optik: `hexi-bexi/scenes/prototypes/hex3d_proto.tscn`.
 
 ### Ton
 - **Kein Ton und keine Musik** (v3, Entscheidung von Adrian): Gepiepe nervt die Leute. Das Spiel ist stumm; Rückmeldung nur über Optik und **Vibration** (kurzer Tick je verbundenem Buchstaben, abschaltbar, siehe [screens.md](screens.md)).
@@ -51,13 +51,20 @@ Grundanforderung (siehe `../CLAUDE.md`): Das Spiel MUSS gut aussehen und **premi
 | Level-Up | Ladung neuer Hexagons erscheint **nacheinander** mit Drehung (kleine Verzögerung je Hexagon) |
 | Rundenende | **Licht erlischt:** Hexagons gehen nacheinander aus, die Leuchtkante des Rahmens erlischt; danach Bilanz-Screen |
 
+## App-Icon (v4)
+
+- Ein einzelner, dicker **Kristall-Hexi-Stein** schräg von oben, leuchtender Rand, darauf groß **„HB“** (Hexi Bexi), Weltall-Hintergrund, goldenes Funkeln oben rechts. Stil wie das Packungs-Cover (90er-Airbrush, übertriebenes 3D). Erzeugt mit GPT Image. Bild: [app-icon-v1.png](images/app-icon-v1.png).
+- **Projekt-Icon** (Godot, später auch iOS): `hexi-bexi/icon.png` (1024 × 1024, ganzes Bild).
+- **Android (adaptives Icon):** `icon_background.png` (432 × 432) mit dem Motiv verkleinert auf ca. 73 % auf dunklem Weltall-Blau, damit das Sechseck bei runder, eckiger oder Tropfen-Maske ganz sichtbar bleibt; `icon_foreground.png` leer (durchsichtig). Eingetragen in `export_presets.cfg` (`launcher_icons/…`). Altes Godot-Icon entfernt.
+
 ## Später festlegen
 
 - Farbpalette und Style Guide für das Theme Kosmisch (genaue Farben, Schrift für die Buchstaben).
-- Gestaltung von Logo/Titel und Screen-Übergängen.
+- Gestaltung von Logo/Titel und Screen-Übergängen (App-Icon erledigt, v4).
 - Weitere Themes.
 
 ## Verlauf
 
 - **v1:** Theme-System (später wählbar), Version 1 = Kosmisch / Sci-Fi. Kristall-Hexagons, milchige Rückseite, Metallrahmen mit Leuchtkante, animierter Nebel, Effekte für Wischen, Wort, ungültiges Wort und Game-Over. Grafik als Mix aus Sprites und Godot-Effekten. Quellen für Ton offen.
 - **v2:** Spielfeld in **3D** (Oberfläche 2D), Kamera von oben mit leichter Perspektive, dicke Hexagons mit runden Kanten, Kristall-Shader. Vorderseite **Rauchglas mit Energiekern**, Rückseite **gefrostetes Rauchglas**.
+- **v4:** App-Icon: Kristall-Hexi-Stein mit „HB“, als Projekt-Icon und adaptives Android-Icon.

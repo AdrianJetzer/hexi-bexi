@@ -30,12 +30,12 @@
 ## Stand
 
 - **Godot 4.7** ist auf diesem Mac installiert (`~/Downloads/Godot.app`).
-- Projekt: `letter-tetris/` (Projektname „LetterTetris“), Renderer **Mobile**, Hochformat.
-- Spielname: **Hexaword** (vorläufig; gibt es schon im Play Store, vor Veröffentlichung neu entscheiden, siehe `spec/README.md`).
+- Projekt: `hexi-bexi/` (Paket `com.hexibexi.game`), Renderer **Mobile**, Hochformat.
+- Spielname: **Hexi Bexi** (seit 18.11.2026; im Play Store frei, Markenregister noch nicht geprüft, siehe `spec/README.md`).
 - Spielidee: Wortspiel mit Buchstaben in 3D-Kristall-Hexagons (Raster 5 × 5), **Lauf-Modus (Roguelike)** mit Aufträgen, Münzen und Hilfen. Details in `spec/` (Einstieg: `spec/README.md`, Lauf: `spec/run-mode.md`).
 - Spielbar: Lauf-Modus mit Auftragswahl, Hilfen (Nachfüllen, Tauschen, Tipp, Ersetzen), Lösung am Ende, Bilanz, Story-Modus, Tutorial beim ersten Start.
 - Kein Ton, keine Musik (nur Vibration).
-- Noch offen u. a.: Optik von Karten/Knöpfen, Start- und Einstellungs-Screen, App-Icon, endgültiger Name.
+- Noch offen u. a.: Optik von Karten/Knöpfen, Lauf speichern, Markenprüfung Name.
 - Tests: GUT, Aufruf `tools/run-tests.sh`. Wörterbuch bauen: `tools/dictionary/build.sh`.
 - Git: Feature-Branches, Commit nach jedem Schritt, **Push nur auf Zuruf**.
 

@@ -8,7 +8,7 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 - Entwicklungsumgebung: **Godot-Editor**, keine externe IDE.
 - Sprache: **GDScript**.
 - Renderer: **Mobile** (gleiche Darstellung in der Vorschau am Mac wie auf dem Handy).
-- Projektordner: `letter-tetris/` (Spezifikation in `spec/`).
+- Projektordner: `hexi-bexi/` (Spezifikation in `spec/`).
 - Native Android- oder iOS-Plugins nur, wenn wirklich nötig; darüber wird gesondert entschieden.
 - Hilfswerkzeuge außerhalb von Godot liegen in `tools/` (z. B. `tools/dictionary/` zum Bauen der Wortliste, Python 3).
 
@@ -46,7 +46,7 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 
 ## Android-Build (Test aufs Handy)
 
-- Export-Vorlage **„Android“** in `letter-tetris/export_presets.cfg`: Debug-APK nach `build/LetterTetris.apk` (nicht versioniert), nur **arm64-v8a**, Paketname vorläufig `com.lettertetris.game` (vor einer Veröffentlichung festlegen).
+- Export-Vorlage **„Android“** in `hexi-bexi/export_presets.cfg`: Debug-APK nach `build/HexiBexi.apk` (nicht versioniert), nur **arm64-v8a**, Paketname `com.hexibexi.game` (seit 18.11.2026, vorher `com.lettertetris.game`; nach der Veröffentlichung nicht mehr änderbar).
 - **Wichtig:** Filter `*.bin`, damit das Wörterbuch (`words.bin`, `common.bin`) in die App kommt; Tests und GUT werden nicht mit exportiert.
 - Voraussetzungen auf dem Mac: Godot-**Export-Vorlagen 4.7.2**, **JDK 17** (Pfad in den Editor-Einstellungen), **Android SDK** (über Android Studio). Den Debug-Schlüssel legt Godot beim ersten Export an.
 - Aufs Handy: USB-Debugging einschalten, anschließen, im Editor oben rechts auf das Android-Symbol (Remote Deploy) – oder APK exportieren und installieren.
@@ -54,7 +54,7 @@ Status: **Entwurf v1**. Technische Rahmenbedingungen für Version 1 abgestimmt; 
 ## Versionsverwaltung
 
 - **Git** lokal im Ordner `godot-game/`, zusätzlich **GitHub** (privates Repository).
-- **Eingerichtet** am 13.11.2026: Branch `main`, privates Repository `github.com/TangoPazzafini/letter-tetris`.
+- **Eingerichtet** am 13.11.2026: Branch `main`, privates Repository `github.com/TangoPazzafini/hexi-bexi` (bis 18.11.2026 `letter-tetris`; GitHub leitet den alten Namen weiter).
 - Heruntergeladene Quellen und Export-Ergebnisse (APK/AAB, Signierschlüssel) sind per `.gitignore` ausgeschlossen.
 
 ## Offene Fragen
