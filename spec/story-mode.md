@@ -84,7 +84,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **Scheitern nur durch Aufgeben:** Wer das Wort nicht findet, gibt auf. Das Kapitel ist nicht geschafft und kann neu gestartet werden. (Kein Zeitlimit, keine Leben.)
 - **Sterne (1–3)** für ein geschafftes Kapitel: ★★★ = keine Hilfe gekauft, ★★ = höchstens 500 Münzen ausgegeben, ★ = geschafft. Gespeichert wird die beste Wertung je Kapitel.
 - Die Sterne-Regel gilt seit v4 auch im normalen Lauf (siehe [run-mode.md](run-mode.md)).
-- Anzeige im Spiel: oben in der Mitte der Kapitel-Name, über dem Feld links die **Leiter** (20 Quadrate, wie im Lauf), unter dem Feld „Noch n Level bis zum Ziel“.
+- Anzeige im Spiel: oben in der Mitte der Kapitel-Name, über dem Feld links die **Leiter** (20 Quadrate, wie im Lauf); unter dem Feld kein Text (v5.8).
 
 ## Hilfen
 
@@ -129,3 +129,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **v5.5:** Reihe 4 (schwerer): Götter, Komponisten (über Instrumente), Elemente, Weltraum.
 - **v5.6:** Brett voll (24 Kapitel). Reihe 5: Fabelwesen, Sagenhelden, Erfinder, Inseln. Reihe 6 („Gottmodus“, für Junge): Japan & Anime, Superhelden, Musikstile, Gaming.
 - **v5.7:** Pro Level drehen sich alle Steine neu (zufällig), Auffüllen bis zum Füllgrad, Wort im ganzen Feld.
+- **v5.8:** Kein Hinweistext „Noch n Level bis zum Ziel“ mehr unter dem Feld.

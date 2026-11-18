@@ -21,6 +21,16 @@ var done: int = 0:
 	set(v):
 		done = clampi(v, 0, steps)
 		queue_redraw()
+## Eigene Farbe je Quadrat (leer = Verlauf grün → orange → rot). Für die Power-up-Anzeige.
+var palette: Array[Color] = []:
+	set(v):
+		palette = v
+		queue_redraw()
+## Quadratgröße im Verhältnis zur Höhe des Controls.
+var cell_ratio: float = 0.62:
+	set(v):
+		cell_ratio = v
+		queue_redraw()
 ## Laufendes Level hervorheben?
 var show_current: bool = true:
 	set(v):
@@ -34,12 +44,14 @@ func _init() -> void:
 
 ## Farbe des Quadrats i (0-basiert) im Verlauf grün → orange → rot.
 func color_at(i: int) -> Color:
+	if not palette.is_empty():
+		return palette[i % palette.size()]
 	var t := float(i) / float(maxi(steps - 1, 1))
 	return GREEN.lerp(ORANGE, t * 2.0) if t < 0.5 else ORANGE.lerp(RED, (t - 0.5) * 2.0)
 
 
 func _draw() -> void:
-	var cell := minf(size.y * 0.62, size.x / (steps + (steps - 1) * GAP))
+	var cell := minf(size.y * cell_ratio, size.x / (steps + (steps - 1) * GAP))
 	var gap := cell * GAP
 	var y := (size.y - cell) * 0.5
 	var radius := int(round(cell * 0.22))
