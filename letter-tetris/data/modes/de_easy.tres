@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1")
 id = "de_easy"
-display_name = "EASY"
+display_name = "Einfach"
 description = "Für Kinder: bekannte, kurze Wörter, Zeilen bis 5 Blöcke, immer viel Hilfe."
 language = ExtResource("2")
 words_path = "res://data/languages/de/easy_valid.bin"

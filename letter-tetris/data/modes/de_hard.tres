@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1")
 id = "de_hard"
-display_name = "HARD"
+display_name = "Schwer"
 description = "Alle Wörter zählen, Zeilen bis 8 Blöcke, weniger Hilfe."
 language = ExtResource("2")
 curve = ExtResource("3")

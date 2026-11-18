@@ -23,7 +23,7 @@ Status: **v5 umgesetzt** (Kapitel-Brett mit 8 Kapiteln in 2 Reihen, Dreh-Animati
 
 ## Einstieg
 
-- In den **Einstellungen** gibt es den Modus **„Story“** (Knopf „STORY“, neben EASY / MEDIUM / HARD). Wer ihn wählt, sieht das Kapitel-Brett; dort öffnet der Menü-Knopf oben rechts (gleich platziert wie im Spiel) die Einstellungen (v5.9).
+- In den **Einstellungen** gibt es den Modus **„Story“** (neben Einfach / Mittel / Schwer). Wer ihn wählt, sieht das Kapitel-Brett; dort öffnet der Menü-Knopf oben rechts (gleich platziert wie im Spiel) die Einstellungen (v5.9).
 - Startet die App im Story-Modus, erscheint zuerst das Kapitel-Brett.
 
 ## Kapitel-Brett (ab v5, ersetzt den Pfad)
