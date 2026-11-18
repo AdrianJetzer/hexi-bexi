@@ -15,17 +15,23 @@ const MAX_COLS := 8
 const MAX_ROWS := 3
 ## Abstand zwischen Blöcken (Anteil der Blockgröße).
 const GAP := 0.18
+## Randbreite der Blöcke (Pixel); die Glut liegt innerhalb.
+const BORDER := 3
 
 var block_size: float = 80.0
 
-## _blocks[row][i] = {"panel": Panel, "label": Label}
+## _blocks[row][i] = {"panel": Panel, "glow": ColorRect, "label": Label}
 var _blocks: Array = []
 var _rows := PackedInt32Array()
 var _fade: Tween
-## Wisch-Vorschau (spec/screens.md v4.27): abgedunkelte Blöcke beim Wischen, Puls bei „zu lang“.
-## Vorschau: nur die Füllung wird dunkler, der Rand bleibt gleich.
-const PREVIEW_BG := Color(0.0, 0.01, 0.04, 0.95)
-const PULSE_BRIGHT := Color(1.9, 1.9, 1.9, 1.0)
+## Wisch-Vorschau (spec/screens.md v4.28): Blöcke glühen beim Wischen wie Lava auf (Rand bleibt
+## gleich), beim Loslassen glühen sie aus; Puls bei „zu lang“.
+const EMBER_SHADER := preload("res://shaders/ember.gdshader")
+const GLOW_PEAK := 1.45
+const GLOW_IN := 0.09
+const GLOW_SETTLE := 0.14
+const GLOW_OUT_PEAK := 0.08
+const GLOW_OUT := 0.28
 var _preview_panels: Array[Panel] = []
 var _pulse: Tween
 
@@ -70,13 +76,15 @@ func show_quest(q: Quest, animate: bool = true) -> void:
 			panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			panel.add_theme_stylebox_override("panel", _style(false))
 			add_child(panel)
+			var glow := _make_glow()
+			panel.add_child(glow)
 			var label := Label.new()
 			label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			label.add_theme_color_override("font_color", LETTER)
 			label.set_anchors_preset(Control.PRESET_FULL_RECT)
 			panel.add_child(label)
-			row.append({"panel": panel, "label": label})
+			row.append({"panel": panel, "glow": glow, "label": label})
 			if animate:
 				panel.scale = Vector2.ZERO
 				var t := panel.create_tween()
@@ -106,30 +114,32 @@ func put_letter(row: int, i: int, letter: String, pop: bool = true) -> void:
 
 
 ## Wisch-Vorschau: `count` Buchstaben sind gerade verbunden. In der kürzesten freien Zeile, in die
-## so ein Wort noch passt, dunkeln die ersten `count` Blöcke ab. Passt es in keine freie Zeile
-## (zu lang), pulsieren die längsten freien Zeilen kurz. 0 = Vorschau aus.
+## so ein Wort noch passt, glühen die ersten `count` Blöcke auf (neu dazukommende mit Puls).
+## Passt es in keine freie Zeile (zu lang), glühen die längsten freien Zeilen kurz zweimal auf.
+## 0 = Vorschau aus: alles glüht mit einem letzten Puls aus.
 func preview(count: int) -> void:
-	for p in _preview_panels:
-		if is_instance_valid(p):
-			p.add_theme_stylebox_override("panel", _style(false))
-	_preview_panels.clear()
-	if count <= 0:
-		return
+	var want: Array[Panel] = []
 	var best := -1
 	var longest := 0
-	for r in _blocks.size():
-		if not _row_free(r):
-			continue
-		var n: int = _blocks[r].size()
-		longest = maxi(longest, n)
-		if n >= count and (best < 0 or n < _blocks[best].size()):
-			best = r
-	if best >= 0:
-		for i in count:
-			var panel: Panel = _blocks[best][i]["panel"]
-			panel.add_theme_stylebox_override("panel", _style(false, true))
-			_preview_panels.append(panel)
-	elif longest > 0:
+	if count > 0:
+		for r in _blocks.size():
+			if not _row_free(r):
+				continue
+			var n: int = _blocks[r].size()
+			longest = maxi(longest, n)
+			if n >= count and (best < 0 or n < _blocks[best].size()):
+				best = r
+		if best >= 0:
+			for i in count:
+				want.append(_blocks[best][i]["panel"])
+	for p in _preview_panels:
+		if is_instance_valid(p) and not want.has(p):
+			_glow_out(p)
+	for p in want:
+		if not _preview_panels.has(p):
+			_glow_in(p)
+	_preview_panels = want
+	if count > 0 and best < 0 and longest > 0:
 		_pulse_rows(longest)
 
 
@@ -137,7 +147,7 @@ func _row_free(r: int) -> bool:
 	return not _blocks[r].is_empty() and (_blocks[r][0]["label"] as Label).text == ""
 
 
-## Alle freien Zeilen der Länge n kurz zweimal aufleuchten lassen („zu viele Buchstaben“).
+## Alle freien Zeilen der Länge n kurz zweimal aufglühen lassen („zu viele Buchstaben“).
 func _pulse_rows(n: int) -> void:
 	if _pulse and _pulse.is_running():
 		return
@@ -153,15 +163,88 @@ func _pulse_rows(n: int) -> void:
 		_pulse.tween_callback(func() -> void:
 			for p in panels:
 				if is_instance_valid(p):
-					p.modulate = PULSE_BRIGHT
-					p.scale = Vector2.ONE * 1.1)
-		_pulse.tween_interval(0.11)
-		_pulse.tween_callback(func() -> void:
-			for p in panels:
-				if is_instance_valid(p):
-					p.modulate = Color.WHITE
-					p.scale = Vector2.ONE)
-		_pulse.tween_interval(0.11)
+					_glow_flash(p))
+		_pulse.tween_interval(0.22)
+
+
+## Glut-Fläche im Block: innerhalb des Randes, unter dem Buchstaben.
+func _make_glow() -> ColorRect:
+	var glow := ColorRect.new()
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var m := ShaderMaterial.new()
+	m.shader = EMBER_SHADER
+	m.set_shader_parameter("seed", randf() * 50.0)
+	m.set_shader_parameter("intensity", 0.0)
+	glow.material = m
+	glow.visible = false
+	return glow
+
+
+func _glow_of(panel: Panel) -> ColorRect:
+	for row in _blocks:
+		for b in row:
+			if b["panel"] == panel:
+				return b["glow"]
+	return null
+
+
+func _set_glow(v: float, glow: ColorRect) -> void:
+	if not is_instance_valid(glow):
+		return
+	(glow.material as ShaderMaterial).set_shader_parameter("intensity", v)
+	glow.visible = v > 0.001
+
+
+func _glow_tween(panel: Panel) -> Tween:
+	if panel.has_meta("glow_tween"):
+		var old: Tween = panel.get_meta("glow_tween")
+		if old:
+			old.kill()
+	var t := panel.create_tween()
+	panel.set_meta("glow_tween", t)
+	return t
+
+
+func _glow_value(glow: ColorRect) -> float:
+	return float((glow.material as ShaderMaterial).get_shader_parameter("intensity"))
+
+
+## Aufglühen mit Puls: kurz heller und größer, dann ruhige Glut.
+func _glow_in(panel: Panel) -> void:
+	var glow := _glow_of(panel)
+	if glow == null:
+		return
+	var t := _glow_tween(panel)
+	t.tween_method(_set_glow.bind(glow), _glow_value(glow), GLOW_PEAK, GLOW_IN) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(panel, "scale", Vector2.ONE * 1.08, GLOW_IN)
+	t.tween_method(_set_glow.bind(glow), GLOW_PEAK, 1.0, GLOW_SETTLE).set_trans(Tween.TRANS_SINE)
+	t.parallel().tween_property(panel, "scale", Vector2.ONE, GLOW_SETTLE)
+
+
+## Ausglühen: ein letzter kurzer Puls, dann erlischt die Glut.
+func _glow_out(panel: Panel) -> void:
+	var glow := _glow_of(panel)
+	if glow == null:
+		return
+	var t := _glow_tween(panel)
+	var from := _glow_value(glow)
+	t.tween_method(_set_glow.bind(glow), from, maxf(from, 1.0) * 1.3, GLOW_OUT_PEAK)
+	t.tween_method(_set_glow.bind(glow), maxf(from, 1.0) * 1.3, 0.0, GLOW_OUT) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	t.parallel().tween_property(panel, "scale", Vector2.ONE, GLOW_OUT_PEAK)
+
+
+## Kurzes Aufglühen und wieder aus (für „zu viele Buchstaben“).
+func _glow_flash(panel: Panel) -> void:
+	var glow := _glow_of(panel)
+	if glow == null:
+		return
+	var t := _glow_tween(panel)
+	t.tween_method(_set_glow.bind(glow), 0.0, GLOW_PEAK, 0.08)
+	t.parallel().tween_property(panel, "scale", Vector2.ONE * 1.1, 0.08)
+	t.tween_method(_set_glow.bind(glow), GLOW_PEAK, 0.0, 0.14)
+	t.parallel().tween_property(panel, "scale", Vector2.ONE, 0.14)
 
 
 ## Mitte eines Blocks in Koordinaten des Eltern-Controls (für den Flug).
@@ -196,15 +279,20 @@ func _place() -> void:
 			panel.position = Vector2(x + i * (block_size + gap), y)
 			panel.size = Vector2.ONE * block_size
 			panel.pivot_offset = panel.size / 2.0
+			var glow: ColorRect = _blocks[r][i]["glow"]
+			glow.position = Vector2.ONE * BORDER
+			glow.size = panel.size - Vector2.ONE * BORDER * 2.0
+			(glow.material as ShaderMaterial).set_shader_parameter("radius",
+				maxf(block_size * 0.18 - BORDER, 0.0) / maxf(glow.size.x, 1.0))
 			(_blocks[r][i]["label"] as Label).add_theme_font_size_override("font_size", int(block_size * 0.62))
 		y += block_size + gap
 
 
-func _style(filled: bool, preview: bool = false) -> StyleBoxFlat:
+func _style(filled: bool) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = FILLED_BG if filled else (PREVIEW_BG if preview else BLOCK_BG)
+	s.bg_color = FILLED_BG if filled else BLOCK_BG
 	s.border_color = FILLED_BORDER if filled else BLOCK_BORDER
-	s.set_border_width_all(3)
+	s.set_border_width_all(BORDER)
 	s.set_corner_radius_all(int(block_size * 0.18))
 	if filled:
 		s.shadow_color = Color(0.55, 0.95, 1.0, 0.45)
