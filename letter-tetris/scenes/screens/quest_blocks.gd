@@ -28,7 +28,9 @@ var _fade: Tween
 ## gleich), beim Loslassen glühen sie aus; Puls bei „zu lang“.
 const EMBER_SHADER := preload("res://shaders/ember.gdshader")
 ## Aufflammen: in GLOW_IN fast weißglühend hoch, dann in GLOW_SETTLE zur ruhigen Glut.
-const GLOW_PEAK := 1.9
+## Ruhige Glut (gedämpft, damit die Farbe nicht zu stark knallt) und Spitze beim Aufflammen.
+const GLOW_REST := 0.7
+const GLOW_PEAK := 1.2
 const GLOW_IN := 0.05
 const GLOW_SETTLE := 0.25
 const GLOW_OUT_PEAK := 0.08
@@ -216,7 +218,7 @@ func _set_glow(v: float, glow: ColorRect) -> void:
 		return
 	(glow.material as ShaderMaterial).set_shader_parameter("intensity", v)
 	glow.visible = v > 0.001
-	(glow.get_child(0) as Label).modulate.a = clampf(v, 0.0, 1.0)
+	(glow.get_child(0) as Label).modulate.a = clampf(v / GLOW_REST, 0.0, 1.0)
 
 
 func _glow_tween(panel: Panel) -> Tween:
@@ -243,7 +245,7 @@ func _glow_in(panel: Panel) -> void:
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	t.parallel().tween_property(panel, "scale", Vector2.ONE * 1.12, GLOW_IN) \
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	t.tween_method(_set_glow.bind(glow), GLOW_PEAK, 1.0, GLOW_SETTLE) \
+	t.tween_method(_set_glow.bind(glow), GLOW_PEAK, GLOW_REST, GLOW_SETTLE) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	t.parallel().tween_property(panel, "scale", Vector2.ONE, GLOW_SETTLE) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -256,8 +258,8 @@ func _glow_out(panel: Panel) -> void:
 		return
 	var t := _glow_tween(panel)
 	var from := _glow_value(glow)
-	t.tween_method(_set_glow.bind(glow), from, maxf(from, 1.0) * 1.3, GLOW_OUT_PEAK)
-	t.tween_method(_set_glow.bind(glow), maxf(from, 1.0) * 1.3, 0.0, GLOW_OUT) \
+	t.tween_method(_set_glow.bind(glow), from, maxf(from, GLOW_REST) * 1.3, GLOW_OUT_PEAK)
+	t.tween_method(_set_glow.bind(glow), maxf(from, GLOW_REST) * 1.3, 0.0, GLOW_OUT) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	t.parallel().tween_property(panel, "scale", Vector2.ONE, GLOW_OUT_PEAK)
 
