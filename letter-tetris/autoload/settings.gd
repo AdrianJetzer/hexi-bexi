@@ -24,8 +24,15 @@ var test_mode: bool = false:
 		_save()
 		changed.emit()
 
-## Spielmodus (Kennung, siehe GameMode / data/modes/). Neu installiert: mittel.
-const DEFAULT_MODE := "de_medium"
+## Tutorial schon gesehen? Sonst läuft es beim Start (spec/screens.md, „Tutorial“).
+var tutorial_seen: bool = false:
+	set(value):
+		tutorial_seen = value
+		_save()
+
+## Spielmodus (Kennung, siehe GameMode / data/modes/). Neu installiert: einfach (v4.38, nach
+## dem Tutorial geht es in Einfach weiter).
+const DEFAULT_MODE := "de_easy"
 const MODES: PackedStringArray = ["de_easy", "de_medium", "de_hard", "story"]
 const STORY_MODE := "story"
 var mode: String = DEFAULT_MODE:
@@ -48,6 +55,7 @@ func _load() -> void:
 		vibration_on = cfg.get_value("audio", "vibration_on", true)
 		test_mode = cfg.get_value("game", "test_mode", false)
 		mode = cfg.get_value("game", "mode", DEFAULT_MODE)
+		tutorial_seen = cfg.get_value("game", "tutorial_seen", false)
 	_loading = false
 
 
@@ -58,6 +66,7 @@ func _save() -> void:
 	cfg.set_value("audio", "vibration_on", vibration_on)
 	cfg.set_value("game", "mode", mode)
 	cfg.set_value("game", "test_mode", test_mode)
+	cfg.set_value("game", "tutorial_seen", tutorial_seen)
 	cfg.save(PATH)
 
 

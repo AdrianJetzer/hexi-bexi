@@ -47,7 +47,7 @@ Ziel von Version 1: ein **vollständig spielbares, gut aussehendes** Spiel für 
 - **Online-Ranglisten** (Google Play Games, Game Center).
 - **Werbung und Käufe** (auch Münzen kaufen).
 - Lauf-Modus-Erweiterungen: **Bosse**, **Laden und Vorteile**, **besondere Steine**, **Bonus-Münzen**, **Meta-Fortschritt**.
-- **Anleitung / Tutorial**.
+- ~~**Anleitung / Tutorial**~~ – doch in Version 1: kurzes Tutorial ohne Text (siehe [screens.md](screens.md), „Tutorial“).
 - **Pause-Funktion**.
 - **Vibration**.
 - **Statistik und Wortliste** auf dem Bilanz-Screen.

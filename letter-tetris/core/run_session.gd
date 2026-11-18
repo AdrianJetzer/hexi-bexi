@@ -44,6 +44,8 @@ signal helps_changed()
 signal riddle_shown(text: String)
 ## Ziel-Level gelöst (Lauf bzw. Kapitel geschafft), mit Sternen 1–3. Danach ist der Lauf vorbei.
 signal goal_reached(stars: int)
+## Tutorial (set_tutorial): beide Runden geschafft.
+signal tutorial_finished()
 
 const REASON_TOO_SHORT := "too_short"
 const REASON_INVALID_PATH := "invalid_path"
@@ -110,6 +112,9 @@ var _prices: Dictionary = {}
 var free_solve: bool = false
 ## Story-Modus (spec/story-mode.md): Kapitel mit Themenwörtern (null = normaler Lauf).
 var story: StoryChapter = null
+## Tutorial-Lauf (spec/screens.md, „Tutorial“): feste Felder, nur das Zielwort zählt.
+var tutorial: bool = false
+var _tutorial_step := 0
 ## Themenwörter des Kapitels (nur diese zählen in den Zeilen).
 var _theme: WordDictionary
 ## Gesuchtes (verstecktes) Themenwort des aktuellen Levels.
@@ -182,7 +187,12 @@ func start() -> void:
 	_prices = {}
 	_reset_hint()
 	_apply_help()
-	_spawn(_balance.run_start_tiles)
+	if tutorial:
+		owned = PackedStringArray()
+		coins = 0
+		_tutorial_step = 0
+	else:
+		_spawn(_balance.run_start_tiles)
 	coins_changed.emit(coins)
 	level_changed.emit(_level)
 	_start_quest()
@@ -1110,8 +1120,9 @@ func submit_path(path: Array[Vector2i]) -> bool:
 		_used_targets[word] = true  # gefunden: kommt in diesem Lauf nicht nochmal
 	_aim_help()
 	word_accepted.emit(word, path, row)
-	# Automatisch auffüllen: eine Wortlänge minus eins.
-	_spawn(maxi(word.length() - _balance.auto_refill_less, 0))
+	# Automatisch auffüllen: eine Wortlänge minus eins (nicht im Tutorial).
+	if not tutorial:
+		_spawn(maxi(word.length() - _balance.auto_refill_less, 0))
 	_check_hint()
 	quest_progress.emit(quest)
 	if quest.is_done():
@@ -1131,6 +1142,41 @@ func _hint_valid() -> bool:
 	return word_for(_hint_cells) == _hint_word
 
 
+# --- Tutorial ----------------------------------------------------------------------------
+
+## Diesen Lauf als Tutorial spielen (vor start()).
+func set_tutorial() -> void:
+	tutorial = true
+
+
+## Aktuelle Tutorial-Runde (0, 1, …).
+func tutorial_step() -> int:
+	return _tutorial_step
+
+
+## Weg des Zielworts der laufenden Tutorial-Runde (für den Finger); leer, wenn keine läuft.
+func tutorial_path() -> Array[Vector2i]:
+	var none: Array[Vector2i] = []
+	if not tutorial or is_over or quest == null or quest.is_done():
+		return none
+	return Tutorial.path(_tutorial_step)
+
+
+## Feld der Tutorial-Runde legen: alte Steine weg, die festen Steine der Runde setzen.
+func _place_tutorial_board() -> void:
+	var old: Array[Vector2i] = []
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell):
+			old.append(cell)
+			grid.clear(cell)
+	if not old.is_empty():
+		tiles_removed.emit(old)
+	var tiles := Tutorial.tiles(_tutorial_step)
+	for cell: Vector2i in tiles:
+		grid.set_letter(cell, tiles[cell])
+		tile_spawned.emit(cell, tiles[cell])
+
+
 ## Tipp verwerfen, wenn sich ein Stein des Tipp-Worts geändert hat. Danach selbst auffüllen,
 ## falls kein schönes Wort mehr im Feld liegt (v8.5).
 func _check_hint() -> void:
@@ -1143,7 +1189,7 @@ func _check_hint() -> void:
 ## freie Zeile passt, kommen gratis neue Steine dazu (je refill_count), bis eines geht oder das
 ## Feld voll ist. Ersetzt den früheren Auffüllen-Dialog. Gibt die Anzahl neuer Steine zurück.
 func _auto_refill() -> int:
-	if not _balance.auto_refill or is_over or quest == null or quest.is_done() \
+	if not _balance.auto_refill or tutorial or is_over or quest == null or quest.is_done() \
 			or quest.free_lengths().is_empty():
 		return 0
 	var placed := 0
@@ -1189,6 +1235,8 @@ func _check_path(path: Array[Vector2i]) -> String:
 		return REASON_NO_QUEST
 	if not _is_valid_path(path):
 		return REASON_INVALID_PATH
+	if tutorial:
+		return "" if word_for(path) == Tutorial.word(_tutorial_step) else REASON_NOT_MATCHING
 	if path.size() < _balance.min_length:
 		return REASON_TOO_SHORT
 	var raw := word_for(path)
@@ -1253,6 +1301,16 @@ func _fill_joker(raw: String, d: WordDictionary) -> String:
 func _complete_quest(rewarded: bool = true) -> void:
 	var done := quest
 	quest = null
+	if tutorial:
+		quest_completed.emit(done, 0)
+		_tutorial_step += 1
+		if _tutorial_step < Tutorial.count():
+			_start_quest()
+		else:
+			is_over = true
+			completed = true
+			tutorial_finished.emit()
+		return
 	var reward := done.reward if rewarded else 0
 	coins += reward
 	quest_completed.emit(done, reward)
@@ -1273,6 +1331,14 @@ func _complete_quest(rewarded: bool = true) -> void:
 ## Auftrag für das aktuelle Level erzeugen und starten.
 func _start_quest() -> void:
 	_reset_hint()
+	if tutorial:
+		var q := Quest.new()
+		q.rows = PackedInt32Array([Tutorial.word(_tutorial_step).length()])
+		q.reward = 0
+		quest = q.start()
+		_place_tutorial_board()
+		quest_started.emit(quest)
+		return
 	if story != null:
 		quest = _story_quest(_level).start()
 		_prepare_story_board()
