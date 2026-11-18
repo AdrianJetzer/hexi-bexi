@@ -102,6 +102,14 @@ const RIDDLE_HINT_FONT := 30
 ## Story: Kapitel-Brett zwischen Titel und „Modus wechseln“ (Anteile der Bildschirmhöhe).
 const CHAPTER_BOARD_TOP := 0.15
 const CHAPTER_BOARD_BOTTOM := 0.87
+## Einstellungen: Höhe der Modus-Karten und der Knöpfe darunter (gleich groß).
+const SETTINGS_CARD_HEIGHT := 170
+const SETTINGS_GAP := 22
+## Dezente Knöpfe unter den Modi (Vibration, Tutorial, Schließen): grau statt cyan, ohne Leuchten.
+const BTN2_BG := Color(0.08, 0.09, 0.13, 0.94)
+const BTN2_BG_PRESSED := Color(0.17, 0.19, 0.26, 0.97)
+const BTN2_EDGE := Color(0.6, 0.65, 0.75)
+const BTN2_TEXT := Color(0.66, 0.7, 0.8)
 ## Tutorial: Pause nach dem Aufbau des Felds, bis der Finger erscheint (Sekunden).
 const FINGER_DELAY := 0.35
 const CHOICE_TITLE_FONT := 64
@@ -166,6 +174,8 @@ var _test_button: Button
 ## Menüeintrag „Testmodus“ zeigen? Aus: Knopf versteckt und Testmodus wirkungslos (spec/screens.md).
 const TEST_MODE_MENU := false
 var _mode_confirm: ColorRect
+## Einstellungen: Vibration, Tutorial, (Test), Schließen unter den Modi.
+var _settings_more: VBoxContainer
 ## Tutorial (spec/screens.md, „Tutorial“): läuft gerade, Modus danach, Finger, Nachfrage.
 var _tutorial_active := false
 var _tutorial_return := ""
@@ -452,26 +462,25 @@ func _build_ui() -> void:
 	sub.add_theme_font_size_override("font_size", 40)
 	sub.add_theme_color_override("font_color", TEXT_DIM)
 	(st[1] as VBoxContainer).add_child(sub)
+	# Eine Liste mit überall gleichem Abstand: erst die Modi, dann Vibration, Tutorial, Schließen
+	# als dezentere Knöpfe gleicher Größe.
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", SETTINGS_GAP)
+	(st[1] as VBoxContainer).add_child(list)
 	_settings_modes = VBoxContainer.new()
-	_settings_modes.add_theme_constant_override("separation", 22)
-	(st[1] as VBoxContainer).add_child(_settings_modes)
-	_vibration_button = _button("", 40, st[1])
-	_vibration_button.flat = true
-	_vibration_button.add_theme_color_override("font_color", TEXT_DIM)
-	_vibration_button.custom_minimum_size = Vector2(420, 90)
+	_settings_modes.add_theme_constant_override("separation", SETTINGS_GAP)
+	list.add_child(_settings_modes)
+	_settings_more = VBoxContainer.new()
+	_settings_more.add_theme_constant_override("separation", SETTINGS_GAP)
+	list.add_child(_settings_more)
+	_vibration_button = _secondary_button("", _settings_more)
 	_vibration_button.pressed.connect(func() -> void:
 		Settings.vibration_on = not Settings.vibration_on
 		_update_vibration_button()
 		Settings.tick())
-	var tut := _button("Tutorial", 40, st[1])
-	tut.flat = true
-	tut.add_theme_color_override("font_color", TEXT_DIM)
-	tut.custom_minimum_size = Vector2(420, 90)
+	var tut := _secondary_button("Tutorial", _settings_more)
 	tut.pressed.connect(_on_tutorial_picked)
-	_test_button = _button("", 40, st[1])
-	_test_button.flat = true
-	_test_button.add_theme_color_override("font_color", TEXT_DIM)
-	_test_button.custom_minimum_size = Vector2(420, 90)
+	_test_button = _secondary_button("", _settings_more)
 	_test_button.visible = TEST_MODE_MENU
 	_test_button.pressed.connect(func() -> void:
 		Settings.test_mode = not Settings.test_mode
@@ -479,8 +488,7 @@ func _build_ui() -> void:
 			session.free_solve = Settings.test_mode
 		_update_vibration_button()
 		_update_labels())
-	var close := _button("Schließen", 48, st[1])
-	close.custom_minimum_size = Vector2(420, 120)
+	var close := _secondary_button("Schließen", _settings_more)
 	close.pressed.connect(func() -> void: _settings.visible = false)
 
 	# Nachfrage: Modus mitten im Lauf wechseln
@@ -819,6 +827,23 @@ func _icon_button(kind: String, parent: Node = self) -> Button:
 	return b
 
 
+## Dezenter Knopf für die Einstellungen (ordnet sich den Modus-Karten unter).
+func _secondary_button(text: String, parent: Node) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.focus_mode = Control.FOCUS_NONE
+	b.add_theme_font_size_override("font_size", 34)
+	b.add_theme_stylebox_override("normal", _btn_box(BTN2_BG, BTN2_EDGE, 0.35, 0.0, 0))
+	b.add_theme_stylebox_override("hover", _btn_box(BTN2_BG, BTN2_EDGE, 0.5, 0.0, 0))
+	b.add_theme_stylebox_override("pressed", _btn_box(BTN2_BG_PRESSED, BTN2_EDGE, 0.6, 0.0, 0))
+	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	for c in ["font_color", "font_hover_color", "font_focus_color"]:
+		b.add_theme_color_override(c, BTN2_TEXT)
+	b.add_theme_color_override("font_pressed_color", TEXT)
+	parent.add_child(b)
+	return b
+
+
 func _btn_box(bg: Color, edge: Color, edge_alpha: float, glow_alpha: float, glow: int) -> StyleBoxFlat:
 	var b := StyleBoxFlat.new()
 	b.bg_color = bg
@@ -1050,7 +1075,7 @@ func _open_settings() -> void:
 	for id in Settings.MODES:
 		var m := Settings.load_mode(id)
 		var card := Button.new()
-		card.custom_minimum_size = Vector2(w, 170)
+		card.custom_minimum_size = Vector2(w, SETTINGS_CARD_HEIGHT)
 		card.add_theme_font_size_override("font_size", 34)
 		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		# Nur der Name; darunter die besten Sterne (Story: Sterne je Kapitel auf dem Pfad).
@@ -1065,6 +1090,8 @@ func _open_settings() -> void:
 		var chosen: String = id
 		card.pressed.connect(func() -> void: _on_mode_picked(chosen))
 		_settings_modes.add_child(card)
+	for b in _settings_more.get_children():
+		(b as Control).custom_minimum_size = Vector2(w, SETTINGS_CARD_HEIGHT)
 	_update_vibration_button()
 	_settings.visible = true
 

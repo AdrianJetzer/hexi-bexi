@@ -720,6 +720,21 @@ func test_auto_refill_stops_when_board_full() -> void:
 	assert_eq(run.grid.free_count(), 0, "letzter freier Platz gefüllt, dann Schluss")
 
 
+func test_auto_refill_plants_word_when_board_full() -> void:
+	balance.auto_refill = true
+	run.start()
+	_use_rows([5])
+	for cell in run.grid.all_cells():
+		run.grid.set_letter(cell, "Q")
+	assert_false(run.has_fitting_word(), "volles Feld, kein Wort")
+	var coins := run.coins
+	run._auto_refill()
+	assert_eq(run.grid.free_count(), 0, "Feld bleibt voll")
+	assert_true(run.has_fitting_word(), "Steine haben sich zu einem passenden Wort umgedreht")
+	assert_false(run.solution().is_empty(), "Tipp und Lösen finden es")
+	assert_eq(run.coins, coins, "gratis")
+
+
 func test_solve_and_hint_only_use_nice_words() -> void:
 	# STERN ist gültig, aber kein schönes Wort: Lösen nimmt es nicht, sondern dreht Steine zu einem
 	# schönen Wort um und nimmt dieses (v8.4).
