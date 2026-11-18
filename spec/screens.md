@@ -62,6 +62,10 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu ein kurzes
   - App war nur im Hintergrund: Sie geht dort weiter, wo man war (kein Home-Screen).
   - Allererster Start: Tutorial, danach direkt ins Spiel.
   - **Kalter Start** (App beendet, Handy neu gestartet) nach dem Tutorial: **Home-Screen**. Darunter läuft schon ein neuer Lauf im gespeicherten Modus (Läufe werden nicht gespeichert). Den aktuellen Modus antippen oder „Schließen“ = ins Spiel; ein anderer Modus wechselt **ohne Nachfrage**, weil noch nichts gespielt ist. Ebenso startet „Tutorial“ dann ohne Nachfrage.
+- **Android-Zurück** (Taste oder Geste, v4.42): immer einen Schritt Richtung Home-Screen.
+  - Nachfrage offen („Aufgeben?“, „Modus wechseln?“, „Tutorial starten?“): wie **Nein**. Rätsel offen: schließt es.
+  - Im Spiel (auch Tutorial, Kapitel-Brett, Power-up-Auswahl, Bilanz „Geschafft!“, nach dem Aufgeben): öffnet den **Home-Screen** (über allem; schließt man ihn, ist das Darunter wieder da).
+  - Auf dem Home-Screen: Die App geht in den **Hintergrund** (wie die Home-Taste); der Lauf bleibt, solange Android die App im Speicher behält. Früher beendete Zurück die App sofort.
 - **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Einfach**, **Mittel**, **Schwer**, **Story** (siehe [story-mode.md](story-mode.md); Beschriftung der Knöpfe seit v4.32). Der aktuelle ist markiert. Neu installiert: **Einfach** (v4.38, vorher mittel).
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
@@ -134,6 +138,7 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 - **v4.36:** Leistung: Nebel-Rauschen vorberechnet, automatische 3D-Auflösung auf schwächeren Handys.
 - **v4.37:** Kein Ton und keine Musik; Schalter dafür entfernt.
 - **v4.38:** Tutorial beim ersten Start und über das Menü (DAS, BAUM, Finger); neu installiert startet Einfach.
+- **v4.42:** Android-Zurück: schließt Nachfragen, öffnet sonst den Home-Screen; auf dem Home-Screen geht die App in den Hintergrund statt sich zu beenden.
 - **v4.41:** Nach dem Aufgeben führen „Weiter“ und das Kreuz direkt auf den Home-Screen; die Bilanz „Nicht geschafft“ entfällt, das Kreuz fragt nicht nochmal.
 - **v4.40:** Einstellungen werden zum Home-Screen: Haus-Symbol statt drei Striche, kein Titel oben, Überschrift „Modus“ groß, neue Überschrift „Einstellungen“ vor Vibration; nach kaltem Start erscheint der Home-Screen.
 - **v4.39:** Einstellungen: Vibration, Tutorial und Schließen als dezente graue Knöpfe in Größe der Modus-Karten.

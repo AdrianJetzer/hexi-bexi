@@ -1098,7 +1098,47 @@ func _open_settings() -> void:
 	for b in _settings_more.get_children():
 		(b as Control).custom_minimum_size = Vector2(w, SETTINGS_CARD_HEIGHT)
 	_update_vibration_button()
+	# Über allem (auch über Power-up-Auswahl und Bilanz), die Nachfragen darüber.
+	move_child(_settings, -1)
+	move_child(_mode_confirm, -1)
+	move_child(_tutorial_confirm, -1)
 	_settings.visible = true
+
+
+## Android-Zurück (Taste oder Geste, spec/screens.md v4.42): immer einen Schritt Richtung
+## Home-Screen. Nachfragen wie „Nein“, im Spiel öffnet es den Home-Screen, auf dem Home-Screen
+## geht die App in den Hintergrund (der Lauf bleibt im Speicher).
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		_on_back()
+
+
+func _on_back() -> void:
+	if _mode_confirm.visible:
+		_mode_confirm.visible = false
+		_pending_mode = ""
+	elif _tutorial_confirm.visible:
+		_tutorial_confirm.visible = false
+	elif _confirm.visible:
+		_confirm.visible = false
+	elif _riddle.visible:
+		_riddle.visible = false
+	elif _settings.visible:
+		_to_background()
+	else:
+		_open_settings()
+
+
+## App in den Hintergrund schicken wie die Home-Taste (Android: Activity.moveTaskToBack).
+## Geht das nicht, beendet sich die App wie früher bei Zurück.
+func _to_background() -> void:
+	if OS.get_name() != "Android":
+		return
+	if Engine.has_singleton("AndroidRuntime"):
+		var activity = Engine.get_singleton("AndroidRuntime").getActivity()
+		if activity != null and activity.moveTaskToBack(true):
+			return
+	get_tree().quit()
 
 
 func _open_home_on_start() -> void:
