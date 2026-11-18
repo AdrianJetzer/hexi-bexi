@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v8** (Wörterbuch: Namen gelten, schöne Wörter; noch nicht umgesetzt). Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v8** (Wörterbuch: Namen gelten, schöne Wörter; umgesetzt, Durchsicht der schönen Wörter offen). Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -78,7 +78,7 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ### Gültige Wörter
 - **Alle Wortformen** gelten, auch gebeugte (z. B. STERNE, RANNTE, GROSSEN).
-- **Eigennamen gelten** (v8, Entwurf, noch nicht umgesetzt): Vornamen, Orte, Länder, Flüsse, Marken, Personen, **samt Formen** (LEO, LEOS, ANNA, OLGAS, BERLIN, BERLINS). Sie werden aber **nie vom Spiel gelegt** (nicht in den schönen Wörtern, siehe unten), nur beim Wischen akzeptiert.
+- **Eigennamen gelten** (v8): Vornamen, Orte, Länder, Flüsse, Marken, Personen, **samt Formen** (LEO, LEOS, ANNA, OLGAS, BERLIN, BERLINS). Sie werden aber **nie vom Spiel gelegt** (nicht in den schönen Wörtern, siehe unten), nur beim Wischen akzeptiert.
   - Bisher (v6.6 bis v7.13) galten Eigennamen nicht, außer handverlesene aus den Story-Listen. Anlass war OLGAS als Lösung; mit der Trennung „schöne Wörter“ / „gültige Wörter“ kann das nicht mehr passieren.
 - **Abkürzungen** (z. B. USA, KFZ, NASA) gelten weiterhin **nicht**. Abkürzungen aus den Story-Listen (NASA, BMW, AFK …) zählen nur im Story-Kapitel.
 - **Akronyme** wie DEA, CIA, CPU, AfD gelten ebenfalls nicht (in der Trennmuster-Liste als „Abk.“ markiert oder ganz großgeschrieben), außer Wiktionary kennt sie als normal geschriebenes Wort (z. B. Aids, Ufo, Abc).
@@ -91,12 +91,12 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - Zwei Listen mit getrennten Aufgaben:
   - **Alle gültigen Wörter** (ganzes Wörterbuch, siehe oben): entscheiden, ob ein gewischtes Wort zählt. Auch gebeugte Formen (HAUSES, ABIRRTE), Namen (LEO) und seltene Wörter (SHUKA) zählen.
   - **Schöne Wörter** (eigene kleine Liste): nur diese Wörter bringt das Spiel **selbst** ins Spiel, also bei Wort-Hilfe, Auffüllen, Magnet, Tipp, Scan, Lösen und der Lösung beim Aufgeben. Im Feld liegen damit **mehrheitlich schöne Wörter** (zufällig können auch andere gültige Wörter entstehen).
-- **Neu in v8 (Entwurf, nach Testspielen: die gelegten Wörter wirkten oft fremd oder hässlich):**
+- **Neu in v8 (nach Testspielen: die gelegten Wörter wirkten oft fremd oder hässlich):**
   - **Nur Grundformen:** Hauptwort im Nominativ **Einzahl** (TISCH, BLUME), Verb im Infinitiv (LAUFEN), Adjektiv in der Grundform (WILD). **Keine Mehrzahl** mehr, keine Beugungen (TISCHE, HAUSES, LIEF, WILDEN).
-  - **Alltagsnah statt zeitungsnah:** Häufigkeit vor allem aus allgemeinen Texten (`deu_mixed-typical`), weniger aus Nachrichten; Grundstock aus der Kinder-Wortliste und den Gattungswörtern der Story-Kapitel. Fach-, Politik- und Zeitungsdeutsch (KLUBCHEF, AMTSSITZ, SCHIITEN) fällt raus.
+  - **Alltagsnah statt zeitungsnah:** Häufigkeit zu 75 % aus allgemeinen Texten (`deu_mixed-typical`), zu 25 % aus Nachrichten; die Wörter der Alltags-Kapitel (Tiere, Gemüse, Früchte, Kleidung, Berufe, Sportarten, Instrumente) werden bevorzugt. Wörter, deren Bedeutungen im Wiktionary alle als veraltet, selten, abwertend, regional o. ä. markiert sind, fallen raus.
   - **Ohne gesperrte Wörter:** Sperrliste (`blocklist-suggestions.txt`) erweitert um Schimpf- und Vulgärwörter, Gewalt, Krankheit, Politik, belastete Begriffe.
   - **Ohne Namen** und ohne Abkürzungen.
-  - **Größe:** eher **4.000 bis 6.000** gute Wörter statt 10.000 mittelmäßige, 3 bis 8 Buchstaben.
+  - **Größe:** **5.000** Wörter (3 Buchstaben: ca. 120, 4: 540, 5: 880, 6–8: je ca. 1.150).
   - **Durchsicht durch Adrian:** Die Liste wird in Portionen (nach Länge) vorgelegt; was nicht gefällt, kommt auf die Sperrliste.
 - **Weiterhin:** ohne Artikel und Pronomen (DER, DIE, ICH, WIR …; Ausnahme SEIN), ohne Akronyme, nur Wörter, die auch gültig sind.
 - **Häufigkeit (Quelle):** **Leipzig Corpora Collection** (Uni Leipzig, Wortschatz), Korpora `deu_news_2023_1M` und `deu_mixed-typical_2011_1M`, Lizenz **CC BY** (vor Veröffentlichung auf der Quellseite prüfen). Nicht geeignet: DeReKo (nur nicht-kommerziell); Untertitel-Listen und wordfreq (CC BY-SA, eher heikel).

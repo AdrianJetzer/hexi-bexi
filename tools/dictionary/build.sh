@@ -39,9 +39,7 @@ ls -la "$OUT/de-words.txt"
 #    Story-Kapitel (handverlesene Eigennamen).  (Wortlänge begrenzen mit z. B.:  MAX_LEN=15 …)
 "$HERE/add_story.sh"
 
-# 5) Vorschlags-Wörter (geläufige Wörter für Wort-Hilfe, Tipp, Scan, Lösen …):
-#    Grundformen plus Mehrzahl, nach Häufigkeit in der Leipzig Corpora Collection (CC BY 4.0).
-#    Anzahl ändern mit z. B.:  COMMON_COUNT=12000 tools/dictionary/build.sh
+# 5) Häufigkeiten: Leipzig Corpora Collection (CC BY 4.0)
 LEIPZIG="$SRC/leipzig"
 mkdir -p "$LEIPZIG"
 for c in deu_news_2023_1M deu_mixed-typical_2011_1M; do
@@ -50,15 +48,27 @@ for c in deu_news_2023_1M deu_mixed-typical_2011_1M; do
     tar -xzf "$LEIPZIG/$c.tar.gz" -C "$LEIPZIG" "$c/$c-words.txt"
   fi
 done
-python3 -I "$HERE/build_common.py" "$SRC/dewiktionary.jsonl.gz" "$OUT/de-words.txt" \
-  "$HERE/blocklist-suggestions.txt" "$OUT/common.txt" "${COMMON_COUNT:-10000}" "$LEIPZIG"/*/*-words.txt
-python3 -I "$HERE/pack_words.py" "$OUT/common.txt" "$HERE/../../letter-tetris/data/languages/de/common.bin"
+CORPORA=("$LEIPZIG/deu_mixed-typical_2011_1M/deu_mixed-typical_2011_1M-words.txt" \
+         "$LEIPZIG/deu_news_2023_1M/deu_news_2023_1M-words.txt")
 
 # 6) Kinder-Wortliste für „Deutsch einfach“ (gültige Wörter UND Vorschläge in diesem Modus):
 #    3000 häufigste Inhaltswörter mit 3–5 Buchstaben, ohne englische Lehnwörter, mit Kinder-Sperrliste.
 python3 -I "$HERE/build_common.py" "$SRC/dewiktionary.jsonl.gz" "$OUT/de-words.txt" \
-  "$HERE/blocklist-suggestions.txt" "$OUT/easy.txt" "${EASY_COUNT:-3000}" "$LEIPZIG"/*/*-words.txt \
+  "$HERE/blocklist-suggestions.txt" "$OUT/easy.txt" "${EASY_COUNT:-3000}" "${CORPORA[@]}" \
   --len=3-5 --kids --block="$HERE/blocklist-kids.txt" --extra-valid="${EASY_EXTRA_VALID:-1200}"
 cut -f2 "$OUT/easy-ranked.txt" > "$HERE/kids-words-ranked.txt"
 python3 -I "$HERE/pack_words.py" "$OUT/easy.txt" "$HERE/../../letter-tetris/data/languages/de/easy.bin"
 python3 -I "$HERE/pack_words.py" "$OUT/easy-valid.txt" "$HERE/../../letter-tetris/data/languages/de/easy_valid.bin"
+
+# 7) Schöne Wörter (v8, spec/game-rules.md): legt das Spiel selbst (Wort-Hilfe, Tipp, Scan, Lösen …).
+#    Nur Grundformen ohne Mehrzahl, alltagsnah (Alltagstexte 75 %, Nachrichten 25 %), ohne
+#    seltsame/abwertende Wörter, ohne Namen; Wörter der Alltags-Kapitel (Tiere, Gemüse …) bevorzugt.
+#    Anzahl ändern mit z. B.:  COMMON_COUNT=6000 tools/dictionary/build.sh
+STORY="$HERE/../../letter-tetris/data/story"
+for c in tiere gemuese fruechte kleidung berufe sportarten instrumente; do
+  grep -v '^#' "$STORY/$c.txt" | cut -d';' -f1
+done | LC_ALL=C sort -u > "$OUT/story-everyday.txt"
+python3 -I "$HERE/build_common.py" "$SRC/dewiktionary.jsonl.gz" "$OUT/de-words.txt" \
+  "$HERE/blocklist-suggestions.txt" "$OUT/common.txt" "${COMMON_COUNT:-5000}" "${CORPORA[@]}" \
+  --nice --weights=0.75,0.25 --include="$OUT/story-everyday.txt"
+python3 -I "$HERE/pack_words.py" "$OUT/common.txt" "$HERE/../../letter-tetris/data/languages/de/common.bin"

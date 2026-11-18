@@ -96,11 +96,12 @@ func test_real_german_dictionary() -> void:
 	for w in ["STERN", "STERNE", "RANNTE", "GROSSEN", "STRASSE", "MUSS", "DASS", "HAUS", "ROSE",
 			"WOLF", "ERNST", "BEIM", "ZUM", "MIX", "AIDS", "UFO", "TAXI", "TEE", "ZITAT", "HINUNTERGOSS"]:
 		assert_true(d.contains(w), w)
-	# Handverlesene Eigennamen aus den Story-Listen gelten (tools/dictionary/add_story.sh).
-	for w in ["BERLIN", "JAPAN", "RHEIN", "MOZART", "PORSCHE"]:
+	# Eigennamen gelten samt Formen (v8), auch die aus den Story-Listen (add_story.sh).
+	for w in ["BERLIN", "JAPAN", "RHEIN", "MOZART", "PORSCHE", "LEO", "LEOS", "OLGA", "OLGAS",
+			"ARMSTRONG", "AADORF"]:
 		assert_true(d.contains(w), w)
-	# Unsinn, sonstige Eigennamen und Abkürzungen gelten nicht.
-	for w in ["XQZT", "STERNX", "QQQ", "AB", "OLGAS", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV", "DEA", "CIA", "CPU", "AFD", "HTTP", "POE", "ARMSTRONG", "AADORF", "UGS", "CEOS", "NASA", "FIFA", "IPOD", "THEE", "CITAT", "CONCERT"]:
+	# Unsinn und Abkürzungen gelten nicht.
+	for w in ["XQZT", "STERNX", "QQQ", "AB", "USA", "KFZ", "LKW", "LIII", "XII", "CCCLXXIV", "DEA", "CIA", "CPU", "AFD", "HTTP", "UGS", "CEOS", "NASA", "FIFA", "IPOD", "THEE", "CITAT", "CONCERT"]:
 		assert_false(d.contains(w), w)
 
 
@@ -113,17 +114,18 @@ func test_common_words_without_names() -> void:
 
 
 func test_suggestion_words_are_nice() -> void:
-	# Vorschlags-Wörter: ca. 10.000 Grundformen plus Mehrzahl, 3 bis 8 Buchstaben,
-	# ohne Artikel, Pronomen, gebeugte Formen und Wörter der Sperrliste (spec/game-rules.md).
+	# Schöne Wörter (v8): ca. 5.000 Grundformen ohne Mehrzahl, 3 bis 8 Buchstaben, nur
+	# Haupt-, Zeit-, Eigenschafts- und Zahlwörter, ohne Namen, Artikel, Pronomen, gebeugte Formen
+	# und Wörter der Sperrliste (spec/game-rules.md).
 	var lang := load("res://data/languages/de/language.tres") as LanguageData
 	var c := WordDictionary.from_file(lang.common_words_path)
 	var d := WordDictionary.from_file(lang.words_path)
-	assert_between(c.size(), 9000, 11000)
-	for w in ["TISCH", "TISCHE", "KATZE", "BLUMEN", "LAUFEN", "ABER", "OBEN", "SEIN"]:
+	assert_between(c.size(), 4000, 6000)
+	for w in ["TISCH", "KATZE", "BLUME", "LAUFEN", "SEIN"]:
 		assert_true(c.contains(w), w)
 		assert_true(d.contains(w), w)
 	for w in ["DER", "DIE", "DAS", "EINE", "ICH", "WIR", "IHM", "HAUSES", "TISCHES", "LIEF", "WILDEN",
-			"ABIRRTE", "LOTS", "SCHEISSE", "UNRWA"]:
+			"ABIRRTE", "LOTS", "SCHEISSE", "UNRWA", "TISCHE", "BLUMEN", "LEO", "OLGA", "BERLIN"]:
 		assert_false(c.contains(w), w)
 
 

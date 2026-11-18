@@ -1,4 +1,9 @@
-"""Build the list of suggestion words ("Vorschlags-Wörter", spec/game-rules.md).
+"""Build the list of suggestion words ("schöne Wörter" / "Vorschlags-Wörter", spec/game-rules.md).
+
+Mode --nice (v8, the default list of the game): only base forms of nouns, verbs, adjectives and
+numbers (no plurals), no words whose senses are all marked outdated/rare/derogatory/regional …,
+frequency weighted towards everyday texts (--weights=0.25,0.75 per corpus), and words from
+--include=<file> (kids' list, story words) are preferred if they qualify.
 
 Usage: python3 -I build_common.py <dewiktionary.jsonl.gz> <de-words.txt> <blocklist.txt>
                                   <out.txt> <count> <leipzig-words.txt> [<leipzig-words.txt> ...]
@@ -53,6 +58,12 @@ def _is_form_of(e):
     return bool(senses) and all("form-of" in (s.get("tags") or []) for s in senses)
 
 
+# Schöne Wörter (v8): nur Inhaltswörter in der Grundform.
+NICE_POS = {"noun", "verb", "adj", "num"}
+# Ein Wort ist „seltsam“, wenn jede seiner Bedeutungen so markiert ist.
+ODD_TAGS = {"outdated", "archaic", "obsolete", "dated", "historical", "rare", "derogatory",
+            "vulgar", "offensive", "pejorative", "dialectal", "regional", "Austrian German"}
+
 # Kinder-Liste: nur Inhaltswörter, keine englischen Lehnwörter.
 KIDS_POS = {"noun", "verb", "adj", "num"}
 ENGLISH_LOAN = ("englisch", "engl.", "→ en)")
@@ -67,11 +78,18 @@ def _english_loan(e):
         any(k in et for k in ENGLISH_LOAN)
 
 
-def read_wiktionary(src, kids=False):
+def _all_senses_odd(e):
+    senses = [s for s in e.get("senses") or [] if "form-of" not in (s.get("tags") or [])]
+    return bool(senses) and all(ODD_TAGS & set(s.get("tags") or []) for s in senses)
+
+
+def read_wiktionary(src, kids=False, nice=False):
     """Return (candidates, function_words)."""
     candidates = set()
     function = set()
     loans = set()
+    odd = set()
+    normal = set()
     with gzip.open(src, "rt", encoding="utf-8") as f:
         for line in f:
             try:
@@ -101,6 +119,15 @@ def read_wiktionary(src, kids=False):
                 loans.add(n)
             if kids and pos not in KIDS_POS:
                 continue
+            if nice:
+                if pos not in NICE_POS:
+                    continue
+                if _all_senses_odd(e):
+                    odd.add(n)
+                else:
+                    normal.add(n)
+                candidates.add(n)
+                continue  # nur Grundform, keine Mehrzahl
             candidates.add(n)
             if pos == "noun":
                 for fm in e.get("forms") or []:
@@ -111,11 +138,14 @@ def read_wiktionary(src, kids=False):
                             candidates.add(fn)
     if kids:
         candidates -= loans
+    if nice:
+        candidates -= odd - normal  # nur raus, wenn keine normale Bedeutung als eigener Eintrag
     return candidates, function
 
 
-def read_frequencies(paths):
-    """Return (average relative frequency per normalized word, words mostly written in capitals)."""
+def read_frequencies(paths, weights=None):
+    """Return (weighted average relative frequency per normalized word, words mostly in capitals)."""
+    weights = weights or [1.0] * len(paths)
     total = collections.Counter()
     caps = collections.Counter()
     seen = collections.Counter()
@@ -134,10 +164,11 @@ def read_frequencies(paths):
                     if parts[1].isupper():
                         caps[n] += c
         s = sum(counts.values()) or 1
+        wt = weights[paths.index(p)]
         for w, c in counts.items():
-            total[w] += c / s
+            total[w] += wt * c / s
     mostly_caps = {w for w, c in caps.items() if c * 2 > seen[w]}
-    return {w: v / len(paths) for w, v in total.items()}, mostly_caps
+    return {w: v / sum(weights) for w, v in total.items()}, mostly_caps
 
 
 def read_blocklist(path):
@@ -146,17 +177,21 @@ def read_blocklist(path):
 
 
 def main(wikt, valid_path, block_path, dst, count, corpora, min_len=MIN_LEN, max_len=MAX_LEN,
-         extra_blocks=(), kids=False, extra_valid=0):
+         extra_blocks=(), kids=False, extra_valid=0, nice=False, weights=None, includes=()):
     with open(valid_path, encoding="utf-8") as f:
         valid = {line.strip() for line in f if line.strip()}
-    candidates, function = read_wiktionary(wikt, kids)
+    candidates, function = read_wiktionary(wikt, kids, nice)
     drop = function - KEEP_ANYWAY
     pool = {w for w in (candidates & valid) - drop if min_len <= len(w) <= max_len}
-    freq, mostly_caps = read_frequencies(corpora)
+    freq, mostly_caps = read_frequencies(corpora, weights)
     pool -= read_blocklist(block_path) | mostly_caps
     for extra in extra_blocks:
         pool -= read_blocklist(extra)
-    ranked = sorted((w for w in pool if freq.get(w, 0) > 0), key=lambda w: (-freq[w], w))
+    preferred = set()
+    for inc in includes:
+        preferred |= read_blocklist(inc) & pool
+    ranked = sorted((w for w in pool if freq.get(w, 0) > 0 or w in preferred),
+                    key=lambda w: (w not in preferred, -freq.get(w, 0), w))
     chosen = ranked[:count]
     with open(dst, "w", encoding="utf-8") as out:
         for w in sorted(chosen):
@@ -189,12 +224,20 @@ if __name__ == "__main__":
     lo, hi = MIN_LEN, MAX_LEN
     extra = []
     kids = "--kids" in opts
+    nice = "--nice" in opts
     extra_valid = 0
+    weights = None
+    includes = []
     for o in opts:
+        if o.startswith("--weights="):
+            weights = [float(x) for x in o[10:].split(",")]
+        if o.startswith("--include="):
+            includes.append(o[10:])
         if o.startswith("--extra-valid="):
             extra_valid = int(o[14:])
         if o.startswith("--len="):
             lo, hi = (int(x) for x in o[6:].split("-"))
         elif o.startswith("--block="):
             extra.append(o[8:])
-    main(args[0], args[1], args[2], args[3], int(args[4]), args[5:], lo, hi, extra, kids, extra_valid)
+    main(args[0], args[1], args[2], args[3], int(args[4]), args[5:], lo, hi, extra, kids, extra_valid,
+         nice, weights, includes)

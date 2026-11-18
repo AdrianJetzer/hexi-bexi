@@ -1,8 +1,9 @@
 """Extract game words (reformed spelling) from the Trennmuster 'wortliste'.
 
 Usage: python3 -I build_trennmuster.py <wortliste> <out.txt> [<abbrevs.txt>]
-<abbrevs.txt>: words marked as abbreviation ("# Abk."), written fully in capitals (acronyms),
-or marked as a name in the comment ("# Name", "# geogr. Name", "# engl. Name" …).
+<abbrevs.txt>: words marked as abbreviation ("# Abk.") or written fully in capitals (acronyms).
+Words marked as a name ("# Name", "# geogr. Name" …) are valid since v8; they go to
+<abbrevs>-names.txt (never suggested by the game).
 """
 import re
 import sys
@@ -35,6 +36,7 @@ def reformed_ok(fields):
 def main(src, dst, abbrev_dst=None):
     words = set()
     abbrevs = set()
+    names = set()
     total = 0
     with open(src, encoding="utf-8") as f:
         for line in f:
@@ -50,14 +52,19 @@ def main(src, dst, abbrev_dst=None):
             if n:
                 words.add(n)
                 raw = fields[0]
-                if "Abk" in comment or "Name" in comment or (len(raw) >= 2 and raw.isupper()):
+                if "Abk" in comment or (len(raw) >= 2 and raw.isupper()):
                     abbrevs.add(n)
+                elif "Name" in comment:
+                    names.add(n)
     with open(dst, "w", encoding="utf-8") as out:
         for w in sorted(words):
             out.write(w + "\n")
     if abbrev_dst:
         with open(abbrev_dst, "w", encoding="utf-8") as out:
             for w in sorted(abbrevs):
+                out.write(w + "\n")
+        with open(abbrev_dst.replace(".txt", "-names.txt"), "w", encoding="utf-8") as out:
+            for w in sorted(names):
                 out.write(w + "\n")
     print(f"entries={total} words={len(words)} abbrevs={len(abbrevs)}")
 

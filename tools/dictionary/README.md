@@ -33,7 +33,7 @@ tools/dictionary/build.sh
 - Mindestens 3 Buchstaben.
 - Trennmuster: nur Einträge, die in der **reformierten Rechtschreibung** gelten.
 - Wiktionary: Stichwörter deutscher Einträge plus alle einteiligen Beugungsformen.
-- **Eigennamen und Abkürzungen entfallen** (siehe spec/game-rules.md): Ein Wort fliegt raus, wenn Wiktionary es nur als Eigenname (`name`) oder Abkürzung (`abbrev`, inkl. als Abkürzung markierter Formen und der Formen solcher Wörter) kennt. Ausnahmen: Zusammenziehungen wie „zum“, „beim“, „sowas“ (bei Wiktionary auch `abbrev`) und längere kleingeschriebene Kurzformen wie „rausreißen“. Die entfernten Wörter stehen in `out/excluded.txt` und werden auch aus der Trennmuster-Liste gefiltert (`filter_words.py`).
+- **Abkürzungen entfallen, Eigennamen gelten (seit v8)** (siehe spec/game-rules.md): Ein Wort fliegt raus, wenn Wiktionary es nur als Abkürzung (`abbrev`, inkl. als Abkürzung markierter Formen und der Formen solcher Wörter) kennt. Ausnahmen: Zusammenziehungen wie „zum“, „beim“, „sowas“ (bei Wiktionary auch `abbrev`) und längere kleingeschriebene Kurzformen wie „rausreißen“. Die entfernten Wörter stehen in `out/excluded.txt` und werden auch aus der Trennmuster-Liste gefiltert (`filter_words.py`).
 - **Akronyme und markierte Namen entfallen:** Trennmuster-Einträge mit Vermerk „# Abk.“ oder „Name“ im Kommentar (z. B. „engl. Name“, „geogr. Name“) oder ganz in Großbuchstaben (z. B. DEA, CPU) werden aus beiden Listen entfernt (`out/trennmuster-abbrevs.txt`, zusammengeführt mit `combine_exclusions.py` zu `out/excluded-all.txt`). Ausnahme: Wiktionary kennt das Wort in normaler Schreibweise (ganz klein oder nur erster Buchstabe groß) und es enthält einen Vokal, z. B. Aids, Ufo, Abc (`out/excluded-normalcase.txt`).
 - **Story-Wörter kommen dazu** (`add_story.sh`, Schritt 4 von `build.sh`): alle Themenwörter aus `letter-tetris/data/story/*.txt` werden in `words.bin` aufgenommen, damit handverlesene Eigennamen (Länder, Städte, Marken, Personen) auch im normalen Lauf gelten. Ausnahme: Abkürzungen aus `story-abbrevs.txt`. Die Vorschlags-Listen (`common.bin`, `easy*.bin`) bleiben ohne sie. Nach Änderungen an den Story-Listen genügt `LC_ALL=C tools/dictionary/add_story.sh`.
 - **Großbuchstaben mitten im Wort entfallen:** Wiktionary-Stichwörter aus einem Stück mit Großbuchstaben nach dem ersten Buchstaben (z. B. „UGs“, „CEOs“, „NASA“, „iPod“) gelten samt Formen als Abkürzung/Marke, außer es gibt sie auch normal geschrieben (z. B. „Ufo“ neben „UFO“). Wörter mit Bindestrich oder Leerzeichen sind nicht betroffen.
@@ -81,3 +81,8 @@ tools/dictionary/build.sh
 - `blocklist-kids.txt`: zusätzliche Sperrliste für die Kinder-Wortliste.
 - `kids-words-ranked.txt`: Kinder-Wortliste zum Durchsehen.
 - `pack_words.py`: Textliste → kompaktes Spielformat LTW1 (Formatbeschreibung im Skript).
+
+## v8: Namen und schöne Wörter
+
+- **Eigennamen** (Wiktionary `name`, Trennmuster „# … Name“) gelten samt Formen (LEO, LEOS, OLGAS). Reine Namen stehen in `out/excluded-names.txt` und `out/trennmuster-abbrevs-names.txt`; sie kommen nie in die schönen Wörter.
+- **Schöne Wörter** (`common.bin`, Schritt 7 in `build.sh`, `build_common.py --nice`): nur Grundformen von Haupt-, Zeit-, Eigenschafts- und Zahlwörtern, keine Mehrzahl, keine „seltsamen“ Wörter (alle Bedeutungen veraltet/selten/abwertend/regional …), Häufigkeit 75 % Alltagstexte und 25 % Nachrichten, Wörter der Alltags-Kapitel der Story bevorzugt, 5.000 Wörter.
