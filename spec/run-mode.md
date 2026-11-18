@@ -63,7 +63,7 @@ Stetig ansteigend bis zum Finale in Level 20 (v3.40): Jedes Level ist ein **eige
 | 19 | 4 + 7 | 11 |
 | 20 | 4 + 8 | 12 |
 
-**Ab Level 21 (Block-Budget):**
+**Ab Level 21 (Block-Budget, nur im Test-Betrieb ohne Ziel, `goal_level = 0`):**
 - Ein Auftrag hat ein **Budget** an Blöcken: **12** in Level 21–30, alle **10** Levels **+1** (Level 31–40: 13 …), höchstens 24.
 - Das Spiel verteilt das Budget **zufällig** auf **1 bis 3 Zeilen** mit je **3 bis 8** Blöcken (z. B. 4 + 4 + 4, 6 + 6, 3 + 4 + 5).
 
