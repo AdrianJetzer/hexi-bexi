@@ -6,8 +6,11 @@ extends Node3D
 ## werden kleiner und verglimmen. Dazu ein kurzer Lichtblitz. Der Buchstabe fliegt derweil als
 ## eigenes Zeichen nach oben (das macht der Spiel-Bildschirm).
 
-const MIN_SHARDS := 7
-const MAX_SHARDS := 12
+const MIN_SHARDS := 5
+const MAX_SHARDS := 8
+## Feinere Splitter: Größe und Dicke im Verhältnis zum Stein.
+const SHARD_SCALE := 0.62
+const SHARD_THICKNESS := 0.45
 ## Dauer bis die Splitter verschwunden sind (Sekunden).
 const LIFE := 0.8
 const GRAVITY := 14.0
@@ -22,9 +25,12 @@ var _flash: OmniLight3D
 var _rng := RandomNumberGenerator.new()
 
 
-## radius/thickness wie der Stein; mat: Material der Splitter (Kristall); color: Farbe des Blitzes.
-func setup(radius: float, thickness: float, mat: Material, color: Color = Color(0.6, 1.0, 1.0)) -> void:
+## radius/thickness wie der Stein; mat: wird nicht mehr genutzt (Splitter sind klares Glas);
+## color: Farbe des Blitzes und der Glas-Tönung.
+func setup(radius: float, thickness: float, _mat: Material = null, color: Color = Color(0.6, 1.0, 1.0)) -> void:
 	_rng.randomize()
+	var mat := _glass(color)
+	thickness *= SHARD_THICKNESS
 	var hex := PackedVector2Array()
 	for i in 6:
 		var a := PI / 3.0 * i
@@ -45,6 +51,8 @@ func setup(radius: float, thickness: float, mat: Material, color: Color = Color(
 		var poly := _wedge(hex, center, a0, a1)
 		if poly.size() < 3:
 			continue
+		for i in poly.size():
+			poly[i] *= SHARD_SCALE
 		_add_shard(poly, thickness, mat)
 	_flash = OmniLight3D.new()
 	_flash.light_color = color
@@ -69,6 +77,22 @@ func _process(delta: float) -> void:
 		_flash.light_energy = FLASH_ENERGY * maxf(0.0, 1.0 - _age / FLASH_TIME)
 	if _age >= LIFE:
 		queue_free()
+
+
+## Durchsichtiges, leicht leuchtendes Glas: additiv gemischt, damit der dunkle Hintergrund
+## durchscheint und überlappende Stücke heller wirken (wie Licht in Glaskanten).
+static var _glass_cache: Dictionary = {}
+static func _glass(tint: Color) -> StandardMaterial3D:
+	if _glass_cache.has(tint):
+		return _glass_cache[tint]
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.albedo_color = tint.lerp(Color.WHITE, 0.25) * 0.42
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	m.no_depth_test = false
+	_glass_cache[tint] = m
+	return m
 
 
 ## Teil des Sechsecks zwischen den Strahlen a0 und a1 vom Bruchpunkt aus (in der Draufsicht).
@@ -135,21 +159,8 @@ func _add_shard(poly: PackedVector2Array, thickness: float, mat: Material) -> vo
 		st.add_vertex(Vector3(p.x, h, p.y))
 		st.add_vertex(Vector3(q.x, h, q.y))
 		st.add_vertex(Vector3(q.x, -h, q.y))
-	# Beide Seiten zeichnen (der Kristall-Shader kann Rückseiten wegschneiden, Splitter drehen sich).
-	var arrays := st.commit_to_arrays()
-	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-	var norms: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-	var both := SurfaceTool.new()
-	both.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for i in range(0, verts.size(), 3):
-		for j in [0, 1, 2]:
-			both.set_normal(norms[i + j])
-			both.add_vertex(verts[i + j])
-		for j in [0, 2, 1]:
-			both.set_normal(-norms[i + j])
-			both.add_vertex(verts[i + j])
 	var mi := MeshInstance3D.new()
-	mi.mesh = both.commit()
+	mi.mesh = st.commit()
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.position = Vector3(centroid.x, 0.0, centroid.y)
