@@ -13,6 +13,9 @@ const FLIP_TIME := 0.75
 const PERSPECTIVE := 0.22
 ## Anheben während der Drehung (Anteil der Quadratgröße).
 const LIFT := 0.35
+## Rauch: dezent und lange ausklingend.
+const SMOKE_TIME := 2.6
+const SMOKE_ALPHA := 0.16
 const EMPTY := Color(1.0, 1.0, 1.0, 0.06)
 const EMPTY_EDGE := Color(1.0, 1.0, 1.0, 0.16)
 
@@ -37,8 +40,8 @@ func play(rect: Rect2, color: Color) -> void:
 	var tw := create_tween()
 	tw.tween_method(_set_t, 0.0, 1.0, FLIP_TIME).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_callback(func() -> void: finished.emit())
-	# Partikel noch etwas nachglühen lassen, dann aufräumen.
-	tw.tween_interval(1.4)
+	# Partikel (vor allem der Rauch) in Ruhe ausklingen lassen, dann aufräumen.
+	tw.tween_interval(SMOKE_TIME + 0.5)
 	tw.tween_callback(queue_free)
 
 
@@ -111,15 +114,15 @@ func _burst() -> void:
 	smoke.position = center
 	smoke.one_shot = true
 	smoke.explosiveness = 0.85
-	smoke.amount = 14
-	smoke.lifetime = 1.3
+	smoke.amount = 10
+	smoke.lifetime = SMOKE_TIME
 	smoke.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
 	smoke.emission_sphere_radius = size * 0.35
 	smoke.direction = Vector2(0, -1)
 	smoke.spread = 70.0
-	smoke.gravity = Vector2(0, -size * 0.6)
-	smoke.initial_velocity_min = size * 0.4
-	smoke.initial_velocity_max = size * 1.1
+	smoke.gravity = Vector2(0, -size * 0.25)
+	smoke.initial_velocity_min = size * 0.25
+	smoke.initial_velocity_max = size * 0.7
 	smoke.damping_min = size * 0.4
 	smoke.damping_max = size * 0.8
 	smoke.angle_min = -180.0
@@ -134,8 +137,11 @@ func _burst() -> void:
 	smoke.scale_amount_curve = grow
 	var sramp := Gradient.new()
 	var tint := _color.lerp(Color(0.85, 0.9, 1.0), 0.45)
+	# sanft ein, lange und weich aus (kein plötzliches Verschwinden)
 	sramp.set_color(0, Color(tint, 0.0))
-	sramp.add_point(0.15, Color(tint, 0.38))
+	sramp.add_point(0.12, Color(tint, SMOKE_ALPHA))
+	sramp.add_point(0.45, Color(tint, SMOKE_ALPHA * 0.6))
+	sramp.add_point(0.75, Color(tint, SMOKE_ALPHA * 0.25))
 	sramp.set_color(1, Color(tint, 0.0))
 	smoke.color_ramp = sramp
 	add_child(smoke)

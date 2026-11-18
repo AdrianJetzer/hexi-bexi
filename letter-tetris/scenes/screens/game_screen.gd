@@ -1183,8 +1183,7 @@ func _flip_offer_square(idx: int, every: int) -> void:
 	_set_offer_pulse(false)
 	_offer_hint.steps = every
 	_offer_hint.done = idx
-	_offer_hint.show_current = false
-	_offer_hint.hidden_index = idx
+	_offer_hint.show_current = true  # bis die Drehung beginnt, bleibt das Quadrat sichtbar
 	_offer_flip = SquareFlip.new()
 	_offer_flip.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_offer_flip)
@@ -1194,7 +1193,10 @@ func _flip_offer_square(idx: int, every: int) -> void:
 	var flip := _offer_flip
 	var t := create_tween()
 	t.tween_interval(OFFER_FLIP_DELAY)
-	t.tween_callback(func() -> void: flip.play(r, color))
+	t.tween_callback(func() -> void:
+		_offer_hint.show_current = false
+		_offer_hint.hidden_index = idx
+		flip.play(r, color))
 	flip.finished.connect(func() -> void:
 		_offer_hint.hidden_index = -1
 		_offer_hint.done = idx + 1
