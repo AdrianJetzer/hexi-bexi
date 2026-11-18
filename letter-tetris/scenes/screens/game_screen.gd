@@ -403,15 +403,18 @@ func _build_ui() -> void:
 	# „Aufgeben“ (Kreuz) und Home-Screen (Haus): schmale Glas-Knöpfe nur mit Symbol, dezenter
 	# als die Hilfe-Knöpfe; der Rand leuchtet beim Antippen auf (spec/screens.md v4.25).
 	_give_up_button = _icon_button("close")
-	_give_up_button.pressed.connect(func() -> void: _confirm.visible = true)
+	_give_up_button.pressed.connect(func() -> void:
+		# Nach dem Aufgeben fragt das Kreuz nicht nochmal, sondern führt wie „Weiter“ heim.
+		if _continue_button.visible:
+			_home_after_give_up()
+		else:
+			_confirm.visible = true)
 	_settings_button = _icon_button("home")
 	_settings_button.pressed.connect(_open_settings)
 
 	_continue_button = _button("Weiter", 56)
 	_continue_button.visible = false
-	_continue_button.pressed.connect(func() -> void:
-		_continue_button.visible = false
-		_summary.visible = true)
+	_continue_button.pressed.connect(_home_after_give_up)
 
 	_finger = TutorialFinger.new()
 	add_child(_finger)
@@ -1524,13 +1527,18 @@ func _on_confirm_give_up() -> void:
 	session.give_up()
 
 
-func _on_run_ended(level: int, _reason: String) -> void:
-	if session.story != null:
-		_summary_label.text = "Kapitel nicht geschafft\n\n%s\nLevel %d von %d" % [
-			session.story.display_name, level, BALANCE.goal_level]
+## Nach dem Aufgeben („Weiter“ oder Kreuz): ohne Bilanz auf den Home-Screen, darunter läuft
+## schon ein neuer Lauf bzw. liegt das Kapitel-Brett, wie nach einem kalten Start (screens.md v4.41).
+func _home_after_give_up() -> void:
+	_continue_button.visible = false
+	if _is_story():
+		_open_path()
 	else:
-		_summary_label.text = "Nicht geschafft\n\nLevel %d von %d\n\nRekord: %d Münzen" % [
-			level, BALANCE.goal_level, SaveData.best_coins()]
+		new_run()
+	_open_home_on_start()
+
+
+func _on_run_ended(_level: int, _reason: String) -> void:
 	_update_labels()
 	for b in _help_buttons():
 		b.visible = false
