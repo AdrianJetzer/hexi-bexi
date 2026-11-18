@@ -193,6 +193,14 @@ var _stuck_veil: ColorRect
 var _stuck_button: Button
 var _stuck_tween: Tween
 var _offer_hint_pulse: Tween
+## Zuletzt gezeigter Stand der Power-up-Quadrate (Level, Level bis zur Auswahl), um den Schritt
+## zum nächsten Level zu erkennen und das Quadrat drehen zu lassen.
+var _offer_seen_level: int = 0
+var _offer_seen_n: int = 0
+## Läuft gerade eine Dreh-Animation?
+var _offer_flip: SquareFlip
+## Pause nach dem Level-Abschluss, bevor sich das Quadrat dreht (Buchstaben fliegen noch).
+const OFFER_FLIP_DELAY := 0.55
 ## Auswahl-Bildschirm für Power-ups und Upgrades.
 var _choice: ColorRect
 var _choice_title: Label
@@ -250,6 +258,14 @@ func new_run(seed_value: int = -1) -> void:
 	_continue_button.visible = false
 	_choice.visible = false
 	_offer_hint.visible = true
+	# Neuer Lauf: Power-up-Quadrate ohne Dreh-Animation neu aufbauen.
+	if _offer_flip != null:
+		_offer_flip.queue_free()
+		_offer_flip = null
+	_offer_hint.hidden_index = -1
+	_offer_hint.current_alpha = 1.0
+	_offer_seen_level = 0
+	_offer_seen_n = 0
 	_stuck_veil.visible = false
 	_confirm.visible = false
 	_board.setup(session)
@@ -1122,22 +1138,75 @@ func _update_offer_hint() -> void:
 	# Kein Text (spec/screens.md v4.22): je Level bis zum Power-up ein Quadrat; geschaffte Level
 	# leuchten, das laufende ist umrandet. Ohne anstehende Auswahl (Story, nach dem letzten
 	# Power-up) verschwindet die Anzeige; den Weg zum Ziel zeigt die Leiter.
+	# Ein geschafftes Level dreht sein Quadrat mit Funken und Rauch (v4.24).
+	if _offer_flip != null:
+		return  # die Animation ruft am Ende wieder auf
 	var n := session.levels_until_offer() if BALANCE.draft_enabled else 0
 	var every := BALANCE.draft_every
-	_offer_hint.visible = n > 0 and not session.is_over
-	if n > 0:
+	var level := session.level()
+	var pending := not session.offer.is_empty()
+	if level == _offer_seen_level + 1 and _offer_seen_n > 0 and _offer_hint.visible:
+		var idx := every - _offer_seen_n
+		_offer_seen_level = level
+		_offer_seen_n = n
+		_flip_offer_square(idx, every)
+		return
+	_offer_seen_level = level
+	_offer_seen_n = n
+	_offer_hint.visible = (n > 0 or pending) and not session.is_over
+	if pending:
+		_offer_hint.steps = every
+		_offer_hint.done = every
+		_offer_hint.show_current = false
+	elif n > 0:
 		_offer_hint.steps = every
 		_offer_hint.done = every - n
 		_offer_hint.show_current = true
-	var glow := n == 1
-	if glow and _offer_hint_pulse == null:
+	_set_offer_pulse(n == 1 and not pending)
+
+
+func _set_offer_pulse(on: bool) -> void:
+	if on and _offer_hint_pulse == null:
 		_offer_hint_pulse = create_tween().set_loops()
 		_offer_hint_pulse.tween_property(_offer_hint, "modulate", PULSE_BRIGHT, PULSE_HALF)
 		_offer_hint_pulse.tween_property(_offer_hint, "modulate", Color.WHITE, PULSE_HALF)
-	elif not glow and _offer_hint_pulse != null:
+	elif not on and _offer_hint_pulse != null:
 		_offer_hint_pulse.kill()
 		_offer_hint_pulse = null
 		_offer_hint.modulate = Color.WHITE
+
+
+## Quadrat idx (das Level, das gerade geschafft wurde) dreht sich zu seiner Farbe; danach wird das
+## nächste Quadrat „ready“ (Umrandung leuchtet auf). Beim letzten (Gold) bleiben alle vier
+## gefüllt, bis die Power-up-Auswahl erledigt ist.
+func _flip_offer_square(idx: int, every: int) -> void:
+	_set_offer_pulse(false)
+	_offer_hint.steps = every
+	_offer_hint.done = idx
+	_offer_hint.show_current = false
+	_offer_hint.hidden_index = idx
+	_offer_flip = SquareFlip.new()
+	_offer_flip.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(_offer_flip)
+	var r := _offer_hint.cell_rect(idx)
+	r.position += _offer_hint.position
+	var color := _offer_hint.color_at(idx)
+	var flip := _offer_flip
+	var t := create_tween()
+	t.tween_interval(OFFER_FLIP_DELAY)
+	t.tween_callback(func() -> void: flip.play(r, color))
+	flip.finished.connect(func() -> void:
+		_offer_hint.hidden_index = -1
+		_offer_hint.done = idx + 1
+		_offer_flip = null
+		var last := idx + 1 >= every
+		if not last and session != null and not session.is_over:
+			# nächstes Quadrat leuchtet sanft als „ready“ auf
+			_offer_hint.current_alpha = 0.0
+			_offer_hint.show_current = true
+			var fade := create_tween()
+			fade.tween_property(_offer_hint, "current_alpha", 1.0, 0.45)
+		_update_offer_hint())
 
 
 ## Liegt eine Auswahl an, Karten zeigen (nach der Abschluss-Animation des Auftrags).
