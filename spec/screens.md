@@ -106,7 +106,7 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 
 - Optik und Übergänge zwischen den Screens (Animationen).
 - Gestaltung von Logo und Titel.
-- Verhalten der Android-Zurück-Geste auf den einzelnen Screens.
+- **Lauf speichern [später]:** Beendet Android die App im Hintergrund (oder das Handy startet neu), ist der laufende Lauf heute verloren; beim nächsten Start beginnt ein neuer Lauf auf dem Home-Screen. Gespeichert werden müssten Level, Feld, Zeilen (mit schon gefüllten Wörtern), Münzen, Hilfen und Power-ups, in der Story auch das Kapitel. Danach ginge es nach einem kalten Start mitten im Lauf weiter.
 
 ## Verlauf
 
@@ -136,6 +136,7 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 - **v4.36:** Leistung: Nebel-Rauschen vorberechnet, automatische 3D-Auflösung auf schwächeren Handys.
 - **v4.37:** Kein Ton und keine Musik; Schalter dafür entfernt.
 - **v4.38:** Tutorial beim ersten Start und über das Menü (DAS, BAUM, Finger); neu installiert startet Einfach.
+- **v4.44:** Offener Punkt „Lauf speichern“ eingetragen; Zurück-Geste ist erledigt (v4.42).
 - **v4.43:** Bilanz „Geschafft!“ bzw. „Kapitel geschafft!“: Knopf „Weiter“ führt auf den Home-Screen (vorher „Nochmal“ / „Zur Karte“).
 - **v4.42:** Android-Zurück: schließt Nachfragen, öffnet sonst den Home-Screen; auf dem Home-Screen geht die App in den Hintergrund statt sich zu beenden.
 - **v4.41:** Nach dem Aufgeben führen „Weiter“ und das Kreuz direkt auf den Home-Screen; die Bilanz „Nicht geschafft“ entfällt, das Kreuz fragt nicht nochmal.
