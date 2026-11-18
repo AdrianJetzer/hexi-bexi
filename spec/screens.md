@@ -75,7 +75,14 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - Wird **lokal auf dem Gerät** gespeichert.
 - Architektur so anlegen, dass **später Online-Ranglisten** möglich sind (Google Play Games, Game Center).
 
-## Offene Fragen
+## Leistung (v4.36)
+
+Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 2400): ohne Anpassung nur ca. 22 Bilder/s, der Grafikchip ist der Engpass (Prozessor kaum ausgelastet). Glow und Schatten kosten kaum etwas; teuer sind die Bildschirm-Auflösung und der Nebel-Hintergrund.
+
+- **Nebel vorberechnet:** Das Rauschen des Nebel-Hintergrunds wird einmal beim Start als kachelbare Textur erzeugt und im Spiel nur noch nachgeschlagen (vorher 2 × 6 Rausch-Schichten je Pixel und Bild). Optik gleich, Redmi von ca. 22 auf ca. 36 Bilder/s.
+- **Automatische 3D-Auflösung:** Nach dem Start misst das Spiel 2 s Einschwingen + 3 s die Bildrate. Unter 50 Bilder/s rechnet die 3D-Welt (Steine, Hintergrund, Kapitel-Brett) mit **75 %** Auflösung, liegt es danach noch unter 40, mit **60 %**. Schrift, Knöpfe und Kästchen bleiben scharf. Schnelle Handys (z. B. Pixel 10 Pro) bleiben bei 100 %. Redmi: 75 %, ca. 53 Bilder/s.
+
+
 
 - Optik und Übergänge zwischen den Screens (Animationen).
 - Gestaltung von Logo und Titel.
@@ -106,6 +113,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.33:** Wisch-Vorschau zeigt die gewischten Buchstaben in den glühenden Blöcken.
 - **v4.34:** Glut der Wisch-Vorschau gedämpft (ruhige Glut und Aufflammen schwächer).
 - **v4.35:** Lava/Plasma verworfen: Vorschau-Blöcke sehen aus wie gelöste (türkis, weißer Buchstabe), nur leicht durchsichtig.
+- **v4.36:** Leistung: Nebel-Rauschen vorberechnet, automatische 3D-Auflösung auf schwächeren Handys.
 - **v4.26:** Symbol-Knöpfe tiefer (nicht mehr im Rand); Power-up-Drehung ohne Rauch.
 - **v4.25:** Aufgeben und Einstellungen als Symbol-Knöpfe (Kreuz, Menü) statt Text.
 - **v4.24:** Power-up-Quadrate drehen sich beim Level-Abschluss mit Funken und Rauch.

@@ -207,6 +207,10 @@ func _ready() -> void:
 	new_run()
 	if _is_story():
 		_open_path.call_deferred()
+	# Schwächere Handys: 3D-Auflösung automatisch senken, wenn es ruckelt.
+	var guard := PerfGuard.new()
+	guard.extra_viewports.append(_chapter_view)
+	add_child(guard)
 
 
 ## Neuen Lauf starten (Level 1).
