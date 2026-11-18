@@ -1,6 +1,6 @@
 # Spielregeln
 
-Status: **Entwurf v7.13**. Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
+Status: **Entwurf v8** (Wörterbuch: Namen gelten, schöne Wörter; umgesetzt, Durchsicht der schönen Wörter offen). Lauf-Modus (Roguelike mit Aufträgen und Münzen) ersetzt den ruhigen Level-Modus; Details in [run-mode.md](run-mode.md).
 
 ## Grundidee
 
@@ -78,30 +78,29 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 
 ### Gültige Wörter
 - **Alle Wortformen** gelten, auch gebeugte (z. B. STERNE, RANNTE, GROSSEN).
-- **Eigennamen** (z. B. BERLIN, ANNA, OLGAS) und **Abkürzungen** (z. B. USA, KFZ) gelten **nicht**.
-  - Ausnahme: Ist ein Name **auch ein normales Wort** (z. B. ROSE, WOLF, BACH, ERNST, WINTER), gilt er.
-  - Ausnahme: **Handverlesene Eigennamen aus den Story-Kapiteln** gelten auch im normalen Lauf (v7.13): Länder, Hauptstädte, Flüsse, Inseln, Marken, berühmte Personen und Figuren (z. B. BERLIN, JAPAN, RHEIN, PORSCHE, MOZART). Sie erscheinen aber nie als Tipp, Lösung oder Vorschlag. Abkürzungen aus den Story-Listen (NASA, BMW, AFK …) zählen nur im Story-Kapitel. Vornamen und unbekannte Orte (OLGAS, AADORF) bleiben draußen.
-  - Entfernt wird ein Wort, wenn Wiktionary es **nur** als Eigenname oder Abkürzung kennt (samt Formen), oder wenn die Trennmuster-Liste es im Kommentar als **Name** vermerkt (z. B. „engl. Name“, „geogr. Name“), außer Wiktionary kennt es als normales Wort (z. B. Newton, Dobermann). Seltene Namen, die Wiktionary nicht kennt, können durchrutschen; dafür später ggf. eine eigene Sperrliste.
+- **Eigennamen gelten** (v8): Vornamen, Orte, Länder, Flüsse, Marken, Personen, **samt Formen** (LEO, LEOS, ANNA, OLGAS, BERLIN, BERLINS). Sie werden aber **nie vom Spiel gelegt** (nicht in den schönen Wörtern, siehe unten), nur beim Wischen akzeptiert.
+  - Bisher (v6.6 bis v7.13) galten Eigennamen nicht, außer handverlesene aus den Story-Listen. Anlass war OLGAS als Lösung; mit der Trennung „schöne Wörter“ / „gültige Wörter“ kann das nicht mehr passieren.
+- **Abkürzungen** (z. B. USA, KFZ, NASA) gelten weiterhin **nicht**. Abkürzungen aus den Story-Listen (NASA, BMW, AFK …) zählen nur im Story-Kapitel.
 - **Akronyme** wie DEA, CIA, CPU, AfD gelten ebenfalls nicht (in der Trennmuster-Liste als „Abk.“ markiert oder ganz großgeschrieben), außer Wiktionary kennt sie als normal geschriebenes Wort (z. B. Aids, Ufo, Abc).
 - Ebenso Wörter, deren Wiktionary-Eintrag **Großbuchstaben mitten im Wort** hat (z. B. „UGs“ als Mehrzahl von UG = Untergeschoss, „CEOs“, „NASA“, „iPod“), außer es gibt sie auch normal geschrieben. Wörter mit Bindestrich oder Leerzeichen (z. B. „Armee-Einheit“) sind davon nicht betroffen.
 - **Veraltete Schreibweisen** gelten nicht (im Wiktionary als veraltet markierte Formen, z. B. THEE für Tee, CITAT, CONCERT, TELEPHON), außer es gibt das Wort auch in heutiger Schreibung. Alte Formen mit ß bleiben unberührt (aus „hinuntergoß“ wird HINUNTERGOSS, und das ist heute richtig).
 - **Römische Zahlen** (z. B. LIII, XII) gelten nicht, außer sie sind auch ein normales Wort (z. B. MIX).
 - Buchstaben A–Z und Ä, Ö, Ü (siehe „Sprache“).
 
-### Vorschlags-Wörter (geläufige Wörter)
+### Schöne Wörter (Vorschlags-Wörter)
 - Zwei Listen mit getrennten Aufgaben:
-  - **Gültige Wörter** (ganzes Wörterbuch, siehe oben): entscheiden, ob ein gewischtes Wort zählt. Auch gebeugte Formen wie HAUSES oder ABIRRTE zählen weiter.
-  - **Vorschlags-Wörter** (neu, eigene kleine Liste): nur diese Wörter bringt das Spiel **selbst** ins Spiel, also bei Wort-Hilfe, Nachfüllen, Tauschen, Magnet, Tipp, Scan, Lösen und der Lösung beim Aufgeben. Ziel: Die angebotenen Wörter sind **schön, bekannt und alltäglich**, nicht seltene Beugungsformen.
-- **Formen:** nur **Grundformen plus Mehrzahl**: Hauptwort im Nominativ Einzahl und Mehrzahl (TISCH, TISCHE, BLUME, BLUMEN), Verb im Infinitiv (LAUFEN), Adjektiv in der Grundform (WILD). Keine Genitive, keine gebeugten Verb- oder Adjektivformen (HAUSES, LIEF, WILDEN).
-  - Erkennung über Wiktionary: Stichwort oder nur Beugungsform; die Mehrzahl steht dort beim Hauptwort.
-- **Ohne Artikel und Pronomen:** DER, DIE, DAS, EINE, ICH, WIR, IHM u. ä. und all ihre Formen werden nicht vorgeschlagen, auch wenn es sie zufällig auch als seltenes Hauptwort oder Verb gibt (das Ich, einen = vereinen). Ausnahme: SEIN (vor allem ein Verb). Bindewörter, Adverbien und Präpositionen bleiben (ABER, ODER, OBEN, UNTER).
-- **Nur 3 bis 8 Buchstaben** (die Längen, die Aufträge verlangen).
-- **Häufigkeit:** nur die **10.000 häufigsten** passenden Wörter (Spielwert, beim Bauen änderbar). Bis etwa Rang 10.000 sind die Wörter bekannt; danach werden sie selten (KUMPAN, LYZEUM, KAMBRIUM).
-  - Quelle der Häufigkeit: **Leipzig Corpora Collection** (Uni Leipzig, Wortschatz), Korpora `deu_news_2023_1M` und `deu_mixed-typical_2011_1M`, je auf relative Häufigkeit umgerechnet und gemittelt. Die Download-Korpora stehen laut Nutzungsbedingungen unter **CC BY**, also kommerziell nutzbar mit Namensnennung. Lizenz vor der Veröffentlichung selbst auf der Quellseite prüfen (die Seite ließ sich nicht automatisch lesen).
-  - Nicht geeignet: DeReKo (nur nicht-kommerziell); Untertitel-Listen und wordfreq (CC BY-SA, eher heikel).
-- **Sperrliste** (`tools/dictionary/blocklist-suggestions.txt`): Wörter, die gültig bleiben, aber nie vorgeschlagen werden: beleidigend, vulgär oder anzüglich (SCHEISSE, HURE …), belastet (NAZI) sowie Namen und Abkürzungen, die als Wort durchrutschen (HEIDI, UNRWA). Wird beim Spielen ergänzt.
-- **Ohne Akronyme:** Wörter, die in den Korpora meist ganz großgeschrieben stehen (UNRWA, FIFA, CFO), entfallen automatisch.
-- Nur Wörter, die auch **gültig** sind (Vorschlags-Wörter sind eine Teilmenge des Wörterbuchs).
+  - **Alle gültigen Wörter** (ganzes Wörterbuch, siehe oben): entscheiden, ob ein gewischtes Wort zählt. Auch gebeugte Formen (HAUSES, ABIRRTE), Namen (LEO) und seltene Wörter (SHUKA) zählen.
+  - **Schöne Wörter** (eigene kleine Liste): nur diese Wörter bringt das Spiel **selbst** ins Spiel, also bei Wort-Hilfe, Auffüllen, Magnet, Tipp, Scan, Lösen und der Lösung beim Aufgeben. Im Feld liegen damit **mehrheitlich schöne Wörter** (zufällig können auch andere gültige Wörter entstehen).
+- **Neu in v8 (nach Testspielen: die gelegten Wörter wirkten oft fremd oder hässlich):**
+  - **Nur Grundformen:** Hauptwort im Nominativ **Einzahl** (TISCH, BLUME), Verb im Infinitiv (LAUFEN), Adjektiv in der Grundform (WILD). **Keine Mehrzahl** mehr, keine Beugungen (TISCHE, HAUSES, LIEF, WILDEN).
+  - **Alltagsnah statt zeitungsnah:** Häufigkeit zu 75 % aus allgemeinen Texten (`deu_mixed-typical`), zu 25 % aus Nachrichten; die Wörter der Alltags-Kapitel (Tiere, Gemüse, Früchte, Kleidung, Berufe, Sportarten, Instrumente) werden bevorzugt. Wörter, deren Bedeutungen im Wiktionary alle als veraltet, selten, abwertend, regional o. ä. markiert sind, fallen raus.
+  - **Ohne gesperrte Wörter:** Sperrliste (`blocklist-suggestions.txt`) erweitert um Schimpf- und Vulgärwörter, Gewalt, Krankheit, Politik, belastete Begriffe.
+  - **Ohne Namen** und ohne Abkürzungen.
+  - **Größe:** **5.000** Wörter (3 Buchstaben: ca. 120, 4: 540, 5: 880, 6–8: je ca. 1.150).
+  - **Durchsicht durch Adrian:** Die Liste wird in Portionen (nach Länge) vorgelegt; was nicht gefällt, kommt auf die Sperrliste.
+- **Weiterhin:** ohne Artikel und Pronomen (DER, DIE, ICH, WIR …; Ausnahme SEIN), ohne Akronyme, nur Wörter, die auch gültig sind.
+- **Häufigkeit (Quelle):** **Leipzig Corpora Collection** (Uni Leipzig, Wortschatz), Korpora `deu_news_2023_1M` und `deu_mixed-typical_2011_1M`, Lizenz **CC BY** (vor Veröffentlichung auf der Quellseite prüfen). Nicht geeignet: DeReKo (nur nicht-kommerziell); Untertitel-Listen und wordfreq (CC BY-SA, eher heikel).
+- **Bisher (v7.7 bis v7.13):** 10.000 häufigste Grundformen plus Mehrzahl, Häufigkeit aus beiden Korpora gemittelt.
 
 ### Wörterbuch (Deutsch)
 - **Quellen:**
@@ -165,3 +164,4 @@ Ein **Denk-Spiel ohne Zeitdruck** als **Roguelike**: Im Spielfeld liegen Buchsta
 - **v7.11:** Veraltete Schreibweisen (THEE, CITAT, CONCERT …) gelten nicht (rund 1.670 Wörter).
 - **v7.12:** Umlaute Ä, Ö, Ü als eigene Steine; Wörterbuch rund 1,02 Mio. Wörter.
 - **v7.13:** Eigennamen aus den Story-Listen gelten auch im normalen Lauf (ohne Abkürzungen, nicht als Tipp/Lösung).
+- **v8 (Entwurf):** Eigennamen gelten wieder (samt Formen, nie vom Spiel gelegt), Abkürzungen weiterhin nicht. Neue Liste „schöne Wörter“: nur Grundformen ohne Mehrzahl, alltagsnah, ohne gesperrte Wörter und Namen, ca. 4.000–6.000, Durchsicht durch Adrian.

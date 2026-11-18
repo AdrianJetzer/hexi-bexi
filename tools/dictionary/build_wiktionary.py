@@ -3,9 +3,11 @@
 Usage: python3 -I build_wiktionary.py <dewiktionary.jsonl.gz> <out.txt> [<excluded.txt>]
 Takes headwords of German entries (lang_code == "de") plus single-word inflected forms.
 Obsolete spellings (forms tagged "obsolete", e.g. "Thee" for Tee) are left out unless the word
-also exists as a normal entry or form. Proper names and abbreviations are left out: a word is excluded if it only occurs in
-entries with pos "name" or "abbrev", or with capitals inside the headword (e.g. "UGs", "NASA",
-"iPod"), with their forms, and in no other entry.
+also exists as a normal entry or form. Abbreviations are left out: a word is excluded if it only occurs in
+entries with pos "abbrev", or with capitals inside the headword (e.g. "UGs", "NASA", "iPod"),
+with their forms, and in no other entry. Proper names (pos "name", e.g. Leo, Olga, Berlin) are
+valid game words with their forms (spec/game-rules.md v8); words that are only names are
+written to <excluded>-names.txt (they are never suggested by the game).
 The excluded words are written to <excluded.txt> (to filter other word lists).
 """
 import collections
@@ -19,8 +21,9 @@ ALLOWED = re.compile(r"^[A-ZÄÖÜ]{3,}$")
 # normales Stichwort (z. B. MIX).
 ROMAN = re.compile(r"^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")
 
-# Wortarten, die nicht als Spielwörter gelten (Eigennamen, Abkürzungen).
-EXCLUDED_POS = {"name", "abbrev"}
+# Wortarten, die nicht als Spielwörter gelten (Abkürzungen). Eigennamen gelten seit v8.
+EXCLUDED_POS = {"abbrev"}
+NAME_POS = {"name"}
 
 
 def normalize(word):
@@ -75,9 +78,11 @@ def _is_contraction(e):
 
 def main(src, dst, excluded_dst=None):
     words = set()          # normale Wörter (inkl. Formen)
-    names = set()          # Eigennamen / Abkürzungen (inkl. Formen)
+    names = set()          # Abkürzungen (inkl. Formen)
+    propers = set()        # Eigennamen (inkl. Formen): gültig, aber nie vorgeschlagen
     head_normal = set()    # Stichwörter mit normaler Wortart
-    head_name = set()      # Stichwörter mit Wortart Name/Abkürzung
+    head_name = set()      # Stichwörter mit Wortart Abkürzung (oder Großbuchstaben mitten im Wort)
+    head_proper = set()    # Stichwörter mit Wortart Eigenname
     normalcase = set()     # normale Wörter, deren Stichwort nicht ganz großgeschrieben ist (z. B. Aids)
     form_of = []           # (Wörter des Eintrags, Grundwörter) für reine Formen-Einträge
     obsolete = set()       # veraltete Schreibweisen (Formen mit Tag „obsolete“, z. B. „Thee“ zu Tee)
@@ -95,6 +100,7 @@ def main(src, dst, excluded_dst=None):
             entries += 1
             pos = e.get("pos", "?")
             is_name = (pos in EXCLUDED_POS and not _is_contraction(e)) or _mixed_case(e)
+            is_proper = pos in NAME_POS and not is_name
             own = set()
             n = normalize(e.get("word"))
             is_real = pos != "unknown" and not _is_form_of(e)
@@ -130,6 +136,10 @@ def main(src, dst, excluded_dst=None):
                 names |= own
                 if n:
                     head_name.add(n)
+            elif is_proper:
+                propers |= own
+                if n:
+                    head_proper.add(n)
             elif _is_form_of(e):
                 # Erst am Ende zuordnen: Formen von Namen/Abkürzungen gelten als Namen.
                 form_of.append((own, _bases(e)))
@@ -142,11 +152,19 @@ def main(src, dst, excluded_dst=None):
                     if hw == hw.lower() or hw == hw[:1].upper() + hw[1:].lower():
                         normalcase.add(n)
     name_only = head_name - head_normal
+    proper_only = head_proper - head_normal
     for own, bases in form_of:
         if bases and bases <= name_only:
             names |= own
+        elif bases and bases <= proper_only:
+            propers |= own
         else:
             words |= own
+    # Eigennamen samt Formen gelten, auch wenn es dieselbe Schreibung zusätzlich als Abkürzung
+    # gibt (LEO als Name und als Abkürzung). Reine Abkürzungen (USA, KFZ) bleiben draußen.
+    proper_words = propers
+    only_names = proper_words - words
+    words |= proper_words
     # Veraltete Schreibweisen: raus, wenn es sie nicht auch als echtes Wort gibt.
     old_only = obsolete - real
     words -= old_only
@@ -169,7 +187,10 @@ def main(src, dst, excluded_dst=None):
         with open(excluded_dst, "w", encoding="utf-8") as out:
             for w in sorted(excluded):
                 out.write(w + "\n")
-    print(f"german_entries={entries} words={len(words)} excluded_names_abbrevs={len(excluded)} "
+        with open(excluded_dst.replace(".txt", "-names.txt"), "w", encoding="utf-8") as out:
+            for w in sorted(only_names):
+                out.write(w + "\n")
+    print(f"german_entries={entries} words={len(words)} names={len(only_names)} excluded_abbrevs={len(excluded)} "
           f"obsolete_spellings={len(old_only)}")
     print("headwords by pos:", ", ".join(f"{k}={v}" for k, v in pos_count.most_common(15)))
 
