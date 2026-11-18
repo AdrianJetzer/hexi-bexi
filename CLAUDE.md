@@ -35,7 +35,7 @@
 - Spielidee: Wortspiel mit Buchstaben in 3D-Kristall-Hexagons (Raster 5 × 5), **Lauf-Modus (Roguelike)** mit Aufträgen, Münzen und Hilfen. Details in `spec/` (Einstieg: `spec/README.md`, Lauf: `spec/run-mode.md`).
 - Spielbar: Lauf-Modus mit Auftragswahl, Hilfen (Nachfüllen, Tauschen, Tipp, Ersetzen), Lösung am Ende, Bilanz, Story-Modus, Tutorial beim ersten Start.
 - Kein Ton, keine Musik (nur Vibration).
-- Noch offen u. a.: Optik von Karten/Knöpfen, App-Icon, Lauf speichern.
+- Noch offen u. a.: Optik von Karten/Knöpfen, Lauf speichern, Markenprüfung Name.
 - Tests: GUT, Aufruf `tools/run-tests.sh`. Wörterbuch bauen: `tools/dictionary/build.sh`.
 - Git: Feature-Branches, Commit nach jedem Schritt, **Push nur auf Zuruf**.
 
