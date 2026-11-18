@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1")
-level_rows = Array[PackedInt32Array]([PackedInt32Array(3), PackedInt32Array(3), PackedInt32Array(4), PackedInt32Array(4), PackedInt32Array(3, 3), PackedInt32Array(3, 3), PackedInt32Array(3, 4), PackedInt32Array(3, 4), PackedInt32Array(5), PackedInt32Array(5), PackedInt32Array(4, 4), PackedInt32Array(4, 4), PackedInt32Array(3, 3, 4), PackedInt32Array(3, 3, 4), PackedInt32Array(4, 5), PackedInt32Array(4, 5), PackedInt32Array(6), PackedInt32Array(6), PackedInt32Array(3, 4, 5), PackedInt32Array(3, 4, 5)])
+level_rows = Array[PackedInt32Array]([PackedInt32Array(3), PackedInt32Array(4), PackedInt32Array(3, 3), PackedInt32Array(5), PackedInt32Array(3, 4), PackedInt32Array(6), PackedInt32Array(4, 4), PackedInt32Array(3, 5), PackedInt32Array(3, 3, 3), PackedInt32Array(7), PackedInt32Array(4, 5), PackedInt32Array(3, 3, 4), PackedInt32Array(3, 6), PackedInt32Array(5, 5), PackedInt32Array(8), PackedInt32Array(4, 6), PackedInt32Array(3, 4, 4), PackedInt32Array(5, 6), PackedInt32Array(4, 7), PackedInt32Array(4, 8)])
 level_help = PackedInt32Array(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4)
 budget_start = 12
 budget_every = 10
@@ -14,7 +14,7 @@ row_max = 8
 rows_max = 3
 endless_help_level = 5
 break_from = 11
-break_every = 5
+break_every = 0
 break_rows = PackedInt32Array(3, 4)
 reward_base = 100
 reward_per_level = 0

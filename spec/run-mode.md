@@ -1,6 +1,6 @@
 # Lauf-Modus (Roguelike)
 
-Status: **Entwurf v3**, Ziel Level 20 (v3.33), Preise v3.36, Joker v3.37, automatisches Auffüllen v3.38, volles Feld v3.39. Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
+Status: **Entwurf v3**, Ziel Level 20 (v3.33), Preise v3.36, Joker v3.37, automatisches Auffüllen v3.38, volles Feld v3.39, Kurve Schwer v3.40. Aufträge als Block-Zeilen ohne Wahl und ohne Text; Umfang für Version 1 festgelegt.
 
 Markierungen: **[v1]** = kommt in Version 1 · **[später]** = gute Idee, nach Version 1 · **[offen]** = noch nicht entschieden.
 
@@ -36,28 +36,38 @@ Das Grundspiel bleibt: Raster, Wischen, Wörterbuch, Wort-Hilfe (siehe [game-rul
 - Mindestlänge eines Worts: 3 Buchstaben.
 - Sind **alle Zeilen gefüllt**, ist der Auftrag gelöst: kurze Erfolgsrückmeldung (Münzen), die Zeilen verschwinden, die Zeilen des nächsten Auftrags erscheinen.
 
-### Kurve (Startwerte)
+### Kurve (Startwerte, Modus Schwer)
 
-Ruhig ansteigend: Jeder der zehn festen Aufträge kommt **zweimal** hintereinander.
+Stetig ansteigend bis zum Finale in Level 20 (v3.40): Jedes Level ist ein **eigener** Auftrag. Die Blöcke steigen von 3 auf 12, lange Wörter kommen schrittweise dazu (6 ab Level 6, 7 ab Level 10, 8 ab Level 15). Einzelne lange Zeilen (Level 6, 10, 15) sind kleine Spitzen: wenige Blöcke, aber ein schweres Wort.
 
-| Level | Zeilen | Bild |
+| Level | Zeilen | Blöcke |
 |---|---|---|
-| 1–2 | 3 | ▢▢▢ |
-| 3–4 | 4 | ▢▢▢▢ |
-| 5–6 | 3 + 3 | ▢▢▢ / ▢▢▢ |
-| 7–8 | 3 + 4 | ▢▢▢ / ▢▢▢▢ |
-| 9–10 | 5 | ▢▢▢▢▢ |
-| 11–12 | 4 + 4 | ▢▢▢▢ / ▢▢▢▢ |
-| 13–14 | 3 + 3 + 4 | ▢▢▢ / ▢▢▢ / ▢▢▢▢ |
-| 15–16 | 4 + 5 | ▢▢▢▢ / ▢▢▢▢▢ |
-| 17–18 | 6 | ▢▢▢▢▢▢ |
-| 19–20 | 3 + 4 + 5 | ▢▢▢ / ▢▢▢▢ / ▢▢▢▢▢ |
+| 1 | 3 | 3 |
+| 2 | 4 | 4 |
+| 3 | 3 + 3 | 6 |
+| 4 | 5 | 5 |
+| 5 | 3 + 4 | 7 |
+| 6 | 6 | 6 |
+| 7 | 4 + 4 | 8 |
+| 8 | 3 + 5 | 8 |
+| 9 | 3 + 3 + 3 | 9 |
+| 10 | 7 | 7 |
+| 11 | 4 + 5 | 9 |
+| 12 | 3 + 3 + 4 | 10 |
+| 13 | 3 + 6 | 9 |
+| 14 | 5 + 5 | 10 |
+| 15 | 8 | 8 |
+| 16 | 4 + 6 | 10 |
+| 17 | 3 + 4 + 4 | 11 |
+| 18 | 5 + 6 | 11 |
+| 19 | 4 + 7 | 11 |
+| 20 | 4 + 8 | 12 |
 
-**Ab Level 21 (Block-Budget):**
+**Ab Level 21 (Block-Budget, nur im Test-Betrieb ohne Ziel, `goal_level = 0`):**
 - Ein Auftrag hat ein **Budget** an Blöcken: **12** in Level 21–30, alle **10** Levels **+1** (Level 31–40: 13 …), höchstens 24.
 - Das Spiel verteilt das Budget **zufällig** auf **1 bis 3 Zeilen** mit je **3 bis 8** Blöcken (z. B. 4 + 4 + 4, 6 + 6, 3 + 4 + 5).
 
-**Atempausen:** Ab Level 11 ist **jedes 5. Level** leicht (Level 15, 20, 25 …): nur **eine Zeile mit 3 oder 4 Blöcken** (zufällig). Das gilt auch innerhalb der festen Kurve (Level 15 und 20).
+**Atempausen (nur Einfach und Mittel):** Ab Level 11 ist **jedes 5. Level** leicht (Level 15, 20): nur **eine Zeile mit 3 oder 4 Blöcken** (zufällig). **Schwer hat keine Atempausen** (v3.40), es soll schwer bleiben.
 
 - Die Hilfe-Stufe (Wort-Hilfe) ist genauso gestreckt: 1, 1, 1, 1, 2, 2, 2, 2, 3 … (je Stufe doppelt so viele Level wie vorher).
 - Die Kurve liegt als Daten vor (tunebar); alle Zahlen sind Startwerte für das Feintuning.
@@ -70,7 +80,7 @@ Alle **5 Levels** ein besonders großer Auftrag mit großer Belohnung.
 
 ## Modi
 
-Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfen, Preise, Power-ups, Atempausen und Münzen sind in allen gleich; jeder Modus hat einen **eigenen Rekord**.
+Drei Modi, wählbar in den Einstellungen (siehe [screens.md](screens.md)). Hilfen, Preise, Power-ups und Münzen sind in allen gleich; Atempausen nur in Einfach und Mittel; jeder Modus hat einen **eigenen Rekord**.
 
 | | **Deutsch einfach** (Kinder) | **Deutsch mittel** | **Deutsch schwierig** |
 |---|---|---|---|
@@ -260,3 +270,4 @@ Münzen bieten sich für **In-App-Käufe** an. Falls das kommt, muss das Spiel *
 - **v3.37:** Joker: den Stein selbst wählen (antippen) statt zufällig.
 - **v3.38:** Steckt man fest, füllt das Spiel selbst auf; Abdunkeln mit großem Auffüllen-Knopf und Blinken des Knopfs entfallen.
 - **v3.39:** Volles Feld ohne passendes Wort: Steine drehen sich gratis zu einem passenden schönen Wort um (vorher fanden Tipp nichts und Lösen ein Wort aus dem Nichts).
+- **v3.40:** Schwer: 20 verschiedene Aufträge bis 4 + 8 in Level 20, keine Atempausen mehr (vorher jeder Auftrag zweimal, längste Zeile 6).
