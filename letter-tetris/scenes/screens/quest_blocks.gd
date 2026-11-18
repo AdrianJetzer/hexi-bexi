@@ -22,6 +22,11 @@ var block_size: float = 80.0
 var _blocks: Array = []
 var _rows := PackedInt32Array()
 var _fade: Tween
+## Wisch-Vorschau (spec/screens.md v4.27): abgedunkelte Blöcke beim Wischen, Puls bei „zu lang“.
+const PREVIEW_DIM := Color(0.42, 0.48, 0.62, 1.0)
+const PULSE_BRIGHT := Color(1.9, 1.9, 1.9, 1.0)
+var _preview_panels: Array[Panel] = []
+var _pulse: Tween
 
 
 func _ready() -> void:
@@ -97,6 +102,65 @@ func put_letter(row: int, i: int, letter: String, pop: bool = true) -> void:
 		var t := panel.create_tween()
 		t.tween_property(panel, "scale", Vector2.ONE * 1.18, 0.07)
 		t.tween_property(panel, "scale", Vector2.ONE, 0.12)
+
+
+## Wisch-Vorschau: `count` Buchstaben sind gerade verbunden. In der kürzesten freien Zeile, in die
+## so ein Wort noch passt, dunkeln die ersten `count` Blöcke ab. Passt es in keine freie Zeile
+## (zu lang), pulsieren die längsten freien Zeilen kurz. 0 = Vorschau aus.
+func preview(count: int) -> void:
+	for p in _preview_panels:
+		if is_instance_valid(p):
+			p.self_modulate = Color.WHITE
+	_preview_panels.clear()
+	if count <= 0:
+		return
+	var best := -1
+	var longest := 0
+	for r in _blocks.size():
+		if not _row_free(r):
+			continue
+		var n: int = _blocks[r].size()
+		longest = maxi(longest, n)
+		if n >= count and (best < 0 or n < _blocks[best].size()):
+			best = r
+	if best >= 0:
+		for i in count:
+			var panel: Panel = _blocks[best][i]["panel"]
+			panel.self_modulate = PREVIEW_DIM
+			_preview_panels.append(panel)
+	elif longest > 0:
+		_pulse_rows(longest)
+
+
+func _row_free(r: int) -> bool:
+	return not _blocks[r].is_empty() and (_blocks[r][0]["label"] as Label).text == ""
+
+
+## Alle freien Zeilen der Länge n kurz zweimal aufleuchten lassen („zu viele Buchstaben“).
+func _pulse_rows(n: int) -> void:
+	if _pulse and _pulse.is_running():
+		return
+	var panels: Array[Panel] = []
+	for r in _blocks.size():
+		if _row_free(r) and _blocks[r].size() == n:
+			for b in _blocks[r]:
+				panels.append(b["panel"])
+	if panels.is_empty():
+		return
+	_pulse = create_tween()
+	for k in 2:
+		_pulse.tween_callback(func() -> void:
+			for p in panels:
+				if is_instance_valid(p):
+					p.modulate = PULSE_BRIGHT
+					p.scale = Vector2.ONE * 1.1)
+		_pulse.tween_interval(0.11)
+		_pulse.tween_callback(func() -> void:
+			for p in panels:
+				if is_instance_valid(p):
+					p.modulate = Color.WHITE
+					p.scale = Vector2.ONE)
+		_pulse.tween_interval(0.11)
 
 
 ## Mitte eines Blocks in Koordinaten des Eltern-Controls (für den Flug).

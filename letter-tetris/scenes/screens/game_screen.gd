@@ -288,6 +288,7 @@ func _build_ui() -> void:
 
 	_blocks = QuestBlocks.new()
 	add_child(_blocks)
+	_board.path_changed.connect(func(word: String) -> void: _blocks.preview(word.length()))
 
 	_ladder = LevelLadder.new()
 	add_child(_ladder)
