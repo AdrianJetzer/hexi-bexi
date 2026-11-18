@@ -102,8 +102,8 @@ const RIDDLE_HINT_FONT := 30
 ## Story: Kapitel-Brett zwischen Titel und „Modus wechseln“ (Anteile der Bildschirmhöhe).
 const CHAPTER_BOARD_TOP := 0.15
 const CHAPTER_BOARD_BOTTOM := 0.87
-## Tutorial: Pause, bis der Finger erscheint (Sekunden).
-const FINGER_DELAY := 0.9
+## Tutorial: Pause nach dem Aufbau des Felds, bis der Finger erscheint (Sekunden).
+const FINGER_DELAY := 0.35
 const CHOICE_TITLE_FONT := 64
 const CHOICE_NAME_FONT := 46
 const CHOICE_INFO_FONT := 38
@@ -1134,9 +1134,9 @@ func _start_tutorial() -> void:
 	_finger_soon()
 
 
-## Finger nach kurzer Pause zeigen (die Steine drehen sich erst auf).
+## Finger erst zeigen, wenn das Feld fertig aufgebaut ist (alle Steine gedreht), plus kurze Pause.
 func _finger_soon() -> void:
-	get_tree().create_timer(FINGER_DELAY).timeout.connect(_update_finger)
+	get_tree().create_timer(_board.settle_time() + FINGER_DELAY).timeout.connect(_update_finger)
 
 
 ## Finger zeigen, solange eine Tutorial-Runde läuft und man nicht selbst wischt.
@@ -1145,6 +1145,10 @@ func _update_finger() -> void:
 			and not session.tutorial_path().is_empty()
 	if not want:
 		_finger.stop()
+		return
+	if _board.settle_time() > 0.0:
+		if not _finger.is_playing():
+			_finger_soon()  # Feld baut sich noch auf: danach nochmal
 		return
 	var pts := PackedVector2Array()
 	for cell in session.tutorial_path():

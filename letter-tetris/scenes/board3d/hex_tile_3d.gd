@@ -99,6 +99,10 @@ func place(at: Vector3) -> void:
 	position = at
 
 
+## Dauer von appear() ohne Verzögerung (Aufploppen, Pause, Drehung), in Sekunden.
+const APPEAR_TIME := 0.25 + 0.35 + 0.55
+
+
 ## Erscheinen: kurz aufploppen mit Rückseite oben, dann echte Drehung auf die Vorderseite.
 func appear(delay: float = 0.0) -> void:
 	set_flip(0.0)
