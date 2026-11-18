@@ -24,12 +24,13 @@ var block_size: float = 80.0
 var _blocks: Array = []
 var _rows := PackedInt32Array()
 var _fade: Tween
-## Wisch-Vorschau (spec/screens.md v4.28): Blöcke glühen beim Wischen wie Lava auf (Rand bleibt
+## Wisch-Vorschau (spec/screens.md v4.28): Blöcke flammen beim Wischen magenta auf (Rand bleibt
 ## gleich), beim Loslassen glühen sie aus; Puls bei „zu lang“.
 const EMBER_SHADER := preload("res://shaders/ember.gdshader")
-const GLOW_PEAK := 1.45
-const GLOW_IN := 0.09
-const GLOW_SETTLE := 0.14
+## Aufflammen: in GLOW_IN fast weißglühend hoch, dann in GLOW_SETTLE zur ruhigen Glut.
+const GLOW_PEAK := 1.9
+const GLOW_IN := 0.05
+const GLOW_SETTLE := 0.25
 const GLOW_OUT_PEAK := 0.08
 const GLOW_OUT := 0.28
 var _preview_panels: Array[Panel] = []
@@ -216,10 +217,13 @@ func _glow_in(panel: Panel) -> void:
 		return
 	var t := _glow_tween(panel)
 	t.tween_method(_set_glow.bind(glow), _glow_value(glow), GLOW_PEAK, GLOW_IN) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	t.parallel().tween_property(panel, "scale", Vector2.ONE * 1.08, GLOW_IN)
-	t.tween_method(_set_glow.bind(glow), GLOW_PEAK, 1.0, GLOW_SETTLE).set_trans(Tween.TRANS_SINE)
-	t.parallel().tween_property(panel, "scale", Vector2.ONE, GLOW_SETTLE)
+		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(panel, "scale", Vector2.ONE * 1.12, GLOW_IN) \
+		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	t.tween_method(_set_glow.bind(glow), GLOW_PEAK, 1.0, GLOW_SETTLE) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(panel, "scale", Vector2.ONE, GLOW_SETTLE) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## Ausglühen: ein letzter kurzer Puls, dann erlischt die Glut.
