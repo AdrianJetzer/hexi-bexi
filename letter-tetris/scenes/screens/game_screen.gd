@@ -653,6 +653,13 @@ func _board_area() -> Rect2:
 	return Rect2(side, top, col.y * (1.0 - 2.0 * SIDE_MARGIN), s.y - top - _bottom_height())
 
 
+## Platz des Einstellungen-Knopfs oben rechts (im Spiel und auf dem Kapitel-Brett gleich).
+func _settings_button_pos(s: Vector2) -> Vector2:
+	var col := _column(s)
+	var margin := col.y * SIDE_MARGIN
+	return Vector2(col.x + col.y - margin - ICON_BUTTON_SIZE.x, s.y * 0.012 + TOP_INSET)
+
+
 func _relayout() -> void:
 	var s := get_viewport_rect().size
 	if _board.session != null:
@@ -667,7 +674,7 @@ func _relayout() -> void:
 	var top_y := s.y * 0.012 + TOP_INSET
 	_give_up_button.position = Vector2(side, top_y)
 	_settings_button.size = ICON_BUTTON_SIZE
-	_settings_button.position = Vector2(side + inner - ICON_BUTTON_SIZE.x, top_y)
+	_settings_button.position = _settings_button_pos(s)
 	# Blöcke zwischen „Aufgeben“ und Spielfeld (immer Platz für 3 Zeilen).
 	var info_y := _top_height(s) - INFO_HEIGHT
 	_blocks.layout(Rect2(side, BLOCKS_TOP, inner, info_y - BLOCKS_TOP - BLOCKS_GAP_BELOW))
@@ -780,7 +787,7 @@ func _place_coin_icon() -> void:
 
 
 ## Schmaler Glas-Knopf nur mit Symbol (oben links/rechts).
-func _icon_button(kind: String) -> Button:
+func _icon_button(kind: String, parent: Node = self) -> Button:
 	var b := Button.new()
 	b.focus_mode = Control.FOCUS_NONE
 	var normal := _btn_box(BTN_BG, BTN_EDGE, 0.35, 0.12, 6)
@@ -795,7 +802,7 @@ func _icon_button(kind: String) -> Button:
 	b.add_child(icon)
 	b.button_down.connect(func() -> void: icon.color = BTN_TEXT)
 	b.button_up.connect(func() -> void: icon.color = Color(BTN_TEXT, 0.8))
-	add_child(b)
+	parent.add_child(b)
 	return b
 
 
@@ -1020,12 +1027,11 @@ func _open_path() -> void:
 	title.position = Vector2(col.x, s.y * 0.05)
 	title.size = Vector2(col.y, 90)
 	_path_layer.add_child(title)
-	var change := _button("Modus wechseln", 40, _path_layer)
-	change.flat = true
-	change.add_theme_color_override("font_color", TEXT_DIM)
-	change.size = Vector2(col.y * 0.6, 90)
-	change.position = Vector2(col.x + col.y * 0.2, s.y * 0.9)
-	change.pressed.connect(_open_settings)
+	# Einstellungen: derselbe Symbol-Knopf an derselben Stelle wie im Spiel (Konsistenz).
+	var menu := _icon_button("menu", _path_layer)
+	menu.size = ICON_BUTTON_SIZE
+	menu.position = _settings_button_pos(s)
+	menu.pressed.connect(_open_settings)
 	_chapter_board.build(SaveData.story_stars)
 	_path.visible = true
 	_board.visible = false
