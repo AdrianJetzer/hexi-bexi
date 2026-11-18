@@ -2,7 +2,7 @@
 
 Status: **Entwurf v4**. Angepasst an den Lauf-Modus ([run-mode.md](run-mode.md)); Details werden bei der Umsetzung verfeinert.
 
-Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.md](tech.md), Umfang siehe [v1-scope.md](v1-scope.md).
+Gilt für das Godot-Projekt in `hexi-bexi/`. Rahmenbedingungen siehe [tech.md](tech.md), Umfang siehe [v1-scope.md](v1-scope.md).
 
 ## Grundprinzipien
 
@@ -11,7 +11,7 @@ Gilt für das Godot-Projekt in `letter-tetris/`. Rahmenbedingungen siehe [tech.m
 3. **Kommunikation über Signale.** Die Logik meldet Ereignisse (z. B. „Hexagon erschienen“, „Wort gefunden“, „Auftrag erfüllt“, „Lauf vorbei“). Die Darstellung reagiert mit Effekten und Sound.
 4. **Dienste mit Platzhaltern.** Rangliste und Käufe gibt es in Version 1 nur als leere Platzhalter-Dienste. Später werden sie ersetzt, ohne das Spiel umzubauen.
 
-## Ordnerstruktur (`letter-tetris/`)
+## Ordnerstruktur (`hexi-bexi/`)
 
 ```
 core/                  Reine Spiellogik (keine Grafik)

@@ -1,7 +1,7 @@
 # macOS
 .DS_Store
 
-# Godot (zusätzlich zu letter-tetris/.gitignore)
+# Godot (zusätzlich zu hexi-bexi/.gitignore)
 .godot/
 *.tmp
 

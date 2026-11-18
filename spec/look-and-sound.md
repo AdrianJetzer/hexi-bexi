@@ -20,7 +20,7 @@ Grundanforderung (siehe `../CLAUDE.md`): Das Spiel MUSS gut aussehen und **premi
 - **Licht, Leuchten (Glow), Partikel** macht Godot **live**.
 - Bilder/Texturen (z. B. Hintergrund-Nebel, Logo) können weiterhin selbst gebaut werden.
 - Live-Effekte kosten Leistung: **früh auf einem echten Android-Gerät testen.**
-- Prototyp zum Ausprobieren der Optik: `letter-tetris/scenes/prototypes/hex3d_proto.tscn`.
+- Prototyp zum Ausprobieren der Optik: `hexi-bexi/scenes/prototypes/hex3d_proto.tscn`.
 
 ### Ton
 - **Kein Ton und keine Musik** (v3, Entscheidung von Adrian): Gepiepe nervt die Leute. Das Spiel ist stumm; Rückmeldung nur über Optik und **Vibration** (kurzer Tick je verbundenem Buchstaben, abschaltbar, siehe [screens.md](screens.md)).

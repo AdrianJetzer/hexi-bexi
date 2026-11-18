@@ -5,7 +5,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-PROJECT="$HERE/../letter-tetris"
+PROJECT="$HERE/../hexi-bexi"
 
 if [ -z "${GODOT:-}" ]; then
   for c in /Applications/Godot.app/Contents/MacOS/Godot "$HOME/Downloads/Godot.app/Contents/MacOS/Godot" "$(command -v godot || true)"; do
