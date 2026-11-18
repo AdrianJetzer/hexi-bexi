@@ -221,3 +221,26 @@ func test_story_words_valid_in_normal_dictionary() -> void:
 	assert_eq(missing.size(), 0, "fehlen im Wörterbuch: %s (tools/dictionary/add_story.sh)" % ", ".join(missing))
 	var common := WordDictionary.from_file("res://data/languages/de/common.bin")
 	assert_false(common.contains("KAWAII"), "Namen und Szenewörter nicht als Tipp/Lösung")
+
+
+func test_new_level_rerolls_all_tiles() -> void:
+	# Alle Steine bekommen neue Buchstaben, nicht nur die neu hinzugekommenen.
+	var before := {}
+	for cell in run.grid.all_cells():
+		if run.grid.is_occupied(cell):
+			before[cell] = run.grid.get_letter(cell)
+	watch_signals(run)
+	run._complete_quest()
+	var changed := 0
+	var still := 0
+	for cell in before:
+		if run.grid.is_occupied(cell):
+			still += 1
+			if get_signal_emit_count(run, "tile_changed") > 0 and run.grid.get_letter(cell) != before[cell]:
+				changed += 1
+	assert_gt(still, 0)
+	assert_gt(changed, still / 2, "die meisten alten Steine haben neue Buchstaben")
+	var only := WordDictionary.from_words(PackedStringArray([run.story_target]))
+	var n := run.story_target.length()
+	var found := WordFinder.new(only).find_paths(run.grid, n, n, func(_w: String) -> bool: return true, 1)
+	assert_eq(found.size(), 1, "das neue Wort liegt im Feld")

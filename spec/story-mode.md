@@ -75,6 +75,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 
      Umgesetzt ist der Füllgrad; den Weg des Wortes wählt die Wort-Hilfe (noch nicht gezielt gerade/verwinkelt).
   3. Später evtl. mehrere Themenwörter pro Level.
+- **Neues Feld je Level (v5.7):** Zu Beginn jedes Levels drehen sich **alle Steine** um und bekommen neue, zufällige Buchstaben; dann wird bis zum Füllgrad der Stufe aufgefüllt (ebenfalls zufällig) und das gesuchte Wort irgendwo ins ganze Feld gelegt. So liegt es nicht bevorzugt auf den neuen Steinen (nach Testspiel).
 - **Kein Auffüllen:** Das Spiel sorgt selbst dafür, dass die richtigen Buchstaben für ein Themenwort liegen.
 - Die Block-Zeilen zeigen weiter die Länge; dazu ein **Themen-Symbol** (z. B. 🍎), damit klar ist, was gesucht wird.
 
@@ -127,3 +128,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **v5.4:** Gesperrte Kapitel mit leuchtendem 3D-Schloss statt leerem dunklem Stein.
 - **v5.5:** Reihe 4 (schwerer): Götter, Komponisten (über Instrumente), Elemente, Weltraum.
 - **v5.6:** Brett voll (24 Kapitel). Reihe 5: Fabelwesen, Sagenhelden, Erfinder, Inseln. Reihe 6 („Gottmodus“, für Junge): Japan & Anime, Superhelden, Musikstile, Gaming.
+- **v5.7:** Pro Level drehen sich alle Steine neu (zufällig), Auffüllen bis zum Füllgrad, Wort im ganzen Feld.

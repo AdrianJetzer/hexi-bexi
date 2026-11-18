@@ -287,9 +287,26 @@ func _prepare_story_board() -> void:
 	var stage := clampi((_level - 1) / 5, 0, STORY_FILL.size() - 1)
 	var want := int(round(grid.size() * STORY_FILL[stage]))
 	want = maxi(want, story_target.length() + 2)
-	var have := grid.size() - grid.free_count()
+	# Alle Steine drehen sich um und bekommen neue, zufällige Buchstaben (ohne Wort-Hilfe),
+	# dann wird bis zum Füllgrad aufgefüllt. So liegt das gesuchte Wort nicht bevorzugt auf den
+	# neuen Steinen (spec/story-mode.md, v5.7).
+	var board := PackedStringArray()
+	var cells: Array[Vector2i] = []
+	for cell in grid.all_cells():
+		if grid.is_occupied(cell):
+			cells.append(cell)
+			board.append(grid.get_letter(cell))
+	for i in cells.size():
+		var letter := _picker.pick(board)
+		board[i] = letter
+		grid.set_letter(cells[i], letter)
+		tile_changed.emit(cells[i], letter)
+	var have := cells.size()
 	if have < want:
+		var help := _spawner.finder
+		_spawner.finder = null  # neue Steine ebenfalls rein zufällig
 		_spawn(want - have)
+		_spawner.finder = help
 	var only := WordDictionary.from_words(PackedStringArray([story_target]))
 	var n := story_target.length()
 	for attempt in 3:
