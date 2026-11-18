@@ -23,7 +23,7 @@ Status: **v5 umgesetzt** (Kapitel-Brett mit 8 Kapiteln in 2 Reihen, Dreh-Animati
 
 ## Einstieg
 
-- In den **Einstellungen** gibt es den Modus **„Story“** (neben einfach / mittel / schwierig). Wer ihn wählt, sieht das Kapitel-Brett; dort öffnet der Menü-Knopf oben rechts (gleich platziert wie im Spiel) die Einstellungen (v5.9).
+- In den **Einstellungen** gibt es den Modus **„Story“** (neben Einfach / Mittel / Schwer). Wer ihn wählt, sieht das Kapitel-Brett; dort öffnet der Menü-Knopf oben rechts (gleich platziert wie im Spiel) die Einstellungen (v5.9).
 - Startet die App im Story-Modus, erscheint zuerst das Kapitel-Brett.
 
 ## Kapitel-Brett (ab v5, ersetzt den Pfad)
@@ -44,7 +44,7 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **Zu Beginn** sind nur **Tiere** und **Gemüse** aufgedeckt (v5.2).
 - **Optik:** Die Kapitel sind **3D-Kristall-Hexagons wie die Spielsteine** (gleiches Licht, gleicher Glanz); Aufdecken ist eine echte Drehung wie beim Tauschen der Buchstabensteine.
 - **Gesperrt:** Ein Kapitel, dessen Nachbarn noch nicht geschafft sind, zeigt auf dem dunklen Stein nur ein **leuchtendes Schloss** (kein Name, v5.4). Leere Plätze (noch kein Kapitel) zeigen „bald“. Antippen eines gesperrten Steins: er wackelt samt Schloss. Screenshot: [Schloss](images/chapter-board-lock-v1.png).
-- **Beschriftung:** Ein aufgedecktes Hexagon zeigt den **Namen** des Kapitels und darunter die **Sterne** (☆☆☆ … ★★★); keine Emojis (Schrift auf Android).
+- **Beschriftung:** Ein aufgedecktes Hexagon zeigt den **Namen** des Kapitels und darunter die **Sterne** (★☆☆ … ★★★); keine Emojis (Schrift auf Android). Ein Kapitel ohne Sterne (noch nicht geschafft) zeigt **nur den Namen**, mittig, ohne leere Sterne (v5.10).
 - **Kapitel geschafft:** Das Hexagon **dreht sich** und zeigt seine Wertung: **Bronze** (★), **Silber** (★★), **Gold** (★★★). Nochmal spielen kann die Wertung verbessern (die beste zählt).
 - **Freischalten über Nachbarn (v5.2):** Ein geschafftes Kapitel deckt alle **angrenzenden** Hexagons auf. Beispiel: Gemüse geschafft → Kleidung, Früchte, Automarken; Tiere geschafft → Früchte, Berufe. Wer an einem Thema hängt, nimmt ein anderes offenes.
 - **Aufdeck-Animation bei jedem Betreten** des Bretts: zuerst liegen alle Steine verdeckt, dann drehen sich die aufgedeckten **nacheinander** um (von unten nach oben, ohne Vibration); geschaffte zu Bronze / Silber / Gold. Verdeckt: dunkles Rauchglas; offen: Kristall mit gedämpftem Kern; Schrift mit dunklem Rand.
@@ -131,3 +131,4 @@ Reihe 1   ⬡ ⬡ ⬡ ⬡    Kleidung · Gemüse · Früchte · Tiere   ← Gem�
 - **v5.7:** Pro Level drehen sich alle Steine neu (zufällig), Auffüllen bis zum Füllgrad, Wort im ganzen Feld.
 - **v5.8:** Kein Hinweistext „Noch n Level bis zum Ziel“ mehr unter dem Feld.
 - **v5.9:** Kapitel-Brett ohne Text „Modus wechseln“; stattdessen derselbe Menü-Knopf oben rechts wie im Spiel.
+- **v5.10:** Kapitel ohne Sterne zeigen keine leeren Sterne mehr, nur den Namen.

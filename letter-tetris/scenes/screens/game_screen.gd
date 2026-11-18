@@ -61,7 +61,7 @@ const HELP_INFO := {
 	"replace": "Ein Stein deiner Wahl bekommt einen neuen Buchstaben.",
 	"shuffle": "Alle Buchstaben werden neu verteilt.",
 	"clear": "Entfernt bis zu 5 wenig hilfreiche Steine.",
-	"joker": "Ein Stein wird zum Joker für jeden Buchstaben.",
+	"joker": "Tipp einen Stein an: Er wird zum Joker für jeden Buchstaben.",
 	"shorten": "Die längste Zeile verliert einen Block.",
 	"swap": "5 Steine neu – legt ein Wort, wenn du feststeckst.",
 	"split": "Halbiert die längste Zeile (ab 6 Blöcken).",
@@ -156,7 +156,7 @@ var _shorten_button: Button
 var _scan_button: Button
 var _complete_button: Button
 var _strike_button: Button
-## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet".
+## Welche Antipp-Hilfe gerade aktiv ist: "", "replace", "magnet", "joker".
 var _tap_action: String = ""
 var _give_up_button: Button
 ## Spielmodus (Wortlisten, Kurve) und geladene Wortlisten (Pfad → WordDictionary, bleiben im Speicher).
@@ -288,6 +288,7 @@ func _build_ui() -> void:
 
 	_blocks = QuestBlocks.new()
 	add_child(_blocks)
+	_board.path_changed.connect(func(word: String) -> void: _blocks.preview(word))
 
 	_ladder = LevelLadder.new()
 	add_child(_ladder)
@@ -321,10 +322,8 @@ func _build_ui() -> void:
 	_magnet_button.toggle_mode = true
 	_magnet_button.toggled.connect(func(on: bool) -> void: _set_tap_action("magnet" if on else ""))
 	_joker_button = _button("", BUTTON_FONT)
-	_joker_button.pressed.connect(func() -> void:
-		_set_replace_mode(false)
-		if session.joker() == RunSession.NO_CELL:
-			_shake(_joker_button))
+	_joker_button.toggle_mode = true
+	_joker_button.toggled.connect(func(on: bool) -> void: _set_tap_action("joker" if on else ""))
 	_shuffle_button = _button("", BUTTON_FONT)
 	_shuffle_button.pressed.connect(func() -> void:
 		_set_replace_mode(false)
@@ -741,7 +740,7 @@ func _update_labels() -> void:
 	_clear_button.disabled = not session.can_clear()
 	_hint_button.disabled = not session.can_hint()
 	_replace_button.disabled = not session.can_replace() and not _replace_button.button_pressed
-	_joker_button.disabled = not session.can_joker()
+	_joker_button.disabled = not session.can_joker() and not _joker_button.button_pressed
 	_shuffle_button.disabled = not session.can_shuffle()
 	_magnet_button.disabled = not session.can_magnet() and not _magnet_button.button_pressed
 	# Kürzen, Teilen, Streichen: nur Geld prüfen; passt die Lage nicht, wackelt der Knopf.
@@ -1367,11 +1366,12 @@ func _set_replace_mode(on: bool) -> void:
 ## "" = aus. Der gedrückte Knopf zeigt ihn an.
 func _set_tap_action(action: String) -> void:
 	_tap_action = action
-	_board.tap_mode = action == "replace" or action == "magnet"
+	_board.tap_mode = action == "replace" or action == "magnet" or action == "joker"
 	_board.prefix_mode = action == "complete"
 	_complete_button.set_pressed_no_signal(action == "complete")
 	_replace_button.set_pressed_no_signal(action == "replace")
 	_magnet_button.set_pressed_no_signal(action == "magnet")
+	_joker_button.set_pressed_no_signal(action == "joker")
 
 
 func _on_cell_tapped(cell: Vector2i) -> void:
@@ -1383,6 +1383,9 @@ func _on_cell_tapped(cell: Vector2i) -> void:
 		"magnet":
 			if session.magnet(cell).is_empty():
 				_shake(_magnet_button)
+		"joker":
+			if session.joker(cell) == RunSession.NO_CELL:
+				_board.shake_cells([cell])  # schon Joker oder kein Stein: kostet nichts
 
 
 ## Vervollständigen: Wortanfang gewischt. Treffer: Weg leuchtet, Modus aus. Sonst wackeln, Modus bleibt.

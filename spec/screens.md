@@ -38,6 +38,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **Kein Zeitdruck**, daher auch **keine Pause-Funktion** nötig.
 - **Auftrag:** Block-Zeilen über dem Spielfeld (siehe [run-mode.md](run-mode.md)); gefundene Wörter fliegen hinein. Kein Text, kein gewischtes Wort.
 - **Anzeige:** über dem Spielfeld links die **Leiter** (20 Quadrate, eins je Level, liegend wie eine Leiter; jedes Quadrat hat seine feste Farbe im Verlauf grün → orange → rot; geschaffte Level leuchten, das laufende ist farbig umrandet, offene sind dunkel), rechts die **Münzen**. Kein Text „Level · Rekord“ mehr. Screenshot: [Leiter](images/ladder-v1.png).
+- **Wisch-Vorschau (v4.35):** Beim Wischen füllt sich in der kürzesten freien Block-Zeile, in die das Wort noch passt, je verbundenem Buchstaben ein Block (von links): türkis wie ein gelöster Block, nur leicht durchsichtig, mit dem gewischten Buchstaben in Weiß; der Rand bleibt gleich. Jeder neue Block blitzt kurz heller auf und ploppt leicht größer (ca. 0,05 s), dann steht er ruhig. Sind es mehr Buchstaben, als die längste freie Zeile hat, blitzen deren Blöcke kurz zweimal auf und ploppen leicht („zu viele“). Beim Loslassen blenden Füllung und Buchstaben mit einem letzten Puls aus; ist das Wort richtig, fliegen die echten Buchstaben wie bisher in die Blöcke.
 - **Power-up-Auswahl** (nach Level 4, 8, 12, 16; Upgrades nur im endlosen Test-Betrieb): halbtransparenter Bildschirm über dem Spiel mit großem, goldenem Titel („Wähle eine Hilfe“ bzw. „Welche Hilfe wird günstiger?“) und Karten im Stil der Hilfe-Knöpfe: oben Name · Münze · Preis (beim Upgrade „alt → neu“), darunter die Erklärung (Power-up: 2 zufällige der Stufe) (Name, Preis, kurze Erklärung; beim Upgrade „alt → neu“). Antippen wählt, dann geht es weiter (siehe [run-mode.md](run-mode.md)). Screenshots: [Start](images/draft-start-v1.png), [Power-up](images/draft-powerup-v1.png), [Upgrade](images/draft-upgrade-v1.png).
 - **Power-up-Anzeige** links unter dem Spielfeld, **ohne Text** (v4.22): je Level bis zum nächsten Power-up ein Quadrat (4 Stück, etwas größer als die Leiter, eigene Farben Cyan, Violett, Pink, Gold). Geschaffte Level leuchten, das laufende ist umrandet; im Level vor dem Power-up pulsiert die Anzeige. **Animation (v4.24):** Ist ein Level geschafft, dreht sich sein Quadrat kurz danach mit Perspektive um die senkrechte Achse (hebt sich leicht an), wechselt in der Mitte von dunkel auf seine Farbe mit Glanzstreifen und versprüht Funken (ohne Rauch, v4.26); danach leuchtet das nächste Quadrat sanft als „ready“ auf. Nach dem goldenen bleiben alle vier gefüllt, bis die Power-up-Auswahl erledigt ist. Keine Vibration. Nach dem letzten Power-up und im Story-Modus gibt es keine Anzeige (den Weg zum Ziel zeigt die Leiter). Screenshot: [Power-up-Quadrate](images/powerup-squares-v1.png).
 - **Hilfe-Knöpfe** mit Preis, sortiert **von gratis bis teuer**: **Auffüllen** (5 Steine, gratis); **50:** Tipp (je Buchstabe); **100:** Mischen, Joker, Kürzen; **150:** Aufräumen, Teilen, Magnet (Stein antippen); **200:** Scan, Zeile streichen, Vervollständigen (Wortanfang anwischen); **Lösen** (ganzer Auftrag, 500). Gesperrt, wenn das Geld nicht reicht; Auffüllen auch bei vollem Feld.
@@ -55,7 +56,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 
 ### Einstellungen
 - **Knopf „Einstellungen“** oben rechts im Spiel (schlichter Text wie „Aufgeben“ oben links). Siehe [Screenshot](images/settings-modes-v1.png).
-- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Deutsch einfach**, **Deutsch mittel**, **Deutsch schwierig**, **Story** (siehe [story-mode.md](story-mode.md)). Der aktuelle ist markiert. Neu installiert: **mittel**.
+- **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Einfach**, **Mittel**, **Schwer**, **Story** (siehe [story-mode.md](story-mode.md); Beschriftung der Knöpfe seit v4.32). Der aktuelle ist markiert. Neu installiert: **mittel**.
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
@@ -96,6 +97,15 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Keine Anleitung
 - **v4.7:** Hilfe-Knopf Vervollständigen (Wisch-Modus).
 - **v4.8:** Hilfe-Knopf Kürzen.
 - **v4.9:** Preisstufen 50/100/150/200 (je drei Hilfen), Knopf Zeile streichen, Lösen 500.
+- **v4.27:** Wisch-Vorschau in den Block-Zeilen (abdunkeln, Puls bei zu vielen Buchstaben).
+- **v4.28:** Wisch-Vorschau als Lava-Glut statt Abdunkeln: pulsiert rein, beim Loslassen wieder raus.
+- **v4.29:** Glut in Magenta (passt zu den Power-up-Farben), schnelles Aufflammen statt Einblenden. Cyan-Variante evtl. später testen.
+- **v4.30:** Glut als Kristall-Plasma in Cyan (passt zu den Steinen); Magenta verworfen.
+- **v4.31:** Modus-Knöpfe beschriftet mit EASY, MEDIUM, HARD, STORY.
+- **v4.32:** Doch deutsch: Einfach, Mittel, Schwer, Story (passt zum Rest der Oberfläche).
+- **v4.33:** Wisch-Vorschau zeigt die gewischten Buchstaben in den glühenden Blöcken.
+- **v4.34:** Glut der Wisch-Vorschau gedämpft (ruhige Glut und Aufflammen schwächer).
+- **v4.35:** Lava/Plasma verworfen: Vorschau-Blöcke sehen aus wie gelöste (türkis, weißer Buchstabe), nur leicht durchsichtig.
 - **v4.26:** Symbol-Knöpfe tiefer (nicht mehr im Rand); Power-up-Drehung ohne Rauch.
 - **v4.25:** Aufgeben und Einstellungen als Symbol-Knöpfe (Kreuz, Menü) statt Text.
 - **v4.24:** Power-up-Quadrate drehen sich beim Level-Abschluss mit Funken und Rauch.

@@ -670,20 +670,21 @@ func test_refill_suggested_only_for_exact_free_length() -> void:
 	assert_true(run.refill_suggested())
 
 
-func test_refill_suggested_uses_full_dictionary() -> void:
-	# STERN ist gültig, aber kein Vorschlags-Wort: der Knopf pulsiert trotzdem nicht.
+func test_refill_suggested_without_nice_word() -> void:
+	# STERN ist gültig, aber kein schönes Wort: man steckt fest, Auffüllen wird angeboten (v8.4).
 	var common := WordDictionary.from_words(PackedStringArray(["HAUS"]))
 	run = RunSession.new(balance, curve, lang, dict, 42, common)
 	run.start()
 	_use_rows([5])
 	_column(0, "STERN")
 	run.coins = 1000
-	assert_true(run.is_stuck(), "kein Vorschlags-Wort")
-	assert_false(run.refill_suggested(), "aber ein gültiges Wort")
+	assert_true(run.is_stuck(), "kein schönes Wort")
+	assert_true(run.refill_suggested(), "Auffüllen anbieten, auch wenn STERN gültig wäre")
 
 
 func test_solve_and_hint_only_use_nice_words() -> void:
-	# STERN ist gültig, aber kein schönes Wort: Lösen nimmt es nicht, sondern legt ein schönes Wort.
+	# STERN ist gültig, aber kein schönes Wort: Lösen nimmt es nicht, sondern dreht Steine zu einem
+	# schönen Wort um und nimmt dieses (v8.4).
 	var common := WordDictionary.from_words(PackedStringArray(["HAUS", "BLUME"]))
 	run = RunSession.new(balance, curve, lang, dict, 42, common)
 	run.start()
@@ -694,8 +695,10 @@ func test_solve_and_hint_only_use_nice_words() -> void:
 	assert_eq(run.solution_fallback()["word"], "BLUME", "Aufgeben zeigt ein schönes Wort")
 	watch_signals(run)
 	assert_true(run.solve())
-	assert_signal_emitted_with_parameters(run, "row_filled", [0, "BLUME"])
-	assert_true(run.grid.is_occupied(Vector2i(0, 0)), "STERN bleibt liegen")
+	assert_signal_not_emitted(run, "row_filled", "kein Wort aus dem Nichts")
+	assert_signal_emitted(run, "tile_changed", "Steine drehen sich um")
+	var params: Array = get_signal_parameters(run, "word_accepted")
+	assert_eq(params[0], "BLUME", "das schöne Wort fliegt aus dem Feld")
 
 
 func test_refill_not_suggested_when_board_full_or_joker() -> void:
@@ -810,11 +813,27 @@ func test_joker_turns_a_tile_into_joker() -> void:
 	_use_rows([3])
 	_column(0, "AST")
 	run.coins = 50
-	var cell := run.joker()
-	assert_ne(cell, RunSession.NO_CELL)
+	var chosen := Vector2i(0, 1)
+	var cell := run.joker(chosen)
+	assert_eq(cell, chosen, "der angetippte Stein wird zum Joker")
 	assert_eq(run.grid.get_letter(cell), RunSession.JOKER)
 	assert_eq(run.coins, 0)
 	assert_signal_emitted_with_parameters(run, "tile_changed", [cell, RunSession.JOKER])
+
+
+func test_joker_on_joker_or_empty_is_free() -> void:
+	run.start()
+	_use_rows([3])
+	_column(0, "A*T")
+	run.coins = 100
+	assert_eq(run.joker(Vector2i(0, 1)), RunSession.NO_CELL, "schon Joker")
+	var empty := Vector2i(-1, -1)
+	for c in run.grid.all_cells():
+		if not run.grid.is_occupied(c):
+			empty = c
+			break
+	assert_eq(run.joker(empty), RunSession.NO_CELL, "leerer Platz")
+	assert_eq(run.coins, 100, "kostet nichts")
 
 
 func test_joker_stands_for_any_letter() -> void:

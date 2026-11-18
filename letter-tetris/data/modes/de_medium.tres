@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1")
 id = "de_medium"
-display_name = "Deutsch mittel"
+display_name = "Mittel"
 description = "Alle Wörter zählen, Zeilen bis 6 Blöcke, sanfter Anstieg."
 language = ExtResource("2")
 curve = ExtResource("3")

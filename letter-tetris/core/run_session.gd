@@ -538,7 +538,10 @@ func has_fitting_word() -> bool:
 		if grid.is_occupied(cell) and grid.get_letter(cell) == JOKER:
 			return true
 	var q := quest
-	return not _valid_finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
+	# „Feststecken“ heißt: kein schönes Wort im Feld (v8.4). Seltene gültige Wörter darf man
+	# trotzdem wischen, aber das Spiel bietet dann Auffüllen an.
+	var finder: WordFinder = _hint_finders[0]
+	return not finder.find_paths(grid, lengths[0], lengths[lengths.size() - 1],
 			func(w: String) -> bool: return q.matches(w), 1).is_empty()
 
 
@@ -714,6 +717,9 @@ func solve() -> bool:
 		var n := quest.rows[row]
 		var path := _find_word_of_length(n)
 		if path.is_empty():
+			# Kein schönes Wort im Feld: Steine drehen sich um und bilden eines (v8.4).
+			path = _plant_word_for_solve(n)
+		if path.is_empty():
 			var word := _random_word(n)
 			quest.fill(row, word)
 			row_filled.emit(row, word)
@@ -728,6 +734,29 @@ func solve() -> bool:
 		quest_progress.emit(quest)
 	_complete_quest(false)
 	return true
+
+
+## Lösen ohne schönes Wort im Feld: ein schönes Wort mit n Buchstaben in vorhandene Steine
+## legen (sie drehen sich um, wie beim Magnet); bei zu wenig Steinen vorher auffüllen.
+## Gibt den Weg zurück oder leer, wenn es nicht geht.
+func _plant_word_for_solve(n: int) -> Array[Vector2i]:
+	var none: Array[Vector2i] = []
+	var tiles := grid.size() - grid.free_count()
+	if tiles < n:
+		_spawn(n - tiles)
+	for attempt in 3:
+		var plan := _planter.plant(grid, _plant_words, PackedInt32Array([n]), n)
+		if plan.is_empty():
+			continue
+		var path: Array[Vector2i] = []
+		path.assign(plan["path"])
+		var word: String = plan["word"]
+		for i in path.size():
+			if grid.get_letter(path[i]) != word[i]:
+				grid.set_letter(path[i], word[i])
+				tile_changed.emit(path[i], word[i])
+		return path
+	return none
 
 
 ## Weg eines Worts mit genau n Buchstaben im Feld (zuerst geläufige Wörter), oder leer.
@@ -770,15 +799,12 @@ func can_joker() -> bool:
 	return false
 
 
-## Hilfe „Joker“: ein zufälliger Stein wird zum Joker. Gibt den Platz zurück (NO_CELL = nicht möglich).
-func joker() -> Vector2i:
-	if not can_joker():
+## Hilfe „Joker“: der angetippte Stein wird zum Joker (spec/run-mode.md, „Joker“). Gibt den Platz
+## zurück; NO_CELL = nicht möglich (leerer Platz, schon Joker, zu wenig Münzen) – kostet dann nichts.
+func joker(cell: Vector2i) -> Vector2i:
+	if not can_joker() or not grid.is_inside(cell) or not grid.is_occupied(cell) \
+			or grid.get_letter(cell) == JOKER:
 		return NO_CELL
-	var cells: Array[Vector2i] = []
-	for cell in grid.all_cells():
-		if grid.is_occupied(cell) and grid.get_letter(cell) != JOKER:
-			cells.append(cell)
-	var cell := cells[_hint_rng.randi_range(0, cells.size() - 1)]
 	grid.set_letter(cell, JOKER)
 	_pay(price("joker"))
 	tile_changed.emit(cell, JOKER)
