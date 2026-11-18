@@ -1187,7 +1187,8 @@ func _check_hint() -> void:
 
 ## Automatisch auffüllen (spec/game-rules.md v8.5): Liegt kein schönes Wort im Feld, das in eine
 ## freie Zeile passt, kommen gratis neue Steine dazu (je refill_count), bis eines geht oder das
-## Feld voll ist. Ersetzt den früheren Auffüllen-Dialog. Gibt die Anzahl neuer Steine zurück.
+## Feld voll ist. Ist das Feld voll und passt immer noch keins, drehen sich Steine zu einem
+## schönen Wort um (v8.6). Ersetzt den früheren Auffüllen-Dialog. Gibt die Anzahl neuer Steine zurück.
 func _auto_refill() -> int:
 	if not _balance.auto_refill or tutorial or is_over or quest == null or quest.is_done() \
 			or quest.free_lengths().is_empty():
@@ -1198,7 +1199,28 @@ func _auto_refill() -> int:
 		if n == 0:
 			break
 		placed += n
+	if not has_fitting_word():
+		_plant_fitting_word()
 	return placed
+
+
+## Volles Feld ohne passendes Wort: ein schönes Wort, das in eine freie Zeile passt, über eine
+## Kette vorhandener Steine legen (sie drehen sich um, wie bei Tauschen und Lösen).
+func _plant_fitting_word() -> void:
+	var lengths := quest.free_lengths()
+	for attempt in 3:
+		var plan := _planter.plant(grid, _plant_words, lengths, lengths[lengths.size() - 1])
+		if plan.is_empty():
+			continue
+		var path: Array[Vector2i] = []
+		path.assign(plan["path"])
+		var word: String = plan["word"]
+		for i in path.size():
+			if grid.get_letter(path[i]) != word[i]:
+				grid.set_letter(path[i], word[i])
+				tile_changed.emit(path[i], word[i])
+		if has_fitting_word():
+			return
 
 
 func _reset_hint() -> void:
