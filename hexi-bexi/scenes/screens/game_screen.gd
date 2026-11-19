@@ -223,6 +223,9 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	# Berührungen nicht hier abfangen, sondern ans Spielfeld (_unhandled_input) durchlassen.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Gespeicherter Modus noch gesperrt (z. B. vor dem Update gewählt): zurück auf Einfach.
+	if not SaveData.mode_unlocked(Settings.mode):
+		Settings.mode = Settings.DEFAULT_MODE
 	_load_mode()
 	_build_ui()
 	get_viewport().size_changed.connect(_relayout)
@@ -1082,6 +1085,16 @@ func _open_settings() -> void:
 		card.text = m.display_name if id == Settings.STORY_MODE \
 				else "%s\n%s" % [m.display_name, _stars_text(SaveData.mode_stars(id))]
 		var current: bool = id == Settings.mode
+		if not SaveData.mode_unlocked(id):
+			# Gesperrt (v4.45): abgedunkelt, Antippen tut nichts, darunter die Bedingung.
+			var need := Settings.load_mode(SaveData.unlock_requirement(id))
+			card.text = "%s\nab ★ in %s" % [m.display_name, need.display_name]
+			card.disabled = true
+			card.modulate.a = BTN_DISABLED_ALPHA
+			card.add_theme_stylebox_override("disabled", _btn_box(BTN_BG, BTN_EDGE, 0.4, 0.1, 8))
+			card.add_theme_color_override("font_disabled_color", BTN_TEXT)
+			_settings_modes.add_child(card)
+			continue
 		var edge := BTN_EDGE_SOLVE if current else BTN_EDGE
 		card.add_theme_stylebox_override("normal", _btn_box(BTN_BG, edge, 0.9 if current else 0.6, 0.35 if current else 0.2, 12))
 		card.add_theme_stylebox_override("hover", _btn_box(BTN_BG, edge, 1.0, 0.4, 14))
@@ -1536,6 +1549,8 @@ func _on_quest_completed(_q: Quest, reward: int) -> void:
 			_completing = false
 			if _tutorial_active and session.completed:
 				_apply_mode(_tutorial_return)  # Tutorial geschafft: normal weiter
+				# Danach der Home-Screen, damit Neue sehen, was es gibt (v4.45).
+				_open_home_on_start()
 				return
 			if _pending_quest and not session.is_over:
 				_blocks.show_quest(_pending_quest)
