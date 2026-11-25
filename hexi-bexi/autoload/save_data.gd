@@ -35,6 +35,28 @@ func mode_stars(mode: String = "") -> int:
 	return int(_stars.get(_mode(mode), 0))
 
 
+## Freischalten (spec/screens.md v4.45): Mittel erst nach mindestens einem Stern in Einfach,
+## Schwer erst nach mindestens einem Stern in Mittel. Story ist immer offen.
+const UNLOCK_AFTER := {"de_medium": "de_easy", "de_hard": "de_medium"}
+
+
+## Ist der Modus spielbar? stars: Callable(mode) -> int (beste Sterne).
+static func unlocked(mode: String, stars: Callable) -> bool:
+	if not UNLOCK_AFTER.has(mode):
+		return true
+	return int(stars.call(UNLOCK_AFTER[mode])) >= 1
+
+
+## Modus, der vorher mit mindestens einem Stern geschafft sein muss ("" = immer offen).
+static func unlock_requirement(mode: String) -> String:
+	return UNLOCK_AFTER.get(mode, "")
+
+
+## Ist der Modus mit den gespeicherten Sternen spielbar?
+func mode_unlocked(mode: String) -> bool:
+	return unlocked(mode, mode_stars)
+
+
 ## Geschafften Lauf melden (übrige Münzen, Sterne). Gibt true zurück bei neuem Münz-Rekord.
 func submit_run(coins: int, stars: int, mode: String = "") -> bool:
 	var id := _mode(mode)

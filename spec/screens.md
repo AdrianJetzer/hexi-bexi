@@ -58,7 +58,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu ein kurzes
 - **Aufbau (v4.40):** kein Titel oben. Zuerst die Überschrift **„Modus“** (groß, Größe wie früher der Titel) mit den vier Modus-Karten, darunter die Überschrift **„Einstellungen“** (gleich groß) mit Vibration, Tutorial, Schließen.
 - **Wann er erscheint (v4.40):**
   - App war nur im Hintergrund: Sie geht dort weiter, wo man war (kein Home-Screen).
-  - Allererster Start: Tutorial, danach direkt ins Spiel.
+  - Allererster Start: Tutorial, danach der **Home-Screen** (v4.45), damit Neue sehen, was es gibt. Darunter wartet schon ein Lauf in Einfach; „Einfach“ antippen oder „Schließen“ = ins Spiel, ohne Nachfrage.
   - **Kalter Start** (App beendet, Handy neu gestartet) nach dem Tutorial: **Home-Screen**. Darunter läuft schon ein neuer Lauf im gespeicherten Modus (Läufe werden nicht gespeichert). Den aktuellen Modus antippen oder „Schließen“ = ins Spiel; ein anderer Modus wechselt **ohne Nachfrage**, weil noch nichts gespielt ist. Ebenso startet „Tutorial“ dann ohne Nachfrage.
 - **Android-Zurück** (Taste oder Geste, v4.42): immer einen Schritt Richtung Home-Screen.
   - Nachfrage offen („Aufgeben?“, „Modus wechseln?“, „Tutorial starten?“): wie **Nein**. Rätsel offen: schließt es.
@@ -66,6 +66,7 @@ Vier Screens: **Startbildschirm, Spiel, Bilanz, Einstellungen.** Dazu ein kurzes
   - Auf dem Home-Screen: Die App geht in den **Hintergrund** (wie die Home-Taste); der Lauf bleibt, solange Android die App im Speicher behält. Früher beendete Zurück die App sofort.
 - **Modus** (siehe [run-mode.md](run-mode.md), „Modi“): **Einfach**, **Mittel**, **Schwer**, **Story** (siehe [story-mode.md](story-mode.md); Beschriftung der Knöpfe seit v4.32). Der aktuelle ist markiert. Neu installiert: **Einfach** (v4.38, vorher mittel).
   - Auf den Knöpfen steht **nur der Name**, ohne Beschreibung; darunter bei einfach / mittel / schwierig die **besten Sterne** (☆☆☆ … ★★★). Story zeigt keine Sterne (die stehen je Kapitel auf dem Pfad). Screenshot: [Einstellungen](images/settings-stars-v1.png).
+  - **Freischalten (v4.45):** Am Anfang sind nur **Einfach** und **Story** spielbar. **Mittel** wird spielbar, sobald Einfach mit mindestens **einem Stern** geschafft ist (Level 20); **Schwer**, sobald Mittel mit mindestens einem Stern geschafft ist. Gesperrte Karten sind abgedunkelt, statt der Sterne steht „ab ★ in Einfach“ bzw. „ab ★ in Mittel“; Antippen tut nichts. War beim Start ein gesperrter Modus gespeichert (z. B. vor dem Update gewählt), gilt Einfach. Screenshot: [gesperrt](images/home-locked-v1.png).
   - Wechsel mitten im Lauf: Nachfrage **„Modus wechseln und neu starten?“** (Ja / Nein). Ja startet einen neuen Lauf im neuen Modus.
   - **Denselben Modus nochmal wählen** (v4.23): dieselbe Nachfrage; Ja startet den Lauf neu (einfach / mittel / schwierig) bzw. führt in der Story zurück aufs **Kapitel-Brett** (das Kapitel ist abgebrochen). Auf dem Kapitel-Brett selbst schließt „Story“ nur die Einstellungen.
   - Der Modus wird gespeichert und gilt beim nächsten Start.
@@ -93,7 +94,7 @@ Ohne Text, nur mit einem gezeichneten Finger. Screenshot: [Finger](images/tutori
   2. **BAUM:** eine Zeile mit 4 Kästchen; B–A–U–M in der untersten Reihe, dazu 6 andere Steine.
 - **Finger:** Eine gezeichnete, leuchtend umrandete Hand setzt auf den ersten Buchstaben, zieht mit leuchtender Spur über das Wort, hebt ab und beginnt nach kurzer Pause von vorn, bis der Spieler das Wort **selbst wischt**. Während man wischt, verschwindet der Finger; nach einem Fehlversuch kommt er wieder. Er erscheint erst, wenn das Feld fertig aufgebaut ist (alle Steine gedreht), auch beim Start. Nach dem richtigen Wort verschwindet er sofort und kommt erst wieder, wenn die Buchstaben oben angekommen sind und die neuen Steine liegen (dann mit dem Weg des neuen Worts).
 - **Nur das Zielwort zählt** (auch andere echte Wörter werden abgelehnt). Kein Nachfüllen, keine Münzen, keine Hilfen, keine Leiter, kein Aufgeben-Knopf; nur der Menü-Knopf bleibt.
-- **Danach:** ein normaler Lauf im **vorher gewählten Modus** (Level 1). Beim ersten Start ist das **Einfach** (neue Installationen starten in Einfach). Wer im Tutorial über das Menü einen Modus wählt, verlässt es; es gilt dann als gesehen.
+- **Danach:** der **Home-Screen** (v4.45), darunter ein normaler Lauf im **vorher gewählten Modus** (Level 1). Beim ersten Start ist das **Einfach** (neue Installationen starten in Einfach). Wer im Tutorial über das Menü einen Modus wählt, verlässt es; es gilt dann als gesehen.
 
 ## Leistung (v4.36)
 
@@ -137,6 +138,7 @@ Gemessen auf einem Mittelklasse-Handy (Redmi Note 10 Pro, Android 14, 1080 × 24
 - **v4.37:** Kein Ton und keine Musik; Schalter dafür entfernt.
 - **v4.38:** Tutorial beim ersten Start und über das Menü (DAS, BAUM, Finger); neu installiert startet Einfach.
 - **v4.44:** Offener Punkt „Lauf speichern“ eingetragen; Zurück-Geste ist erledigt (v4.42).
+- **v4.45:** Nach dem Tutorial der Home-Screen. Mittel und Schwer freischalten mit mindestens einem Stern in der Stufe davor; gesperrte Karten abgedunkelt, ohne Reaktion.
 - **v4.43:** Bilanz „Geschafft!“ bzw. „Kapitel geschafft!“: Knopf „Weiter“ führt auf den Home-Screen (vorher „Nochmal“ / „Zur Karte“).
 - **v4.42:** Android-Zurück: schließt Nachfragen, öffnet sonst den Home-Screen; auf dem Home-Screen geht die App in den Hintergrund statt sich zu beenden.
 - **v4.41:** Nach dem Aufgeben führen „Weiter“ und das Kreuz direkt auf den Home-Screen; die Bilanz „Nicht geschafft“ entfällt, das Kreuz fragt nicht nochmal.
